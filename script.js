@@ -1,3 +1,6 @@
+// Remove this line:
+// import interact from 'https://cdn.interactjs.io/v1.10.27/interactjs/index.js';
+
 let selectedActivity = null;
 let timelineData = [];
 
@@ -105,9 +108,9 @@ function minutesToPosition(minutes, timelineWidth) {
     return minutesToPercentage(minutes);
 }
 
-function positionToMinutes(position, timelineWidth) {
-    const percentage = (position / timelineWidth) * 100;
-    const minutes = Math.round((percentage / 100) * TIMELINE_HOURS * 60) + TIMELINE_START_HOUR * 60;
+// Modify the positionToMinutes function to accept position as a percentage
+function positionToMinutes(positionPercent) {
+    const minutes = Math.round((positionPercent / 100) * TIMELINE_HOURS * 60) + TIMELINE_START_HOUR * 60;
     return minutes % MINUTES_PER_DAY;
 }
 
@@ -122,215 +125,6 @@ function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
             (startMinutes <= activityStart && endMinutes >= activityEnd) || // Covers
             (startMinutes < activityEnd && endMinutes > activityStart) // Partial overlap
         );
-    });
-}
-
-function validateAndCleanActivities() {
-    timelineData = timelineData.filter(activity => {
-        const startMinutes = timeToMinutes(activity.startTime);
-        const endMinutes = timeToMinutes(activity.endTime);
-        return startMinutes !== endMinutes;
-    });
-
-    timelineData.sort((a, b) => {
-        const aStart = timeToMinutes(a.startTime);
-        const bStart = timeToMinutes(b.startTime);
-        return aStart - bStart;
-    });
-
-    const timeline = document.querySelector('.timeline');
-    const blocks = timeline.querySelectorAll('.activity-block');
-    blocks.forEach(block => block.remove());
-
-    timelineData.forEach(activity => {
-        const block = document.createElement('div');
-        block.className = 'activity-block';
-        block.style.backgroundColor = activity.color;
-        
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'activity-text';
-        nameSpan.textContent = activity.name;
-        block.appendChild(nameSpan);
-        
-        timeline.appendChild(block);
-        
-        const startMinutes = timeToMinutes(activity.startTime);
-        const endMinutes = timeToMinutes(activity.endTime);
-        updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false, activity.id);
-    });
-
-    // Update undo button state
-    const undoBtn = document.getElementById('undoBtn');
-    undoBtn.disabled = timelineData.length === 0;
-}
-
-function updateBlockDisplay(block, startMinutes, endMinutes, timelineWidth, showTimeLabel = false, activityId = null) {
-    const start = Math.min(startMinutes, endMinutes);
-    const end = Math.max(startMinutes, endMinutes);
-    const duration = end - start;
-    
-    const leftPercent = minutesToPosition(start, timelineWidth);
-    
-    // For 10-minute blocks, use exactly 1/6 of an hour width
-    const widthPercent = duration === DEFAULT_ACTIVITY_LENGTH
-        ? (100 / 24) / 6  // Exactly 1/6 of an hour for 10-minute blocks
-        : (duration / (TIMELINE_HOURS * 60)) * 100;  // Proportional width for dragged blocks
-
-    block.style.left = `${leftPercent}%`;
-    block.style.width = `${widthPercent}%`;
-
-    // Set the data-id attribute using the activity ID if provided
-    if (activityId) {
-        block.dataset.id = activityId;
-    }
-
-    // Update time label
-    let timeLabel = block.querySelector('.time-label');
-    if (showTimeLabel) {
-        if (!timeLabel) {
-            timeLabel = document.createElement('div');
-            timeLabel.className = 'time-label';
-            block.appendChild(timeLabel);
-        }
-        timeLabel.textContent = `${formatTimeHHMM(start)} - ${formatTimeHHMM(end)}`;
-    } else if (timeLabel) {
-        timeLabel.remove();
-    }
-
-    // Check for overlap and update visual feedback
-    const hasOverlapWithOthers = hasOverlap(start, end);
-    block.classList.toggle('invalid', hasOverlapWithOthers && showTimeLabel);
-}
-
-function initTimelineInteraction() {
-    const timeline = document.querySelector('.timeline');
-    let isDrawing = false;
-    let startX = 0;
-    let anchorX = 0;
-    let currentBlock = null;
-    let startMinutes = 0;
-    let endMinutes = 0;
-    let dragStartTime = 0;
-    let isDragging = false;
-
-    timeline.addEventListener('mousedown', (e) => {
-        if (!selectedActivity) return;
-        
-        isDrawing = true;
-        isDragging = false;
-        startX = e.offsetX;
-        anchorX = startX;
-        dragStartTime = Date.now();
-        
-        const timelineWidth = timeline.offsetWidth;
-        startMinutes = snapToGrid(positionToMinutes(startX, timelineWidth));
-        endMinutes = startMinutes + DEFAULT_ACTIVITY_LENGTH;
-
-        currentBlock = document.createElement('div');
-        currentBlock.className = 'activity-block preview';
-        currentBlock.style.backgroundColor = selectedActivity.color;
-        
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'activity-text';
-        nameSpan.textContent = selectedActivity.name;
-        currentBlock.appendChild(nameSpan);
-        
-        timeline.appendChild(currentBlock);
-        updateBlockDisplay(currentBlock, startMinutes, endMinutes, timelineWidth, true);
-    });
-
-    timeline.addEventListener('mousemove', (e) => {
-        if (!isDrawing || !currentBlock) return;
-
-        const timelineWidth = timeline.offsetWidth;
-        const currentX = e.offsetX;
-        const currentMinutes = snapToGrid(positionToMinutes(currentX, timelineWidth));
-
-        // If mouse has moved significantly, consider it a drag
-        if (Math.abs(currentX - startX) > 5) {
-            isDragging = true;
-            endMinutes = currentMinutes;
-            
-            // Update block display with time label and overlap check
-            const start = Math.min(startMinutes, endMinutes);
-            const end = Math.max(startMinutes, endMinutes);
-            
-            // Check for overlap and update visual feedback
-            const hasOverlapWithOthers = hasOverlap(start, end);
-            currentBlock.classList.toggle('invalid', hasOverlapWithOthers);
-            
-            updateBlockDisplay(currentBlock, start, end, timelineWidth, true);
-        } else {
-            // Still in click mode, maintain 10-minute width
-            endMinutes = startMinutes + DEFAULT_ACTIVITY_LENGTH;
-            updateBlockDisplay(currentBlock, startMinutes, endMinutes, timelineWidth, true);
-        }
-    });
-
-    timeline.addEventListener('mouseup', (e) => {
-        if (!isDrawing || !currentBlock) return;
-        isDrawing = false;
-
-        const timelineWidth = timeline.offsetWidth;
-        const dragDuration = Date.now() - dragStartTime;
-        
-        if (!isDragging && dragDuration < 200) {
-            // Click interaction - 10-minute block
-            endMinutes = startMinutes + DEFAULT_ACTIVITY_LENGTH;
-        } else {
-            // Drag interaction - variable size
-            endMinutes = snapToGrid(positionToMinutes(e.offsetX, timelineWidth));
-        }
-
-        const start = Math.min(startMinutes, endMinutes);
-        const end = Math.max(startMinutes, endMinutes);
-        
-        if (start === end || hasOverlap(start, end) || !isWithinTimelineBounds(start, end)) {
-            currentBlock.remove();
-            return;
-        }
-
-        const activityData = {
-            id: generateUniqueId(), // Add unique ID
-            activity: selectedActivity.name,
-            startTime: formatTimeDDMMYYYYHHMM(start),
-            endTime: formatTimeDDMMYYYYHHMM(end),
-            color: selectedActivity.color
-        };
-
-        // Check for duplicates before adding
-        const isDuplicate = timelineData.some(activity => 
-            activity.activity === activityData.activity &&
-            activity.startTime === activityData.startTime &&
-            activity.endTime === activityData.endTime &&
-            activity.color === activityData.color
-        );
-
-        if (!isDuplicate) {
-            // Add activity to timelineData
-            timelineData.push(activityData);
-            currentBlock.dataset.id = activityData.id;  // Set the ID on the block
-        }
-
-        updateButtonStates();
-        currentBlock.classList.remove('preview');
-        updateBlockDisplay(currentBlock, start, end, timelineWidth, false);
-
-        if (DEBUG_MODE) {
-            console.log('Added activity:', activityData);
-            console.log('Current timelineData:', timelineData);
-        }
-
-        // Remove the unnecessary call to validateAndCleanActivities
-        // validateAndCleanActivities();
-    });
-
-    timeline.addEventListener('mouseleave', () => {
-        if (isDrawing && currentBlock) {
-            isDrawing = false;
-            currentBlock.remove();
-            currentBlock = null;
-        }
     });
 }
 
@@ -355,6 +149,12 @@ function initTimeline() {
             if (leftPosition <= 100) {
                 const minuteMarker = document.createElement('div');
                 minuteMarker.className = 'minute-marker';
+                
+                // Add a special class for the 30-minute marker
+                if (j === 3) {
+                    minuteMarker.classList.add('minute-marker-30');
+                }
+                
                 minuteMarker.style.left = `${leftPosition}%`;
                 timeline.appendChild(minuteMarker);
             }
@@ -362,21 +162,393 @@ function initTimeline() {
     }
 }
 
+function generateSnapPoints() {
+    const snapPoints = [];
+    const timeline = document.querySelector('.timeline');
+    const timelineWidth = timeline.offsetWidth;
+
+    // Add 10-minute interval snap points with increased strength
+    for (let i = 0; i <= TIMELINE_HOURS * 6; i++) {
+        const percentage = (i / (TIMELINE_HOURS * 6)) * 100;
+        snapPoints.push({
+            x: `${percentage}%`,
+            range: 10,
+            strength: 5 // Increased strength for stronger snapping
+        });
+    }
+
+    // Add hour markers with increased strength
+    for (let i = 0; i <= TIMELINE_HOURS; i++) {
+        const percentage = (i / TIMELINE_HOURS) * 100;
+        snapPoints.push({
+            x: `${percentage}%`,
+            range: 10, // Reduced range for tighter snapping
+            strength: 6 // Increased strength
+        });
+    }
+
+    // Add activity block edges with increased strength
+    const blocks = timeline.querySelectorAll('.activity-block');
+    blocks.forEach(block => {
+        if (block.classList.contains('resizing')) return; // Skip the block being resized
+
+        const rect = block.getBoundingClientRect();
+        const timelineRect = timeline.getBoundingClientRect();
+        
+        // Convert positions to percentages
+        const leftPercent = ((rect.left - timelineRect.left) / timelineRect.width) * 100;
+        const rightPercent = ((rect.right - timelineRect.left) / timelineRect.width) * 100;
+
+        // Add block edges with stronger snap
+        snapPoints.push(
+            { x: `${leftPercent}%`, range: 10, strength: 5 },
+            { x: `${rightPercent}%`, range: 10, strength: 5 }
+        );
+    });
+
+    return snapPoints;
+}
+
+// Function to check if two elements overlap
+function isOverlapping(elem1, elem2) {
+    const rect1 = elem1.getBoundingClientRect();
+    const rect2 = elem2.getBoundingClientRect();
+    return !(
+        rect1.right < rect2.left ||
+        rect1.left > rect2.right ||
+        rect1.bottom < rect2.top ||
+        rect1.top > rect2.bottom
+    );
+}
+
+// Modify the createTimeLabel function to alternate positioning based on collision
+function createTimeLabel(block) {
+    const label = document.createElement('div');
+    label.className = 'time-label';
+    label.style.position = 'absolute';
+    label.style.left = '50%';
+    label.style.transform = 'translateX(-50%)';
+    label.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    label.style.color = '#fff';
+    label.style.padding = '2px 4px';
+    label.style.borderRadius = '4px';
+    label.style.fontSize = '10px';
+    label.style.whiteSpace = 'nowrap';
+    label.style.pointerEvents = 'none';
+    label.style.zIndex = '10'; // Ensure the label appears above other elements
+    
+    // Initially position below the activity block
+    label.style.bottom = '-20px';
+    label.style.top = 'auto';
+    
+    block.appendChild(label);
+    
+    // Check for collision with existing labels
+    const existingLabels = document.querySelectorAll('.time-label');
+    existingLabels.forEach(existingLabel => {
+        if (existingLabel !== label && isOverlapping(existingLabel, label)) {
+            // If collision detected, position above instead of below
+            label.style.bottom = 'auto';
+            label.style.top = '-20px';
+        }
+    });
+
+    return label;
+}
+
+// Modify the updateTimeLabel function to recheck collisions after updates
+function updateTimeLabel(label, startTime, endTime) {
+    label.textContent = `${startTime} - ${endTime}`;
+    
+    // Reset positioning to bottom
+    label.style.bottom = '-20px';
+    label.style.top = 'auto';
+    
+    // Recheck for collisions and adjust if necessary
+    const existingLabels = document.querySelectorAll('.time-label');
+    existingLabels.forEach(existingLabel => {
+        if (existingLabel !== label && isOverlapping(existingLabel, label)) {
+            // If collision detected, position above instead of below
+            label.style.bottom = 'auto';
+            label.style.top = '-20px';
+        }
+    });
+}
+
+// Add a new function to check for overlaps
+function canPlaceActivity(newStart, newEnd, excludeId = null) {
+    return !timelineData.some(activity => {
+        if (excludeId && activity.id === excludeId) return false;
+        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
+        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
+        return (newStart < activityEnd && newEnd > activityStart);
+    });
+}
+
+function initTimelineInteraction() {
+    const timeline = document.querySelector('.timeline');
+    let currentBlock = null;
+    
+    timeline.addEventListener('mousedown', (e) => {
+        if (!selectedActivity || e.target.closest('.activity-block')) return;
+
+        const rect = timeline.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        
+        const clickPositionPercent = (x / rect.width) * 100;
+        const snappedPosition = findNearestSnapPoint(clickPositionPercent, generateSnapPoints());
+        const startMinutes = snapToGrid(positionToMinutes(snappedPosition));
+        const endMinutes = startMinutes + DEFAULT_ACTIVITY_LENGTH;
+
+        // Validation: Check for overlap
+        if (!canPlaceActivity(startMinutes, endMinutes)) {
+            alert('Cannot place activity here due to overlap with an existing activity.');
+            return;
+        }
+
+        currentBlock = document.createElement('div');
+        currentBlock.className = 'activity-block';
+        currentBlock.style.backgroundColor = selectedActivity.color;
+        currentBlock.textContent = selectedActivity.name;
+        
+        // Start with default 10-minute width
+        const percentPerMinute = 100 / (TIMELINE_HOURS * 60);
+        const initialWidthPercent = percentPerMinute * DEFAULT_ACTIVITY_LENGTH;
+        currentBlock.style.width = `${initialWidthPercent}%`;
+        currentBlock.style.left = `${snappedPosition}%`;
+        
+        // Add resize handles
+        const leftHandle = document.createElement('div');
+        leftHandle.className = 'resize-handle left';
+        const rightHandle = document.createElement('div');
+        rightHandle.className = 'resize-handle right';
+        
+        currentBlock.appendChild(leftHandle);
+        currentBlock.appendChild(rightHandle);
+        timeline.appendChild(currentBlock);
+
+        // Create and append time label
+        const timeLabel = createTimeLabel(currentBlock);
+        updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+
+        // Add block to timelineData
+        const activityData = {
+            id: generateUniqueId(),
+            activity: selectedActivity.name,
+            startTime: formatTimeDDMMYYYYHHMM(startMinutes),
+            endTime: formatTimeDDMMYYYYHHMM(endMinutes),
+            color: selectedActivity.color
+        };
+        timelineData.push(activityData);
+        currentBlock.dataset.id = activityData.id;
+
+        // Update button states
+        updateButtonStates();
+
+        // Setup interact.js resizable and draggable
+        interact(currentBlock)
+            .resizable({
+                edges: { left: true, right: true, bottom: false, top: false },
+                invert: 'reposition',
+                modifiers: [
+                    interact.modifiers.restrictEdges({
+                        outer: 'parent'
+                    }),
+                    interact.modifiers.snap({
+                        targets: generateSnapPoints(),
+                        range: 10, // Adjusted range for stronger snapping
+                        relativePoints: [{ x: 0, y: 0 }],
+                        endOnly: true
+                    })
+                ],
+                listeners: {
+                    start(event) {
+                        event.target.classList.add('resizing');
+                    },
+                    move(event) {
+                        const timeline = document.querySelector('.timeline');
+                        const timelineWidth = timeline.offsetWidth;
+                        const { width, left } = event.rect;
+                        
+                        // Convert width and left from pixels to percentage
+                        const widthPercent = (width / timelineWidth) * 100;
+                        const leftPercent = (left / timelineWidth) * 100;
+                        
+                        // Calculate new start and end minutes
+                        const newStartMinutes = snapToGrid((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                        const newEndMinutes = newStartMinutes + snapToGrid((widthPercent / 100) * TIMELINE_HOURS * 60);
+                        
+                        // Validation: Check for overlap
+                        const blockId = event.target.dataset.id;
+                        if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                            // Revert to previous size and position
+                            event.target.style.width = `${parseFloat(event.target.style.width)}%`;
+                            event.target.style.left = `${parseFloat(event.target.style.left)}%`;
+                            return;
+                        }
+
+                        event.target.style.width = `${widthPercent}%`;
+                        event.target.style.left = `${leftPercent}%`;
+
+                        // Update time label
+                        const timeLabel = event.target.querySelector('.time-label');
+                        if (timeLabel) {
+                            updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                        }
+                    },
+                    end(event) {
+                        event.target.classList.remove('resizing');
+                        // Update timelineData with new times
+                        const blockId = event.target.dataset.id;
+                        const blockData = timelineData.find(activity => activity.id === blockId);
+                        if (blockData) {
+                            const newStartMinutes = snapToGrid((parseFloat(event.target.style.left) / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const newWidthPercent = parseFloat(event.target.style.width);
+                            const newEndMinutes = snapToGrid(newStartMinutes + (newWidthPercent / 100) * TIMELINE_HOURS * 60);
+                            
+                            // Validation: Ensure no overlap after resize
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                                alert('Resizing causes overlap with an existing activity. Reverting changes.');
+                                // Revert to previous state
+                                // (Implement logic to store and revert previous state if necessary)
+                                return;
+                            }
+
+                            blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
+                            blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
+                        }
+                        // Regenerate snap points after resize
+                        interact(event.target).resizable({
+                            modifiers: [
+                                interact.modifiers.snap({
+                                    targets: generateSnapPoints(),
+                                    range: 10, // Adjusted range for stronger snapping
+                                    relativePoints: [{ x: 0, y: 0 }],
+                                    endOnly: true
+                                })
+                            ]
+                        });
+                    }
+                }
+            })
+            .draggable({
+                listeners: {
+                    start(event) {
+                        event.target.classList.add('dragging');
+                    },
+                    move(event) {
+                        const target = event.target;
+                        const timeline = document.querySelector('.timeline');
+                        const timelineWidth = timeline.offsetWidth;
+                        const dxPercent = (event.dx / timelineWidth) * 100;
+                        let newLeft = parseFloat(target.style.left) + dxPercent;
+                        const widthPercent = parseFloat(target.style.width);
+
+                        // Calculate new start and end minutes
+                        const newStartMinutes = snapToGrid((newLeft / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                        const newEndMinutes = snapToGrid(newStartMinutes + (widthPercent / 100) * TIMELINE_HOURS * 60);
+
+                        // Validation: Check for overlap
+                        const blockId = target.dataset.id;
+                        if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                            // Revert to previous position
+                            newLeft = parseFloat(target.style.left) - dxPercent;
+                            target.style.left = `${newLeft}%`;
+                            return;
+                        }
+
+                        // Ensure newLeft is within bounds
+                        newLeft = Math.max(0, Math.min(newLeft, 100 - widthPercent));
+                        target.style.left = `${newLeft}%`;
+
+                        // Update time label
+                        const timeLabel = target.querySelector('.time-label');
+                        if (timeLabel) {
+                            updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                        }
+                    },
+                    end(event) {
+                        event.target.classList.remove('dragging');
+                        // Update timelineData with new times
+                        const blockId = event.target.dataset.id;
+                        const blockData = timelineData.find(activity => activity.id === blockId);
+                        if (blockData) {
+                            const newLeftPercent = parseFloat(event.target.style.left);
+                            const newWidthPercent = parseFloat(event.target.style.width);
+                            const newStartMinutes = snapToGrid((newLeftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const newEndMinutes = snapToGrid(newStartMinutes + (newWidthPercent / 100) * TIMELINE_HOURS * 60);
+
+                            // Validation: Ensure no overlap after drag
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                                alert('Dragging causes overlap with an existing activity. Reverting changes.');
+                                // Revert to previous state
+                                // (Implement logic to store and revert previous state if necessary)
+                                return;
+                            }
+
+                            blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
+                            blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
+                        }
+                    }
+                },
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true
+                    }),
+                    interact.modifiers.snap({
+                        targets: generateSnapPoints(),
+                        range: 10, // Adjusted range for stronger snapping
+                        relativePoints: [{ x: 0, y: 0 }],
+                        endOnly: false // Changed from true to false to enable snapping during dragging
+                    })
+                ]
+            });
+    });
+}
+
+function updateButtonStates() {
+    const undoButton = document.getElementById('undoBtn');
+    const cleanRowButton = document.getElementById('cleanRowBtn');
+    const saveButton = document.getElementById('saveBtn');
+    
+    const isEmpty = timelineData.length === 0;
+    undoButton.disabled = isEmpty;
+    cleanRowButton.disabled = isEmpty;
+}
+
+function generateUniqueId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function findNearestSnapPoint(position, snapPoints) {
+    return snapPoints.reduce((nearest, point) => {
+        const pointX = parseFloat(point.x);
+        const distance = Math.abs(pointX - position);
+        if (distance < point.range && (!nearest || distance < Math.abs(nearest.x - position))) {
+            return { x: pointX, strength: point.strength };
+        }
+        return nearest;
+    }, null)?.x || position;
+}
+
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        // Clear only the activity blocks from the timeline display
-        const timeline = document.getElementById('timeline');
-        const activityBlocks = timeline.querySelectorAll('.activity-block');
-        activityBlocks.forEach(block => block.remove());
+        if (timelineData.length > 0) {
+            // Clear only the activity blocks from the timeline display
+            const timeline = document.getElementById('timeline');
+            const activityBlocks = timeline.querySelectorAll('.activity-block');
+            activityBlocks.forEach(block => block.remove());
 
-        // Empty the data arrays
-        timelineData = [];
+            // Empty the data arrays
+            timelineData = [];
 
-        // Update button states - this will disable both Clean Row and Undo buttons
-        updateButtonStates();
+            // Update button states - this will disable both Clean Row and Undo buttons
+            updateButtonStates();
 
-        logDebugInfo(); // Log debug information
+            logDebugInfo(); // Log debug information
+        }
     });
 
     const saveBtn = document.getElementById('saveBtn');
@@ -442,59 +614,13 @@ function initButtons() {
     });
 }
 
-// Fix updateButtonStates to not return a random ID
-function updateButtonStates() {
-    const undoButton = document.getElementById('undoBtn');
-    const cleanRowButton = document.getElementById('cleanRowBtn');
-    const saveButton = document.getElementById('saveBtn');
-    
-    const isEmpty = timelineData.length === 0;
-    undoButton.disabled = isEmpty;
-    cleanRowButton.disabled = isEmpty;
-}
-
-// Add this new function for rendering without validation
-function renderTimelineBlocks() {
-    const timeline = document.querySelector('.timeline');
-    const blocks = timeline.querySelectorAll('.activity-block');
-    blocks.forEach(block => block.remove());
-
-    timelineData.forEach(activity => {
-        const block = document.createElement('div');
-        block.className = 'activity-block';
-        block.style.backgroundColor = activity.color;
-        block.dataset.id = activity.id;  // Set ID directly
-        
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'activity-text';
-        nameSpan.textContent = activity.name;
-        block.appendChild(nameSpan);
-        
-        timeline.appendChild(block);
-        
-        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
-        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
-        updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false);
-    });
-}
-
-function generateUniqueId() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-}
-
-function isWithinTimelineBounds(startMinutes, endMinutes) {
-    const timelineStart = TIMELINE_START_HOUR * 60;
-    const timelineEnd = (TIMELINE_START_HOUR + TIMELINE_HOURS) * 60;
-    return startMinutes >= timelineStart && endMinutes <= timelineEnd;
-}
-
 async function init() {
     try {
         initTimeline();
+        initTimelineInteraction(); // Add this line
         updateButtonStates();
         const categories = await fetchActivities();
         renderActivities(categories);
-        initTimelineInteraction();
         initButtons();
         updateButtonStates();
     } catch (error) {

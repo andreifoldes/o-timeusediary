@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Use Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <style>
+        .target {
+            position: absolute;
+            width: 150px;
+            height: 50px;
+            background-color: #29e;
+            border-radius: 0.75rem;
+            box-sizing: border-box;
+            font-size: 1.5rem;
+            white-space: pre;
+            touch-action: none;
+            user-select: none;
+        }
+
+        #info {
+            padding: 0 0.125em;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        label {
+            position: fixed;
+            bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="400" style="border:1px solid #000;"></canvas>
+
+    <div>
+        <label>
+            Resize invert:
+            <select id="invert">
+                <option value="reposition">reposition</option>
+                <option value="negate">negate</option>
+                <option value="none">none</option>
+            </select>
+        </label>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const target = document.createElement('div');
+            target.className = 'target';
+            target.innerHTML = '<span id="info">Drag to resize</span>';
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+            document.body.appendChild(target);
+
+            const offset = { x: 0, y: 0 };
+
+            // Create snap points every 50 pixels
+            const snapTargets = [];
+            for (let i = 50; i <= 800; i += 50) {
+                snapTargets.push({ x: i });
+            }
+
+            interact(target).resizable({
+                edges: { left: true, right: true },
+                invert: 'reposition',
+                modifiers: [
+                    interact.modifiers.snap({
+                        targets: snapTargets,
+                        range: 20,
+                        relativePoints: [{ x: 0, y: 0 }]
+                    })
+                ],
+                listeners: {
+                    move: function (event) {
+                        const { width } = event.rect;
+                        offset.x += event.deltaRect.left;
+
+                        Object.assign(target.style, {
+                            width: `${width}px`,
+                            transform: `translate(${offset.x}px, 0px)`
+                        });
+
+                        target.querySelector('#info').textContent = `width: ${width}px`;
+                    }
+                }
+            });
+        });
+
+        interact('#invert').on('input change', function(event) {
+            interact('.target').resizable({ invert: event.target.value });
+        });
+    </script>
+</body>
+</html>
