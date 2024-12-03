@@ -1,11 +1,19 @@
 let selectedActivity = null;
 let timelineData = [];
-let activityHistory = [];  // Track individual activities for undo
+
 const MINUTES_PER_DAY = 24 * 60;
 const SNAP_MINUTES = 10;
 const DEFAULT_ACTIVITY_LENGTH = 10;
 const TIMELINE_START_HOUR = 4;
 const TIMELINE_HOURS = 24;
+
+const DEBUG_MODE = true; // Enable debug mode
+
+function logDebugInfo() {
+    if (DEBUG_MODE) {
+        console.log('timelineData:', timelineData);
+    }
+}
 
 async function fetchActivities() {
     try {
@@ -56,6 +64,20 @@ function renderActivities(categories) {
     });
 }
 
+function formatTimeDDMMYYYYHHMM(minutes) {
+    const date = new Date();
+    const h = Math.floor(minutes / 60) % 24;
+    const m = minutes % 60;
+    const isYesterday = h < TIMELINE_START_HOUR;
+    if (isYesterday) {
+        date.setDate(date.getDate() - 1);
+    }
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year} ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+}
+
 function formatTimeHHMM(minutes) {
     const h = Math.floor(minutes / 60) % 24;
     const m = minutes % 60;
@@ -92,21 +114,23 @@ function positionToMinutes(position, timelineWidth) {
 function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
     return timelineData.some(activity => {
         if (excludeBlock && activity === excludeBlock) return false;
-        const activityStart = timeToMinutes(activity.startTime);
-        const activityEnd = timeToMinutes(activity.endTime);
-        return (startMinutes < activityEnd && endMinutes > activityStart);
+        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
+        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
+        return (
+            (startMinutes < activityEnd && endMinutes > activityStart) || // Overlap
+            (startMinutes >= activityStart && endMinutes <= activityEnd) || // Inside
+            (startMinutes <= activityStart && endMinutes >= activityEnd) || // Covers
+            (startMinutes < activityEnd && endMinutes > activityStart) // Partial overlap
+        );
     });
 }
 
 function validateAndCleanActivities() {
-    // During undo operations, skip the filtering to prevent unwanted removals
-    if (!isUndoing) {
-        timelineData = timelineData.filter(activity => {
-            const startMinutes = timeToMinutes(activity.startTime);
-            const endMinutes = timeToMinutes(activity.endTime);
-            return startMinutes !== endMinutes;
-        });
-    }
+    timelineData = timelineData.filter(activity => {
+        const startMinutes = timeToMinutes(activity.startTime);
+        const endMinutes = timeToMinutes(activity.endTime);
+        return startMinutes !== endMinutes;
+    });
 
     timelineData.sort((a, b) => {
         const aStart = timeToMinutes(a.startTime);
@@ -132,15 +156,15 @@ function validateAndCleanActivities() {
         
         const startMinutes = timeToMinutes(activity.startTime);
         const endMinutes = timeToMinutes(activity.endTime);
-        updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false);
+        updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false, activity.id);
     });
 
     // Update undo button state
     const undoBtn = document.getElementById('undoBtn');
-    undoBtn.disabled = activityHistory.length === 0;
+    undoBtn.disabled = timelineData.length === 0;
 }
 
-function updateBlockDisplay(block, startMinutes, endMinutes, timelineWidth, showTimeLabel = false) {
+function updateBlockDisplay(block, startMinutes, endMinutes, timelineWidth, showTimeLabel = false, activityId = null) {
     const start = Math.min(startMinutes, endMinutes);
     const end = Math.max(startMinutes, endMinutes);
     const duration = end - start;
@@ -154,6 +178,11 @@ function updateBlockDisplay(block, startMinutes, endMinutes, timelineWidth, show
 
     block.style.left = `${leftPercent}%`;
     block.style.width = `${widthPercent}%`;
+
+    // Set the data-id attribute using the activity ID if provided
+    if (activityId) {
+        block.dataset.id = activityId;
+    }
 
     // Update time label
     let timeLabel = block.querySelector('.time-label');
@@ -177,6 +206,7 @@ function initTimelineInteraction() {
     const timeline = document.querySelector('.timeline');
     let isDrawing = false;
     let startX = 0;
+    let anchorX = 0;
     let currentBlock = null;
     let startMinutes = 0;
     let endMinutes = 0;
@@ -189,6 +219,7 @@ function initTimelineInteraction() {
         isDrawing = true;
         isDragging = false;
         startX = e.offsetX;
+        anchorX = startX;
         dragStartTime = Date.now();
         
         const timelineWidth = timeline.offsetWidth;
@@ -212,10 +243,11 @@ function initTimelineInteraction() {
         if (!isDrawing || !currentBlock) return;
 
         const timelineWidth = timeline.offsetWidth;
-        const currentMinutes = snapToGrid(positionToMinutes(e.offsetX, timelineWidth));
+        const currentX = e.offsetX;
+        const currentMinutes = snapToGrid(positionToMinutes(currentX, timelineWidth));
 
         // If mouse has moved significantly, consider it a drag
-        if (Math.abs(e.offsetX - startX) > 5) {
+        if (Math.abs(currentX - startX) > 5) {
             isDragging = true;
             endMinutes = currentMinutes;
             
@@ -253,29 +285,44 @@ function initTimelineInteraction() {
         const start = Math.min(startMinutes, endMinutes);
         const end = Math.max(startMinutes, endMinutes);
         
-        if (start === end || hasOverlap(start, end)) {
+        if (start === end || hasOverlap(start, end) || !isWithinTimelineBounds(start, end)) {
             currentBlock.remove();
             return;
         }
 
         const activityData = {
+            id: generateUniqueId(), // Add unique ID
             activity: selectedActivity.name,
-            startTime: formatTimeHHMM(start),
-            endTime: formatTimeHHMM(end),
+            startTime: formatTimeDDMMYYYYHHMM(start),
+            endTime: formatTimeDDMMYYYYHHMM(end),
             color: selectedActivity.color
         };
 
-        // Add activity to timeline and history
-        timelineData.push(activityData);
-        activityHistory.push({
-            type: 'add',
-            data: { ...activityData }
-        });
-        
+        // Check for duplicates before adding
+        const isDuplicate = timelineData.some(activity => 
+            activity.activity === activityData.activity &&
+            activity.startTime === activityData.startTime &&
+            activity.endTime === activityData.endTime &&
+            activity.color === activityData.color
+        );
+
+        if (!isDuplicate) {
+            // Add activity to timelineData
+            timelineData.push(activityData);
+            currentBlock.dataset.id = activityData.id;  // Set the ID on the block
+        }
+
+        updateButtonStates();
         currentBlock.classList.remove('preview');
         updateBlockDisplay(currentBlock, start, end, timelineWidth, false);
-        
-        validateAndCleanActivities();
+
+        if (DEBUG_MODE) {
+            console.log('Added activity:', activityData);
+            console.log('Current timelineData:', timelineData);
+        }
+
+        // Remove the unnecessary call to validateAndCleanActivities
+        // validateAndCleanActivities();
     });
 
     timeline.addEventListener('mouseleave', () => {
@@ -304,10 +351,13 @@ function initTimeline() {
         timeline.appendChild(marker);
 
         for (let j = 1; j < 6; j++) {
-            const minuteMarker = document.createElement('div');
-            minuteMarker.className = 'minute-marker';
-            minuteMarker.style.left = `${(i - 4 + j/6) * (100/24)}%`;
-            timeline.appendChild(minuteMarker);
+            const leftPosition = (i - 4 + j / 6) * (100 / 24);
+            if (leftPosition <= 100) {
+                const minuteMarker = document.createElement('div');
+                minuteMarker.className = 'minute-marker';
+                minuteMarker.style.left = `${leftPosition}%`;
+                timeline.appendChild(minuteMarker);
+            }
         }
     }
 }
@@ -315,55 +365,18 @@ function initTimeline() {
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        // Hard reset - clear everything regardless of current state
+        // Clear only the activity blocks from the timeline display
+        const timeline = document.getElementById('timeline');
+        const activityBlocks = timeline.querySelectorAll('.activity-block');
+        activityBlocks.forEach(block => block.remove());
+
+        // Empty the data arrays
         timelineData = [];
-        activityHistory = [];
-        
-        // Remove all blocks
-        const timeline = document.querySelector('.timeline');
-        const blocks = timeline.querySelectorAll('.activity-block');
-        blocks.forEach(block => block.remove());
-        
-        // Disable undo button
-        const undoBtn = document.getElementById('undoBtn');
-        undoBtn.disabled = true;
-    });
 
-    const undoBtn = document.getElementById('undoBtn');
-    undoBtn.addEventListener('click', () => {
-        if (activityHistory.length === 0) return;
+        // Update button states - this will disable both Clean Row and Undo buttons
+        updateButtonStates();
 
-        const lastAction = activityHistory.pop();
-        
-        if (lastAction.type === 'add') {
-            // Remove the last added activity
-            timelineData.pop();
-        }
-        
-        // Directly update display without validation
-        const timeline = document.querySelector('.timeline');
-        const blocks = timeline.querySelectorAll('.activity-block');
-        blocks.forEach(block => block.remove());
-
-        timelineData.forEach(activity => {
-            const block = document.createElement('div');
-            block.className = 'activity-block';
-            block.style.backgroundColor = activity.color;
-            
-            const nameSpan = document.createElement('div');
-            nameSpan.className = 'activity-text';
-            nameSpan.textContent = activity.name;
-            block.appendChild(nameSpan);
-            
-            timeline.appendChild(block);
-            
-            const startMinutes = timeToMinutes(activity.startTime);
-            const endMinutes = timeToMinutes(activity.endTime);
-            updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false);
-        });
-        
-        // Update undo button state
-        undoBtn.disabled = activityHistory.length === 0;
+        logDebugInfo(); // Log debug information
     });
 
     const saveBtn = document.getElementById('saveBtn');
@@ -383,15 +396,107 @@ function initButtons() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     });
+
+    // Single undo button implementation
+    document.getElementById('undoBtn').addEventListener('click', () => {
+        if (timelineData.length > 0) {
+            if (DEBUG_MODE) {
+                console.log('Before undo - timelineData length:', timelineData.length);
+                console.log('Current blocks:', document.querySelectorAll('.activity-block').length);
+            }
+
+            // Get and remove the last activity
+            const lastActivity = timelineData.pop();
+            
+            if (DEBUG_MODE) {
+                console.log('Removing activity:', lastActivity);
+                console.log('After pop - timelineData length:', timelineData.length);
+            }
+
+            // Remove the corresponding block
+            const timeline = document.querySelector('.timeline');
+            const blocks = timeline.querySelectorAll('.activity-block');
+            
+            if (DEBUG_MODE) {
+                blocks.forEach(block => {
+                    console.log('Block id:', block.dataset.id, 'Last activity id:', lastActivity.id);
+                });
+            }
+
+            blocks.forEach(block => {
+                if (block.dataset.id === lastActivity.id) {
+                    if (DEBUG_MODE) {
+                        console.log('Removing block with id:', lastActivity.id);
+                    }
+                    block.remove();
+                }
+            });
+
+            updateButtonStates();
+            
+            if (DEBUG_MODE) {
+                console.log('Final timelineData:', timelineData);
+                console.log('Remaining blocks:', document.querySelectorAll('.activity-block').length);
+            }
+        }
+    });
+}
+
+// Fix updateButtonStates to not return a random ID
+function updateButtonStates() {
+    const undoButton = document.getElementById('undoBtn');
+    const cleanRowButton = document.getElementById('cleanRowBtn');
+    const saveButton = document.getElementById('saveBtn');
+    
+    const isEmpty = timelineData.length === 0;
+    undoButton.disabled = isEmpty;
+    cleanRowButton.disabled = isEmpty;
+}
+
+// Add this new function for rendering without validation
+function renderTimelineBlocks() {
+    const timeline = document.querySelector('.timeline');
+    const blocks = timeline.querySelectorAll('.activity-block');
+    blocks.forEach(block => block.remove());
+
+    timelineData.forEach(activity => {
+        const block = document.createElement('div');
+        block.className = 'activity-block';
+        block.style.backgroundColor = activity.color;
+        block.dataset.id = activity.id;  // Set ID directly
+        
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'activity-text';
+        nameSpan.textContent = activity.name;
+        block.appendChild(nameSpan);
+        
+        timeline.appendChild(block);
+        
+        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
+        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+        updateBlockDisplay(block, startMinutes, endMinutes, timeline.offsetWidth, false);
+    });
+}
+
+function generateUniqueId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function isWithinTimelineBounds(startMinutes, endMinutes) {
+    const timelineStart = TIMELINE_START_HOUR * 60;
+    const timelineEnd = (TIMELINE_START_HOUR + TIMELINE_HOURS) * 60;
+    return startMinutes >= timelineStart && endMinutes <= timelineEnd;
 }
 
 async function init() {
     try {
         initTimeline();
+        updateButtonStates();
         const categories = await fetchActivities();
         renderActivities(categories);
         initTimelineInteraction();
         initButtons();
+        updateButtonStates();
     } catch (error) {
         console.error('Failed to initialize application:', error);
         document.getElementById('activitiesContainer').innerHTML = 
@@ -399,4 +504,5 @@ async function init() {
     }
 }
 
+// Make sure init() is called only once
 init();

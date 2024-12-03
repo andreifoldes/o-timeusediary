@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primary Activity</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-familyi: Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 20px;
             padding: 0;
         }
@@ -57,6 +60,7 @@
             font-size: 12px;
             color: #666;
             white-space: nowrap;
+            user-select: none; /* Make hour labels unselectable */
         }
 
         .activity-block {
@@ -81,6 +85,7 @@
             min-width: 1px;
             box-sizing: border-box;
             opacity: 1;
+            data-id: "";
         }
 
         .activity-block.preview {
@@ -184,7 +189,7 @@
         }
 
         .btn:disabled {
-            opacity: 0.5;
+            opacity: 0.3; /* More transparent */
             pointer-events: none;
         }
 
@@ -225,15 +230,15 @@
     </div>
 
     <div class="controls">
-        <button class="btn clean-row-btn" id="cleanRowBtn">
+        <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
             <i class="fas fa-trash-alt"></i>
             Clean Row
         </button>
-        <button class="btn undo-btn" id="undoBtn" disabled>
+        <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
             <i class="fas fa-undo"></i>
             Undo
         </button>
-        <button class="btn save-btn" id="saveBtn">
+        <button class="btn save-btn" id="saveBtn" data-is-active="true">
             <i class="fas fa-save"></i>
             Save Timeline
         </button>
@@ -241,8 +246,5 @@
 
     <div class="activities-container" id="activitiesContainer"></div>
     <script src="script.js"></script>
-    <script>
-        init();
-    </script>
 </body>
 </html>
