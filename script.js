@@ -312,8 +312,14 @@ function initTimelineInteraction() {
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
         const endPositionPercent = minutesToPercentage(endMinutes);
-        const blockWidth = endPositionPercent - startPositionPercent;
+        let blockWidth = endPositionPercent - startPositionPercent;
         
+        // Ensure fixed width for blocks created between 3:50 and 4:00
+        if (startMinutes >= 230 && startMinutes < 240) {
+            blockWidth = 0.694444;
+            currentBlock.style.left = '85.4167%';
+        }
+
         currentBlock.style.width = `${blockWidth}%`;
         currentBlock.style.left = `${startPositionPercent}%`;
         
@@ -360,6 +366,11 @@ function initTimelineInteraction() {
                         
                         let widthPercent = (event.rect.width / timelineWidth) * 100;
                         const leftPercent = parseFloat(target.style.left);
+                        
+                        // Prevent resizing past the right edge of the timeline
+                        if (leftPercent + widthPercent > 100) {
+                            widthPercent = 100 - leftPercent;
+                        }
                         
                         const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
                         // Round width to nearest 10 minutes
