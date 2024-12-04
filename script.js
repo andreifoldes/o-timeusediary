@@ -5,6 +5,7 @@ let selectedActivity = null;
 let timelineData = [];
 
 const MINUTES_PER_DAY = 24 * 60;
+// Update SNAP_MINUTES for 10-minute snapping
 const SNAP_MINUTES = 10;
 const DEFAULT_ACTIVITY_LENGTH = 10;
 const TIMELINE_START_HOUR = 4;
@@ -95,8 +96,9 @@ function timeToMinutes(timeStr) {
     return hours * 60 + minutes;
 }
 
+// Modify snapToGrid to always round up to the nearest 10 minutes
 function snapToGrid(minutes) {
-    return Math.round(minutes / SNAP_MINUTES) * SNAP_MINUTES;
+    return Math.ceil(minutes / SNAP_MINUTES) * SNAP_MINUTES;
 }
 
 function minutesToPercentage(minutes) {
@@ -162,28 +164,35 @@ function initTimeline() {
     }
 }
 
+// Modify generateSnapPoints to implement snapping hierarchy
 function generateSnapPoints() {
     const snapPoints = [];
     const timeline = document.querySelector('.timeline');
     const timelineWidth = timeline.offsetWidth;
 
-    // Add 10-minute interval snap points with increased strength
-    for (let i = 0; i <= TIMELINE_HOURS * 6; i++) {
-        const percentage = (i / (TIMELINE_HOURS * 6)) * 100;
-        snapPoints.push({
-            x: `${percentage}%`,
-            range: 10,
-            strength: 5 // Increased strength for stronger snapping
-        });
-    }
+    // Highest Priority: Snap to timeline ends
+    snapPoints.push(
+        { x: `0%`, range: 1, strength: 40 },   // Left end with highest strength
+        { x: `100%`, range: 1, strength: 30 }  // Right end with slightly lower strength
+    );
 
-    // Add hour markers with increased strength
-    for (let i = 0; i <= TIMELINE_HOURS; i++) {
+    // Medium Priority: Snap to hour markers
+    for (let i = 1; i <= TIMELINE_HOURS; i++) {
         const percentage = (i / TIMELINE_HOURS) * 100;
         snapPoints.push({
             x: `${percentage}%`,
-            range: 10, // Reduced range for tighter snapping
-            strength: 6 // Increased strength
+            range: 0.75, // Slightly larger range for hour markers
+            strength: 20 // Medium strength
+        });
+    }
+
+    // Lowest Priority: Snap to minute markers (every 10 minutes)
+    for (let i = 0; i <= TIMELINE_HOURS * 6; i++) { // 6 snaps per hour (every 10 minutes)
+        const percentage = (i * SNAP_MINUTES) / (TIMELINE_HOURS * 60) * 100;
+        snapPoints.push({
+            x: `${percentage}%`,
+            range: 0.5, // Smaller range for minute markers
+            strength: 15 // Lower strength for left grid
         });
     }
 
@@ -201,8 +210,8 @@ function generateSnapPoints() {
 
         // Add block edges with stronger snap
         snapPoints.push(
-            { x: `${leftPercent}%`, range: 10, strength: 5 },
-            { x: `${rightPercent}%`, range: 10, strength: 5 }
+            { x: `${leftPercent}%`, range: 0.5, strength: 25 }, // Higher strength for left block edges
+            { x: `${rightPercent}%`, range: 0.5, strength: 15 } // Lower strength for right block edges
         );
     });
 
@@ -286,23 +295,30 @@ function canPlaceActivity(newStart, newEnd, excludeId = null) {
 }
 
 function initTimelineInteraction() {
-    const timeline = document.querySelector('.timeline');
+    const timeline = document.querySelector('.timeline'); // Changed from getElementById to querySelector for consistency
     let currentBlock = null;
     
-    timeline.addEventListener('mousedown', (e) => {
+    timeline.addEventListener('click', (e) => { // Changed from 'mousedown' to 'click' for single-click action
         if (!selectedActivity || e.target.closest('.activity-block')) return;
 
         const rect = timeline.getBoundingClientRect();
         const x = e.clientX - rect.left;
+
+        // Clamp x within timeline bounds
+        const clampedX = Math.max(0, Math.min(x, rect.width));
         
-        const clickPositionPercent = (x / rect.width) * 100;
+        const clickPositionPercent = (clampedX / rect.width) * 100;
         const snappedPosition = findNearestSnapPoint(clickPositionPercent, generateSnapPoints());
-        const startMinutes = snapToGrid(positionToMinutes(snappedPosition));
+
+        // Validate snappedPosition
+        const validSnappedPosition = !isNaN(parseFloat(snappedPosition)) ? parseFloat(snappedPosition) : clickPositionPercent;
+
+        const startMinutes = positionToMinutes(validSnappedPosition); // Ensure validSnappedPosition is used
         const endMinutes = startMinutes + DEFAULT_ACTIVITY_LENGTH;
 
-        // Validation: Check for overlap
-        if (!canPlaceActivity(startMinutes, endMinutes)) {
-            alert('Cannot place activity here due to overlap with an existing activity.');
+        // Validation: Check for overlap and valid minutes
+        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes)) {
+            alert('Cannot place activity here due to invalid position or overlap with an existing activity.');
             return;
         }
 
@@ -315,15 +331,16 @@ function initTimelineInteraction() {
         const percentPerMinute = 100 / (TIMELINE_HOURS * 60);
         const initialWidthPercent = percentPerMinute * DEFAULT_ACTIVITY_LENGTH;
         currentBlock.style.width = `${initialWidthPercent}%`;
-        currentBlock.style.left = `${snappedPosition}%`;
+        currentBlock.style.left = `${validSnappedPosition}%`; // Position block where the mouse was clicked
         
-        // Add resize handles
-        const leftHandle = document.createElement('div');
-        leftHandle.className = 'resize-handle left';
+        // <!-- Remove left resize handle creation -->
+        // const leftHandle = document.createElement('div');
+        // leftHandle.className = 'resize-handle left';
+        // currentBlock.appendChild(leftHandle);
+
+        // Add only right resize handle
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
-        
-        currentBlock.appendChild(leftHandle);
         currentBlock.appendChild(rightHandle);
         timeline.appendChild(currentBlock);
 
@@ -345,19 +362,21 @@ function initTimelineInteraction() {
         // Update button states
         updateButtonStates();
 
-        // Setup interact.js resizable and draggable
+        // Setup interact.js resizable
         interact(currentBlock)
             .resizable({
-                edges: { left: true, right: true, bottom: false, top: false },
-                invert: 'reposition',
+                edges: { right: true },
                 modifiers: [
                     interact.modifiers.restrictEdges({
-                        outer: 'parent'
+                        outer: 'parent',
+                        endOnly: true
+                    }),
+                    interact.modifiers.restrictSize({
+                        min: { width: (DEFAULT_ACTIVITY_LENGTH / (TIMELINE_HOURS * 60)) * 100 }
                     }),
                     interact.modifiers.snap({
                         targets: generateSnapPoints(),
-                        range: 10, // Adjusted range for stronger snapping
-                        relativePoints: [{ x: 0, y: 0 }],
+                        range: 0.75,
                         endOnly: true
                     })
                 ],
@@ -366,143 +385,55 @@ function initTimelineInteraction() {
                         event.target.classList.add('resizing');
                     },
                     move(event) {
-                        const timeline = document.querySelector('.timeline');
-                        const timelineWidth = timeline.offsetWidth;
-                        const { width, left } = event.rect;
-                        
-                        // Convert width and left from pixels to percentage
-                        const widthPercent = (width / timelineWidth) * 100;
-                        const leftPercent = (left / timelineWidth) * 100;
-                        
-                        // Calculate new start and end minutes
-                        const newStartMinutes = snapToGrid((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                        const newEndMinutes = newStartMinutes + snapToGrid((widthPercent / 100) * TIMELINE_HOURS * 60);
-                        
-                        // Validation: Check for overlap
-                        const blockId = event.target.dataset.id;
-                        if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
-                            // Revert to previous size and position
-                            event.target.style.width = `${parseFloat(event.target.style.width)}%`;
-                            event.target.style.left = `${parseFloat(event.target.style.left)}%`;
-                            return;
-                        }
-
-                        event.target.style.width = `${widthPercent}%`;
-                        event.target.style.left = `${leftPercent}%`;
-
-                        // Update time label
-                        const timeLabel = event.target.querySelector('.time-label');
-                        if (timeLabel) {
-                            updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
-                        }
-                    },
-                    end(event) {
-                        event.target.classList.remove('resizing');
-                        // Update timelineData with new times
-                        const blockId = event.target.dataset.id;
-                        const blockData = timelineData.find(activity => activity.id === blockId);
-                        if (blockData) {
-                            const newStartMinutes = snapToGrid((parseFloat(event.target.style.left) / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                            const newWidthPercent = parseFloat(event.target.style.width);
-                            const newEndMinutes = snapToGrid(newStartMinutes + (newWidthPercent / 100) * TIMELINE_HOURS * 60);
-                            
-                            // Validation: Ensure no overlap after resize
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
-                                alert('Resizing causes overlap with an existing activity. Reverting changes.');
-                                // Revert to previous state
-                                // (Implement logic to store and revert previous state if necessary)
-                                return;
-                            }
-
-                            blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
-                            blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
-                        }
-                        // Regenerate snap points after resize
-                        interact(event.target).resizable({
-                            modifiers: [
-                                interact.modifiers.snap({
-                                    targets: generateSnapPoints(),
-                                    range: 10, // Adjusted range for stronger snapping
-                                    relativePoints: [{ x: 0, y: 0 }],
-                                    endOnly: true
-                                })
-                            ]
-                        });
-                    }
-                }
-            })
-            .draggable({
-                listeners: {
-                    start(event) {
-                        event.target.classList.add('dragging');
-                    },
-                    move(event) {
                         const target = event.target;
                         const timeline = document.querySelector('.timeline');
                         const timelineWidth = timeline.offsetWidth;
-                        const dxPercent = (event.dx / timelineWidth) * 100;
-                        let newLeft = parseFloat(target.style.left) + dxPercent;
-                        const widthPercent = parseFloat(target.style.width);
-
-                        // Calculate new start and end minutes
-                        const newStartMinutes = snapToGrid((newLeft / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                        const newEndMinutes = snapToGrid(newStartMinutes + (widthPercent / 100) * TIMELINE_HOURS * 60);
-
-                        // Validation: Check for overlap
+                        
+                        // Calculate width in percentage
+                        let widthPercent = (event.rect.width / timelineWidth) * 100;
+                        const leftPercent = parseFloat(target.style.left);
+                        
+                        // Convert width to minutes
+                        const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
+                        // Snap to nearest 10-minute increment
+                        const snappedMinutes = Math.round(widthInMinutes / DEFAULT_ACTIVITY_LENGTH) * DEFAULT_ACTIVITY_LENGTH;
+                        // Convert back to percentage
+                        widthPercent = (snappedMinutes / (TIMELINE_HOURS * 60)) * 100;
+                        
+                        // Calculate times
+                        const newStartMinutes = snapToGrid((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                        const newEndMinutes = snapToGrid(newStartMinutes + snappedMinutes);
+                        
+                        // Validation
                         const blockId = target.dataset.id;
                         if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
-                            // Revert to previous position
-                            newLeft = parseFloat(target.style.left) - dxPercent;
-                            target.style.left = `${newLeft}%`;
                             return;
                         }
 
-                        // Ensure newLeft is within bounds
-                        newLeft = Math.max(0, Math.min(newLeft, 100 - widthPercent));
-                        target.style.left = `${newLeft}%`;
-
-                        // Update time label
+                        // Update width
+                        target.style.width = `${widthPercent}%`;
+                        
+                        // Update label
                         const timeLabel = target.querySelector('.time-label');
                         if (timeLabel) {
                             updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
                         }
                     },
                     end(event) {
-                        event.target.classList.remove('dragging');
-                        // Update timelineData with new times
+                        event.target.classList.remove('resizing');
                         const blockId = event.target.dataset.id;
                         const blockData = timelineData.find(activity => activity.id === blockId);
                         if (blockData) {
-                            const newLeftPercent = parseFloat(event.target.style.left);
-                            const newWidthPercent = parseFloat(event.target.style.width);
-                            const newStartMinutes = snapToGrid((newLeftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                            const newEndMinutes = snapToGrid(newStartMinutes + (newWidthPercent / 100) * TIMELINE_HOURS * 60);
-
-                            // Validation: Ensure no overlap after drag
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
-                                alert('Dragging causes overlap with an existing activity. Reverting changes.');
-                                // Revert to previous state
-                                // (Implement logic to store and revert previous state if necessary)
-                                return;
-                            }
-
+                            const leftPercent = parseFloat(event.target.style.left);
+                            const widthPercent = parseFloat(event.target.style.width);
+                            const newStartMinutes = snapToGrid((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const newEndMinutes = snapToGrid(newStartMinutes + (widthPercent / 100) * TIMELINE_HOURS * 60);
+                            
                             blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
                             blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
                         }
                     }
-                },
-                modifiers: [
-                    interact.modifiers.restrictRect({
-                        restriction: 'parent',
-                        endOnly: true
-                    }),
-                    interact.modifiers.snap({
-                        targets: generateSnapPoints(),
-                        range: 10, // Adjusted range for stronger snapping
-                        relativePoints: [{ x: 0, y: 0 }],
-                        endOnly: false // Changed from true to false to enable snapping during dragging
-                    })
-                ]
+                }
             });
     });
 }
@@ -513,23 +444,33 @@ function updateButtonStates() {
     const saveButton = document.getElementById('saveBtn');
     
     const isEmpty = timelineData.length === 0;
-    undoButton.disabled = isEmpty;
-    cleanRowButton.disabled = isEmpty;
+    if (undoButton) {
+        undoButton.disabled = isEmpty;
+    }
+    if (cleanRowButton) {
+        cleanRowButton.disabled = isEmpty;
+    }
+    if (saveButton) {
+        saveButton.disabled = isEmpty;
+    }
 }
 
 function generateUniqueId() {
     return '_' + Math.random().toString(36).substr(2, 9);
 }
 
+// Modify findNearestSnapPoint to prioritize higher strength snaps
 function findNearestSnapPoint(position, snapPoints) {
-    return snapPoints.reduce((nearest, point) => {
+    // Sort snapPoints by strength descending
+    const sortedSnapPoints = snapPoints.sort((a, b) => b.strength - a.strength);
+    for (let point of sortedSnapPoints) {
         const pointX = parseFloat(point.x);
         const distance = Math.abs(pointX - position);
-        if (distance < point.range && (!nearest || distance < Math.abs(nearest.x - position))) {
-            return { x: pointX, strength: point.strength };
+        if (distance <= point.range) {
+            return point.x;
         }
-        return nearest;
-    }, null)?.x || position;
+    }
+    return position;
 }
 
 function initButtons() {
