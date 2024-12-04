@@ -19,17 +19,18 @@ function logDebugInfo() {
     }
 }
 
-async function fetchActivities() {
+// Modify the fetchActivities function to accept a string parameter that selects which top-level tree to import
+async function fetchActivities(type) {
     try {
-        const response = await fetch('primary_activities.json');
+        const response = await fetch('activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (!data || !data.categories) {
-            throw new Error('Invalid JSON structure');
+        if (!data || !data[type] || !data[type].categories) {
+            throw new Error('Invalid JSON structure or type not found');
         }
-        return data.categories;
+        return data[type].categories;
     } catch (error) {
         console.error('Error loading activities:', error);
         throw error;
@@ -555,12 +556,13 @@ function initButtons() {
     });
 }
 
+// Modify the init function to pass the desired type to fetchActivities
 async function init() {
     try {
         initTimeline();
         initTimelineInteraction(); // Add this line
         updateButtonStates();
-        const categories = await fetchActivities();
+        const categories = await fetchActivities('primary'); // Pass the desired type here
         renderActivities(categories);
         initButtons();
         updateButtonStates();
