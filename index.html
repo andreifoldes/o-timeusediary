@@ -267,6 +267,22 @@
         .next-btn:hover:not(:disabled) {
             background-color: #0069d9; /* Darker blue on hover */
         }
+
+        /* Debug overlay styles */
+        .debug-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -276,34 +292,29 @@
         <div class="timeline" id="timeline"></div>
     </div>
 
-    <div class="gradient-bar"></div> <!-- Add this line for the gradient bar -->
+    <div class="gradient-bar"></div>
 
     <div class="controls">
-        <!-- Back Button -->
         <button class="btn back-btn" id="backBtn" data-is-active="false" disabled>
             <i class="fas fa-arrow-left"></i>
             Back
         </button>
 
-        <!-- Clean Row Button -->
         <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
             <i class="fas fa-trash-alt"></i>
             Clean Row
         </button>
 
-        <!-- Undo Button -->
         <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
             <i class="fas fa-undo"></i>
             Undo
         </button>
 
-        <!-- Next Button -->
         <button class="btn next-btn" id="nextBtn" data-is-active="false" disabled>
             <i class="fas fa-arrow-right"></i>
             Next
         </button>
 
-        <!-- Save Button (Temporarily Hidden) -->
         <button class="btn save-btn" id="saveBtn" data-is-active="true" style="display: none;">
             <i class="fas fa-save"></i>
             Save Timeline
@@ -311,6 +322,10 @@
     </div>
 
     <div class="activities-container" id="activitiesContainer"></div>
+    
+    <!-- Debug overlay element -->
+    <div id="debugOverlay" class="debug-overlay"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="script.js"></script>
 </body>
