@@ -84,6 +84,7 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
             margin-top: 20px;
+            align-items: start; /* Ensures cards adjust height based on content */
         }
 
         .activity-category {
@@ -92,6 +93,7 @@
             border-radius: 8px;
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow-y: auto; /* Enable vertical scrolling if content exceeds container height */
         }
 
         .activity-category h3 {
@@ -230,6 +232,7 @@
             top: 0;
             bottom: 0;
             cursor: col-resize;
+            z-index: 15; /* Added to ensure resize handles are interactable */
         }
 
         .activity-block .resize-handle.left {
@@ -246,6 +249,24 @@
             background: linear-gradient(to right, #fde725, #5ec962, #21918c, #3b528b, #440154); /* Reversed Viridis gradient */
             margin: 10px 0; /* Adjust the margin as needed */
         }
+
+        /* Style for Back Button */
+        .back-btn {
+            background-color: #007bff; /* Blue background */
+        }
+        
+        .back-btn:hover:not(:disabled) {
+            background-color: #0069d9; /* Darker blue on hover */
+        }
+        
+        /* Style for Next Button */
+        .next-btn {
+            background-color: #007bff; /* Blue background */
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background-color: #0069d9; /* Darker blue on hover */
+        }
     </style>
 </head>
 <body>
@@ -258,15 +279,32 @@
     <div class="gradient-bar"></div> <!-- Add this line for the gradient bar -->
 
     <div class="controls">
+        <!-- Back Button -->
+        <button class="btn back-btn" id="backBtn" data-is-active="false" disabled>
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </button>
+
+        <!-- Clean Row Button -->
         <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
             <i class="fas fa-trash-alt"></i>
             Clean Row
         </button>
+
+        <!-- Undo Button -->
         <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
             <i class="fas fa-undo"></i>
             Undo
         </button>
-        <button class="btn save-btn" id="saveBtn" data-is-active="true">
+
+        <!-- Next Button -->
+        <button class="btn next-btn" id="nextBtn" data-is-active="false" disabled>
+            <i class="fas fa-arrow-right"></i>
+            Next
+        </button>
+
+        <!-- Save Button (Temporarily Hidden) -->
+        <button class="btn save-btn" id="saveBtn" data-is-active="true" style="display: none;">
             <i class="fas fa-save"></i>
             Save Timeline
         </button>
