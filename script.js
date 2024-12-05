@@ -2,7 +2,12 @@
 // import interact from 'https://cdn.interactjs.io/v1.10.27/interactjs/index.js';
 
 let selectedActivity = null;
-let timelineData = [];
+let timelineData = {
+    primary: [],
+    secondary: []
+}; // Hierarchical structure for both timelines
+let isSecondaryMode = false;
+let activeTimeline = null; // Track the active timeline
 
 const MINUTES_PER_DAY = 24 * 60;
 const INCREMENT_MINUTES = 10;
@@ -11,6 +16,73 @@ const TIMELINE_START_HOUR = 4;
 const TIMELINE_HOURS = 24;
 
 const DEBUG_MODE = true; // Enable debug mode
+
+// Function to generate unique IDs for activity blocks
+function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Function to get the current timeline's data array
+function getCurrentTimelineData() {
+    return isSecondaryMode ? timelineData.secondary : timelineData.primary;
+}
+
+// Function to switch to secondary mode
+async function switchToSecondaryMode() {
+    if (DEBUG_MODE) {
+        console.log('Primary timeline data saved:', timelineData.primary);
+    }
+
+    // Update UI for secondary mode
+    document.querySelector('.timeline-title').textContent = 'Secondary Activity';
+    document.title = 'Secondary Activity';
+
+    // Make primary timeline non-interactable by adding opacity
+    const primaryTimelineContainer = document.querySelector('.timeline-container');
+    primaryTimelineContainer.style.opacity = '0.6';
+    primaryTimelineContainer.style.pointerEvents = 'none';
+    primaryTimelineContainer.querySelector('.timeline').setAttribute('data-active', 'false');
+
+    // Create a new timeline container for secondary activities
+    const newTimelineContainer = primaryTimelineContainer.cloneNode(true);
+    newTimelineContainer.style.opacity = '1';
+    newTimelineContainer.style.pointerEvents = 'auto';
+    
+    // Clear any activity blocks from the cloned timeline
+    const activityBlocks = newTimelineContainer.querySelectorAll('.activity-block');
+    activityBlocks.forEach(block => block.remove());
+    
+    primaryTimelineContainer.parentNode.insertBefore(newTimelineContainer, primaryTimelineContainer.nextSibling);
+
+    // Update timeline IDs and set active state
+    const primaryTimeline = primaryTimelineContainer.querySelector('.timeline');
+    primaryTimeline.id = 'primaryTimeline';
+    
+    const newTimeline = newTimelineContainer.querySelector('.timeline');
+    newTimeline.id = 'timeline';
+    newTimeline.setAttribute('data-active', 'true');
+    
+    // Update active timeline reference
+    activeTimeline = newTimeline;
+
+    // Set secondary mode flag
+    isSecondaryMode = true;
+
+    // Load secondary activities
+    const categories = await fetchActivities('secondary');
+    renderActivities(categories);
+
+    // Initialize interaction for the new timeline
+    initTimelineInteraction(newTimeline);
+
+    // Reset button states
+    updateButtonStates();
+
+    if (DEBUG_MODE) {
+        console.log('Switched to secondary mode');
+        console.log('Timeline data structure:', timelineData);
+    }
+}
 
 function formatTimeDDMMYYYYHHMM(minutes) {
     const date = new Date();
@@ -42,7 +114,6 @@ function timeToMinutes(timeStr) {
     return hours * 60 + minutes;
 }
 
-// Find the nearest 10-minute markers for a given time
 function findNearestMarkers(minutes) {
     const hourMinutes = Math.floor(minutes / 60) * 60;
     const minutePart = minutes % 60;
@@ -72,8 +143,12 @@ function positionToMinutes(positionPercent) {
     return totalMinutes;
 }
 
+function calculateMinimumBlockWidth() {
+    return (INCREMENT_MINUTES / (TIMELINE_HOURS * 60)) * 100;
+}
+
 function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
-    return timelineData.some(activity => {
+    return getCurrentTimelineData().some(activity => {
         if (excludeBlock && activity === excludeBlock) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
@@ -167,6 +242,8 @@ function renderActivities(categories) {
 
 function initTimeline() {
     const timeline = document.getElementById('timeline');
+    timeline.setAttribute('data-active', 'true');
+    activeTimeline = timeline;
     
     for (let i = 4; i <= 28; i++) {
         const hour = i % 24;
@@ -240,7 +317,8 @@ function createTimeLabel(block) {
     
     block.appendChild(label);
     
-    const existingLabels = document.querySelectorAll('.time-label');
+    // Only look for labels within the active timeline
+    const existingLabels = activeTimeline.querySelectorAll('.time-label');
     existingLabels.forEach(existingLabel => {
         if (existingLabel !== label && isOverlapping(existingLabel, label)) {
             label.style.bottom = 'auto';
@@ -257,7 +335,8 @@ function updateTimeLabel(label, startTime, endTime) {
     label.style.bottom = '-20px';
     label.style.top = 'auto';
     
-    const existingLabels = document.querySelectorAll('.time-label');
+    // Only look for labels within the active timeline
+    const existingLabels = activeTimeline.querySelectorAll('.time-label');
     existingLabels.forEach(existingLabel => {
         if (existingLabel !== label && isOverlapping(existingLabel, label)) {
             label.style.bottom = 'auto';
@@ -267,7 +346,7 @@ function updateTimeLabel(label, startTime, endTime) {
 }
 
 function canPlaceActivity(newStart, newEnd, excludeId = null) {
-    return !timelineData.some(activity => {
+    return !getCurrentTimelineData().some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
@@ -275,14 +354,65 @@ function canPlaceActivity(newStart, newEnd, excludeId = null) {
     });
 }
 
-function initTimelineInteraction() {
-    const timeline = document.querySelector('.timeline');
-    let currentBlock = null;
-    
-    timeline.addEventListener('click', (e) => {
-        if (!selectedActivity || e.target.closest('.activity-block')) return;
+function isTimelineFull() {
+    const currentData = getCurrentTimelineData();
+    if (currentData.length === 0) return false;
 
-        const rect = timeline.getBoundingClientRect();
+    // Timeline starts at TIMELINE_START_HOUR and spans TIMELINE_HOURS hours
+    const timelineStart = TIMELINE_START_HOUR * 60; // Start time in minutes
+    const totalTimelineMinutes = TIMELINE_HOURS * 60; // Total minutes in the timeline
+    
+    // Array representing each minute in the timeline
+    const timelineCoverage = new Array(totalTimelineMinutes).fill(false);
+
+    // Mark the minutes that are covered by activities
+    currentData.forEach(activity => {
+        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
+        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+
+        // Adjust times relative to timeline start
+        let relativeStart = (startMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        let relativeEnd = (endMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+
+        // Handle wrap-around at midnight
+        if (relativeEnd <= relativeStart) {
+            relativeEnd += MINUTES_PER_DAY;
+        }
+
+        for (let i = relativeStart; i < relativeEnd; i++) {
+            const index = i % totalTimelineMinutes;
+            timelineCoverage[index] = true;
+        }
+    });
+
+    // Calculate covered minutes
+    const coveredMinutes = timelineCoverage.filter(covered => covered).length;
+    const coveragePercentage = (coveredMinutes / totalTimelineMinutes) * 100;
+
+    if (DEBUG_MODE) {
+        console.log(`Timeline coverage: ${coveragePercentage.toFixed(2)}%`);
+    }
+
+    return coveredMinutes === totalTimelineMinutes;
+}
+
+function initTimelineInteraction(timeline = null) {
+    // If no timeline is provided, use the active timeline
+    const targetTimeline = timeline || activeTimeline;
+    if (!targetTimeline) return;
+    
+    targetTimeline.addEventListener('click', (e) => {
+        // Only process clicks on the active timeline
+        if (targetTimeline.getAttribute('data-active') !== 'true') return;
+        
+        if (!selectedActivity || e.target.closest('.activity-block')) return;
+        
+        if (isTimelineFull()) {
+            alert('Timeline is full. Remove some activities first.');
+            return;
+        }
+
+        const rect = targetTimeline.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const clampedX = Math.max(0, Math.min(x, rect.width));
         const clickPositionPercent = (clampedX / rect.width) * 100;
@@ -304,7 +434,7 @@ function initTimelineInteraction() {
             return;
         }
 
-        currentBlock = document.createElement('div');
+        const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
         currentBlock.style.backgroundColor = selectedActivity.color;
         currentBlock.textContent = selectedActivity.name;
@@ -312,7 +442,7 @@ function initTimelineInteraction() {
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
         const endPositionPercent = minutesToPercentage(endMinutes);
-        let blockWidth = endPositionPercent - startPositionPercent;
+        let blockWidth = Math.max(endPositionPercent - startPositionPercent, calculateMinimumBlockWidth());
         
         // Ensure fixed width for blocks created between 3:50 and 4:00
         if (startMinutes >= 230 && startMinutes < 240) {
@@ -326,7 +456,7 @@ function initTimelineInteraction() {
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
         currentBlock.appendChild(rightHandle);
-        timeline.appendChild(currentBlock);
+        targetTimeline.appendChild(currentBlock);
 
         const timeLabel = createTimeLabel(currentBlock);
         updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
@@ -338,7 +468,7 @@ function initTimelineInteraction() {
             endTime: formatTimeDDMMYYYYHHMM(endMinutes),
             color: selectedActivity.color
         };
-        timelineData.push(activityData);
+        getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
 
         updateButtonStates();
@@ -352,7 +482,8 @@ function initTimelineInteraction() {
                         endOnly: true
                     }),
                     interact.modifiers.restrictSize({
-                        min: { width: (INCREMENT_MINUTES / (TIMELINE_HOURS * 60)) * 100 }
+                        min: { width: calculateMinimumBlockWidth() * targetTimeline.offsetWidth / 100 },
+                        max: { width: targetTimeline.offsetWidth }
                     })
                 ],
                 listeners: {
@@ -361,11 +492,13 @@ function initTimelineInteraction() {
                     },
                     move(event) {
                         const target = event.target;
-                        const timeline = document.querySelector('.timeline');
-                        const timelineWidth = timeline.offsetWidth;
+                        const timelineWidth = targetTimeline.offsetWidth;
                         
                         let widthPercent = (event.rect.width / timelineWidth) * 100;
                         const leftPercent = parseFloat(target.style.left);
+                        
+                        // Enforce minimum width
+                        widthPercent = Math.max(widthPercent, calculateMinimumBlockWidth());
                         
                         // Prevent resizing past the right edge of the timeline
                         if (leftPercent + widthPercent > 100) {
@@ -395,7 +528,7 @@ function initTimelineInteraction() {
                     end(event) {
                         event.target.classList.remove('resizing');
                         const blockId = event.target.dataset.id;
-                        const blockData = timelineData.find(activity => activity.id === blockId);
+                        const blockData = getCurrentTimelineData().find(activity => activity.id === blockId);
                         if (blockData) {
                             const leftPercent = parseFloat(event.target.style.left);
                             const widthPercent = parseFloat(event.target.style.width);
@@ -406,6 +539,9 @@ function initTimelineInteraction() {
                             
                             blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
                             blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
+                            
+                            // Check timeline fullness after resizing
+                            updateButtonStates();
                         }
                     }
                 }
@@ -417,43 +553,49 @@ function updateButtonStates() {
     const undoButton = document.getElementById('undoBtn');
     const cleanRowButton = document.getElementById('cleanRowBtn');
     const saveButton = document.getElementById('saveBtn');
+    const nextButton = document.getElementById('nextBtn');
     
-    const isEmpty = timelineData.length === 0;
-    if (undoButton) {
-        undoButton.disabled = isEmpty;
+    const currentData = getCurrentTimelineData();
+    const isEmpty = currentData.length === 0;
+    const isFull = isTimelineFull();
+    
+    if (undoButton) undoButton.disabled = isEmpty;
+    if (cleanRowButton) cleanRowButton.disabled = isEmpty;
+    if (saveButton) saveButton.disabled = isEmpty;
+    if (nextButton) nextButton.disabled = !isFull;
+    
+    if (DEBUG_MODE && isFull) {
+        console.log('Next button enabled - Timeline is complete');
     }
-    if (cleanRowButton) {
-        cleanRowButton.disabled = isEmpty;
-    }
-    if (saveButton) {
-        saveButton.disabled = isEmpty;
-    }
-}
-
-function generateUniqueId() {
-    return '_' + Math.random().toString(36).substr(2, 9);
 }
 
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        if (timelineData.length > 0) {
-            const timeline = document.getElementById('timeline');
-            const activityBlocks = timeline.querySelectorAll('.activity-block');
+        const currentData = getCurrentTimelineData();
+        if (currentData.length > 0) {
+            const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
-            timelineData = [];
+            if (isSecondaryMode) {
+                timelineData.secondary = [];
+            } else {
+                timelineData.primary = [];
+            }
 
             updateButtonStates();
 
-            logDebugInfo();
+            if (DEBUG_MODE) {
+                console.log('Timeline data after clean:', timelineData);
+            }
         }
     });
 
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.addEventListener('click', () => {
         const jsonData = {
-            activities: timelineData
+            primary: timelineData.primary,
+            secondary: timelineData.secondary
         };
 
         const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
@@ -469,21 +611,19 @@ function initButtons() {
     });
 
     document.getElementById('undoBtn').addEventListener('click', () => {
-        if (timelineData.length > 0) {
+        const currentData = getCurrentTimelineData();
+        if (currentData.length > 0) {
             if (DEBUG_MODE) {
-                console.log('Before undo - timelineData length:', timelineData.length);
-                console.log('Current blocks:', document.querySelectorAll('.activity-block').length);
+                console.log('Before undo - timelineData:', timelineData);
             }
 
-            const lastActivity = timelineData.pop();
+            const lastActivity = currentData.pop();
             
             if (DEBUG_MODE) {
                 console.log('Removing activity:', lastActivity);
-                console.log('After pop - timelineData length:', timelineData.length);
             }
 
-            const timeline = document.querySelector('.timeline');
-            const blocks = timeline.querySelectorAll('.activity-block');
+            const blocks = activeTimeline.querySelectorAll('.activity-block');
             
             if (DEBUG_MODE) {
                 blocks.forEach(block => {
@@ -504,8 +644,17 @@ function initButtons() {
             
             if (DEBUG_MODE) {
                 console.log('Final timelineData:', timelineData);
-                console.log('Remaining blocks:', document.querySelectorAll('.activity-block').length);
             }
+        }
+    });
+
+    // Add click handler for Next button
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        if (!isSecondaryMode) {
+            // Switch to secondary mode
+            switchToSecondaryMode();
+        } else {
+            console.log('Secondary timeline complete');
         }
     });
 }
