@@ -562,10 +562,13 @@ function updateButtonStates() {
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     if (saveButton) saveButton.disabled = isEmpty;
-    if (nextButton) nextButton.disabled = !isFull;
+    
+    // In secondary mode, Next button is always enabled
+    // In primary mode, Next button is enabled only when timeline is full
+    if (nextButton) nextButton.disabled = !isSecondaryMode && !isFull;
     
     if (DEBUG_MODE && isFull) {
-        console.log('Next button enabled - Timeline is complete');
+        console.log('Timeline is complete');
     }
 }
 
