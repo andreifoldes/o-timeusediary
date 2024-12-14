@@ -99,10 +99,10 @@
 
             .hour-marker .hour-label {
                 top: 50%;
-                left: -25px;
+                left: -35px;
                 transform: translateY(-50%);
                 text-align: right;
-                width: 20px;
+                width: 25px;
             }
 
             .minute-marker {
@@ -314,12 +314,13 @@
         @media (max-width: 1023px) {
             .gradient-bar {
                 position: absolute;
-                left: -15px;
-                top: 0;
+                left: -20px;
+                top: 5px;
                 width: 10px;
-                height: 100%;
+                height: calc(100% - 10px);
                 background: linear-gradient(to bottom, #fde725, #5ec962, #21918c, #3b528b, #440154);
                 margin: 0;
+                border-radius: 4px;
             }
         }
 
