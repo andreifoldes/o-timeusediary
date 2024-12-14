@@ -245,12 +245,20 @@ function initTimeline() {
     timeline.setAttribute('data-active', 'true');
     activeTimeline = timeline;
     
+    const isMobile = window.innerWidth < 768;
+    timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
+    
     for (let i = 4; i <= 28; i++) {
         const hour = i % 24;
         
         const marker = document.createElement('div');
         marker.className = 'hour-marker';
-        marker.style.left = `${(i - 4) * (100/24)}%`;
+        
+        if (isMobile) {
+            marker.style.top = `${(i - 4) * (100/24)}%`;
+        } else {
+            marker.style.left = `${(i - 4) * (100/24)}%`;
+        }
         
         const label = document.createElement('div');
         label.className = 'hour-label';
@@ -259,8 +267,8 @@ function initTimeline() {
         timeline.appendChild(marker);
 
         for (let j = 1; j < 6; j++) {
-            const leftPosition = (i - 4 + j / 6) * (100 / 24);
-            if (leftPosition <= 100) {
+            const position = (i - 4 + j / 6) * (100 / 24);
+            if (position <= 100) {
                 const minuteMarker = document.createElement('div');
                 minuteMarker.className = 'minute-marker';
                 
@@ -268,7 +276,12 @@ function initTimeline() {
                     minuteMarker.classList.add('minute-marker-30');
                 }
                 
-                minuteMarker.style.left = `${leftPosition}%`;
+                if (isMobile) {
+                    minuteMarker.style.top = `${position}%`;
+                } else {
+                    minuteMarker.style.left = `${position}%`;
+                }
+                
                 timeline.appendChild(minuteMarker);
             }
         }
