@@ -8,7 +8,14 @@ class TimelineMarker {
 
     create(timeline, isMobile) {
         this.element = document.createElement('div');
-        this.element.className = `${this.type}-marker`;
+        // Handle the special case for 30-minute markers
+        if (this.type === 'minute-marker-30') {
+            this.element.className = 'minute-marker-30';
+        } else if (this.type === 'minute') {
+            this.element.className = 'minute-marker';
+        } else {
+            this.element.className = `${this.type}-marker`;
+        }
 
         if (isMobile) {
             this.element.style.top = `${this.position}%`;
