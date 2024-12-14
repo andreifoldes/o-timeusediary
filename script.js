@@ -245,7 +245,7 @@ function initTimeline() {
     timeline.setAttribute('data-active', 'true');
     activeTimeline = timeline;
     
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
     for (let i = 4; i <= 28; i++) {
