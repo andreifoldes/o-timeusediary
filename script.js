@@ -464,8 +464,14 @@ function initTimelineInteraction(timeline = null) {
             currentBlock.style.left = '85.4167%';
         }
 
+        // Randomly choose between 40% and 60% height
+        const randomHeight = Math.random() < 0.5 ? 40 : 60;
+        const topOffset = randomHeight === 40 ? 30 : 20; // Adjust top to keep centered
+
         currentBlock.style.width = `${blockWidth}%`;
         currentBlock.style.left = `${startPositionPercent}%`;
+        currentBlock.style.height = `${randomHeight}%`;
+        currentBlock.style.top = `${topOffset}%`;
         
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
