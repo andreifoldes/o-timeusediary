@@ -30,7 +30,8 @@ class TimelineMarker {
             this.element.appendChild(labelElement);
         }
 
-        timeline.appendChild(this.element);
+        const markersContainer = timeline.querySelector('.markers');
+        markersContainer.appendChild(this.element);
         return this.element;
     }
 

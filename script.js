@@ -248,6 +248,11 @@ function initTimeline() {
     const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
+    // Create markers container
+    const markersContainer = document.createElement('div');
+    markersContainer.className = 'markers';
+    timeline.appendChild(markersContainer);
+    
     // Store markers for easy access
     timeline.markers = [];
     
