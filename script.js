@@ -268,7 +268,7 @@ function initTimeline() {
         for (let j = 1; j < 6; j++) {
             const position = (i - 4 + j / 6) * (100 / 24);
             if (position <= 100) {
-                const markerType = j === 3 ? 'minute-30' : 'minute';
+                const markerType = j === 3 ? 'minute-marker-30' : 'minute-marker';
                 const minuteMarker = new TimelineMarker(markerType, position);
                 minuteMarker.create(timeline, isMobile);
                 timeline.markers.push(minuteMarker);
