@@ -248,44 +248,40 @@ function initTimeline() {
     const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
+    // Store markers for easy access
+    timeline.markers = [];
+    
     for (let i = 4; i <= 28; i++) {
         const hour = i % 24;
+        const hourPosition = (i - 4) * (100/24);
         
-        const marker = document.createElement('div');
-        marker.className = 'hour-marker';
-        
-        if (isMobile) {
-            marker.style.top = `${(i - 4) * (100/24)}%`;
-        } else {
-            marker.style.left = `${(i - 4) * (100/24)}%`;
-        }
-        
-        const label = document.createElement('div');
-        label.className = 'hour-label';
-        label.textContent = `${hour.toString().padStart(2, '0')}:00`;
-        marker.appendChild(label);
-        timeline.appendChild(marker);
+        // Create hour marker
+        const hourMarker = new TimelineMarker(
+            'hour', 
+            hourPosition, 
+            `${hour.toString().padStart(2, '0')}:00`
+        );
+        hourMarker.create(timeline, isMobile);
+        timeline.markers.push(hourMarker);
 
+        // Create minute markers
         for (let j = 1; j < 6; j++) {
             const position = (i - 4 + j / 6) * (100 / 24);
             if (position <= 100) {
-                const minuteMarker = document.createElement('div');
-                minuteMarker.className = 'minute-marker';
-                
-                if (j === 3) {
-                    minuteMarker.classList.add('minute-marker-30');
-                }
-                
-                if (isMobile) {
-                    minuteMarker.style.top = `${position}%`;
-                } else {
-                    minuteMarker.style.left = `${position}%`;
-                }
-                
-                timeline.appendChild(minuteMarker);
+                const markerType = j === 3 ? 'minute-30' : 'minute';
+                const minuteMarker = new TimelineMarker(markerType, position);
+                minuteMarker.create(timeline, isMobile);
+                timeline.markers.push(minuteMarker);
             }
         }
     }
+
+    // Add window resize handler to update marker positions
+    window.addEventListener('resize', () => {
+        const newIsMobile = window.innerWidth < 1024;
+        timeline.setAttribute('data-layout', newIsMobile ? 'vertical' : 'horizontal');
+        timeline.markers.forEach(marker => marker.update(newIsMobile));
+    });
 
     if (DEBUG_MODE) {
         timeline.addEventListener('mousemove', (e) => {
