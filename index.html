@@ -305,9 +305,22 @@
 
         .gradient-bar {
             width: 100%;
-            height: 10px; /* Adjust the height as needed */
-            background: linear-gradient(to right, #fde725, #5ec962, #21918c, #3b528b, #440154); /* Reversed Viridis gradient */
-            margin: 10px 0; /* Adjust the margin as needed */
+            height: 10px;
+            background: linear-gradient(to right, #fde725, #5ec962, #21918c, #3b528b, #440154);
+            margin: 10px 0;
+        }
+
+        /* Mobile vertical gradient bar */
+        @media (max-width: 1023px) {
+            .gradient-bar {
+                position: absolute;
+                left: -15px;
+                top: 0;
+                width: 10px;
+                height: 100%;
+                background: linear-gradient(to bottom, #fde725, #5ec962, #21918c, #3b528b, #440154);
+                margin: 0;
+            }
         }
 
         /* Style for Back Button */
