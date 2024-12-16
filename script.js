@@ -683,6 +683,11 @@ function initTimelineInteraction(timeline = null) {
                     },
                     end(event) {
                         event.target.classList.remove('resizing');
+                        // Keep the text-element resized after interaction
+                        const textElement = event.target.querySelector('.activity-block-text');
+                        if (textElement) {
+                            textElement.classList.add('resized');
+                        }
                         const blockId = event.target.dataset.id;
                         const blockData = getCurrentTimelineData().find(activity => activity.id === blockId);
                         if (blockData) {

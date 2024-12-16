@@ -20,9 +20,10 @@
 
 /* After resize - wrap text */
 .activity-block-text.resized {
-    white-space: normal;
-    overflow: visible;
-    word-wrap: break-word;
+    white-space: normal !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    text-overflow: clip !important;
 }
 
 .activity-block {
