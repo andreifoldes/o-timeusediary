@@ -41,8 +41,9 @@ async function switchToSecondaryMode() {
     }
 
     // Update UI for secondary mode
-    document.querySelector('.timeline-title').textContent = 'Secondary Activity';
-    document.title = 'Secondary Activity';
+    document.querySelector('.timeline-title').textContent = timelines.secondary.name;
+    document.querySelector('.timeline-description').textContent = timelines.secondary.description;
+    document.title = timelines.secondary.name;
 
     // Make primary timeline non-interactable by adding opacity
     const primaryTimelineContainer = document.querySelector('.timeline-container');
@@ -898,6 +899,10 @@ async function init() {
         initTimelineInteraction();
         updateButtonStates();
         const categories = await fetchActivities('primary');
+        // Set initial title and description
+        document.querySelector('.timeline-title').textContent = timelines.primary.name;
+        document.querySelector('.timeline-description').textContent = timelines.primary.description;
+        document.title = timelines.primary.name;
         renderActivities(categories);
         initButtons();
         updateButtonStates();
