@@ -2,18 +2,22 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
+    width: 90%;
     padding: 4px;
     box-sizing: border-box;
     position: absolute;
-    left: 0;
-    right: 0;
-    max-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
     display: block;
     text-align: center;
+    font-size: 12px;
 }
 
 .activity-block {
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

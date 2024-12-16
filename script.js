@@ -520,9 +520,10 @@ function initTimelineInteraction(timeline = null) {
         const textDiv = document.createElement('div');
         textDiv.className = 'activity-block-text';
         textDiv.textContent = selectedActivity.name;
-        textDiv.style.maxWidth = '100%';
+        textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
         textDiv.style.textOverflow = 'ellipsis';
+        textDiv.style.whiteSpace = 'nowrap';
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
