@@ -36,8 +36,20 @@ export class TimelineMarker {
             this.element.appendChild(labelElement);
         }
 
-        const markersContainer = timeline.querySelector('.markers');
-        const timeLabelsContainer = timeline.querySelector('.time-labels');
+        // Create containers if they don't exist
+        let markersContainer = timeline.querySelector('.markers');
+        if (!markersContainer) {
+            markersContainer = document.createElement('div');
+            markersContainer.className = 'markers';
+            timeline.appendChild(markersContainer);
+        }
+
+        let timeLabelsContainer = timeline.querySelector('.time-labels');
+        if (!timeLabelsContainer) {
+            timeLabelsContainer = document.createElement('div');
+            timeLabelsContainer.className = 'time-labels';
+            timeline.appendChild(timeLabelsContainer);
+        }
         
         // Add marker to markers container
         markersContainer.appendChild(this.element);
