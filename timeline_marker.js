@@ -37,7 +37,25 @@ export class TimelineMarker {
         }
 
         const markersContainer = timeline.querySelector('.markers');
+        const timeLabelsContainer = timeline.querySelector('.time-labels');
+        
+        // Add marker to markers container
         markersContainer.appendChild(this.element);
+        
+        // If this is an hour marker, move the label to time-labels container
+        if (this.type === 'hour' && timeLabelsContainer) {
+            const label = this.element.querySelector('.hour-label');
+            if (label) {
+                this.element.removeChild(label);
+                const labelWrapper = document.createElement('div');
+                labelWrapper.className = 'hour-label-wrapper';
+                labelWrapper.style.position = 'absolute';
+                labelWrapper.style.top = this.element.style.top;
+                labelWrapper.style.left = this.element.style.left;
+                labelWrapper.appendChild(label);
+                timeLabelsContainer.appendChild(labelWrapper);
+            }
+        }
         return this.element;
     }
 

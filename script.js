@@ -284,10 +284,14 @@ function initTimeline() {
         timeline.parentElement.style.width = '100%';
     }
     
-    // Create markers container
+    // Create containers
     const markersContainer = document.createElement('div');
     markersContainer.className = 'markers';
     timeline.appendChild(markersContainer);
+    
+    const timeLabelsContainer = document.createElement('div');
+    timeLabelsContainer.className = 'time-labels';
+    timeline.appendChild(timeLabelsContainer);
     
     // Store markers for easy access
     timeline.markers = [];
