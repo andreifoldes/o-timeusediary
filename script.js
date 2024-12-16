@@ -53,11 +53,12 @@ async function switchToSecondaryMode() {
         throw new Error('Failed to switch to secondary mode: ' + error.message);
     }
 
-    // Make primary timeline non-interactable by adding opacity
+    // Make primary timeline non-interactable and shift it right in mobile mode
     const primaryTimelineContainer = document.querySelector('.timeline-container');
     primaryTimelineContainer.style.opacity = '0.6';
     primaryTimelineContainer.style.pointerEvents = 'none';
     primaryTimelineContainer.querySelector('.timeline').setAttribute('data-active', 'false');
+    primaryTimelineContainer.setAttribute('data-active', 'false');
 
     // Create a new timeline container for secondary activities
     const newTimelineContainer = primaryTimelineContainer.cloneNode(true);
