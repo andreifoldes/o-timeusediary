@@ -159,6 +159,16 @@ body {
         padding: 2px 4px;
         border-radius: 2px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-top: -10px; /* Offset to prevent clipping at timeline edges */
+    }
+
+    /* Adjust first and last hour labels to ensure visibility */
+    .hour-marker:first-child .hour-label {
+        margin-top: 0;
+    }
+    
+    .hour-marker:last-child .hour-label {
+        margin-top: -20px;
     }
 
     .minute-marker {
