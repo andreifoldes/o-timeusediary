@@ -459,7 +459,7 @@ function isTimelineFull() {
     // Get the current timeline's coverage requirement
     const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
     if (currentTimeline.coverage !== 'complete') {
-        return currentData.length > 0; // Any activities make it "full" for partial coverage
+        return false; // Partial coverage timelines are never "full"
     }
 
     // For complete coverage requirement:
