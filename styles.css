@@ -223,8 +223,18 @@ body {
 /* Desktop horizontal layout */
 @media (min-width: 1024px) {
     .hour-label {
-        bottom: calc(100% + 5px);
+        bottom: -25px;
         transform: translateX(-50%);
+    }
+}
+
+/* Mobile vertical layout */
+@media (max-width: 1023px) {
+    .hour-label {
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        width: 35px;
     }
 }
 
