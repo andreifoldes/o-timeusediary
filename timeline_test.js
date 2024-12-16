@@ -6,9 +6,18 @@ export function testTimelineMarkerPositioning() {
     timeline.style.height = '1500px';
     timeline.style.position = 'relative';
     
+    // Create required containers
     const markersContainer = document.createElement('div');
     markersContainer.className = 'markers';
     timeline.appendChild(markersContainer);
+
+    const timeLabelsContainer = document.createElement('div');
+    timeLabelsContainer.className = 'time-labels';
+    timeline.appendChild(timeLabelsContainer);
+
+    const hourLabelsContainer = document.createElement('div');
+    hourLabelsContainer.className = 'hour-labels';
+    timeline.appendChild(hourLabelsContainer);
 
     // Create markers for 24 hours
     const markers = [];

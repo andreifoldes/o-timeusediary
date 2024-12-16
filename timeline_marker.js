@@ -36,22 +36,13 @@ export class TimelineMarker {
             this.element.appendChild(labelElement);
         }
 
-        // Create containers if they don't exist
+        // Get or create markers container
         let markersContainer = timeline.querySelector('.markers');
         if (!markersContainer) {
             markersContainer = document.createElement('div');
             markersContainer.className = 'markers';
             timeline.appendChild(markersContainer);
         }
-
-        let timeLabelsContainer = timeline.querySelector('.time-labels');
-        if (!timeLabelsContainer) {
-            timeLabelsContainer = document.createElement('div');
-            timeLabelsContainer.className = 'time-labels';
-            timeline.appendChild(timeLabelsContainer);
-        }
-        
-        // Add marker to markers container
         markersContainer.appendChild(this.element);
         
         // If this is an hour marker, move the label to timeline-container
