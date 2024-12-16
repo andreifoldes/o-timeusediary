@@ -413,22 +413,24 @@ body {
 @media (max-width: 1023px) {
     .gradient-bar {
         width: 10px;
-        height: 120px;
+        height: 100%;
         margin: 0;
         background: linear-gradient(to bottom, #fde725, #5ec962, #21918c, #3b528b, #440154);
         position: absolute;
-        left: -25px;
+        left: -15px;
         top: 0;
-        z-index: 3;
+        z-index: 1;
     }
 
     .timeline-container {
         position: relative;
         z-index: 2;
+        padding-left: 40px; /* Space for hour labels and gradient bar */
     }
 
     .hour-marker .hour-label {
-        z-index: 1;
+        z-index: 3;
+        left: -55px; /* Adjusted to account for padding */
     }
 }
 
