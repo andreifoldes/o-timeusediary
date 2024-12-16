@@ -342,6 +342,7 @@ function isOverlapping(elem1, elem2) {
 }
 
 function createTimeLabel(block) {
+    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     const label = document.createElement('div');
     label.className = 'time-label';
     label.style.position = 'absolute';
