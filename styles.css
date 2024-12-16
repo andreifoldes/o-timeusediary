@@ -25,6 +25,11 @@
     word-wrap: break-word !important;
     text-overflow: clip !important;
     text-wrap: wrap !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    hyphens: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
 }
 
 .activity-block {
