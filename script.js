@@ -364,7 +364,7 @@ function createTimeLabel(block) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
             const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop - 5}%`; // 5% padding above text
+            label.style.top = `${relativeTop - 20}%`; // 20% padding above text
             label.style.bottom = 'auto';
         }
     } else {
@@ -398,7 +398,7 @@ function updateTimeLabel(label, startTime, endTime, block) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
             const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop - 5}%`; // 5% padding above text
+            label.style.top = `${relativeTop - 20}%`; // 20% padding above text
             label.style.bottom = 'auto';
         }
     } else {
