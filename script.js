@@ -490,7 +490,10 @@ function initTimelineInteraction(timeline = null) {
         const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
         currentBlock.style.backgroundColor = selectedActivity.color;
-        currentBlock.textContent = selectedActivity.name;
+        const textDiv = document.createElement('div');
+        textDiv.className = 'activity-block-text';
+        textDiv.textContent = selectedActivity.name;
+        currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
