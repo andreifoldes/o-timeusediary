@@ -250,11 +250,14 @@ function initTimeline() {
     
     // Set fixed dimensions based on layout
     if (isMobile) {
-        timeline.style.height = '900px'; // Fixed height in vertical mode
+        const minHeight = '1024px';
+        timeline.style.height = minHeight;
         timeline.style.width = ''; // Auto width
+        timeline.parentElement.style.height = minHeight; // Set container height
     } else {
         timeline.style.height = ''; // Auto height
         timeline.style.width = '100%'; // Full width in horizontal mode
+        timeline.parentElement.style.height = ''; // Reset container height
     }
     
     // Create markers container
@@ -302,11 +305,14 @@ function initTimeline() {
         
         // Update dimensions on layout change
         if (newIsMobile) {
-            timeline.style.height = '900px';
+            const minHeight = '1024px';
+            timeline.style.height = minHeight;
             timeline.style.width = '';
+            timeline.parentElement.style.height = minHeight;
         } else {
             timeline.style.height = '';
             timeline.style.width = '100%';
+            timeline.parentElement.style.height = '';
         }
         
         timeline.markers.forEach(marker => marker.update(newIsMobile));
