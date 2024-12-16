@@ -356,8 +356,6 @@ function createTimeLabel(block) {
     label.style.whiteSpace = 'nowrap';
     label.style.pointerEvents = 'none';
     label.style.zIndex = '10';
-    
-    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
         // Position above activity-block-text in mobile mode
         const textDiv = block.querySelector('.activity-block-text');
