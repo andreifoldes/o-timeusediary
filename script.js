@@ -448,7 +448,13 @@ function isTimelineFull() {
     const currentData = getCurrentTimelineData();
     if (currentData.length === 0) return false;
 
-    // Timeline starts at TIMELINE_START_HOUR and spans TIMELINE_HOURS hours
+    // Get the current timeline's coverage requirement
+    const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
+    if (currentTimeline.coverage !== 'complete') {
+        return currentData.length > 0; // Any activities make it "full" for partial coverage
+    }
+
+    // For complete coverage requirement:
     const timelineStart = TIMELINE_START_HOUR * 60; // Start time in minutes
     const totalTimelineMinutes = TIMELINE_HOURS * 60; // Total minutes in the timeline
     
@@ -751,9 +757,10 @@ function updateButtonStates() {
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     if (saveButton) saveButton.disabled = isEmpty;
     
-    // In secondary mode, Next button is always enabled
-    // In primary mode, Next button is enabled only when timeline is full
-    if (nextButton) nextButton.disabled = !isSecondaryMode && !isFull;
+    // Enable Next button based on timeline coverage requirement
+    const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
+    const requiresComplete = currentTimeline.coverage === 'complete';
+    if (nextButton) nextButton.disabled = requiresComplete && !isFull;
     
     if (DEBUG_MODE && isFull) {
         console.log('Timeline is complete');
