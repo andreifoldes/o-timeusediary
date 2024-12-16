@@ -62,25 +62,27 @@ body {
 @media (max-width: 1023px) {
     .timeline-container {
         width: 120px;
-        height: 225vh;
+        height: 1500px;
         margin: 20px auto;
-        transition: transform 0.3s ease-out;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        position: relative;
     }
     
     .timeline-container[data-active="false"] {
         position: absolute;
         opacity: 0.6;
         pointer-events: none;
+        top: 0;
     }
 
     .timeline-container[data-active="false"][data-position="left"] {
-        transform: translateX(-120%);
-        left: 20px;
+        transform: translateX(-150%);
+        left: 50%;
     }
 
     .timeline-container[data-active="false"][data-position="right"] {
-        transform: translateX(120%);
-        right: 20px;
+        transform: translateX(150%);
+        right: 50%;
     }
 }
 

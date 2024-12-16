@@ -53,13 +53,11 @@ async function switchToSecondaryMode() {
         throw new Error('Failed to switch to secondary mode: ' + error.message);
     }
 
-    // Make primary timeline non-interactable and shift it left in mobile mode
+    // Make primary timeline non-interactable and shift it
     const primaryTimelineContainer = document.querySelector('.timeline-container');
-    primaryTimelineContainer.style.opacity = '0.6';
-    primaryTimelineContainer.style.pointerEvents = 'none';
     primaryTimelineContainer.querySelector('.timeline').setAttribute('data-active', 'false');
     primaryTimelineContainer.setAttribute('data-active', 'false');
-    primaryTimelineContainer.setAttribute('data-position', 'right');
+    primaryTimelineContainer.setAttribute('data-position', 'left');
 
     // Create a new timeline container for secondary activities
     const newTimelineContainer = primaryTimelineContainer.cloneNode(true);
@@ -276,14 +274,15 @@ function initTimeline() {
     
     // Set fixed dimensions based on layout
     if (isMobile) {
-        const minHeight = '1500px'; // Increased from 1280px
-        timeline.style.height = minHeight;
-        timeline.style.width = ''; // Auto width
-        timeline.parentElement.style.height = minHeight; // Set container height
+        timeline.style.height = '1500px';
+        timeline.style.width = '100%';
+        timeline.parentElement.style.height = '1500px';
+        timeline.parentElement.style.width = '120px';
     } else {
-        timeline.style.height = ''; // Auto height
-        timeline.style.width = '100%'; // Full width in horizontal mode
-        timeline.parentElement.style.height = ''; // Reset container height
+        timeline.style.height = '';
+        timeline.style.width = '100%';
+        timeline.parentElement.style.height = '';
+        timeline.parentElement.style.width = '100%';
     }
     
     // Create markers container
