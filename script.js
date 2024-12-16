@@ -48,6 +48,10 @@ async function switchToSecondaryMode() {
         document.querySelector('.timeline-title').textContent = timelines.secondary.name;
         document.querySelector('.timeline-description').textContent = timelines.secondary.description;
         document.title = timelines.secondary.name;
+    } catch (error) {
+        console.error('Error switching to secondary mode:', error);
+        throw new Error('Failed to switch to secondary mode: ' + error.message);
+    }
 
     // Make primary timeline non-interactable by adding opacity
     const primaryTimelineContainer = document.querySelector('.timeline-container');
