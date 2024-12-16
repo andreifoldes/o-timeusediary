@@ -329,16 +329,31 @@ function initTimeline() {
         
         // Update dimensions on layout change
         if (newIsMobile) {
-            const minHeight = '1500px'; // Increased from 1280px
+            const minHeight = '1500px';
             timeline.style.height = minHeight;
             timeline.style.width = '';
             timeline.parentElement.style.height = minHeight;
+            
+            // Update hour label container for mobile
+            const hourLabelsContainer = timeline.querySelector('.hour-labels');
+            if (hourLabelsContainer) {
+                hourLabelsContainer.style.height = '100%';
+                hourLabelsContainer.style.width = 'auto';
+            }
         } else {
             timeline.style.height = '';
             timeline.style.width = '100%';
             timeline.parentElement.style.height = '';
+            
+            // Update hour label container for desktop
+            const hourLabelsContainer = timeline.querySelector('.hour-labels');
+            if (hourLabelsContainer) {
+                hourLabelsContainer.style.width = '100%';
+                hourLabelsContainer.style.height = 'auto';
+            }
         }
         
+        // Update all markers and their labels
         timeline.markers.forEach(marker => marker.update(newIsMobile));
     });
 

@@ -74,9 +74,29 @@ export class TimelineMarker {
         if (isMobile) {
             this.element.style.top = `${this.position}%`;
             this.element.style.left = '';
+            
+            // Update hour label wrapper position if this is an hour marker
+            if (this.type === 'hour') {
+                const timeline = this.element.closest('.timeline');
+                const labelWrapper = timeline?.querySelector(`.hour-label-wrapper:nth-child(${Math.floor(this.position)})`);
+                if (labelWrapper) {
+                    labelWrapper.style.top = `${this.position}%`;
+                    labelWrapper.style.left = '';
+                }
+            }
         } else {
             this.element.style.left = `${this.position}%`;
             this.element.style.top = '';
+            
+            // Update hour label wrapper position if this is an hour marker
+            if (this.type === 'hour') {
+                const timeline = this.element.closest('.timeline');
+                const labelWrapper = timeline?.querySelector(`.hour-label-wrapper:nth-child(${Math.floor(this.position)})`);
+                if (labelWrapper) {
+                    labelWrapper.style.left = `${this.position}%`;
+                    labelWrapper.style.top = '';
+                }
+            }
         }
     }
 }
