@@ -267,10 +267,14 @@ function initTimeline() {
         const hour = i % 24;
         const hourPosition = (i - 4) * (100/24);
         
+        // Calculate scaled positions for vertical mode
+        const scaleFactor = isMobile ? 1.5 : 1; // 50% taller in vertical mode
+        const scaledHourPosition = hourPosition * scaleFactor;
+        
         // Create hour marker
         const hourMarker = new TimelineMarker(
             'hour', 
-            hourPosition, 
+            scaledHourPosition, 
             `${hour.toString().padStart(2, '0')}:00`
         );
         hourMarker.create(timeline, isMobile);
@@ -278,10 +282,11 @@ function initTimeline() {
 
         // Create minute markers
         for (let j = 1; j < 6; j++) {
-            const position = (i - 4 + j / 6) * (100 / 24);
-            if (position <= 100) {
+            const basePosition = (i - 4 + j / 6) * (100 / 24);
+            const scaledPosition = basePosition * scaleFactor;
+            if (basePosition <= 100) {  // Check against base position to maintain marker count
                 const markerType = j === 3 ? 'minute-marker-30' : 'minute';
-                const minuteMarker = new TimelineMarker(markerType, position);
+                const minuteMarker = new TimelineMarker(markerType, scaledPosition);
                 minuteMarker.create(timeline, isMobile);
                 timeline.markers.push(minuteMarker);
             }
