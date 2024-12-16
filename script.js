@@ -870,6 +870,7 @@ function initButtons() {
 function handleResize() {
     const timeline = document.getElementById('timeline');
     const container = timeline.parentElement;
+    const markersContainer = timeline.querySelector('.markers');
     const isMobile = window.innerWidth < 1024;
     
     // Update layout attribute
@@ -878,13 +879,25 @@ function handleResize() {
     // Set dimensions based on layout
     if (isMobile) {
         const minHeight = '1500px';
-        timeline.style.height = minHeight;
-        timeline.style.width = '';
+        // Set explicit dimensions for all elements
+        container.style.width = '120px';
         container.style.height = minHeight;
-    } else {
-        timeline.style.height = '';
+        
         timeline.style.width = '100%';
-        container.style.height = '';
+        timeline.style.height = minHeight;
+        
+        markersContainer.style.width = '100%';
+        markersContainer.style.height = minHeight;
+    } else {
+        // Reset to horizontal layout
+        container.style.width = '100%';
+        container.style.height = '120px';
+        
+        timeline.style.width = '100%';
+        timeline.style.height = '100%';
+        
+        markersContainer.style.width = '100%';
+        markersContainer.style.height = '100%';
     }
     
     // Update all markers for the new layout
