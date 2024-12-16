@@ -450,7 +450,6 @@ function initTimelineInteraction(timeline = null) {
             return;
         }
         
-        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
         const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
 
         if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes)) {
