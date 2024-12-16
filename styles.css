@@ -162,25 +162,23 @@ body {
 
     .hour-marker .hour-label {
         position: absolute;
-        top: 50%;
+        top: -6px; /* Align with the marker line */
         left: -40px;
-        transform: translateY(-50%);
         text-align: right;
         width: 35px;
         background: white;
         padding: 2px 4px;
         border-radius: 2px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        margin-top: -10px; /* Offset to prevent clipping at timeline edges */
     }
 
-    /* Adjust first and last hour labels to ensure visibility */
+    /* Special handling for first and last hour labels */
     .hour-marker:first-child .hour-label {
-        margin-top: 0;
+        top: 0;
     }
     
     .hour-marker:last-child .hour-label {
-        margin-top: -20px;
+        top: -12px;
     }
 
     .minute-marker {
