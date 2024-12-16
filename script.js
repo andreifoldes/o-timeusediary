@@ -359,8 +359,14 @@ function createTimeLabel(block) {
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
         // Position below activity-block-text in mobile mode
-        label.style.top = '50%';
-        label.style.bottom = 'auto';
+        const textDiv = block.querySelector('.activity-block-text');
+        if (textDiv) {
+            const textRect = textDiv.getBoundingClientRect();
+            const blockRect = block.getBoundingClientRect();
+            const relativeTop = (textRect.bottom - blockRect.top) / blockRect.height * 100;
+            label.style.top = `${relativeTop + 5}%`; // 5% padding below text
+            label.style.bottom = 'auto';
+        }
     } else {
         // Keep original positioning for desktop mode
         label.style.bottom = '-20px';
@@ -387,8 +393,14 @@ function updateTimeLabel(label, startTime, endTime) {
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
         // Keep centered below activity-block-text in mobile mode
-        label.style.top = '50%';
-        label.style.bottom = 'auto';
+        const textDiv = block.querySelector('.activity-block-text');
+        if (textDiv) {
+            const textRect = textDiv.getBoundingClientRect();
+            const blockRect = block.getBoundingClientRect();
+            const relativeTop = (textRect.bottom - blockRect.top) / blockRect.height * 100;
+            label.style.top = `${relativeTop + 5}%`; // 5% padding below text
+            label.style.bottom = 'auto';
+        }
     } else {
         // Desktop mode positioning
         label.style.bottom = '-20px';
