@@ -414,18 +414,23 @@ body {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-bottom: 20px;
         flex-wrap: wrap;
-        order: -1;
+        order: 1;
     }
     
     .timeline-title {
-        order: 0;
+        order: 2;
         margin-top: 20px;
     }
     
     .timeline-container {
-        order: 1;
+        order: 3;
         margin-top: 20px;
         clear: both;
+    }
+
+    .activities-container {
+        order: 4;
+        margin-top: 20px;
     }
 
     .button-container {
