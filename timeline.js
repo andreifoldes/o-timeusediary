@@ -1,11 +1,11 @@
 export class Timeline {
-    constructor(type, metadata) {
+    constructor(type, metadata = {}) {
         this.type = type;
-        this.name = metadata.name || '';
-        this.description = metadata.description || '';
-        this.mode = metadata.mode || 'single-choice';
-        this.coverage = metadata.coverage || 'partial';
-        this.categories = metadata.categories || [];
+        this.name = metadata?.name || '';
+        this.description = metadata?.description || '';
+        this.mode = metadata?.mode || 'single-choice';
+        this.coverage = metadata?.coverage || 'partial';
+        this.categories = metadata?.categories || [];
         this.activities = [];
     }
 
