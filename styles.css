@@ -51,18 +51,18 @@
 
 @media (max-width: 1024px) {
     .controls {
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         right: 0;
         background: white;
-        z-index: 1000;
+        z-index: 1001; /* Higher than other elements */
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .button-container {
         position: fixed;
-        top: 50px; /* Position below controls */
+        top: 50px;
         left: 0;
         right: 0;
         background: white;
@@ -72,6 +72,6 @@
     
     /* Add padding to the top of the content to account for fixed elements */
     .timeline-container {
-        padding-top: 110px; /* Increased to account for both controls and buttons */
+        padding-top: 110px;
     }
 }
