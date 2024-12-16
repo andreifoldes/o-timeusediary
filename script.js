@@ -465,22 +465,28 @@ function initTimelineInteraction(timeline = null) {
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
         const endPositionPercent = minutesToPercentage(endMinutes);
-        let blockWidth = Math.max(endPositionPercent - startPositionPercent, calculateMinimumBlockWidth());
+        let blockSize = Math.max(endPositionPercent - startPositionPercent, calculateMinimumBlockWidth());
         
-        // Ensure fixed width for blocks created between 3:50 and 4:00
+        // Ensure fixed size for blocks created between 3:50 and 4:00
         if (startMinutes >= 230 && startMinutes < 240) {
-            blockWidth = 0.694444;
-            currentBlock.style.left = '85.4167%';
+            blockSize = 0.694444;
         }
 
-        // Randomly choose between 40% and 60% height
-        const randomHeight = Math.random() < 0.5 ? 40 : 60;
-        const topOffset = randomHeight === 40 ? 30 : 20; // Adjust top to keep centered
+        // Randomly choose between 40% and 60% for the secondary dimension
+        const randomSize = Math.random() < 0.5 ? 40 : 60;
+        const offset = randomSize === 40 ? 30 : 20; // Adjust offset to keep centered
 
-        currentBlock.style.width = `${blockWidth}%`;
-        currentBlock.style.left = `${startPositionPercent}%`;
-        currentBlock.style.height = `${randomHeight}%`;
-        currentBlock.style.top = `${topOffset}%`;
+        if (isMobile) {
+            currentBlock.style.height = `${blockSize}%`;
+            currentBlock.style.top = `${startPositionPercent}%`;
+            currentBlock.style.width = `${randomSize}%`;
+            currentBlock.style.left = `${offset}%`;
+        } else {
+            currentBlock.style.width = `${blockSize}%`;
+            currentBlock.style.left = `${startPositionPercent}%`;
+            currentBlock.style.height = `${randomSize}%`;
+            currentBlock.style.top = `${offset}%`;
+        }
         
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
