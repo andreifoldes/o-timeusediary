@@ -400,26 +400,39 @@ body {
 }
 
 @media (max-width: 1024px) {
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
     .controls {
-        position: relative;
+        position: sticky;
+        top: 0;
         width: 100%;
         background: white;
         z-index: 1001;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-bottom: 20px;
         flex-wrap: wrap;
+        order: -1;
     }
     
+    .timeline-title {
+        order: 0;
+        margin-top: 20px;
+    }
+    
+    .timeline-container {
+        order: 1;
+        margin-top: 20px;
+        clear: both;
+    }
+
     .button-container {
         width: 100%;
         background: white;
         z-index: 1000;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-bottom: 20px;
-    }
-    
-    .timeline-container {
-        margin-top: 20px;
-        clear: both;
     }
 }
