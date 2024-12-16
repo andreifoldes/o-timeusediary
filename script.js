@@ -248,6 +248,13 @@ function initTimeline() {
     const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
+    // Set increased height for vertical layout
+    if (isMobile) {
+        timeline.style.height = '150vh'; // 50% taller than default
+    } else {
+        timeline.style.height = ''; // Reset to default in horizontal mode
+    }
+    
     // Create markers container
     const markersContainer = document.createElement('div');
     markersContainer.className = 'markers';
@@ -285,6 +292,14 @@ function initTimeline() {
     window.addEventListener('resize', () => {
         const newIsMobile = window.innerWidth < 1024;
         timeline.setAttribute('data-layout', newIsMobile ? 'vertical' : 'horizontal');
+        
+        // Update height on layout change
+        if (newIsMobile) {
+            timeline.style.height = '150vh';
+        } else {
+            timeline.style.height = '';
+        }
+        
         timeline.markers.forEach(marker => marker.update(newIsMobile));
     });
 
