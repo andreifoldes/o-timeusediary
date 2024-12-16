@@ -59,7 +59,7 @@ async function switchToSecondaryMode() {
     primaryTimelineContainer.style.pointerEvents = 'none';
     primaryTimelineContainer.querySelector('.timeline').setAttribute('data-active', 'false');
     primaryTimelineContainer.setAttribute('data-active', 'false');
-    primaryTimelineContainer.setAttribute('data-position', 'left');
+    primaryTimelineContainer.setAttribute('data-position', 'right');
 
     // Create a new timeline container for secondary activities
     const newTimelineContainer = primaryTimelineContainer.cloneNode(true);

@@ -69,16 +69,17 @@ body {
     
     .timeline-container[data-active="false"] {
         position: absolute;
-        transform: translateX(-120%);
         opacity: 0.6;
         pointer-events: none;
     }
 
     .timeline-container[data-active="false"][data-position="left"] {
+        transform: translateX(-120%);
         left: 20px;
     }
 
     .timeline-container[data-active="false"][data-position="right"] {
+        transform: translateX(120%);
         right: 20px;
     }
 }
