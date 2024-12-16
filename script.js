@@ -927,4 +927,8 @@ async function init() {
     }
 }
 
-init();
+init().catch(error => {
+    console.error('Failed to initialize application:', error);
+    document.getElementById('activitiesContainer').innerHTML = 
+        '<p style="color: red;">Error loading activities. Please refresh the page to try again. Error: ' + error.message + '</p>';
+});
