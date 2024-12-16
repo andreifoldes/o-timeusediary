@@ -2,10 +2,17 @@
 // import interact from 'https://cdn.interactjs.io/v1.10.27/interactjs/index.js';
 
 let selectedActivity = null;
+import { Timeline } from './timeline.js';
+
+let timelines = {
+    primary: null,
+    secondary: null,
+    tertiary: null
+};
 let timelineData = {
     primary: [],
     secondary: []
-}; // Hierarchical structure for both timelines
+};
 let isSecondaryMode = false;
 let activeTimeline = null; // Track the active timeline
 
@@ -198,9 +205,17 @@ async function fetchActivities(type) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (!data || !data[type] || !data[type].categories) {
+        if (!data || !data[type]) {
             throw new Error('Invalid JSON structure or type not found');
         }
+        
+        // Create new Timeline instance with metadata
+        timelines[type] = new Timeline(type, data[type]);
+        
+        if (DEBUG_MODE) {
+            console.log(`Loaded timeline metadata for ${type}:`, timelines[type]);
+        }
+        
         return data[type].categories;
     } catch (error) {
         console.error('Error loading activities:', error);
