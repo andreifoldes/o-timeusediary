@@ -834,6 +834,49 @@ function initButtons() {
     });
 }
 
+function handleResize() {
+    const timeline = document.getElementById('timeline');
+    const container = timeline.parentElement;
+    const isMobile = window.innerWidth < 1024;
+    
+    // Update layout attribute
+    timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
+    
+    // Set dimensions based on layout
+    if (isMobile) {
+        const minHeight = '1500px';
+        timeline.style.height = minHeight;
+        timeline.style.width = '';
+        container.style.height = minHeight;
+    } else {
+        timeline.style.height = '';
+        timeline.style.width = '100%';
+        container.style.height = '';
+    }
+    
+    // Update all markers for the new layout
+    timeline.markers.forEach(marker => marker.update(isMobile));
+    
+    // Update all activity blocks for the new layout
+    const activityBlocks = timeline.querySelectorAll('.activity-block');
+    activityBlocks.forEach(block => {
+        const timeLabel = block.querySelector('.time-label');
+        if (timeLabel) {
+            if (isMobile) {
+                timeLabel.style.left = '120%';
+                timeLabel.style.top = '50%';
+                timeLabel.style.transform = 'translateY(-50%)';
+                timeLabel.style.bottom = 'auto';
+            } else {
+                timeLabel.style.left = '50%';
+                timeLabel.style.transform = 'translateX(-50%)';
+                timeLabel.style.bottom = '-20px';
+                timeLabel.style.top = 'auto';
+            }
+        }
+    });
+}
+
 async function init() {
     try {
         initTimeline();
@@ -843,6 +886,9 @@ async function init() {
         renderActivities(categories);
         initButtons();
         updateButtonStates();
+        
+        // Add resize event listener
+        window.addEventListener('resize', handleResize);
     } catch (error) {
         console.error('Failed to initialize application:', error);
         document.getElementById('activitiesContainer').innerHTML = 
