@@ -1,8 +1,7 @@
-// Remove this line:
-// import interact from 'https://cdn.interactjs.io/v1.10.27/interactjs/index.js';
+import { TimelineMarker } from './timeline_marker.js';
+import { Timeline } from './timeline.js';
 
 let selectedActivity = null;
-import { Timeline } from './timeline.js';
 
 let timelines = {
     primary: null,
