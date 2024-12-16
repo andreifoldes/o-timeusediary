@@ -114,7 +114,7 @@ function timeToMinutes(timeStr) {
     return hours * 60 + minutes;
 }
 
-function findNearestMarkers(minutes) {
+function findNearestMarkers(minutes, isMobile = false) {
     const hourMinutes = Math.floor(minutes / 60) * 60;
     const minutePart = minutes % 60;
     const lowerMarker = hourMinutes + Math.floor(minutePart / INCREMENT_MINUTES) * INCREMENT_MINUTES;
@@ -427,9 +427,18 @@ function initTimelineInteraction(timeline = null) {
         }
 
         const rect = targetTimeline.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const clampedX = Math.max(0, Math.min(x, rect.width));
-        const clickPositionPercent = (clampedX / rect.width) * 100;
+        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+        let clickPositionPercent;
+        
+        if (isMobile) {
+            const y = e.clientY - rect.top;
+            const clampedY = Math.max(0, Math.min(y, rect.height));
+            clickPositionPercent = (clampedY / rect.height) * 100;
+        } else {
+            const x = e.clientX - rect.left;
+            const clampedX = Math.max(0, Math.min(x, rect.width));
+            clickPositionPercent = (clampedX / rect.width) * 100;
+        }
         
         if (clickPositionPercent >= 100) {
             return;
@@ -441,7 +450,8 @@ function initTimelineInteraction(timeline = null) {
             return;
         }
         
-        const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes);
+        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+        const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
 
         if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes)) {
             alert('Cannot place activity here due to invalid position or overlap with an existing activity.');
