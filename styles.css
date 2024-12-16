@@ -1,7 +1,4 @@
 .activity-block-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     width: 90%;
     padding: 4px;
     box-sizing: border-box;
@@ -12,6 +9,20 @@
     display: block;
     text-align: center;
     font-size: 12px;
+}
+
+/* Initial state - ellipsis */
+.activity-block-text:not(.resized) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* After resize - wrap text */
+.activity-block-text.resized {
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .activity-block {

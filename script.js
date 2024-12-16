@@ -600,6 +600,11 @@ function initTimelineInteraction(timeline = null) {
                 listeners: {
                     start(event) {
                         event.target.classList.add('resizing');
+                        // Add resized class to the text element
+                        const textElement = event.target.querySelector('.activity-block-text');
+                        if (textElement) {
+                            textElement.classList.add('resized');
+                        }
                         // Create time label for mobile on resize start if it doesn't exist
                         const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
                         if (isMobile && !event.target.querySelector('.time-label')) {
