@@ -521,7 +521,6 @@ function initTimelineInteraction(timeline = null) {
         textDiv.className = 'activity-block-text';
         textDiv.textContent = selectedActivity.name;
         textDiv.style.maxWidth = '100%';
-        textDiv.style.position = 'relative';
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
