@@ -358,13 +358,13 @@ function createTimeLabel(block) {
     
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
-        // Position below activity-block-text in mobile mode
+        // Position above activity-block-text in mobile mode
         const textDiv = block.querySelector('.activity-block-text');
         if (textDiv) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
-            const relativeTop = (textRect.bottom - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop + 5}%`; // 5% padding below text
+            const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
+            label.style.top = `${relativeTop - 5}%`; // 5% padding above text
             label.style.bottom = 'auto';
         }
     } else {
@@ -392,13 +392,13 @@ function updateTimeLabel(label, startTime, endTime) {
     
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
-        // Keep centered below activity-block-text in mobile mode
+        // Keep centered above activity-block-text in mobile mode
         const textDiv = block.querySelector('.activity-block-text');
         if (textDiv) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
-            const relativeTop = (textRect.bottom - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop + 5}%`; // 5% padding below text
+            const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
+            label.style.top = `${relativeTop - 5}%`; // 5% padding above text
             label.style.bottom = 'auto';
         }
     } else {
