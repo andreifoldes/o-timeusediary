@@ -387,7 +387,7 @@ function createTimeLabel(block) {
     return label;
 }
 
-function updateTimeLabel(label, startTime, endTime) {
+function updateTimeLabel(label, startTime, endTime, block) {
     label.textContent = `${startTime} - ${endTime}`;
     
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
@@ -562,7 +562,7 @@ function initTimelineInteraction(timeline = null) {
         // Only create time label initially for desktop mode
         if (!isMobile) {
             const timeLabel = createTimeLabel(currentBlock);
-            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
         }
 
         const activityData = {
@@ -605,7 +605,7 @@ function initTimelineInteraction(timeline = null) {
                             const heightInMinutes = (heightPercent / 100) * TIMELINE_HOURS * 60;
                             const endMinutes = Math.round(startMinutes + heightInMinutes);
                             const timeLabel = createTimeLabel(event.target);
-                            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+                            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), event.target);
                         }
                     },
                     move(event) {
@@ -640,7 +640,7 @@ function initTimelineInteraction(timeline = null) {
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
-                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes), target);
                             }
                         } else {
                             const timelineWidth = targetTimeline.offsetWidth;
