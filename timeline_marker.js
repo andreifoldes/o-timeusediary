@@ -47,13 +47,21 @@ export class TimelineMarker {
             const label = this.element.querySelector('.hour-label');
             if (label) {
                 this.element.removeChild(label);
+                // Get or create hour-labels container
+                let hourLabelsContainer = timeline.parentElement.querySelector('.hour-labels');
+                if (!hourLabelsContainer) {
+                    hourLabelsContainer = document.createElement('div');
+                    hourLabelsContainer.className = 'hour-labels';
+                    timeline.parentElement.appendChild(hourLabelsContainer);
+                }
+                
                 const labelWrapper = document.createElement('div');
                 labelWrapper.className = 'hour-label-wrapper';
                 labelWrapper.style.position = 'absolute';
                 labelWrapper.style.top = this.element.style.top;
                 labelWrapper.style.left = this.element.style.left;
                 labelWrapper.appendChild(label);
-                timeline.parentElement.appendChild(labelWrapper);
+                hourLabelsContainer.appendChild(labelWrapper);
             }
         }
         return this.element;
