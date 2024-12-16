@@ -293,13 +293,10 @@ function initTimeline() {
     // Store markers for easy access
     timeline.markers = [];
     
-    for (let i = 4; i <= 28; i++) {
+    for (let i = 4; i <= 27; i++) {
         const hour = i % 24;
-        const hourPosition = (i - 4) * (100/24);
-        
-        // Calculate scaled positions for vertical mode
-        const scaleFactor = isMobile ? 1.5 : 1; // 50% taller in vertical mode
-        const scaledHourPosition = hourPosition * scaleFactor;
+        // Calculate position as percentage of timeline
+        const hourPosition = ((i - 4) / 24) * 100;
         
         // Create hour marker
         const hourMarker = new TimelineMarker(

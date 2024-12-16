@@ -58,8 +58,22 @@
     <div id="debugOverlay" class="debug-overlay"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-    <script src="timeline_marker.js"></script>
+    <script src="timeline_marker.js" type="module"></script>
     <script src="timeline.js" type="module"></script>
     <script src="script.js" type="module"></script>
+    <script src="timeline_test.js" type="module"></script>
+    <script type="module">
+        import { testTimelineMarkerPositioning } from './timeline_test.js';
+        
+        // Run tests after page load
+        window.addEventListener('load', () => {
+            const testResult = testTimelineMarkerPositioning();
+            if (!testResult.success) {
+                console.error('Timeline marker positioning test failed:', testResult.errors);
+            } else {
+                console.log('Timeline marker positioning test passed');
+            }
+        });
+    </script>
 </body>
 </html>

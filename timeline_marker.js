@@ -1,4 +1,4 @@
-class TimelineMarker {
+export class TimelineMarker {
     constructor(type, position, label = '') {
         this.type = type; // 'hour', 'minute-30', 'minute-10'
         this.position = position; // percentage position
@@ -8,7 +8,8 @@ class TimelineMarker {
 
     create(timeline, isMobile) {
         this.element = document.createElement('div');
-        // Handle the special case for 30-minute markers
+        
+        // Set marker class
         if (this.type === 'minute-marker-30') {
             this.element.className = 'minute-marker-30';
         } else if (this.type === 'minute') {
@@ -17,10 +18,15 @@ class TimelineMarker {
             this.element.className = `${this.type}-marker`;
         }
 
+        // Ensure position is within bounds (0-100%)
+        const normalizedPosition = Math.max(0, Math.min(100, this.position));
+
         if (isMobile) {
-            this.element.style.top = `${this.position}%`;
+            // In mobile mode, scale position to fit within timeline height
+            const scaledPosition = (normalizedPosition / 100) * 100;
+            this.element.style.top = `${scaledPosition}%`;
         } else {
-            this.element.style.left = `${this.position}%`;
+            this.element.style.left = `${normalizedPosition}%`;
         }
 
         if (this.type === 'hour') {
