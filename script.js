@@ -538,17 +538,23 @@ function initTimelineInteraction(timeline = null) {
 
         updateButtonStates();
 
+        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+        
         interact(currentBlock)
             .resizable({
-                edges: { right: true },
+                edges: isMobile ? { bottom: true } : { right: true },
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: 'parent',
                         endOnly: true
                     }),
                     interact.modifiers.restrictSize({
-                        min: { width: calculateMinimumBlockWidth() * targetTimeline.offsetWidth / 100 },
-                        max: { width: targetTimeline.offsetWidth }
+                        min: isMobile 
+                            ? { height: calculateMinimumBlockWidth() * targetTimeline.offsetHeight / 100 }
+                            : { width: calculateMinimumBlockWidth() * targetTimeline.offsetWidth / 100 },
+                        max: isMobile 
+                            ? { height: targetTimeline.offsetHeight }
+                            : { width: targetTimeline.offsetWidth }
                     })
                 ],
                 listeners: {
@@ -557,37 +563,67 @@ function initTimelineInteraction(timeline = null) {
                     },
                     move(event) {
                         const target = event.target;
-                        const timelineWidth = targetTimeline.offsetWidth;
                         
-                        let widthPercent = (event.rect.width / timelineWidth) * 100;
-                        const leftPercent = parseFloat(target.style.left);
-                        
-                        // Enforce minimum width
-                        widthPercent = Math.max(widthPercent, calculateMinimumBlockWidth());
-                        
-                        // Prevent resizing past the right edge of the timeline
-                        if (leftPercent + widthPercent > 100) {
-                            widthPercent = 100 - leftPercent;
-                        }
-                        
-                        const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
-                        // Round width to nearest 10 minutes
-                        const roundedWidthMinutes = Math.round(widthInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
-                        widthPercent = (roundedWidthMinutes / (TIMELINE_HOURS * 60)) * 100;
-                        
-                        const newStartMinutes = Math.round((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                        const newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
-                        
-                        const blockId = target.dataset.id;
-                        if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
-                            return;
-                        }
+                        if (isMobile) {
+                            const timelineHeight = targetTimeline.offsetHeight;
+                            let heightPercent = (event.rect.height / timelineHeight) * 100;
+                            const topPercent = parseFloat(target.style.top);
+                            
+                            // Enforce minimum height
+                            heightPercent = Math.max(heightPercent, calculateMinimumBlockWidth());
+                            
+                            // Prevent resizing past the bottom edge
+                            if (topPercent + heightPercent > 100) {
+                                heightPercent = 100 - topPercent;
+                            }
+                            
+                            const heightInMinutes = (heightPercent / 100) * TIMELINE_HOURS * 60;
+                            const roundedHeightMinutes = Math.round(heightInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
+                            heightPercent = (roundedHeightMinutes / (TIMELINE_HOURS * 60)) * 100;
+                            
+                            const newStartMinutes = Math.round((topPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const newEndMinutes = Math.round(newStartMinutes + roundedHeightMinutes);
+                            
+                            const blockId = target.dataset.id;
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                                return;
+                            }
 
-                        target.style.width = `${widthPercent}%`;
-                        
-                        const timeLabel = target.querySelector('.time-label');
-                        if (timeLabel) {
-                            updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                            target.style.height = `${heightPercent}%`;
+                            
+                            const timeLabel = target.querySelector('.time-label');
+                            if (timeLabel) {
+                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                            }
+                        } else {
+                            const timelineWidth = targetTimeline.offsetWidth;
+                            let widthPercent = (event.rect.width / timelineWidth) * 100;
+                            const leftPercent = parseFloat(target.style.left);
+                            
+                            widthPercent = Math.max(widthPercent, calculateMinimumBlockWidth());
+                            
+                            if (leftPercent + widthPercent > 100) {
+                                widthPercent = 100 - leftPercent;
+                            }
+                            
+                            const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
+                            const roundedWidthMinutes = Math.round(widthInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
+                            widthPercent = (roundedWidthMinutes / (TIMELINE_HOURS * 60)) * 100;
+                            
+                            const newStartMinutes = Math.round((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
+                            
+                            const blockId = target.dataset.id;
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                                return;
+                            }
+
+                            target.style.width = `${widthPercent}%`;
+                            
+                            const timeLabel = target.querySelector('.time-label');
+                            if (timeLabel) {
+                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                            }
                         }
                     },
                     end(event) {
@@ -595,17 +631,28 @@ function initTimelineInteraction(timeline = null) {
                         const blockId = event.target.dataset.id;
                         const blockData = getCurrentTimelineData().find(activity => activity.id === blockId);
                         if (blockData) {
-                            const leftPercent = parseFloat(event.target.style.left);
-                            const widthPercent = parseFloat(event.target.style.width);
-                            const newStartMinutes = Math.round((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                            const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
-                            const roundedWidthMinutes = Math.round(widthInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
-                            const newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
+                            const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+                            let newStartMinutes, newEndMinutes;
+                            
+                            if (isMobile) {
+                                const topPercent = parseFloat(event.target.style.top);
+                                const heightPercent = parseFloat(event.target.style.height);
+                                newStartMinutes = Math.round((topPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                                const heightInMinutes = (heightPercent / 100) * TIMELINE_HOURS * 60;
+                                const roundedHeightMinutes = Math.round(heightInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
+                                newEndMinutes = Math.round(newStartMinutes + roundedHeightMinutes);
+                            } else {
+                                const leftPercent = parseFloat(event.target.style.left);
+                                const widthPercent = parseFloat(event.target.style.width);
+                                newStartMinutes = Math.round((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                                const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
+                                const roundedWidthMinutes = Math.round(widthInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
+                                newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
+                            }
                             
                             blockData.startTime = formatTimeDDMMYYYYHHMM(newStartMinutes);
                             blockData.endTime = formatTimeDDMMYYYYHHMM(newEndMinutes);
                             
-                            // Check timeline fullness after resizing
                             updateButtonStates();
                         }
                     }
