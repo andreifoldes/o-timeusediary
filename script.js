@@ -297,10 +297,10 @@ function initTimeline() {
         // Calculate position as percentage of timeline
         const hourPosition = ((i - 4) / 24) * 100;
         
-        // Create hour marker
+        // Create hour marker using hourPosition directly
         const hourMarker = new TimelineMarker(
             'hour', 
-            scaledHourPosition, 
+            hourPosition, 
             `${hour.toString().padStart(2, '0')}:00`
         );
         hourMarker.create(timeline, isMobile);
@@ -308,11 +308,10 @@ function initTimeline() {
 
         // Create minute markers
         for (let j = 1; j < 6; j++) {
-            const basePosition = (i - 4 + j / 6) * (100 / 24);
-            const scaledPosition = basePosition * scaleFactor;
-            if (basePosition <= 100) {  // Check against base position to maintain marker count
+            const minutePosition = ((i - 4) + j/6) * (100/24);
+            if (minutePosition <= 100) {
                 const markerType = j === 3 ? 'minute-marker-30' : 'minute';
-                const minuteMarker = new TimelineMarker(markerType, scaledPosition);
+                const minuteMarker = new TimelineMarker(markerType, minutePosition);
                 minuteMarker.create(timeline, isMobile);
                 timeline.markers.push(minuteMarker);
             }
