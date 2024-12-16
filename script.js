@@ -502,20 +502,22 @@ function initTimelineInteraction(timeline = null) {
             blockSize = 0.694444;
         }
 
-        // Randomly choose between 40% and 60% for the secondary dimension
-        const randomSize = Math.random() < 0.5 ? 40 : 60;
-        const offset = randomSize === 40 ? 30 : 20; // Adjust offset to keep centered
+        // Fixed dimensions for consistency
+        const MOBILE_BLOCK_WIDTH = 50; // 50% width in mobile mode
+        const DESKTOP_BLOCK_HEIGHT = 50; // 50% height in desktop mode
+        const MOBILE_OFFSET = 25; // Centers the block at 25% from left
+        const DESKTOP_OFFSET = 25; // Centers the block at 25% from top
 
         if (isMobile) {
             currentBlock.style.height = `${blockSize}%`;
             currentBlock.style.top = `${startPositionPercent}%`;
-            currentBlock.style.width = `${randomSize}%`;
-            currentBlock.style.left = `${offset}%`;
+            currentBlock.style.width = `${MOBILE_BLOCK_WIDTH}%`;
+            currentBlock.style.left = `${MOBILE_OFFSET}%`;
         } else {
             currentBlock.style.width = `${blockSize}%`;
             currentBlock.style.left = `${startPositionPercent}%`;
-            currentBlock.style.height = `${randomSize}%`;
-            currentBlock.style.top = `${offset}%`;
+            currentBlock.style.height = `${DESKTOP_BLOCK_HEIGHT}%`;
+            currentBlock.style.top = `${DESKTOP_OFFSET}%`;
         }
         
         const rightHandle = document.createElement('div');
