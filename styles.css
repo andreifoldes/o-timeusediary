@@ -39,3 +39,39 @@
     align-items: center;
     justify-content: center;
 }
+
+/* Controls and button container styles */
+.button-container,
+.controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+}
+
+@media (max-width: 1024px) {
+    .controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .button-container {
+        position: fixed;
+        top: 50px; /* Position below controls */
+        left: 0;
+        right: 0;
+        background: white;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Add padding to the top of the content to account for fixed elements */
+    .timeline-container {
+        padding-top: 110px; /* Increased to account for both controls and buttons */
+    }
+}
