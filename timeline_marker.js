@@ -42,8 +42,8 @@ export class TimelineMarker {
         // Add marker to markers container
         markersContainer.appendChild(this.element);
         
-        // If this is an hour marker, move the label to time-labels container
-        if (this.type === 'hour' && timeLabelsContainer) {
+        // If this is an hour marker, move the label to timeline-container
+        if (this.type === 'hour') {
             const label = this.element.querySelector('.hour-label');
             if (label) {
                 this.element.removeChild(label);
@@ -53,7 +53,7 @@ export class TimelineMarker {
                 labelWrapper.style.top = this.element.style.top;
                 labelWrapper.style.left = this.element.style.left;
                 labelWrapper.appendChild(label);
-                timeLabelsContainer.appendChild(labelWrapper);
+                timeline.parentElement.appendChild(labelWrapper);
             }
         }
         return this.element;

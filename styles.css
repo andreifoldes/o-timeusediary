@@ -104,18 +104,6 @@ body {
     top: 0;
 }
 
-.time-labels {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    box-sizing: border-box;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-}
 
 /* Desktop horizontal markers */
 @media (min-width: 1024px) {
@@ -222,8 +210,12 @@ body {
 
 /* Desktop horizontal layout */
 @media (min-width: 1024px) {
+    .timeline-container {
+        padding-top: 30px;  /* Make space for hour labels */
+    }
+    
     .hour-label {
-        top: -25px;
+        top: 5px;  /* Position above timeline */
         transform: translateX(-50%);
     }
 }
