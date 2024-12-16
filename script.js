@@ -250,7 +250,7 @@ function initTimeline() {
     
     // Set fixed dimensions based on layout
     if (isMobile) {
-        const minHeight = '1280px'; // 1024px + 25% = 1280px
+        const minHeight = '1500px'; // Increased from 1280px
         timeline.style.height = minHeight;
         timeline.style.width = ''; // Auto width
         timeline.parentElement.style.height = minHeight; // Set container height
@@ -305,7 +305,7 @@ function initTimeline() {
         
         // Update dimensions on layout change
         if (newIsMobile) {
-            const minHeight = '1280px'; // 1024px + 25% = 1280px
+            const minHeight = '1500px'; // Increased from 1280px
             timeline.style.height = minHeight;
             timeline.style.width = '';
             timeline.parentElement.style.height = minHeight;
