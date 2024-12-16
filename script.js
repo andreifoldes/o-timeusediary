@@ -40,10 +40,14 @@ async function switchToSecondaryMode() {
         console.log('Primary timeline data saved:', timelineData.primary);
     }
 
-    // Update UI for secondary mode
-    document.querySelector('.timeline-title').textContent = timelines.secondary.name;
-    document.querySelector('.timeline-description').textContent = timelines.secondary.description;
-    document.title = timelines.secondary.name;
+    // Load secondary timeline data first
+    try {
+        const categories = await fetchActivities('secondary');
+        
+        // Now update UI for secondary mode
+        document.querySelector('.timeline-title').textContent = timelines.secondary.name;
+        document.querySelector('.timeline-description').textContent = timelines.secondary.description;
+        document.title = timelines.secondary.name;
 
     // Make primary timeline non-interactable by adding opacity
     const primaryTimelineContainer = document.querySelector('.timeline-container');
