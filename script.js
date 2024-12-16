@@ -356,37 +356,52 @@ function createTimeLabel(block) {
     label.style.pointerEvents = 'none';
     label.style.zIndex = '10';
     
-    label.style.bottom = '-20px';
-    label.style.top = 'auto';
+    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
+    if (isMobile) {
+        // Position below activity-block-text in mobile mode
+        label.style.top = '50%';
+        label.style.bottom = 'auto';
+    } else {
+        // Keep original positioning for desktop mode
+        label.style.bottom = '-20px';
+        label.style.top = 'auto';
+        
+        // Check for overlaps in desktop mode only
+        block.appendChild(label);
+        const existingLabels = activeTimeline.querySelectorAll('.time-label');
+        existingLabels.forEach(existingLabel => {
+            if (existingLabel !== label && isOverlapping(existingLabel, label)) {
+                label.style.bottom = 'auto';
+                label.style.top = '-20px';
+            }
+        });
+    }
     
     block.appendChild(label);
-    
-    // Only look for labels within the active timeline
-    const existingLabels = activeTimeline.querySelectorAll('.time-label');
-    existingLabels.forEach(existingLabel => {
-        if (existingLabel !== label && isOverlapping(existingLabel, label)) {
-            label.style.bottom = 'auto';
-            label.style.top = '-20px';
-        }
-    });
-
     return label;
 }
 
 function updateTimeLabel(label, startTime, endTime) {
     label.textContent = `${startTime} - ${endTime}`;
     
-    label.style.bottom = '-20px';
-    label.style.top = 'auto';
-    
-    // Only look for labels within the active timeline
-    const existingLabels = activeTimeline.querySelectorAll('.time-label');
-    existingLabels.forEach(existingLabel => {
-        if (existingLabel !== label && isOverlapping(existingLabel, label)) {
-            label.style.bottom = 'auto';
-            label.style.top = '-20px';
-        }
-    });
+    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
+    if (isMobile) {
+        // Keep centered below activity-block-text in mobile mode
+        label.style.top = '50%';
+        label.style.bottom = 'auto';
+    } else {
+        // Desktop mode positioning
+        label.style.bottom = '-20px';
+        label.style.top = 'auto';
+        
+        const existingLabels = activeTimeline.querySelectorAll('.time-label');
+        existingLabels.forEach(existingLabel => {
+            if (existingLabel !== label && isOverlapping(existingLabel, label)) {
+                label.style.bottom = 'auto';
+                label.style.top = '-20px';
+            }
+        });
+    }
 }
 
 function canPlaceActivity(newStart, newEnd, excludeId = null) {
