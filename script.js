@@ -346,7 +346,7 @@ function createTimeLabel(block) {
     label.className = 'time-label';
     label.style.position = 'absolute';
     label.style.left = '50%';
-    label.style.transform = 'translateX(-50%)';
+    label.style.transform = isMobile ? 'translateY(-50%)' : 'translateX(-50%)';
     label.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
     label.style.color = '#fff';
     label.style.padding = '2px 4px';
@@ -363,8 +363,10 @@ function createTimeLabel(block) {
         if (textDiv) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
-            const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop - 20}%`; // 20% padding above text
+            // In mobile mode, position label to the right of the text
+            label.style.left = '120%'; // 20% padding to the right
+            label.style.top = '50%';
+            label.style.transform = 'translateY(-50%)';
             label.style.bottom = 'auto';
         }
     } else {
@@ -397,8 +399,10 @@ function updateTimeLabel(label, startTime, endTime, block) {
         if (textDiv) {
             const textRect = textDiv.getBoundingClientRect();
             const blockRect = block.getBoundingClientRect();
-            const relativeTop = (textRect.top - blockRect.top) / blockRect.height * 100;
-            label.style.top = `${relativeTop - 20}%`; // 20% padding above text
+            // In mobile mode, position label to the right of the text
+            label.style.left = '120%'; // 20% padding to the right
+            label.style.top = '50%';
+            label.style.transform = 'translateY(-50%)';
             label.style.bottom = 'auto';
         }
     } else {
