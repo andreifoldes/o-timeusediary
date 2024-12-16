@@ -759,7 +759,7 @@ function updateButtonStates() {
     
     // Enable Next button based on timeline coverage requirement
     const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
-    const requiresComplete = currentTimeline.coverage === 'complete';
+    const requiresComplete = currentTimeline?.coverage === 'complete';
     if (nextButton) nextButton.disabled = requiresComplete && !isFull;
     
     if (DEBUG_MODE && isFull) {
