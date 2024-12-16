@@ -559,8 +559,11 @@ function initTimelineInteraction(timeline = null) {
         currentBlock.appendChild(rightHandle);
         targetTimeline.appendChild(currentBlock);
 
-        const timeLabel = createTimeLabel(currentBlock);
-        updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+        // Only create time label initially for desktop mode
+        if (!isMobile) {
+            const timeLabel = createTimeLabel(currentBlock);
+            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+        }
 
         const activityData = {
             id: generateUniqueId(),
@@ -594,6 +597,16 @@ function initTimelineInteraction(timeline = null) {
                 listeners: {
                     start(event) {
                         event.target.classList.add('resizing');
+                        // Create time label for mobile on resize start if it doesn't exist
+                        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+                        if (isMobile && !event.target.querySelector('.time-label')) {
+                            const startMinutes = Math.round((parseFloat(event.target.style.top) / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
+                            const heightPercent = parseFloat(event.target.style.height);
+                            const heightInMinutes = (heightPercent / 100) * TIMELINE_HOURS * 60;
+                            const endMinutes = Math.round(startMinutes + heightInMinutes);
+                            const timeLabel = createTimeLabel(event.target);
+                            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+                        }
                     },
                     move(event) {
                         const target = event.target;
