@@ -538,8 +538,6 @@ function initTimelineInteraction(timeline = null) {
 
         updateButtonStates();
 
-        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
-        
         interact(currentBlock)
             .resizable({
                 edges: isMobile ? { bottom: true } : { right: true },
