@@ -223,7 +223,7 @@ body {
 /* Desktop horizontal layout */
 @media (min-width: 1024px) {
     .hour-label {
-        bottom: -25px;
+        top: -25px;
         transform: translateX(-50%);
     }
 }
