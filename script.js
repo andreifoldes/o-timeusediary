@@ -81,6 +81,10 @@ async function switchToSecondaryMode() {
 
     // Load secondary activities
     const categories = await fetchActivities('secondary');
+    if (DEBUG_MODE) {
+        console.log('DOM structure after loading secondary activities:', document.body.innerHTML);
+        console.log('All timeline containers:', document.querySelectorAll('.timeline-container'));
+    }
     renderActivities(categories);
 
     // Initialize interaction for the new timeline
