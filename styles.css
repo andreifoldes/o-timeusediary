@@ -316,12 +316,13 @@ body {
 /* Mobile styles */
 @media (max-width: 1023px) {
     .time-label {
-        right: -45px;
+        right: -35px;
         top: 50%;
         transform: translateY(-50%);
         white-space: pre-line;
         text-align: center;
         width: auto;
+        min-width: 30px;
         height: auto;
     }
 }
