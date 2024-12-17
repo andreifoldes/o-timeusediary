@@ -21,7 +21,8 @@ body {
     position: relative;
     flex: 1;
     min-height: 300px;
-    margin: 20px 0;
+    margin: 20px;
+    padding: 0 20px;
 }
 
 .timeline-header {
@@ -246,7 +247,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
-    margin-top: 20px;
+    margin: 20px;
     align-items: start;
 }
 
