@@ -133,7 +133,6 @@ async function addNextTimeline() {
     }
 }
 
-
 function updateDebugOverlay(mouseX, timelineRect) {
     if (!DEBUG_MODE) return;
     
@@ -477,7 +476,7 @@ function initTimelineInteraction(timeline = null) {
         
         const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
 
-        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes)) {
+        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes, null, timelineTypes, currentTimelineIndex, timelineData)) {
             alert('Cannot place activity here due to invalid position or overlap with an existing activity.');
             return;
         }
@@ -540,7 +539,7 @@ function initTimelineInteraction(timeline = null) {
             endTime: formatTimeDDMMYYYYHHMM(endMinutes),
             color: selectedActivity.color
         };
-        getCurrentTimelineData().push(activityData);
+        getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).push(activityData);
         currentBlock.dataset.id = activityData.id;
 
         updateButtonStates();
@@ -639,7 +638,7 @@ function initTimelineInteraction(timeline = null) {
                             const newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
                             
                             const blockId = target.dataset.id;
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
                                 return;
                             }
 
@@ -664,7 +663,7 @@ function initTimelineInteraction(timeline = null) {
                     end(event) {
                         event.target.classList.remove('resizing');
                         const blockId = event.target.dataset.id;
-                        const blockData = getCurrentTimelineData().find(activity => activity.id === blockId);
+                        const blockData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).find(activity => activity.id === blockId);
                         if (blockData) {
                             const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
                             let newStartMinutes, newEndMinutes;
@@ -711,7 +710,7 @@ function updateButtonStates() {
     if (saveButton) saveButton.disabled = isEmpty;
     
     // Enable Next button based on timeline coverage and initialization status
-    const currentType = getCurrentTimelineType();
+    const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
     const currentTimeline = timelines[currentType];
     const requiresComplete = currentTimeline?.coverage === 'complete';
     const hasNextTimeline = currentTimelineIndex < timelineTypes.length - 1;
