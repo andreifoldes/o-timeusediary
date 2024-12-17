@@ -3,15 +3,8 @@ import { Timeline } from './timeline.js';
 
 let selectedActivity = null;
 
-let timelines = {
-    primary: null,
-    secondary: null,
-    tertiary: null
-};
-let timelineData = {
-    primary: [],
-    secondary: []
-};
+let timelines = {};
+let timelineData = {};
 let activeTimeline = null; // Track the active timeline
 
 const MINUTES_PER_DAY = 24 * 60;
@@ -232,8 +225,26 @@ async function fetchActivities(type) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (!data || !data[type]) {
-            throw new Error('Invalid JSON structure or type not found');
+        if (!data) {
+            throw new Error('Invalid JSON structure');
+        }
+
+        // Initialize timelines and timelineData for all available timeline types
+        if (Object.keys(timelines).length === 0) {
+            Object.keys(data).forEach(timelineType => {
+                timelines[timelineType] = null;
+                timelineData[timelineType] = [];
+            });
+            if (DEBUG_MODE) {
+                console.log('Initialized timeline structures:', {
+                    timelines: Object.keys(timelines),
+                    timelineData: Object.keys(timelineData)
+                });
+            }
+        }
+
+        if (!data[type]) {
+            throw new Error(`Timeline type ${type} not found`);
         }
         
         // Create new Timeline instance with metadata
