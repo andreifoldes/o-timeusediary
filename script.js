@@ -1,5 +1,6 @@
 import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
+import { TimelineContainer } from './timeline_container.js';
 import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 
 let selectedActivity = null;
@@ -255,56 +256,12 @@ function initTimeline() {
     const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
-    // Set fixed dimensions based on layout
-    if (isMobile) {
-        timeline.style.height = '1500px';
-        timeline.style.width = '100%';
-        timeline.parentElement.style.height = '1500px';
-        timeline.parentElement.style.width = '120px';
-    } else {
-        timeline.style.height = '';
-        timeline.style.width = '100%';
-        timeline.parentElement.style.height = '';
-        timeline.parentElement.style.width = '100%';
-    }
+    // Create and initialize timeline container
+    const timelineContainer = new TimelineContainer(timeline);
+    timelineContainer.initialize(isMobile).createMarkers(isMobile);
     
-    // Create containers
-    const markersContainer = document.createElement('div');
-    markersContainer.className = 'markers';
-    timeline.appendChild(markersContainer);
-    
-    const hourLabelsContainer = document.createElement('div');
-    hourLabelsContainer.className = 'hour-labels';
-    timeline.appendChild(hourLabelsContainer);
-    
-    // Store markers for easy access
-    timeline.markers = [];
-    
-    for (let i = 4; i <= 28; i++) {
-        const hour = i % 24;
-        // Calculate position as percentage of timeline
-        const hourPosition = ((i - 4) / 24) * 100;
-        
-        // Create hour marker using hourPosition directly
-        const hourMarker = new TimelineMarker(
-            'hour', 
-            hourPosition, 
-            `${hour.toString().padStart(2, '0')}:00`
-        );
-        hourMarker.create(timeline, isMobile);
-        timeline.markers.push(hourMarker);
-
-        // Create minute markers
-        for (let j = 1; j < 6; j++) {
-            const minutePosition = ((i - 4) + j/6) * (100/24);
-            if (minutePosition <= 100) {
-                const markerType = j === 3 ? 'minute-marker-30' : 'minute';
-                const minuteMarker = new TimelineMarker(markerType, minutePosition);
-                minuteMarker.create(timeline, isMobile);
-                timeline.markers.push(minuteMarker);
-            }
-        }
-    }
+    // Store the container instance on the timeline element for later access
+    timeline.containerInstance = timelineContainer;
 
     // Add window resize handler to update marker positions
     window.addEventListener('resize', () => {
@@ -829,39 +786,13 @@ function initButtons() {
 
 function handleResize() {
     const timeline = document.getElementById('timeline');
-    const container = timeline.parentElement;
-    const markersContainer = timeline.querySelector('.markers');
     const isMobile = window.innerWidth < 1024;
     
     // Update layout attribute
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
-    // Set dimensions based on layout
-    if (isMobile) {
-        const minHeight = '1500px';
-        // Set explicit dimensions for all elements
-        container.style.minWidth = '180px';
-        container.style.height = minHeight;
-        
-        timeline.style.width = 'inherit';
-        timeline.style.height = minHeight;
-        
-        markersContainer.style.width = '100%';
-        markersContainer.style.height = minHeight;
-    } else {
-        // Reset to horizontal layout
-        container.style.width = '100%';
-        container.style.height = '120px';
-        
-        timeline.style.width = '100%';
-        timeline.style.height = '100%';
-        
-        markersContainer.style.width = '100%';
-        markersContainer.style.height = '100%';
-    }
-    
-    // Update all markers for the new layout
-    timeline.markers.forEach(marker => marker.update(isMobile));
+    // Update container layout using the stored container instance
+    timeline.containerInstance.updateLayout(isMobile);
     
     // Update all activity blocks for the new layout
     const activityBlocks = timeline.querySelectorAll('.activity-block');
