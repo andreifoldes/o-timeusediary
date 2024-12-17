@@ -686,10 +686,10 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.height = `${heightPercent}%`;
                             
-                            // Check if block height is at least 6x the 10-minute interval
+                            // Check if block height is at least 5x the 10-minute interval
                             const textElement = target.querySelector('.activity-block-text');
                             if (textElement) {
-                                if (heightPercent >= 4.166667) {
+                                if (heightPercent >= 3.472222) {
                                     textElement.classList.add('resized');
                                 } else {
                                     textElement.classList.remove('resized');
@@ -725,10 +725,10 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.width = `${widthPercent}%`;
                             
-                            // Check if block width is at least 6x the 10-minute interval
+                            // Check if block width is at least 5x the 10-minute interval
                             const textElement = target.querySelector('.activity-block-text');
                             if (textElement) {
-                                if (widthPercent >= 4.166667) {
+                                if (widthPercent >= 3.472222) {
                                     textElement.classList.add('resized');
                                 } else {
                                     textElement.classList.remove('resized');
