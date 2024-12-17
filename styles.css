@@ -221,7 +221,7 @@ body {
 /* Desktop horizontal layout */
 @media (min-width: 1024px) {
     .timeline-container {
-        padding-top: 30px;  /* Make space for hour labels */
+        padding-top: 2px;  /* Reduced space for hour labels */
     }
     
     .hour-label {
