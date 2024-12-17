@@ -296,7 +296,7 @@ function initTimeline() {
     // Store markers for easy access
     timeline.markers = [];
     
-    for (let i = 4; i <= 27; i++) {
+    for (let i = 4; i <= 28; i++) {
         const hour = i % 24;
         // Calculate position as percentage of timeline
         const hourPosition = ((i - 4) / 24) * 100;
