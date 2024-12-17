@@ -33,7 +33,7 @@ function getCurrentTimelineData() {
 }
 
 let currentTimelineIndex = 0;
-const timelineTypes = ['primary', 'secondary', 'tertiary']; // Add more timeline types as needed
+let timelineTypes = []; // Will be populated from activities.json
 
 // Function to add next timeline
 async function addNextTimeline() {
@@ -252,14 +252,16 @@ async function fetchActivities(type) {
             throw new Error('Invalid JSON structure');
         }
 
-        // Initialize timelines and timelineData for all available timeline types
+        // Initialize timelines, timelineData and timelineTypes for all available timeline types
         if (Object.keys(timelines).length === 0) {
-            Object.keys(data).forEach(timelineType => {
+            timelineTypes = Object.keys(data); // Dynamically set timeline types
+            timelineTypes.forEach(timelineType => {
                 timelines[timelineType] = null;
                 timelineData[timelineType] = [];
             });
             if (DEBUG_MODE) {
                 console.log('Initialized timeline structures:', {
+                    timelineTypes,
                     timelines: Object.keys(timelines),
                     timelineData: Object.keys(timelineData)
                 });
