@@ -466,7 +466,7 @@ body {
     .timeline-container {
         position: relative;
         z-index: 2;
-        padding-left: 40px; /* Space for hour labels and gradient bar */
+        padding-left: 2px; /* Space for hour labels and gradient bar */
     }
 
     .hour-marker .hour-label {
