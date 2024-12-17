@@ -3,8 +3,9 @@ import { Timeline } from './timeline.js';
 
 let selectedActivity = null;
 
-let timelines = {};
-let timelineData = {};
+let timelines = {}; // Timeline metadata
+let timelineData = {}; // Timeline activity data
+let initializedTimelines = new Set(); // Track which timelines have been initialized
 let activeTimeline = null; // Track the active timeline
 
 const MINUTES_PER_DAY = 24 * 60;
@@ -249,11 +250,13 @@ async function fetchActivities(type) {
         
         // Create new Timeline instance with metadata
         timelines[type] = new Timeline(type, data[type]);
+        initializedTimelines.add(type); // Mark this timeline as initialized
         
         if (DEBUG_MODE) {
             console.log(`Loaded timeline metadata for ${type}:`, timelines[type]);
             console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
+            console.log('Initialized timelines:', Array.from(initializedTimelines));
         }
         
         return data[type].categories;
@@ -827,11 +830,29 @@ function updateButtonStates() {
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     if (saveButton) saveButton.disabled = isEmpty;
     
-    // Enable Next button based on timeline coverage requirement
+    // Enable Next button based on timeline coverage and initialization status
     const currentType = getCurrentTimelineType();
     const currentTimeline = timelines[currentType];
     const requiresComplete = currentTimeline?.coverage === 'complete';
-    if (nextButton) nextButton.disabled = requiresComplete && !isFull;
+    const hasNextTimeline = currentTimelineIndex < timelineTypes.length - 1;
+    const nextTimelineType = hasNextTimeline ? timelineTypes[currentTimelineIndex + 1] : null;
+    const nextTimelineNeedsInit = nextTimelineType && !initializedTimelines.has(nextTimelineType);
+    
+    if (nextButton) {
+        nextButton.disabled = (requiresComplete && !isFull) || (!hasNextTimeline || !nextTimelineNeedsInit);
+    }
+    
+    if (DEBUG_MODE) {
+        console.log('Button state update:', {
+            currentType,
+            requiresComplete,
+            isFull,
+            hasNextTimeline,
+            nextTimelineType,
+            nextTimelineNeedsInit,
+            initializedTimelines: Array.from(initializedTimelines)
+        });
+    }
     
     if (DEBUG_MODE && isFull) {
         console.log('Timeline is complete');
@@ -919,8 +940,13 @@ function initButtons() {
 
     // Add click handler for Next button
     document.getElementById('nextBtn').addEventListener('click', () => {
-        // Try to add next timeline
-        addNextTimeline();
+        const nextTimelineType = timelineTypes[currentTimelineIndex + 1];
+        if (nextTimelineType && !initializedTimelines.has(nextTimelineType)) {
+            addNextTimeline();
+        } else {
+            console.log('No more timelines to initialize');
+            nextBtn.disabled = true;
+        }
     });
 }
 
