@@ -235,6 +235,8 @@ async function fetchActivities(type) {
         
         if (DEBUG_MODE) {
             console.log(`Loaded timeline metadata for ${type}:`, timelines[type]);
+            console.log('All available timelines in activities.json:', Object.keys(data));
+            console.log('Full timeline data:', data);
         }
         
         return data[type].categories;
