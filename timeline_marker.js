@@ -50,12 +50,12 @@ export class TimelineMarker {
             const label = this.element.querySelector('.hour-label');
             if (label) {
                 this.element.removeChild(label);
-                // Get or create hour-labels container
-                let hourLabelsContainer = timeline.querySelector('.hour-labels');
+                // Get hour-labels container from timeline-container
+                let hourLabelsContainer = timeline.parentElement.querySelector('.hour-labels');
                 if (!hourLabelsContainer) {
                     hourLabelsContainer = document.createElement('div');
                     hourLabelsContainer.className = 'hour-labels';
-                    timeline.appendChild(hourLabelsContainer);
+                    timeline.parentElement.appendChild(hourLabelsContainer);
                 }
                 
                 const labelWrapper = document.createElement('div');
