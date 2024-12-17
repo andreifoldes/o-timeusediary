@@ -445,55 +445,6 @@ function updateTimeLabel(label, startTime, endTime, block) {
     }
 }
 
-function isTimelineFull() {
-    const currentData = getCurrentTimelineData();
-    if (currentData.length === 0) return false;
-
-    // Get the current timeline's coverage requirement
-    const currentType = getCurrentTimelineType();
-    const currentTimeline = timelines[currentType];
-    if (currentTimeline.coverage !== 'complete') {
-        return false; // Partial coverage timelines are never "full"
-    }
-
-    // For complete coverage requirement:
-    const timelineStart = TIMELINE_START_HOUR * 60; // Start time in minutes
-    const totalTimelineMinutes = TIMELINE_HOURS * 60; // Total minutes in the timeline
-    
-    // Array representing each minute in the timeline
-    const timelineCoverage = new Array(totalTimelineMinutes).fill(false);
-
-    // Mark the minutes that are covered by activities
-    currentData.forEach(activity => {
-        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
-        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
-
-        // Adjust times relative to timeline start
-        let relativeStart = (startMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-        let relativeEnd = (endMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-
-        // Handle wrap-around at midnight
-        if (relativeEnd <= relativeStart) {
-            relativeEnd += MINUTES_PER_DAY;
-        }
-
-        for (let i = relativeStart; i < relativeEnd; i++) {
-            const index = i % totalTimelineMinutes;
-            timelineCoverage[index] = true;
-        }
-    });
-
-    // Calculate covered minutes
-    const coveredMinutes = timelineCoverage.filter(covered => covered).length;
-    const coveragePercentage = (coveredMinutes / totalTimelineMinutes) * 100;
-
-    if (DEBUG_MODE) {
-        console.log(`Timeline coverage: ${coveragePercentage.toFixed(2)}%`);
-    }
-
-    return coveredMinutes === totalTimelineMinutes;
-}
-
 function initTimelineInteraction(timeline = null) {
     // If no timeline is provided, use the active timeline
     const targetTimeline = timeline || activeTimeline;
