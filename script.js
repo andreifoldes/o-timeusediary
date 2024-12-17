@@ -645,11 +645,6 @@ function initTimelineInteraction(timeline = null) {
                 listeners: {
                     start(event) {
                         event.target.classList.add('resizing');
-                        // Add resized class to the text element
-                        const textElement = event.target.querySelector('.activity-block-text');
-                        if (textElement) {
-                            textElement.classList.add('resized');
-                        }
                         // Create time label for mobile on resize start if it doesn't exist
                         const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
                         if (isMobile && !event.target.querySelector('.time-label')) {
@@ -691,7 +686,15 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.height = `${heightPercent}%`;
                             
-                            // Remove hour label wrapper position update
+                            // Check if block height is at least 6x the 10-minute interval
+                            const textElement = target.querySelector('.activity-block-text');
+                            if (textElement) {
+                                if (heightPercent >= 4.166667) {
+                                    textElement.classList.add('resized');
+                                } else {
+                                    textElement.classList.remove('resized');
+                                }
+                            }
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
@@ -722,7 +725,15 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.width = `${widthPercent}%`;
                             
-                            // Remove hour label wrapper position update
+                            // Check if block width is at least 6x the 10-minute interval
+                            const textElement = target.querySelector('.activity-block-text');
+                            if (textElement) {
+                                if (widthPercent >= 4.166667) {
+                                    textElement.classList.add('resized');
+                                } else {
+                                    textElement.classList.remove('resized');
+                                }
+                            }
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
@@ -732,11 +743,6 @@ function initTimelineInteraction(timeline = null) {
                     },
                     end(event) {
                         event.target.classList.remove('resizing');
-                        // Keep the text-element resized after interaction
-                        const textElement = event.target.querySelector('.activity-block-text');
-                        if (textElement) {
-                            textElement.classList.add('resized');
-                        }
                         const blockId = event.target.dataset.id;
                         const blockData = getCurrentTimelineData().find(activity => activity.id === blockId);
                         if (blockData) {
