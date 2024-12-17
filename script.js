@@ -70,10 +70,25 @@ async function addNextTimeline() {
             currentTimeline.setAttribute('data-active', 'true');
             activeTimeline = currentTimeline;
         } else {
-            // Desktop mode - handle previous timeline
+            // Desktop mode - create new timeline container
+            const newTimelineContainer = currentTimelineContainer.cloneNode(true);
+            const newTimeline = newTimelineContainer.querySelector('.timeline');
+            
+            // Reset and initialize new timeline
+            newTimelineContainer.style = '';
+            newTimeline.innerHTML = '';
+            newTimeline.id = 'timeline';
+            newTimeline.setAttribute('data-active', 'true');
+            
+            // Add new timeline below current one
+            document.querySelector('.timeline-canvas').appendChild(newTimelineContainer);
+            
+            // Update previous timeline state
             currentTimeline.setAttribute('data-active', 'false');
             currentTimelineContainer.setAttribute('data-active', 'false');
-            currentTimelineContainer.setAttribute('data-position', 'left');
+            
+            // Set active timeline reference
+            activeTimeline = newTimeline;
 
             // Update timeline IDs and set active state
             currentTimeline.id = 'timeline';
@@ -89,11 +104,17 @@ async function addNextTimeline() {
         // Render activities for next timeline
         renderActivities(categories);
 
+        // Initialize markers for the new timeline
+        initTimeline();
+        
         // Initialize interaction for the timeline
         initTimelineInteraction(activeTimeline);
 
         // Reset button states
         updateButtonStates();
+        
+        // Scroll new timeline into view
+        activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         if (DEBUG_MODE) {
             console.log(`Switched to ${nextTimelineType} timeline`);
