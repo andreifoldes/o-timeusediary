@@ -67,24 +67,10 @@ async function switchToSecondaryMode() {
         primaryTimelineContainer.setAttribute('data-active', 'false');
         primaryTimelineContainer.setAttribute('data-position', 'left');
 
-        // Create a new timeline container for secondary activities
-        const newTimelineContainer = primaryTimelineContainer.cloneNode(true);
-        newTimelineContainer.style.opacity = '1';
-        newTimelineContainer.style.pointerEvents = 'auto';
-        
-        // Clear any activity blocks from the cloned timeline
-        const activityBlocks = newTimelineContainer.querySelectorAll('.activity-block');
-        activityBlocks.forEach(block => block.remove());
-        
-        primaryTimelineContainer.parentNode.insertBefore(newTimelineContainer, primaryTimelineContainer.nextSibling);
-
         // Update timeline IDs and set active state
-        primaryTimeline.id = 'primaryTimeline';
-        
-        const newTimeline = newTimelineContainer.querySelector('.timeline');
-        newTimeline.id = 'timeline';
-        newTimeline.setAttribute('data-active', 'true');
-        activeTimeline = newTimeline;
+        primaryTimeline.id = 'timeline';
+        primaryTimeline.setAttribute('data-active', 'true');
+        activeTimeline = primaryTimeline;
     }
     
     // Update active timeline reference
