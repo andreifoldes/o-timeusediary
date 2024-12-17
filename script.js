@@ -909,10 +909,10 @@ function handleResize() {
     if (isMobile) {
         const minHeight = '1500px';
         // Set explicit dimensions for all elements
-        container.style.width = '180px';
+        container.style.minWidth = '180px';
         container.style.height = minHeight;
         
-        timeline.style.width = '100%';
+        timeline.style.width = 'inherit';
         timeline.style.height = minHeight;
         
         markersContainer.style.width = '100%';
