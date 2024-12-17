@@ -69,8 +69,8 @@ export class TimelineMarker {
                 labelWrapper.appendChild(label);
                 hourLabelsContainer.appendChild(labelWrapper);
 
-                // Add an extra wrapper at 100% position when we reach the last marker
-                if (this.label === '03:00') {
+                // Add an extra wrapper at 100% position when we reach the last marker (desktop mode only)
+                if (this.label === '03:00' && !isMobile) {
                     const extraWrapper = document.createElement('div');
                     extraWrapper.className = 'hour-label-wrapper';
                     extraWrapper.style.position = 'absolute';
