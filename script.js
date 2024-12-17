@@ -12,7 +12,6 @@ let timelineData = {
     primary: [],
     secondary: []
 };
-let isSecondaryMode = false;
 let activeTimeline = null; // Track the active timeline
 
 const MINUTES_PER_DAY = 24 * 60;
@@ -33,70 +32,83 @@ function getCurrentTimelineData() {
     return isSecondaryMode ? timelineData.secondary : timelineData.primary;
 }
 
-// Function to switch to secondary mode
-async function switchToSecondaryMode() {
+let currentTimelineIndex = 0;
+const timelineTypes = ['primary', 'secondary', 'tertiary']; // Add more timeline types as needed
+
+// Function to add next timeline
+async function addNextTimeline() {
     if (DEBUG_MODE) {
-        console.log('Primary timeline data saved:', timelineData.primary);
+        console.log(`Current timeline data saved:`, timelineData);
         console.log('Current DOM structure before switch:', document.body.innerHTML);
     }
 
-    // Load secondary timeline data first
+    // Increment timeline index
+    currentTimelineIndex++;
+    if (currentTimelineIndex >= timelineTypes.length) {
+        console.log('All timelines completed');
+        return;
+    }
+
+    const nextTimelineType = timelineTypes[currentTimelineIndex];
+
     try {
-        const categories = await fetchActivities('secondary');
+        // Load next timeline data
+        const categories = await fetchActivities(nextTimelineType);
         
-        // Now update UI for secondary mode
-        document.querySelector('.timeline-title').textContent = timelines.secondary.name;
-        document.querySelector('.timeline-description').textContent = timelines.secondary.description;
-        document.title = timelines.secondary.name;
+        // Update UI for next timeline
+        document.querySelector('.timeline-title').textContent = timelines[nextTimelineType].name;
+        document.querySelector('.timeline-description').textContent = timelines[nextTimelineType].description;
+        document.title = timelines[nextTimelineType].name;
+
+        const isMobile = window.innerWidth < 1024;
+        const currentTimelineContainer = document.querySelector('.timeline-container');
+        const currentTimeline = currentTimelineContainer.querySelector('.timeline');
+
+        if (isMobile) {
+            // In mobile mode, reuse the existing timeline
+            currentTimeline.id = 'timeline';
+            currentTimeline.setAttribute('data-active', 'true');
+            activeTimeline = currentTimeline;
+        } else {
+            // Desktop mode - handle previous timeline
+            currentTimeline.setAttribute('data-active', 'false');
+            currentTimelineContainer.setAttribute('data-active', 'false');
+            currentTimelineContainer.setAttribute('data-position', 'left');
+
+            // Update timeline IDs and set active state
+            currentTimeline.id = 'timeline';
+            currentTimeline.setAttribute('data-active', 'true');
+            activeTimeline = currentTimeline;
+        }
+
+        // Initialize timeline data if not exists
+        if (!timelineData[nextTimelineType]) {
+            timelineData[nextTimelineType] = [];
+        }
+
+        // Render activities for next timeline
+        renderActivities(categories);
+
+        // Initialize interaction for the timeline
+        initTimelineInteraction(activeTimeline);
+
+        // Reset button states
+        updateButtonStates();
+
+        if (DEBUG_MODE) {
+            console.log(`Switched to ${nextTimelineType} timeline`);
+            console.log('Timeline data structure:', timelineData);
+        }
+
+        // Update Back button state
+        const backButton = document.getElementById('backBtn');
+        if (backButton) {
+            backButton.disabled = false;
+        }
+
     } catch (error) {
-        console.error('Error switching to secondary mode:', error);
-        throw new Error('Failed to switch to secondary mode: ' + error.message);
-    }
-
-    const isMobile = window.innerWidth < 1024;
-    const primaryTimelineContainer = document.querySelector('.timeline-container');
-    const primaryTimeline = primaryTimelineContainer.querySelector('.timeline');
-
-    if (isMobile) {
-        // In mobile mode, just reuse the existing timeline
-        primaryTimeline.id = 'timeline';
-        primaryTimeline.setAttribute('data-active', 'true');
-        activeTimeline = primaryTimeline;
-    } else {
-        // Desktop mode - create second timeline
-        primaryTimeline.setAttribute('data-active', 'false');
-        primaryTimelineContainer.setAttribute('data-active', 'false');
-        primaryTimelineContainer.setAttribute('data-position', 'left');
-
-        // Update timeline IDs and set active state
-        primaryTimeline.id = 'timeline';
-        primaryTimeline.setAttribute('data-active', 'true');
-        activeTimeline = primaryTimeline;
-    }
-    
-    // Update active timeline reference
-    activeTimeline = newTimeline;
-
-    // Set secondary mode flag
-    isSecondaryMode = true;
-
-    // Load secondary activities
-    const categories = await fetchActivities('secondary');
-    if (DEBUG_MODE) {
-        console.log('DOM structure after loading secondary activities:', document.body.innerHTML);
-        console.log('All timeline containers:', document.querySelectorAll('.timeline-container'));
-    }
-    renderActivities(categories);
-
-    // Initialize interaction for the new timeline
-    initTimelineInteraction(newTimeline);
-
-    // Reset button states
-    updateButtonStates();
-
-    if (DEBUG_MODE) {
-        console.log('Switched to secondary mode');
-        console.log('Timeline data structure:', timelineData);
+        console.error(`Error switching to ${nextTimelineType} timeline:`, error);
+        throw new Error(`Failed to switch to ${nextTimelineType} timeline: ${error.message}`);
     }
 }
 
@@ -886,12 +898,8 @@ function initButtons() {
 
     // Add click handler for Next button
     document.getElementById('nextBtn').addEventListener('click', () => {
-        if (!isSecondaryMode) {
-            // Switch to secondary mode
-            switchToSecondaryMode();
-        } else {
-            console.log('Secondary timeline complete');
-        }
+        // Try to add next timeline
+        addNextTimeline();
     });
 }
 
