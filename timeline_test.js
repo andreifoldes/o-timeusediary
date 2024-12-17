@@ -25,7 +25,7 @@ export function testTimelineMarkerPositioning() {
 
     // Create markers for 24 hours
     const markers = [];
-    for (let hour = 4; hour <= 27; hour++) {
+    for (let hour = 4; hour <= 28; hour++) {
         const displayHour = hour % 24;
         const position = ((hour - 4) / 24) * 100;
         

@@ -75,8 +75,8 @@ export class TimelineMarker {
             const hourLabelWrappers = timeline.parentElement.querySelectorAll('.hour-label-wrapper');
             console.log(`Final number of hour-label-wrappers: ${hourLabelWrappers.length}`);
             
-            if (hourLabelWrappers.length !== 24) {
-                throw new Error(`Invalid number of hour-label-wrappers: ${hourLabelWrappers.length}. Expected: 24`);
+            if (hourLabelWrappers.length !== 25) {
+                throw new Error(`Invalid number of hour-label-wrappers: ${hourLabelWrappers.length}. Expected: 25`);
             }
         }
         
