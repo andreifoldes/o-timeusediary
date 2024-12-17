@@ -691,11 +691,7 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.height = `${heightPercent}%`;
                             
-                            // Update hour label wrapper position
-                            const labelWrapper = target.closest('.timeline').querySelector('.hour-label-wrapper');
-                            if (labelWrapper) {
-                                labelWrapper.style.top = target.style.top;
-                            }
+                            // Remove hour label wrapper position update
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
@@ -726,11 +722,7 @@ function initTimelineInteraction(timeline = null) {
 
                             target.style.width = `${widthPercent}%`;
                             
-                            // Update hour label wrapper position
-                            const labelWrapper = target.closest('.timeline').querySelector('.hour-label-wrapper');
-                            if (labelWrapper) {
-                                labelWrapper.style.left = target.style.left;
-                            }
+                            // Remove hour label wrapper position update
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
