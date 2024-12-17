@@ -16,6 +16,8 @@ const TIMELINE_HOURS = 24;
 
 const DEBUG_MODE = true; // Enable debug mode
 
+import { Timeline } from './timeline.js';
+import { TimelineMarker } from './timeline_marker.js';
 import { 
     formatTimeDDMMYYYYHHMM,
     formatTimeHHMM,
