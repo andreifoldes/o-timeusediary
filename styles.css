@@ -319,11 +319,11 @@ body {
         right: -35px;
         top: 50%;
         transform: translateY(-50%);
-        white-space: pre-line;
+        white-space: normal;
         text-align: center;
-        width: auto;
-        min-width: 30px;
+        width: 30px;
         height: auto;
+        word-wrap: break-word;
     }
 }
 
