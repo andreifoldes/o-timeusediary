@@ -60,6 +60,7 @@ export class TimelineMarker {
                     timeline.parentElement.appendChild(hourLabelsContainer);
                 }
                 
+                // Create label wrapper for each hour marker
                 const labelWrapper = document.createElement('div');
                 labelWrapper.className = 'hour-label-wrapper';
                 labelWrapper.style.position = 'absolute';
@@ -67,11 +68,25 @@ export class TimelineMarker {
                 labelWrapper.style.left = this.element.style.left;
                 labelWrapper.appendChild(label);
                 hourLabelsContainer.appendChild(labelWrapper);
+
+                // Add an extra wrapper at 100% position when we reach the last marker
+                if (this.label === '03:00') {
+                    const extraWrapper = document.createElement('div');
+                    extraWrapper.className = 'hour-label-wrapper';
+                    extraWrapper.style.position = 'absolute';
+                    extraWrapper.style.top = '100%';
+                    extraWrapper.style.left = '100%';
+                    const extraLabel = document.createElement('div');
+                    extraLabel.className = 'hour-label';
+                    extraLabel.textContent = '04:00';
+                    extraWrapper.appendChild(extraLabel);
+                    hourLabelsContainer.appendChild(extraWrapper);
+                }
             }
         }
 
-        // If this is the last hour marker (04:00) and DEBUG_MODE is true, check the count
-        if (this.type === 'hour' && DEBUG_MODE && this.label === '04:00') {
+        // If this is the last hour marker (03:00) and DEBUG_MODE is true, check the count
+        if (this.type === 'hour' && DEBUG_MODE && this.label === '03:00') {
             const hourLabelWrappers = timeline.parentElement.querySelectorAll('.hour-label-wrapper');
             console.log(`Final number of hour-label-wrappers: ${hourLabelWrappers.length}`);
             
