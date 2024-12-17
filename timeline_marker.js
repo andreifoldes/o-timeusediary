@@ -70,8 +70,8 @@ export class TimelineMarker {
             }
         }
 
-        // If this is the last hour marker (03:00) and DEBUG_MODE is true, check the count
-        if (this.type === 'hour' && DEBUG_MODE && this.label === '03:00') {
+        // If this is the last hour marker (04:00) and DEBUG_MODE is true, check the count
+        if (this.type === 'hour' && DEBUG_MODE && this.label === '04:00') {
             const hourLabelWrappers = timeline.parentElement.querySelectorAll('.hour-label-wrapper');
             console.log(`Final number of hour-label-wrappers: ${hourLabelWrappers.length}`);
             
