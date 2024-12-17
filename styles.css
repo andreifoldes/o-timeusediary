@@ -79,6 +79,7 @@ body {
         width: 120px;
         height: 1500px;
         margin: 20px auto;
+        padding-left: 2px;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         position: relative;
     }
