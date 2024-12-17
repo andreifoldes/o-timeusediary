@@ -291,7 +291,7 @@ function initTimeline() {
     
     const hourLabelsContainer = document.createElement('div');
     hourLabelsContainer.className = 'hour-labels';
-    timeline.parentElement.appendChild(hourLabelsContainer);
+    timeline.appendChild(hourLabelsContainer);
     
     // Store markers for easy access
     timeline.markers = [];
