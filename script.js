@@ -16,10 +16,20 @@ const TIMELINE_HOURS = 24;
 
 const DEBUG_MODE = true; // Enable debug mode
 
-// Function to generate unique IDs for activity blocks
-function generateUniqueId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
+import { 
+    formatTimeDDMMYYYYHHMM,
+    formatTimeHHMM,
+    timeToMinutes,
+    findNearestMarkers,
+    minutesToPercentage,
+    positionToMinutes,
+    calculateMinimumBlockWidth,
+    hasOverlap,
+    canPlaceActivity,
+    isTimelineFull,
+    isOverlapping,
+    generateUniqueId
+} from './utils.js';
 
 // Function to get the current timeline type
 function getCurrentTimelineType() {
