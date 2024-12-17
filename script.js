@@ -39,7 +39,6 @@ let timelineTypes = []; // Will be populated from activities.json
 async function addNextTimeline() {
     if (DEBUG_MODE) {
         console.log(`Current timeline data saved:`, timelineData);
-        console.log('Current DOM structure before switch:', document.body.innerHTML);
     }
 
     // Increment timeline index
