@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -12,7 +12,9 @@ body {
     top: 0;
     background: white;
     z-index: 1000;
-    padding: 10px 0;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .timeline-canvas {
