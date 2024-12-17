@@ -86,17 +86,19 @@ async function addNextTimeline() {
             currentTimeline.setAttribute('data-active', 'false');
             currentTimelineContainer.setAttribute('data-active', 'false');
             
-            // Initialize new timeline
+            // Initialize new timeline and container
             newTimeline.id = 'timeline';
             newTimeline.setAttribute('data-active', 'true');
+            newTimelineContainer.setAttribute('data-active', 'true');
             
             // Create and initialize timeline container with markers
             const timelineContainer = new TimelineContainer(newTimeline);
             timelineContainer.initialize(isMobile).createMarkers(isMobile);
             newTimeline.containerInstance = timelineContainer;
             
-            // Set active timeline reference
+            // Set active timeline reference and initialize interaction
             activeTimeline = newTimeline;
+            initTimelineInteraction(newTimeline);
         }
 
         // Initialize timeline data if not exists
