@@ -1,3 +1,5 @@
+import { DEBUG_MODE } from './constants.js';
+
 export class TimelineMarker {
     constructor(type, position, label = '') {
         this.type = type; // 'hour', 'minute-30', 'minute-10'
