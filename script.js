@@ -904,7 +904,7 @@ function handleResize() {
     if (isMobile) {
         const minHeight = '1500px';
         // Set explicit dimensions for all elements
-        container.style.width = '120px';
+        container.style.width = '200px';
         container.style.height = minHeight;
         
         timeline.style.width = '100%';
