@@ -294,17 +294,36 @@ body {
 
 .time-label {
     position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
     font-size: 11px;
     color: #fff;
-    white-space: nowrap;
     pointer-events: none;
     background-color: rgba(0, 0, 0, 0.7);
     padding: 2px 4px;
     border-radius: 4px;
     z-index: 10;
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+    .time-label {
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 1023px) {
+    .time-label {
+        right: -45px;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: pre-line;
+        text-align: center;
+        width: auto;
+        height: auto;
+    }
 }
 
 .controls {
