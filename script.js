@@ -444,7 +444,7 @@ function updateTimeLabel(label, startTime, endTime, block) {
         label.style.wordWrap = 'break-word';
         label.style.wordBreak = 'break-word';
         label.style.overflowWrap = 'break-word';
-        label.style.height = '20px';
+        label.style.height = '30px';
         label.style.display = 'flex';
         label.style.alignItems = 'center';
         label.style.justifyContent = 'center';
