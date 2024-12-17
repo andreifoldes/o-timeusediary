@@ -272,7 +272,8 @@ async function fetchActivities(type) {
         
         // Create new Timeline instance with metadata and set active state
         timelines[type] = new Timeline(type, data[type]);
-        timelines[type].isActive = data[type].isActive;
+        // Set isActive true only for first timeline, false for others
+        timelines[type].isActive = type === 'primary';
         initializedTimelines.add(type); // Mark this timeline as initialized
         
         if (DEBUG_MODE) {
