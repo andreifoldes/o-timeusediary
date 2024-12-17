@@ -81,7 +81,8 @@ async function addNextTimeline() {
             newTimeline.setAttribute('data-active', 'true');
             
             // Add new timeline below current one
-            document.querySelector('.timeline-canvas').appendChild(newTimelineContainer);
+            const timelinesWrapper = document.querySelector('.timelines-wrapper');
+            timelinesWrapper.appendChild(newTimelineContainer);
             
             // Update previous timeline state
             currentTimeline.setAttribute('data-active', 'false');
