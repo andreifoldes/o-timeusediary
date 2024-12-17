@@ -429,14 +429,14 @@ function createTimeLabel(block) {
 }
 
 function updateTimeLabel(label, startTime, endTime, block) {
+    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
+    
     // Format time label differently for mobile
     if (isMobile) {
         label.textContent = `${startTime}\n-\n${endTime}`;
     } else {
         label.textContent = `${startTime} - ${endTime}`;
     }
-    
-    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     if (isMobile) {
         // Keep centered above activity-block-text in mobile mode
         const textDiv = block.querySelector('.activity-block-text');
