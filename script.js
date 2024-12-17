@@ -431,20 +431,15 @@ function createTimeLabel(block) {
 function updateTimeLabel(label, startTime, endTime, block) {
     const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
     
-    // Format time label differently for mobile
+    // Use same format for both layouts
     label.textContent = `${startTime} - ${endTime}`;
+    
     if (isMobile) {
-        // Keep centered above activity-block-text in mobile mode
-        const textDiv = block.querySelector('.activity-block-text');
-        if (textDiv) {
-            const textRect = textDiv.getBoundingClientRect();
-            const blockRect = block.getBoundingClientRect();
-            // In mobile mode, position label to the right of the text
-            label.style.left = '120%'; // 20% padding to the right
-            label.style.top = '50%';
-            label.style.transform = 'translateY(-50%)';
-            label.style.bottom = 'auto';
-        }
+        // Position label to the right in mobile mode
+        label.style.left = '120%';
+        label.style.top = '50%';
+        label.style.transform = 'translateY(-50%)';
+        label.style.bottom = 'auto';
     } else {
         // Desktop mode positioning
         label.style.bottom = '-20px';
