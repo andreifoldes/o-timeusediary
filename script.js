@@ -435,11 +435,19 @@ function updateTimeLabel(label, startTime, endTime, block) {
     label.textContent = `${startTime} - ${endTime}`;
     
     if (isMobile) {
-        // Position label to the right in mobile mode
+        // Position label to the right in mobile mode with text wrapping
         label.style.left = '120%';
         label.style.top = '50%';
         label.style.transform = 'translateY(-50%)';
         label.style.bottom = 'auto';
+        label.style.whiteSpace = 'normal';
+        label.style.wordWrap = 'break-word';
+        label.style.wordBreak = 'break-word';
+        label.style.overflowWrap = 'break-word';
+        label.style.height = '20px';
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.justifyContent = 'center';
     } else {
         // Desktop mode positioning
         label.style.bottom = '-20px';

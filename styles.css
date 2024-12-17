@@ -322,8 +322,13 @@ body {
         white-space: normal;
         text-align: center;
         width: 30px;
-        height: auto;
+        height: 20px;
         word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
