@@ -1,3 +1,5 @@
+import { TimelineMarker } from './timeline_marker.js';
+
 export class TimelineContainer {
     constructor(timeline) {
         this.timeline = timeline;
