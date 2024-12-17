@@ -72,14 +72,11 @@ async function addNextTimeline() {
             activeTimeline = currentTimeline;
         } else {
             // Desktop mode - create new timeline container
-            const newTimelineContainer = currentTimelineContainer.cloneNode(true);
-            const newTimeline = newTimelineContainer.querySelector('.timeline');
-            
-            // Reset and initialize new timeline
-            newTimelineContainer.style = '';
-            newTimeline.innerHTML = '';
-            newTimeline.id = 'timeline';
-            newTimeline.setAttribute('data-active', 'true');
+            const newTimelineContainer = document.createElement('div');
+            newTimelineContainer.className = 'timeline-container';
+            const newTimeline = document.createElement('div');
+            newTimeline.className = 'timeline';
+            newTimelineContainer.appendChild(newTimeline);
             
             // Add new timeline below current one
             const timelinesWrapper = document.querySelector('.timelines-wrapper');
@@ -89,13 +86,17 @@ async function addNextTimeline() {
             currentTimeline.setAttribute('data-active', 'false');
             currentTimelineContainer.setAttribute('data-active', 'false');
             
+            // Initialize new timeline
+            newTimeline.id = 'timeline';
+            newTimeline.setAttribute('data-active', 'true');
+            
+            // Create and initialize timeline container with markers
+            const timelineContainer = new TimelineContainer(newTimeline);
+            timelineContainer.initialize(isMobile).createMarkers(isMobile);
+            newTimeline.containerInstance = timelineContainer;
+            
             // Set active timeline reference
             activeTimeline = newTimeline;
-
-            // Update timeline IDs and set active state
-            currentTimeline.id = 'timeline';
-            currentTimeline.setAttribute('data-active', 'true');
-            activeTimeline = currentTimeline;
         }
 
         // Initialize timeline data if not exists
