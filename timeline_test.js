@@ -11,8 +11,9 @@ export function testTimelineMarkerPositioning() {
     timeline.style.height = '1500px';
     timeline.style.position = 'relative';
     
-    // Add timeline to container
+    // Add timeline to container and container to document
     timelineContainer.appendChild(timeline);
+    document.body.appendChild(timelineContainer);
     
     // Create required containers
     const markersContainer = document.createElement('div');
@@ -53,6 +54,9 @@ export function testTimelineMarkerPositioning() {
         }
         lastPosition = position;
     });
+
+    // Clean up
+    document.body.removeChild(timelineContainer);
 
     return {
         success: errors.length === 0,
