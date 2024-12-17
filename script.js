@@ -37,6 +37,7 @@ function getCurrentTimelineData() {
 async function switchToSecondaryMode() {
     if (DEBUG_MODE) {
         console.log('Primary timeline data saved:', timelineData.primary);
+        console.log('Current DOM structure before switch:', document.body.innerHTML);
     }
 
     // Load secondary timeline data first
