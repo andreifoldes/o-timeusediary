@@ -433,9 +433,7 @@ function updateTimeLabel(label, startTime, endTime, block) {
     
     // Format time label differently for mobile
     if (isMobile) {
-        const [startHour, startMin] = startTime.split(':');
-        const [endHour, endMin] = endTime.split(':');
-        label.textContent = `${startHour}:${startMin}\n${endHour}:${endMin}`;
+        label.textContent = `${startTime}\n-\n${endTime}`;
     } else {
         label.textContent = `${startTime} - ${endTime}`;
     }
