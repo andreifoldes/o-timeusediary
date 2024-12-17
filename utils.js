@@ -1,5 +1,15 @@
 import { DEBUG_MODE } from './constants.js';
 
+// Timeline state management functions
+export function getCurrentTimelineType(timelineTypes, currentTimelineIndex) {
+    return timelineTypes[currentTimelineIndex];
+}
+
+export function getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData) {
+    const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
+    return timelineData[currentType] || [];
+}
+
 export function generateUniqueId() {
     return Math.random().toString(36).substr(2, 9);
 }
@@ -73,8 +83,8 @@ export function calculateMinimumBlockWidth() {
     return (INCREMENT_MINUTES / (TIMELINE_HOURS * 60)) * 100;
 }
 
-export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
-    return getCurrentTimelineData().some(activity => {
+export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timelineTypes, currentTimelineIndex, timelineData) {
+    return getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).some(activity => {
         if (excludeBlock && activity === excludeBlock) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
@@ -87,8 +97,8 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
     });
 }
 
-export function canPlaceActivity(newStart, newEnd, excludeId = null) {
-    return !getCurrentTimelineData().some(activity => {
+export function canPlaceActivity(newStart, newEnd, excludeId = null, timelineTypes, currentTimelineIndex, timelineData) {
+    return !getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
@@ -96,8 +106,8 @@ export function canPlaceActivity(newStart, newEnd, excludeId = null) {
     });
 }
 
-export function isTimelineFull() {
-    const currentData = getCurrentTimelineData();
+export function isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines) {
+    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
     if (currentData.length === 0) return false;
 
     const currentType = getCurrentTimelineType();

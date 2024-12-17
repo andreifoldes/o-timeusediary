@@ -30,17 +30,6 @@ import {
     generateUniqueId
 } from './utils.js';
 
-// Function to get the current timeline type
-function getCurrentTimelineType() {
-    return timelineTypes[currentTimelineIndex];
-}
-
-// Function to get the current timeline's data array
-function getCurrentTimelineData() {
-    const currentType = getCurrentTimelineType();
-    return timelineData[currentType] || [];
-}
-
 let currentTimelineIndex = 0;
 let timelineTypes = []; // Will be populated from activities.json
 
@@ -456,7 +445,7 @@ function initTimelineInteraction(timeline = null) {
         
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
-        if (isTimelineFull()) {
+        if (isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines)) {
             alert('Timeline is full. Remove some activities first.');
             return;
         }
@@ -610,7 +599,7 @@ function initTimelineInteraction(timeline = null) {
                             const newEndMinutes = Math.round(newStartMinutes + roundedHeightMinutes);
                             
                             const blockId = target.dataset.id;
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId)) {
+                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
                                 return;
                             }
 
@@ -712,7 +701,7 @@ function updateButtonStates() {
     const saveButton = document.getElementById('saveBtn');
     const nextButton = document.getElementById('nextBtn');
     
-    const currentData = getCurrentTimelineData();
+    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
     const isEmpty = currentData.length === 0;
     const isFull = isTimelineFull();
     
