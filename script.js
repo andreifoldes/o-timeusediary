@@ -1,5 +1,6 @@
 import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
+import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 
 let selectedActivity = null;
 
@@ -777,7 +778,7 @@ function initButtons() {
     });
 
     document.getElementById('undoBtn').addEventListener('click', () => {
-        const currentData = getCurrentTimelineData();
+        const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
         if (currentData.length > 0) {
             if (DEBUG_MODE) {
                 console.log('Before undo - timelineData:', timelineData);
