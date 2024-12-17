@@ -27,9 +27,15 @@ function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
+// Function to get the current timeline type
+function getCurrentTimelineType() {
+    return timelineTypes[currentTimelineIndex];
+}
+
 // Function to get the current timeline's data array
 function getCurrentTimelineData() {
-    return isSecondaryMode ? timelineData.secondary : timelineData.primary;
+    const currentType = getCurrentTimelineType();
+    return timelineData[currentType] || [];
 }
 
 let currentTimelineIndex = 0;
@@ -491,7 +497,8 @@ function isTimelineFull() {
     if (currentData.length === 0) return false;
 
     // Get the current timeline's coverage requirement
-    const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
+    const currentType = getCurrentTimelineType();
+    const currentTimeline = timelines[currentType];
     if (currentTimeline.coverage !== 'complete') {
         return false; // Partial coverage timelines are never "full"
     }
@@ -810,7 +817,8 @@ function updateButtonStates() {
     if (saveButton) saveButton.disabled = isEmpty;
     
     // Enable Next button based on timeline coverage requirement
-    const currentTimeline = isSecondaryMode ? timelines.secondary : timelines.primary;
+    const currentType = getCurrentTimelineType();
+    const currentTimeline = timelines[currentType];
     const requiresComplete = currentTimeline?.coverage === 'complete';
     if (nextButton) nextButton.disabled = requiresComplete && !isFull;
     
