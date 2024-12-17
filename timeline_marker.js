@@ -70,17 +70,13 @@ export class TimelineMarker {
             }
         }
 
-        // If this is an hour marker and DEBUG_MODE is true, check the count
-        if (this.type === 'hour' && DEBUG_MODE) {
+        // If this is the last hour marker (03:00) and DEBUG_MODE is true, check the count
+        if (this.type === 'hour' && DEBUG_MODE && this.label === '03:00') {
             const hourLabelWrappers = timeline.parentElement.querySelectorAll('.hour-label-wrapper');
-            console.log(`Number of hour-label-wrappers: ${hourLabelWrappers.length}`);
+            console.log(`Final number of hour-label-wrappers: ${hourLabelWrappers.length}`);
             
-            // After all hour markers are created (when we reach the last hour),
-            // verify we have exactly 24 wrappers
-            if (this.label === '03:00') {  // Last hour marker
-                if (hourLabelWrappers.length !== 24) {
-                    throw new Error(`Invalid number of hour-label-wrappers: ${hourLabelWrappers.length}. Expected: 24`);
-                }
+            if (hourLabelWrappers.length !== 24) {
+                throw new Error(`Invalid number of hour-label-wrappers: ${hourLabelWrappers.length}. Expected: 24`);
             }
         }
         
