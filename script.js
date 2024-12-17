@@ -445,15 +445,6 @@ function updateTimeLabel(label, startTime, endTime, block) {
     }
 }
 
-function canPlaceActivity(newStart, newEnd, excludeId = null) {
-    return !getCurrentTimelineData().some(activity => {
-        if (excludeId && activity.id === excludeId) return false;
-        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
-        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
-        return (newStart < activityEnd && newEnd > activityStart);
-    });
-}
-
 function isTimelineFull() {
     const currentData = getCurrentTimelineData();
     if (currentData.length === 0) return false;
