@@ -4,6 +4,7 @@
     "description": "The main timeline to track all activities.",
     "mode": "single-choice",
     "coverage": "complete",
+    "isActive": true,
     "categories": [
       {
         "name": "Personal",
@@ -87,6 +88,7 @@
     "description": "An alternate timeline to track specific activities in more detail",
     "mode": "single-choice",
     "coverage": "partial",
+    "isActive": false,
     "categories": [
       {
         "name": "Personal",
@@ -169,7 +171,8 @@
       "name": "Tertiary Timeline",
       "description": "A hypothetical timeline with more specific and imaginative categories.",
       "mode": "single-choice",
-      "coverage": "partial",
+      "coverage": "partial", 
+      "isActive": false,
   "categories": [
     {
       "name": "Magical Activities",

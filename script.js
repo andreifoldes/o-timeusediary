@@ -55,7 +55,8 @@ async function addNextTimeline() {
         // Load next timeline data
         const categories = await fetchActivities(nextTimelineType);
         
-        // Update UI for next timeline
+        // Update UI for next timeline and set it as active
+        timelines[nextTimelineType].isActive = true;
         document.querySelector('.timeline-title').textContent = timelines[nextTimelineType].name;
         document.querySelector('.timeline-description').textContent = timelines[nextTimelineType].description;
         document.title = timelines[nextTimelineType].name;
@@ -269,8 +270,9 @@ async function fetchActivities(type) {
             throw new Error(`Timeline type ${type} not found`);
         }
         
-        // Create new Timeline instance with metadata
+        // Create new Timeline instance with metadata and set active state
         timelines[type] = new Timeline(type, data[type]);
+        timelines[type].isActive = data[type].isActive;
         initializedTimelines.add(type); // Mark this timeline as initialized
         
         if (DEBUG_MODE) {
