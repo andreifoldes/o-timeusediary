@@ -703,7 +703,7 @@ function updateButtonStates() {
     
     const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
     const isEmpty = currentData.length === 0;
-    const isFull = isTimelineFull();
+    const isFull = isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines);
     
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
@@ -741,16 +741,13 @@ function updateButtonStates() {
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        const currentData = getCurrentTimelineData();
+        const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
         if (currentData.length > 0) {
             const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
-            if (isSecondaryMode) {
-                timelineData.secondary = [];
-            } else {
-                timelineData.primary = [];
-            }
+            const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
+            timelineData[currentType] = [];
 
             updateButtonStates();
 
