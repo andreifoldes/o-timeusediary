@@ -699,7 +699,7 @@ function initButtons() {
             updateButtonStates();
 
             if (DEBUG_MODE) {
-                console.log('Timeline data after clean:', timelineData);
+                console.log('Timeline data after clean:', window.timelineManager.activities);
             }
         }
     });
