@@ -522,15 +522,26 @@ function initTimelineInteraction(timeline = null) {
                 enabled: true,
                 listeners: {
                     move: function (event) {
-                        const { target } = event;
-                        const x = (parseFloat(target.getAttribute('data-x')) || 0);
-                        const y = (parseFloat(target.getAttribute('data-y')) || 0);
-
-                        // Update element width
-                        target.style.width = `${event.rect.width}px`;
-
-                        // Translate when resizing from top or left edges
-                        target.style.transform = `translate(${x}px, ${y}px)`;
+                        const { target, rect, deltaRect } = event;
+                        
+                        // Get current dimensions
+                        const width = rect.width;
+                        
+                        // Calculate new width as percentage of timeline
+                        const timelineWidth = targetTimeline.offsetWidth;
+                        const widthPercent = (width / timelineWidth) * 100;
+                        
+                        // Update element width as percentage
+                        target.style.width = `${widthPercent}%`;
+                        
+                        if (DEBUG_MODE) {
+                            console.log('Resize move:', {
+                                width,
+                                widthPercent,
+                                rect,
+                                deltaRect
+                            });
+                        }
                     }
                 },
                 modifiers: [
