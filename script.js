@@ -498,14 +498,16 @@ function initTimelineInteraction(timeline = null) {
                     const timeLabel = target.querySelector('.time-label');
                     if (timeLabel) {
                         const startTime = target.dataset.start;
+                        const startMinutes = timeToMinutes(startTime);
                         let endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
+                            
                         // If the position is at the end of timeline (100%), set to 04:00
                         if (parseFloat(target.style.left) + newWidth >= 100) {
                             endMinutes = 240; // 04:00 in minutes
                         }
                         const endTime = formatTimeHHMM(endMinutes);
                         updateTimeLabel(timeLabel, startTime, endTime, target);
-                            
+                                
                         // Update the end time and length in the dataset using calculateTimeDifference
                         target.dataset.end = endTime;
                         target.dataset.length = calculateTimeDifference(startTime, endTime);
