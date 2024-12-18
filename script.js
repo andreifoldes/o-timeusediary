@@ -565,11 +565,17 @@ function initTimelineInteraction(timeline = null) {
                 listeners: {
                     start(event) {
                         const rect = event.target.getBoundingClientRect();
+                        // Store initial rect with all properties as numbers
                         event.rect = {
                             left: rect.left,
                             right: rect.right,
                             top: rect.top,
                             bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height
+                        };
+                        // Store initial dimensions for delta calculations
+                        event.initialDimensions = {
                             width: rect.width,
                             height: rect.height
                         };
@@ -601,8 +607,8 @@ function initTimelineInteraction(timeline = null) {
                         const timelineRect = timeline.getBoundingClientRect();
                         const targetRect = event.target.getBoundingClientRect();
                         
-                        // Calculate delta based on current rect vs original rect
-                        const deltaWidth = targetRect.width - event.rect.width;
+                        // Calculate delta based on current dimensions vs initial dimensions
+                        const deltaWidth = targetRect.width - event.initialDimensions.width;
                         event.deltaRect = {
                             left: 0,
                             right: deltaWidth,
