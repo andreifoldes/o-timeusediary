@@ -744,6 +744,8 @@ function initButtons() {
                 });
             }
 
+            const timeline = window.timelineManager.activeTimeline;
+            const blocks = timeline.querySelectorAll('.activity-block');
             blocks.forEach(block => {
                 if (block.dataset.id === lastActivity.id) {
                     if (DEBUG_MODE) {
