@@ -60,7 +60,7 @@ async function addNextTimeline() {
         document.querySelector('.timeline-description').textContent = timelines[nextTimelineType].description;
         document.title = timelines[nextTimelineType].name;
 
-        const isMobile = window.innerWidth < 1024;
+        const isMobile = getIsMobile();
         const currentTimelineContainer = document.querySelector('.timeline-container');
         const currentTimeline = currentTimelineContainer.querySelector('.timeline');
 
@@ -256,11 +256,11 @@ function initTimeline() {
     timeline.setAttribute('data-active', 'true');
     activeTimeline = timeline;
     
-    timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
+    timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
     
     // Create and initialize timeline container
     const timelineContainer = new TimelineContainer(timeline);
-    timelineContainer.initialize(isMobile).createMarkers(isMobile);
+    timelineContainer.initialize(getIsMobile()).createMarkers(getIsMobile());
     
     // Store the container instance on the timeline element for later access
     timeline.containerInstance = timelineContainer;
@@ -411,7 +411,7 @@ function initTimelineInteraction(timeline = null) {
         }
 
         const rect = targetTimeline.getBoundingClientRect();
-        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
+        const isMobile = getIsMobile();
         let clickPositionPercent;
         
         if (isMobile) {
