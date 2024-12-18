@@ -509,20 +509,26 @@ function initTimelineInteraction(timeline = null) {
         interact(currentBlock)
             .resizable({
                 edges: isMobile ? { bottom: true } : { right: true },
+                inertia: false,
                 modifiers: [
                     interact.modifiers.restrictEdges({
-                        outer: 'parent',
-                        endOnly: true
+                        outer: 'parent'
                     }),
                     interact.modifiers.restrictSize({
-                        min: isMobile 
-                            ? { height: calculateMinimumBlockWidth() * targetTimeline.offsetHeight / 100 }
-                            : { width: calculateMinimumBlockWidth() * targetTimeline.offsetWidth / 100 },
-                        max: isMobile 
-                            ? { height: targetTimeline.offsetHeight }
-                            : { width: targetTimeline.offsetWidth }
+                        min: { width: 20, height: 20 },
+                        max: { width: '100%', height: '100%' }
+                    }),
+                    interact.modifiers.snapSize({
+                        targets: [
+                            { width: calculateMinimumBlockWidth() + '%' },
+                            { height: calculateMinimumBlockWidth() + '%' }
+                        ],
+                        range: 10,
+                        relativePoints: [ { x: 0, y: 0 } ]
                     })
                 ],
+                preserveAspectRatio: false,
+                square: false,
                 listeners: {
                     start(event) {
                         event.target.classList.add('resizing');
