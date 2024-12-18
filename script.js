@@ -519,7 +519,7 @@ function initTimelineInteraction(timeline = null) {
 
         interact(currentBlock)
             .resizable({
-                edges: isMobile ? { bottom: true } : { right: true },
+                edges: getIsMobile() ? { bottom: true } : { right: true },
                 inertia: false,
                 margin: 10,
                 enabled: true,
