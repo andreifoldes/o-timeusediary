@@ -658,7 +658,7 @@ function initTimelineInteraction(timeline = null) {
                             const newEndMinutes = startMinutes + newSizeMinutes;
                             
                             const blockId = target.dataset.id;
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
+                            if (!canPlaceActivity(startMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
                                 return;
                             }
 
