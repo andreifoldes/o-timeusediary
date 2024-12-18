@@ -516,7 +516,9 @@ function initTimelineInteraction(timeline = null) {
                         const activityIndex = currentData.findIndex(activity => activity.id === activityId);
                         
                         if (activityIndex !== -1) {
-                            currentData[activityIndex].endTime = formatTimeDDMMYYYYHHMM(endMinutes);
+                            const times = formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+                            currentData[activityIndex].startTime = times.start;
+                            currentData[activityIndex].endTime = times.end;
                             if (DEBUG_MODE) {
                                 console.log('Updated activity data:', currentData[activityIndex]);
                             }
@@ -641,8 +643,7 @@ function initTimelineInteraction(timeline = null) {
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
-            startTime: formatTimeDDMMYYYYHHMM(startMinutes),
-            endTime: formatTimeDDMMYYYYHHMM(endMinutes),
+            ...formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes)),
             color: selectedActivity.color
         };
         getCurrentTimelineData().push(activityData);

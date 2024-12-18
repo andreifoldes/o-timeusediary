@@ -16,19 +16,36 @@ export function generateUniqueId() {
     return Math.random().toString(36).substr(2, 9);
 }
 
-export function formatTimeDDMMYYYYHHMM(minutes) {
+export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
     const date = new Date();
-    const roundedMinutes = Math.round(minutes);
-    const h = Math.floor(roundedMinutes / 60) % 24;
-    const m = roundedMinutes % 60;
-    const isYesterday = h < 4; // Assuming TIMELINE_START_HOUR is 4
-    if (isYesterday) {
-        date.setDate(date.getDate() - 1);
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    
+    // Create base date for start time
+    const startDate = new Date(date);
+    if (startHour < 4) { // If before 4 AM, it's the next day
+        startDate.setDate(date.getDate() + 1);
     }
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year} ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    
+    // Create base date for end time
+    const endDate = new Date(date);
+    if (endHour < 4) { // If before 4 AM, it's the next day
+        endDate.setDate(date.getDate() + 1);
+    }
+    
+    // Set hours and minutes
+    startDate.setHours(startHour, startMin, 0);
+    endDate.setHours(endHour, endMin, 0);
+    
+    // Format dates to YYYY-MM-DD HH:MM
+    const formatDate = (d) => {
+        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    };
+    
+    return {
+        start: formatDate(startDate),
+        end: formatDate(endDate)
+    };
 }
 
 export function formatTimeHHMM(minutes) {
