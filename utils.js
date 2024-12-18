@@ -143,8 +143,12 @@ export function isTimelineFull() {
     const timelineCoverage = new Array(totalTimelineMinutes).fill(false);
 
     currentData.forEach(activity => {
-        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
-        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+        // Safely extract time portions
+        const startTime = activity.startTime?.split(' ')?.[1] || '00:00';
+        const endTime = activity.endTime?.split(' ')?.[1] || '00:00';
+        
+        const startMinutes = timeToMinutes(startTime);
+        const endMinutes = timeToMinutes(endTime);
 
         let relativeStart = (startMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
         let relativeEnd = (endMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
