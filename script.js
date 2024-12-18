@@ -5,11 +5,15 @@ import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 let selectedActivity = null;
 
-// Make these available globally for debugging
-window.timelines = {}; // Timeline metadata
-window.timelineData = {}; // Timeline activity data
-window.initializedTimelines = new Set(); // Track which timelines have been initialized
-window.activeTimeline = null; // Track the active timeline
+// Single timeline management object
+window.timelineManager = {
+    metadata: {}, // Timeline metadata (former timelines object)
+    activities: {}, // Timeline activities (former timelineData object)
+    initialized: new Set(), // Tracks initialized timelines
+    activeTimeline: null, // Current active timeline element
+    types: [], // Available timeline types
+    currentIndex: 0 // Current timeline index
+};
 
 // Function to calculate timeline coverage percentage
 window.getTimelineCoverage = () => {
@@ -93,8 +97,6 @@ import {
     generateUniqueId
 } from './utils.js';
 
-let currentTimelineIndex = 0;
-let timelineTypes = []; // Will be populated from activities.json
 
 // Function to add next timeline
 async function addNextTimeline() {
@@ -240,19 +242,15 @@ async function fetchActivities(type) {
             throw new Error('Invalid JSON structure');
         }
 
-        // Initialize timelines, timelineData and timelineTypes for all available timeline types
-        if (Object.keys(timelines).length === 0) {
-            timelineTypes = Object.keys(data); // Dynamically set timeline types
-            timelineTypes.forEach(timelineType => {
-                timelines[timelineType] = null;
-                timelineData[timelineType] = [];
+        // Initialize timeline management structure
+        if (Object.keys(timelineManager.metadata).length === 0) {
+            timelineManager.types = Object.keys(data);
+            timelineManager.types.forEach(timelineType => {
+                timelineManager.metadata[timelineType] = null;
+                timelineManager.activities[timelineType] = [];
             });
             if (DEBUG_MODE) {
-                console.log('Initialized timeline structures:', {
-                    timelineTypes,
-                    timelines: Object.keys(timelines),
-                    timelineData: Object.keys(timelineData)
-                });
+                console.log('Initialized timeline structure:', timelineManager);
             }
         }
 
@@ -261,10 +259,10 @@ async function fetchActivities(type) {
         }
         
         // Create new Timeline instance with metadata and set active state
-        timelines[type] = new Timeline(type, data[type]);
+        timelineManager.metadata[type] = new Timeline(type, data[type]);
         // Set isActive true only for first timeline, false for others
-        timelines[type].isActive = type === 'primary';
-        initializedTimelines.add(type); // Mark this timeline as initialized
+        timelineManager.metadata[type].isActive = type === 'primary';
+        timelineManager.initialized.add(type);
         
         if (DEBUG_MODE) {
             console.log(`Loaded timeline metadata for ${type}:`, timelines[type]);
