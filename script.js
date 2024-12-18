@@ -805,9 +805,9 @@ async function init() {
         updateButtonStates();
         const categories = await fetchActivities('primary');
         // Set initial title and description
-        document.querySelector('.timeline-title').textContent = timelines.primary.name;
-        document.querySelector('.timeline-description').textContent = timelines.primary.description;
-        document.title = timelines.primary.name;
+        document.querySelector('.timeline-title').textContent = window.timelineManager.metadata.primary.name;
+        document.querySelector('.timeline-description').textContent = window.timelineManager.metadata.primary.description;
+        document.title = window.timelineManager.metadata.primary.name;
         renderActivities(categories);
         initButtons();
         updateButtonStates();
