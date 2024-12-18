@@ -403,7 +403,7 @@ function createTimeLabel(block) {
         
         // Check for overlaps in desktop mode only
         block.appendChild(label);
-        const existingLabels = activeTimeline.querySelectorAll('.time-label');
+        const existingLabels = window.timelineManager.activeTimeline.querySelectorAll('.time-label');
         existingLabels.forEach(existingLabel => {
             if (existingLabel !== label && isOverlapping(existingLabel, label)) {
                 label.style.bottom = 'auto';
@@ -610,7 +610,12 @@ function initTimelineInteraction(timeline = null) {
             currentBlock.style.top = `${DESKTOP_OFFSET}%`;
         }
         
-        const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities');
+        const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
+            const container = document.createElement('div');
+            container.className = 'activities';
+            window.timelineManager.activeTimeline.appendChild(container);
+            return container;
+        })();
         activitiesContainer.appendChild(currentBlock);
 
         // Only create time label initially for desktop mode
