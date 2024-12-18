@@ -501,12 +501,16 @@ function initTimelineInteraction(timeline = null) {
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
         const endPositionPercent = minutesToPercentage(endMinutes);
-        let blockSize = Math.max(endPositionPercent - startPositionPercent, calculateMinimumBlockWidth());
+        // Calculate block size for 10-minute interval
+        const tenMinutesAsPercentage = (10 / (TIMELINE_HOURS * 60)) * 100;
+        let blockSize = tenMinutesAsPercentage;
         
-        // Ensure fixed size for blocks created between 3:50 and 4:00
-        if (startMinutes >= 230 && startMinutes < 240) {
-            blockSize = 0.694444;
-        }
+        // Ensure minimum block width is maintained
+        blockSize = Math.max(blockSize, calculateMinimumBlockWidth());
+        
+        // Adjust end time to match the block size
+        const adjustedEndMinutes = startMinutes + 10;
+        currentBlock.dataset.end = formatTimeHHMM(adjustedEndMinutes);
 
         // Fixed dimensions for consistency
         const MOBILE_BLOCK_WIDTH = 50; // 50% width in mobile mode
