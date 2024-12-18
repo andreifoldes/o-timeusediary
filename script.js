@@ -101,7 +101,7 @@ import {
 // Function to add next timeline
 async function addNextTimeline() {
     if (DEBUG_MODE) {
-        console.log(`Current timeline data saved:`, timelineData);
+        console.log(`Current timeline data saved:`, window.timelineManager.activities);
     }
 
     // Increment timeline index
@@ -707,8 +707,8 @@ function initButtons() {
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.addEventListener('click', () => {
         const jsonData = {
-            primary: timelineData.primary,
-            secondary: timelineData.secondary
+            primary: window.timelineManager.activities.primary,
+            secondary: window.timelineManager.activities.secondary
         };
 
         const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
@@ -727,7 +727,7 @@ function initButtons() {
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             if (DEBUG_MODE) {
-                console.log('Before undo - timelineData:', timelineData);
+                console.log('Before undo - timelineData:', window.timelineManager.activities);
             }
 
             const lastActivity = currentData.pop();
@@ -756,7 +756,7 @@ function initButtons() {
             updateButtonStates();
             
             if (DEBUG_MODE) {
-                console.log('Final timelineData:', timelineData);
+                console.log('Final timelineData:', window.timelineManager.activities);
             }
         }
     });
