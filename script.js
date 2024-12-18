@@ -594,9 +594,9 @@ function initTimelineInteraction(timeline = null) {
                         const target = event.target;
                         const isMobile = getIsMobile();
 
-                        // Calculate mouse position using event.rect and deltaRect
-                        const mouseX = event.rect.left + event.deltaRect.left + event.rect.width + event.deltaRect.width - timelineRect.left;
-                        const mouseY = event.rect.top + event.deltaRect.top - timelineRect.top;
+                        // Calculate mouse position relative to the timeline
+                        const mouseX = event.clientX - timelineRect.left;
+                        const mouseY = event.clientY - timelineRect.top;
                         
                         // Convert position to percentage based on layout
                         const positionPercent = isMobile ? 
