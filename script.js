@@ -736,16 +736,14 @@ function initButtons() {
                 console.log('Removing activity:', lastActivity);
             }
 
-            const blocks = activeTimeline.querySelectorAll('.activity-block');
+            const timeline = window.timelineManager.activeTimeline;
+            const blocks = timeline.querySelectorAll('.activity-block');
             
             if (DEBUG_MODE) {
                 blocks.forEach(block => {
                     console.log('Block id:', block.dataset.id, 'Last activity id:', lastActivity.id);
                 });
             }
-
-            const timeline = window.timelineManager.activeTimeline;
-            const blocks = timeline.querySelectorAll('.activity-block');
             blocks.forEach(block => {
                 if (block.dataset.id === lastActivity.id) {
                     if (DEBUG_MODE) {
