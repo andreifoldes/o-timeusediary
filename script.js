@@ -515,8 +515,6 @@ function initTimelineInteraction(timeline = null) {
             hasRightHandle: !!currentBlock.querySelector('.resize-handle.right')
         });
 
-        const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
-        
         interact(currentBlock)
             .resizable({
                 edges: isMobile ? { bottom: true } : { right: true },
