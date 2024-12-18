@@ -482,9 +482,12 @@ function initTimelineInteraction(timeline = null) {
             currentBlock.style.top = `${DESKTOP_OFFSET}%`;
         }
         
+        // Create and add right resize handle with debug logging
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
+        rightHandle.style.backgroundColor = 'rgba(255,0,0,0.2)'; // Semi-transparent red for visibility
         currentBlock.appendChild(rightHandle);
+        if (DEBUG_MODE) console.log('Resize handle created:', rightHandle);
         const activitiesContainer = targetTimeline.querySelector('.activities');
         activitiesContainer.appendChild(currentBlock);
 
@@ -506,10 +509,17 @@ function initTimelineInteraction(timeline = null) {
 
         updateButtonStates();
 
+        if (DEBUG_MODE) console.log('Initializing interact resizable with:', {
+            isMobile,
+            block: currentBlock,
+            hasRightHandle: !!currentBlock.querySelector('.resize-handle.right')
+        });
+
         interact(currentBlock)
             .resizable({
                 edges: isMobile ? { bottom: true } : { right: true },
                 inertia: false,
+                margin: 10,
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
@@ -529,6 +539,13 @@ function initTimelineInteraction(timeline = null) {
                 ],
                 listeners: {
                     start(event) {
+                        if (DEBUG_MODE) {
+                            console.log('Resize start:', {
+                                target: event.target,
+                                edges: event.edges,
+                                rect: event.rect
+                            });
+                        }
                         event.target.classList.add('resizing');
                         // Create time label for mobile on resize start if it doesn't exist
                         const isMobile = targetTimeline.getAttribute('data-layout') === 'vertical';
@@ -542,6 +559,12 @@ function initTimelineInteraction(timeline = null) {
                         }
                     },
                     move(event) {
+                        if (DEBUG_MODE) {
+                            console.log('Resize move:', {
+                                deltaRect: event.deltaRect,
+                                edges: event.edges
+                            });
+                        }
                         const target = event.target;
                         
                         if (isMobile) {
@@ -627,6 +650,12 @@ function initTimelineInteraction(timeline = null) {
                         }
                     },
                     end(event) {
+                        if (DEBUG_MODE) {
+                            console.log('Resize end:', {
+                                target: event.target,
+                                finalRect: event.rect
+                            });
+                        }
                         event.target.classList.remove('resizing');
                         const blockId = event.target.dataset.id;
                         const blockData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).find(activity => activity.id === blockId);
