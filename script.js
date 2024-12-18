@@ -3,6 +3,9 @@ import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
 import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 import { isMobile, updateIsMobile } from './globals.js';
+
+// Ensure isMobile is initialized
+updateIsMobile();
 let selectedActivity = null;
 
 let timelines = {}; // Timeline metadata

@@ -6,3 +6,6 @@ export function updateIsMobile() {
     isMobile = window.innerWidth < 1024;
     return isMobile;
 }
+
+// Initialize immediately
+updateIsMobile();
