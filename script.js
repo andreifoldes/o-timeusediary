@@ -13,25 +13,29 @@ window.activeTimeline = null; // Track the active timeline
 
 // Function to calculate timeline coverage percentage
 window.getTimelineCoverage = () => {
-    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
-    if (!currentData || currentData.length === 0) return 0;
+    const activeTimeline = document.querySelector('.timeline[data-active="true"]');
+    if (!activeTimeline) return 0;
 
-    // Calculate total minutes covered
+    const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
+    if (!activityBlocks.length) return 0;
+
+    // Calculate total minutes covered using data-length attributes
     let coveredMinutes = 0;
-    const sortedActivities = [...currentData].sort((a, b) => 
-        timeToMinutes(a.startTime.split(' ')[1]) - timeToMinutes(b.startTime.split(' ')[1])
+    const sortedBlocks = [...activityBlocks].sort((a, b) => 
+        timeToMinutes(a.dataset.start) - timeToMinutes(b.dataset.start)
     );
 
     // Track the latest end time seen
     let latestEndTime = 0;
 
-    sortedActivities.forEach(activity => {
-        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
-        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+    sortedBlocks.forEach(block => {
+        const startMinutes = timeToMinutes(block.dataset.start);
+        const blockLength = parseInt(block.dataset.length, 10);
+        const endMinutes = startMinutes + blockLength;
         
         // Only count non-overlapping portions
         if (startMinutes > latestEndTime) {
-            coveredMinutes += endMinutes - startMinutes;
+            coveredMinutes += blockLength;
         } else if (endMinutes > latestEndTime) {
             coveredMinutes += endMinutes - latestEndTime;
         }
