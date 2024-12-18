@@ -2,10 +2,7 @@ import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
 import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
-import { isMobile, updateIsMobile, getIsMobile } from './globals.js';
-
-// Initialize and get isMobile value
-const isMobile = getIsMobile();
+import { updateIsMobile, getIsMobile } from './globals.js';
 let selectedActivity = null;
 
 let timelines = {}; // Timeline metadata
