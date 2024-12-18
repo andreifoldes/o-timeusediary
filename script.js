@@ -413,13 +413,26 @@ function initTimelineInteraction(timeline = null) {
             },
             move(event) {
                 const target = event.target;
-                const rect = target.getBoundingClientRect();
                 const timelineRect = targetTimeline.getBoundingClientRect();
                 
                 // Only apply resizing in desktop layout
                 if (window.innerWidth >= 1024) {
+                    // Calculate current width in percentage
                     let newWidth = (event.rect.width / timelineRect.width) * 100;
-                    newWidth = Math.max(5, Math.min(newWidth, 100)); // Limit between 5% and 100%
+                    
+                    // Calculate the width of 10 minutes in percentage
+                    const tenMinutesWidth = (10 / (24 * 60)) * 100;
+                    
+                    // Calculate how many 10-minute intervals fit in the current width
+                    const intervals = Math.round(newWidth / tenMinutesWidth);
+                    
+                    // Snap to nearest 10-minute interval
+                    newWidth = intervals * tenMinutesWidth;
+                    
+                    // Apply minimum and maximum constraints
+                    newWidth = Math.max(tenMinutesWidth, Math.min(newWidth, 100));
+                    
+                    // Update block width
                     target.style.width = `${newWidth}%`;
                     
                     // Update time label
@@ -429,6 +442,9 @@ function initTimelineInteraction(timeline = null) {
                         const endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
                         const endTime = formatTimeHHMM(endMinutes);
                         updateTimeLabel(timeLabel, startTime, endTime, target);
+                        
+                        // Update the end time in the dataset
+                        target.dataset.end = endTime;
                     }
                 }
             },
