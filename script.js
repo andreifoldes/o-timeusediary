@@ -607,8 +607,18 @@ function initTimelineInteraction(timeline = null) {
                         const timelineRect = timeline.getBoundingClientRect();
                         const targetRect = event.target.getBoundingClientRect();
                         
+                        // Update event.rect with current dimensions
+                        event.rect = {
+                            left: targetRect.left,
+                            right: targetRect.right,
+                            top: targetRect.top,
+                            bottom: targetRect.bottom,
+                            width: targetRect.width,
+                            height: targetRect.height
+                        };
+                        
                         // Calculate delta based on current dimensions vs initial dimensions
-                        const deltaWidth = targetRect.width - event.initialDimensions.width;
+                        const deltaWidth = event.rect.width - event.initialDimensions.width;
                         event.deltaRect = {
                             left: 0,
                             right: deltaWidth,
