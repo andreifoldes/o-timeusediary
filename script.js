@@ -559,7 +559,7 @@ function initTimelineInteraction(timeline = null) {
         
         const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
 
-        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes, null, timelineTypes, currentTimelineIndex, timelineData)) {
+        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes, null)) {
             alert('Cannot place activity here due to invalid position or overlap with an existing activity.');
             return;
         }
