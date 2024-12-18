@@ -31,12 +31,13 @@ window.getTimelineCoverage = () => {
     sortedBlocks.forEach(block => {
         const startMinutes = timeToMinutes(block.dataset.start);
         const endMinutes = timeToMinutes(block.dataset.end);
+        let blockLength;
         // Special case: If activity is from 4:00 to 4:00, it's a full day
         if (startMinutes === 240 && endMinutes === 240) { // 240 minutes = 4:00
             blockLength = 1440; // Full day in minutes
         } else {
             // Calculate length using absolute difference
-            let blockLength = Math.abs(endMinutes - startMinutes);
+            blockLength = Math.abs(endMinutes - startMinutes);
             if (blockLength === 0) {
                 // If start and end times are the same (but not 4:00-4:00)
                 blockLength = 0;
@@ -44,6 +45,11 @@ window.getTimelineCoverage = () => {
                 // If end time is before start time, it spans across midnight
                 blockLength = 1440 - blockLength;
             }
+        }
+        
+        // Validate that block length is positive
+        if (blockLength < 0) {
+            throw new Error(`Invalid negative block length: ${blockLength} minutes. Start: ${startMinutes}, End: ${endMinutes}`);
         }
         
         // Only count non-overlapping portions
