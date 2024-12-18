@@ -862,7 +862,7 @@ function handleResize() {
 
 async function init() {
     try {
-        console.log('isMobile value during init:', isMobile);
+        console.log('isMobile value during init:', getIsMobile());
         initTimeline();
         initTimelineInteraction();
         updateButtonStates();
