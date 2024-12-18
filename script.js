@@ -509,6 +509,18 @@ function initTimelineInteraction(timeline = null) {
                         // Update the end time and length in the dataset using calculateTimeDifference
                         target.dataset.end = endTime;
                         target.dataset.length = calculateTimeDifference(startTime, endTime);
+                        
+                        // Update the activity data in timelineManager
+                        const activityId = target.dataset.id;
+                        const currentData = getCurrentTimelineData();
+                        const activityIndex = currentData.findIndex(activity => activity.id === activityId);
+                        
+                        if (activityIndex !== -1) {
+                            currentData[activityIndex].endTime = formatTimeDDMMYYYYHHMM(endMinutes);
+                            if (DEBUG_MODE) {
+                                console.log('Updated activity data:', currentData[activityIndex]);
+                            }
+                        }
                     }
                 }
             },
