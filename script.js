@@ -4,6 +4,7 @@ import { TimelineContainer } from './timeline_container.js';
 import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 
 let selectedActivity = null;
+let isMobile = window.innerWidth < 1024;
 
 let timelines = {}; // Timeline metadata
 let timelineData = {}; // Timeline activity data
@@ -256,7 +257,6 @@ function initTimeline() {
     timeline.setAttribute('data-active', 'true');
     activeTimeline = timeline;
     
-    const isMobile = window.innerWidth < 1024;
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
     
     // Create and initialize timeline container
@@ -832,7 +832,7 @@ function initButtons() {
 
 function handleResize() {
     const timeline = document.getElementById('timeline');
-    const isMobile = window.innerWidth < 1024;
+    isMobile = window.innerWidth < 1024;
     
     // Update layout attribute
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
