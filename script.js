@@ -566,11 +566,6 @@ function initTimelineInteraction(timeline = null) {
 
         updateButtonStates();
 
-        if (DEBUG_MODE) console.log('Initializing interact resizable with:', {
-            isMobile: getIsMobile(),
-            block: currentBlock,
-            hasRightHandle: !!currentBlock.querySelector('.resize-handle.right')
-        });
 
     });
 }
