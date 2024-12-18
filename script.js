@@ -5,10 +5,11 @@ import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 let selectedActivity = null;
 
-let timelines = {}; // Timeline metadata
-let timelineData = {}; // Timeline activity data
-let initializedTimelines = new Set(); // Track which timelines have been initialized
-let activeTimeline = null; // Track the active timeline
+// Make these available globally for debugging
+window.timelines = {}; // Timeline metadata
+window.timelineData = {}; // Timeline activity data
+window.initializedTimelines = new Set(); // Track which timelines have been initialized
+window.activeTimeline = null; // Track the active timeline
 
 const MINUTES_PER_DAY = 24 * 60;
 const INCREMENT_MINUTES = 10;
