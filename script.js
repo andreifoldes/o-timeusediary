@@ -251,7 +251,7 @@ function renderActivities(categories) {
 }
 
 function initTimeline() {
-    const timeline = document.getElementById('timeline');
+    const timeline = document.getElementById('primary');
     timeline.setAttribute('data-active', 'true');
     activeTimeline = timeline;
     
