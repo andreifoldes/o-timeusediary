@@ -516,10 +516,23 @@ function initTimelineInteraction(timeline = null) {
 
         interact(currentBlock)
             .resizable({
-                edges: getIsMobile() ? { bottom: true } : { right: true },
+                edges: { right: true },
                 inertia: false,
                 margin: 10,
                 enabled: true,
+                listeners: {
+                    move: function (event) {
+                        const { target } = event;
+                        const x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        const y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+                        // Update element width
+                        target.style.width = `${event.rect.width}px`;
+
+                        // Translate when resizing from top or left edges
+                        target.style.transform = `translate(${x}px, ${y}px)`;
+                    }
+                },
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
