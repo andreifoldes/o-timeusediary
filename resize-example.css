@@ -1,0 +1,16 @@
+.resize-drag {
+	width: 120px;
+	border-radius: 8px;
+	padding: 20px;
+	margin: 1rem;
+	background-color: #29e;
+	color: white;
+	font-size: 20px;
+	font-family: sans-serif;
+  
+	touch-action: none;
+  
+	/* This makes things *much* easier */
+	box-sizing: border-box;
+  }
+  
