@@ -517,7 +517,7 @@ function initTimelineInteraction(timeline = null) {
 
         interact(currentBlock)
             .resizable({
-                edges: { right: true },
+                edges: { right: '.resize-handle.right' },
                 inertia: false,
                 origin: 'self',
                 modifiers: [
@@ -531,7 +531,7 @@ function initTimelineInteraction(timeline = null) {
                     interact.modifiers.snapSize({
                         targets: [{ width: calculateMinimumBlockWidth() + '%' }],
                         range: 5,
-                        relativePoints: [{ x: 0, y: 0 }]
+                        relativePoints: [{ x: 1, y: 0 }]
                     })
                 ],
                 listeners: {
