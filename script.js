@@ -512,7 +512,7 @@ function initTimelineInteraction(timeline = null) {
                 inertia: false,
                 modifiers: [
                     interact.modifiers.restrictEdges({
-                        outer: 'parent'
+                        outer: '.activities'
                     }),
                     interact.modifiers.restrictSize({
                         min: { width: 20, height: 20 },
@@ -527,8 +527,6 @@ function initTimelineInteraction(timeline = null) {
                         relativePoints: [ { x: 0, y: 0 } ]
                     })
                 ],
-                preserveAspectRatio: false,
-                square: false,
                 listeners: {
                     start(event) {
                         event.target.classList.add('resizing');
