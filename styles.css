@@ -27,6 +27,13 @@ body {
     flex-direction: column;
 }
 
+/* Mobile layout */
+@media (max-width: 1023px) {
+    .timeline-canvas {
+        flex-direction: row-reverse;
+    }
+}
+
 .timelines-wrapper {
     display: flex;
     flex-direction: column;
