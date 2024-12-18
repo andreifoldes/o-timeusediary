@@ -484,7 +484,8 @@ function initTimelineInteraction(timeline = null) {
         // Create and add right resize handle with debug logging
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
-        rightHandle.style.backgroundColor = 'rgba(255,0,0,0.2)'; // Semi-transparent red for visibility
+        rightHandle.style.backgroundColor = 'transparent'; // Make handle invisible
+        rightHandle.style.cursor = 'e-resize'; // Show resize cursor on right edge
         currentBlock.appendChild(rightHandle);
         if (DEBUG_MODE) console.log('Resize handle created:', rightHandle);
         const activitiesContainer = targetTimeline.querySelector('.activities');
