@@ -48,7 +48,9 @@ interact('.resize-drag')
         endOnly: true
       })
     ]
-  })import interact from 'https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js';
+  })
+
+import interact from 'https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js';
 
 // Initialize interact.js resizable
 interact('.resize-item').resizable({
