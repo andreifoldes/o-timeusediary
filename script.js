@@ -85,8 +85,9 @@ async function addNextTimeline() {
             currentTimeline.setAttribute('data-active', 'false');
             currentTimelineContainer.setAttribute('data-active', 'false');
             
-            // Initialize new timeline and container
-            newTimeline.id = 'timeline';
+            // Initialize new timeline and container with proper IDs
+            newTimeline.id = nextTimelineType;
+            newTimeline.setAttribute('data-timeline-type', nextTimelineType);
             newTimeline.setAttribute('data-active', 'true');
             newTimelineContainer.setAttribute('data-active', 'true');
             
