@@ -503,10 +503,10 @@ function initTimelineInteraction(timeline = null) {
                         const endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
                         const endTime = formatTimeHHMM(endMinutes);
                         updateTimeLabel(timeLabel, startTime, endTime, target);
-                        
-                        // Update the end time and length in the dataset
+                            
+                        // Update the end time and length in the dataset using calculateTimeDifference
                         target.dataset.end = endTime;
-                        target.dataset.length = endMinutes - timeToMinutes(target.dataset.start);
+                        target.dataset.length = calculateTimeDifference(startTime, endTime);
                     }
                 }
             },
