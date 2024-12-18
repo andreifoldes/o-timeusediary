@@ -501,9 +501,8 @@ function initTimelineInteraction(timeline = null) {
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
         const endPositionPercent = minutesToPercentage(endMinutes);
-        // Calculate block size for 10-minute interval
-        const tenMinutesAsPercentage = (10 / (TIMELINE_HOURS * 60)) * 100;
-        let blockSize = tenMinutesAsPercentage;
+        // Set block size to exactly 10/1440 percentage (10 minutes out of 24 hours)
+        let blockSize = (10 / 1440) * 100;  // This equals approximately 0.694444%
         
         // Ensure minimum block width is maintained
         blockSize = Math.max(blockSize, calculateMinimumBlockWidth());
