@@ -182,7 +182,7 @@ async function addNextTimeline() {
         updateButtonStates();
         
         // Scroll new timeline into view
-        activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        window.timelineManager.activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         if (DEBUG_MODE) {
             console.log(`Switched to ${nextTimelineType} timeline`);
