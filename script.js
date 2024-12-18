@@ -30,8 +30,13 @@ window.getTimelineCoverage = () => {
 
     sortedBlocks.forEach(block => {
         const startMinutes = timeToMinutes(block.dataset.start);
-        const blockLength = parseInt(block.dataset.length, 10);
-        const endMinutes = startMinutes + blockLength;
+        const endMinutes = timeToMinutes(block.dataset.end);
+        // Calculate length considering the 4:00-4:00 timeline
+        let blockLength = endMinutes - startMinutes;
+        if (blockLength < 0) {
+            // If length is negative, it means the activity spans across midnight
+            blockLength += 24 * 60; // Add 24 hours worth of minutes
+        }
         
         // Only count non-overlapping portions
         if (startMinutes > latestEndTime) {
