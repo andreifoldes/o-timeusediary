@@ -10,7 +10,7 @@ window.timelineManager = {
     metadata: {}, // Timeline metadata (former timelines object)
     activities: {}, // Timeline activities (former timelineData object)
     initialized: new Set(), // Tracks initialized timelines
-    activeTimeline: null, // Current active timeline element
+    activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
     types: [], // Available timeline types
     currentIndex: 0 // Current timeline index
 };
@@ -311,10 +311,8 @@ function renderActivities(categories) {
 }
 
 function initTimeline() {
-    const timeline = document.getElementById('primary');
+    const timeline = window.timelineManager.activeTimeline;
     timeline.setAttribute('data-active', 'true');
-    window.timelineManager.activeTimeline = timeline;
-    
     timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
     
     // Create and initialize timeline container
