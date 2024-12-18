@@ -152,6 +152,32 @@ export function isTimelineFull(timelineTypes, currentTimelineIndex, timelineData
     return coveredMinutes === totalTimelineMinutes;
 }
 
+export function calculateTimeDifference(startTime, endTime) {
+    // Special case: If both times are 4:00, return full day minutes
+    if (startTime === '04:00' && endTime === '04:00') {
+        return 1440; // 24 hours * 60 minutes
+    }
+
+    // Convert both times to minutes since midnight
+    const startMinutes = timeToMinutes(startTime);
+    const endMinutes = timeToMinutes(endTime);
+
+    // Handle special case for 04:00 to 00:00
+    if (startMinutes === 240 && endMinutes === 0) { // 240 = 4:00
+        return 1200; // 20 hours = 1200 minutes
+    }
+
+    // Calculate difference
+    let difference = endMinutes - startMinutes;
+    
+    // If end time is before start time, add 24 hours worth of minutes
+    if (difference <= 0) {
+        difference += 1440; // 24 hours * 60 minutes
+    }
+
+    return difference;
+}
+
 export function isOverlapping(elem1, elem2) {
     const rect1 = elem1.getBoundingClientRect();
     const rect2 = elem2.getBoundingClientRect();
