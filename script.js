@@ -597,10 +597,27 @@ function initTimelineInteraction(timeline = null) {
                         }
                     },
                     move(event) {
+                        const timeline = event.target.closest('.timeline');
+                        const timelineRect = timeline.getBoundingClientRect();
+                        const targetRect = event.target.getBoundingClientRect();
+                        
+                        // Calculate delta based on mouse movement
+                        const deltaWidth = event.dx;
+                        event.deltaRect = {
+                            left: 0,
+                            right: deltaWidth,
+                            width: deltaWidth,
+                            top: 0,
+                            bottom: 0,
+                            height: 0
+                        };
+                        
                         if (DEBUG_MODE) {
                             console.log('Resize move:', {
                                 deltaRect: event.deltaRect,
-                                edges: event.edges
+                                edges: event.edges,
+                                timelineWidth: timelineRect.width,
+                                currentWidth: targetRect.width
                             });
                         }
                         const target = event.target;
