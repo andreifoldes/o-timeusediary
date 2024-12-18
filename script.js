@@ -186,7 +186,7 @@ async function addNextTimeline() {
 
         if (DEBUG_MODE) {
             console.log(`Switched to ${nextTimelineType} timeline`);
-            console.log('Timeline data structure:', timelineData);
+            console.log('Timeline data structure:', window.timelineManager.activities);
         }
 
         // Update Back button state
