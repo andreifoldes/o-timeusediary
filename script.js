@@ -404,6 +404,8 @@ function createTimeLabel(block) {
         // Check for overlaps in desktop mode only
         block.appendChild(label);
         const existingLabels = window.timelineManager.activeTimeline.querySelectorAll('.time-label');
+        const timeline = window.timelineManager.activeTimeline;
+        const existingLabels = timeline.querySelectorAll('.time-label');
         existingLabels.forEach(existingLabel => {
             if (existingLabel !== label && isOverlapping(existingLabel, label)) {
                 label.style.bottom = 'auto';
