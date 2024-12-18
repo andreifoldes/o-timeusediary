@@ -100,7 +100,7 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timeli
 }
 
 export function canPlaceActivity(newStart, newEnd, excludeId = null) {
-    return !getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).some(activity => {
+    return !getCurrentTimelineData().some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
@@ -112,8 +112,8 @@ export function isTimelineFull() {
     const currentData = getCurrentTimelineData();
     if (currentData.length === 0) return false;
 
-    const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
-    const currentTimeline = timelines[currentType];
+    const currentType = getCurrentTimelineType();
+    const currentTimeline = window.timelineManager.metadata[currentType];
     if (currentTimeline.coverage !== 'complete') {
         return false;
     }
