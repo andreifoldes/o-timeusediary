@@ -417,7 +417,7 @@ function createTimeLabel(block) {
 }
 
 function updateTimeLabel(label, startTime, endTime, block) {
-    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
+    const isMobile = window.timelineManager.activeTimeline.getAttribute('data-layout') === 'vertical';
     
     // Use same format for both layouts
     label.textContent = `${startTime} - ${endTime}`;
@@ -526,7 +526,9 @@ function initTimelineInteraction(timeline = null) {
         
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
-        if (isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines)) {
+        const currentData = getCurrentTimelineData();
+        const currentType = getCurrentTimelineType();
+        if (isTimelineFull()) {
             alert('Timeline is full. Remove some activities first.');
             return;
         }
