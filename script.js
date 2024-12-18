@@ -601,8 +601,8 @@ function initTimelineInteraction(timeline = null) {
                         const timelineRect = timeline.getBoundingClientRect();
                         const targetRect = event.target.getBoundingClientRect();
                         
-                        // Calculate delta based on mouse movement
-                        const deltaWidth = event.dx;
+                        // Calculate delta based on current rect vs original rect
+                        const deltaWidth = targetRect.width - event.rect.width;
                         event.deltaRect = {
                             left: 0,
                             right: deltaWidth,
@@ -618,10 +618,8 @@ function initTimelineInteraction(timeline = null) {
                                 edges: event.edges,
                                 timelineWidth: timelineRect.width,
                                 currentWidth: targetRect.width,
-                                mouseX: event.clientX,
-                                mouseY: event.clientY,
-                                dx: event.dx,
-                                dy: event.dy,
+                                targetRect: targetRect,
+                                originalRect: event.rect,
                                 target: {
                                     width: event.target.style.width,
                                     left: event.target.style.left,
