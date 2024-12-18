@@ -1,5 +1,5 @@
 // Global state
-export let isMobile = window.innerWidth < 1024;
+let isMobile = window.innerWidth < 1024;
 
 // Update function
 export function updateIsMobile() {
@@ -9,3 +9,5 @@ export function updateIsMobile() {
 
 // Initialize immediately
 updateIsMobile();
+
+export default isMobile;
