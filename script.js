@@ -690,11 +690,11 @@ function initButtons() {
     cleanRowBtn.addEventListener('click', () => {
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
-            const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
+            const activityBlocks = window.timelineManager.activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
             const currentType = getCurrentTimelineType();
-            timelineData[currentType] = [];
+            window.timelineManager.activities[currentType] = [];
 
             updateButtonStates();
 
