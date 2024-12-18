@@ -500,7 +500,11 @@ function initTimelineInteraction(timeline = null) {
                     const timeLabel = target.querySelector('.time-label');
                     if (timeLabel) {
                         const startTime = target.dataset.start;
-                        const endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
+                        let endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
+                        // If the position is at the end of timeline (100%), set to 04:00
+                        if (parseFloat(target.style.left) + newWidth >= 100) {
+                            endMinutes = 240; // 04:00 in minutes
+                        }
                         const endTime = formatTimeHHMM(endMinutes);
                         updateTimeLabel(timeLabel, startTime, endTime, target);
                             
