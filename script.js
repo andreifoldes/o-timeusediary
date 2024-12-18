@@ -259,13 +259,13 @@ async function fetchActivities(type) {
         }
         
         // Create new Timeline instance with metadata and set active state
-        timelineManager.metadata[type] = new Timeline(type, data[type]);
+        window.timelineManager.metadata[type] = new Timeline(type, data[type]);
         // Set isActive true only for first timeline, false for others
-        timelineManager.metadata[type].isActive = type === 'primary';
-        timelineManager.initialized.add(type);
+        window.timelineManager.metadata[type].isActive = type === 'primary';
+        window.timelineManager.initialized.add(type);
         
         if (DEBUG_MODE) {
-            console.log(`Loaded timeline metadata for ${type}:`, timelines[type]);
+            console.log(`Loaded timeline metadata for ${type}:`, window.timelineManager.metadata[type]);
             console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
