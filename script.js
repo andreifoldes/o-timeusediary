@@ -520,6 +520,12 @@ function initTimelineInteraction(timeline = null) {
                 edges: isMobile ? { bottom: true } : { right: true },
                 inertia: false,
                 margin: 10,
+                enabled: true,
+                modifiers: [
+                    interact.modifiers.restrictEdges({
+                        outer: 'parent'
+                    })
+                ],
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
@@ -543,7 +549,10 @@ function initTimelineInteraction(timeline = null) {
                             console.log('Resize start:', {
                                 target: event.target,
                                 edges: event.edges,
-                                rect: event.rect
+                                rect: event.rect,
+                                isMobile: isMobile,
+                                resizeHandles: event.target.querySelectorAll('.resize-handle').length,
+                                rightHandle: event.target.querySelector('.resize-handle.right') ? 'present' : 'missing'
                             });
                         }
                         event.target.classList.add('resizing');
