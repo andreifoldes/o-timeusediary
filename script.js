@@ -485,7 +485,8 @@ function initTimelineInteraction(timeline = null) {
         const rightHandle = document.createElement('div');
         rightHandle.className = 'resize-handle right';
         currentBlock.appendChild(rightHandle);
-        targetTimeline.appendChild(currentBlock);
+        const activitiesContainer = targetTimeline.querySelector('.activities');
+        activitiesContainer.appendChild(currentBlock);
 
         // Only create time label initially for desktop mode
         if (!isMobile) {

@@ -9,7 +9,7 @@ export class TimelineContainer {
     }
 
     initialize(isMobile) {
-        // Create markers container
+        // Create containers
         this.markersContainer = document.createElement('div');
         this.markersContainer.className = 'markers';
         this.timeline.appendChild(this.markersContainer);
@@ -18,6 +18,11 @@ export class TimelineContainer {
         this.hourLabelsContainer = document.createElement('div');
         this.hourLabelsContainer.className = 'hour-labels';
         this.timeline.appendChild(this.hourLabelsContainer);
+
+        // Create activities container
+        this.activitiesContainer = document.createElement('div');
+        this.activitiesContainer.className = 'activities';
+        this.timeline.appendChild(this.activitiesContainer);
 
         // Set dimensions based on layout
         if (isMobile) {
