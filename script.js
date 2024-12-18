@@ -641,21 +641,21 @@ function updateButtonStates() {
     const saveButton = document.getElementById('saveBtn');
     const nextButton = document.getElementById('nextBtn');
     
-    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
+    const currentData = getCurrentTimelineData();
     const isEmpty = currentData.length === 0;
-    const isFull = isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines);
+    const isFull = isTimelineFull();
     
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     if (saveButton) saveButton.disabled = isEmpty;
     
     // Enable Next button based on timeline coverage and initialization status
-    const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
-    const currentTimeline = timelines[currentType];
+    const currentType = getCurrentTimelineType();
+    const currentTimeline = window.timelineManager.metadata[currentType];
     const requiresComplete = currentTimeline?.coverage === 'complete';
-    const hasNextTimeline = currentTimelineIndex < timelineTypes.length - 1;
-    const nextTimelineType = hasNextTimeline ? timelineTypes[currentTimelineIndex + 1] : null;
-    const nextTimelineNeedsInit = nextTimelineType && !initializedTimelines.has(nextTimelineType);
+    const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
+    const nextTimelineType = hasNextTimeline ? window.timelineManager.types[window.timelineManager.currentIndex + 1] : null;
+    const nextTimelineNeedsInit = nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType);
     
     if (nextButton) {
         nextButton.disabled = (requiresComplete && !isFull) || (!hasNextTimeline || !nextTimelineNeedsInit);
