@@ -478,8 +478,9 @@ function initTimelineInteraction(timeline = null) {
                         const endTime = formatTimeHHMM(endMinutes);
                         updateTimeLabel(timeLabel, startTime, endTime, target);
                         
-                        // Update the end time in the dataset
+                        // Update the end time and length in the dataset
                         target.dataset.end = endTime;
+                        target.dataset.length = endMinutes - timeToMinutes(target.dataset.start);
                     }
                 }
             },
@@ -539,6 +540,7 @@ function initTimelineInteraction(timeline = null) {
         currentBlock.className = 'activity-block';
         currentBlock.dataset.start = formatTimeHHMM(startMinutes);
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
+        currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.style.backgroundColor = selectedActivity.color;
         const textDiv = document.createElement('div');
         textDiv.className = 'activity-block-text';
