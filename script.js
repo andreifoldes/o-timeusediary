@@ -11,6 +11,40 @@ window.timelineData = {}; // Timeline activity data
 window.initializedTimelines = new Set(); // Track which timelines have been initialized
 window.activeTimeline = null; // Track the active timeline
 
+// Function to calculate timeline coverage percentage
+window.getTimelineCoverage = () => {
+    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
+    if (!currentData || currentData.length === 0) return 0;
+
+    // Calculate total minutes covered
+    let coveredMinutes = 0;
+    const sortedActivities = [...currentData].sort((a, b) => 
+        timeToMinutes(a.startTime.split(' ')[1]) - timeToMinutes(b.startTime.split(' ')[1])
+    );
+
+    // Track the latest end time seen
+    let latestEndTime = 0;
+
+    sortedActivities.forEach(activity => {
+        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
+        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+        
+        // Only count non-overlapping portions
+        if (startMinutes > latestEndTime) {
+            coveredMinutes += endMinutes - startMinutes;
+        } else if (endMinutes > latestEndTime) {
+            coveredMinutes += endMinutes - latestEndTime;
+        }
+        
+        latestEndTime = Math.max(latestEndTime, endMinutes);
+    });
+
+    // Calculate percentage (24 hours = 1440 minutes)
+    const percentage = (coveredMinutes / 1440) * 100;
+    console.log(`Timeline coverage: ${percentage.toFixed(2)}% (${coveredMinutes} minutes covered)`);
+    return percentage;
+};
+
 const MINUTES_PER_DAY = 24 * 60;
 const INCREMENT_MINUTES = 10;
 const DEFAULT_ACTIVITY_LENGTH = 10;
