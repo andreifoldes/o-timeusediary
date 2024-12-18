@@ -509,7 +509,7 @@ function initTimelineInteraction(timeline = null) {
         updateButtonStates();
 
         if (DEBUG_MODE) console.log('Initializing interact resizable with:', {
-            isMobile,
+            isMobile: getIsMobile(),
             block: currentBlock,
             hasRightHandle: !!currentBlock.querySelector('.resize-handle.right')
         });
@@ -520,11 +520,6 @@ function initTimelineInteraction(timeline = null) {
                 inertia: false,
                 margin: 10,
                 enabled: true,
-                modifiers: [
-                    interact.modifiers.restrictEdges({
-                        outer: 'parent'
-                    })
-                ],
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
@@ -549,7 +544,7 @@ function initTimelineInteraction(timeline = null) {
                                 target: event.target,
                                 edges: event.edges,
                                 rect: event.rect,
-                                isMobile: isMobile,
+                                isMobile: getIsMobile(),
                                 resizeHandles: event.target.querySelectorAll('.resize-handle').length,
                                 rightHandle: event.target.querySelector('.resize-handle.right') ? 'present' : 'missing'
                             });
@@ -574,6 +569,7 @@ function initTimelineInteraction(timeline = null) {
                             });
                         }
                         const target = event.target;
+                        const isMobile = getIsMobile();
                         
                         if (isMobile) {
                             const timelineHeight = targetTimeline.offsetHeight;
@@ -831,21 +827,21 @@ function initButtons() {
 
 function handleResize() {
     const timeline = document.getElementById('timeline');
-    const wasVertical = isMobile;
+    const wasVertical = getIsMobile();
     const layoutChanged = wasVertical !== updateIsMobile();
     
     // Update layout attribute
-    timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
+    timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
     
     // Update container layout using the stored container instance
-    timeline.containerInstance.updateLayout(isMobile);
+    timeline.containerInstance.updateLayout(getIsMobile());
     
     // Update all activity blocks for the new layout
     const activityBlocks = timeline.querySelectorAll('.activity-block');
     activityBlocks.forEach(block => {
         const timeLabel = block.querySelector('.time-label');
         if (timeLabel) {
-            if (isMobile) {
+            if (getIsMobile()) {
                 timeLabel.style.left = '120%';
                 timeLabel.style.top = '50%';
                 timeLabel.style.transform = 'translateY(-50%)';
