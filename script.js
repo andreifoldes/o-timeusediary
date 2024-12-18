@@ -607,26 +607,52 @@ function initTimelineInteraction(timeline = null) {
                         const timelineRect = timeline.getBoundingClientRect();
                         const targetRect = event.target.getBoundingClientRect();
                         
-                        // Update event.rect with current dimensions
-                        event.rect = {
+                        // Ensure event has required properties
+                        if (!event.rect) {
+                            event.rect = {
+                                left: targetRect.left,
+                                right: targetRect.right,
+                                top: targetRect.top,
+                                bottom: targetRect.bottom,
+                                width: targetRect.width,
+                                height: targetRect.height
+                            };
+                        }
+                        
+                        // Update current rect dimensions
+                        Object.assign(event.rect, {
                             left: targetRect.left,
                             right: targetRect.right,
                             top: targetRect.top,
                             bottom: targetRect.bottom,
                             width: targetRect.width,
                             height: targetRect.height
-                        };
+                        });
+                        
+                        // Ensure initial dimensions exist
+                        if (!event.initialDimensions) {
+                            event.initialDimensions = {
+                                width: targetRect.width,
+                                height: targetRect.height
+                            };
+                        }
                         
                         // Calculate delta based on current dimensions vs initial dimensions
                         const deltaWidth = event.rect.width - event.initialDimensions.width;
-                        event.deltaRect = {
+                        
+                        // Update deltaRect
+                        if (!event.deltaRect) {
+                            event.deltaRect = {};
+                        }
+                        
+                        Object.assign(event.deltaRect, {
                             left: 0,
                             right: deltaWidth,
                             width: deltaWidth,
                             top: 0,
                             bottom: 0,
                             height: 0
-                        };
+                        });
                         
                         if (DEBUG_MODE) {
                             console.log('Resize move:', {
