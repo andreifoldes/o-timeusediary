@@ -160,7 +160,7 @@ async function addNextTimeline() {
             newTimeline.containerInstance = timelineContainer;
             
             // Set active timeline reference and initialize interaction
-            activeTimeline = newTimeline;
+            window.timelineManager.activeTimeline = newTimeline;
             initTimelineInteraction(newTimeline);
         }
 
@@ -313,7 +313,7 @@ function renderActivities(categories) {
 function initTimeline() {
     const timeline = document.getElementById('primary');
     timeline.setAttribute('data-active', 'true');
-    activeTimeline = timeline;
+    window.timelineManager.activeTimeline = timeline;
     
     timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
     
@@ -524,7 +524,7 @@ function initTimelineInteraction(timeline = null) {
     
     targetTimeline.addEventListener('click', (e) => {
         // Only process clicks on the active timeline
-        if (targetTimeline.getAttribute('data-active') !== 'true') return;
+        if (targetTimeline !== window.timelineManager.activeTimeline) return;
         
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
