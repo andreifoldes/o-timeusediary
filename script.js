@@ -31,11 +31,19 @@ window.getTimelineCoverage = () => {
     sortedBlocks.forEach(block => {
         const startMinutes = timeToMinutes(block.dataset.start);
         const endMinutes = timeToMinutes(block.dataset.end);
-        // Calculate length considering the 4:00-4:00 timeline
-        let blockLength = endMinutes - startMinutes;
-        if (blockLength < 0) {
-            // If length is negative, it means the activity spans across midnight
-            blockLength += 24 * 60; // Add 24 hours worth of minutes
+        // Special case: If activity is from 4:00 to 4:00, it's a full day
+        if (startMinutes === 240 && endMinutes === 240) { // 240 minutes = 4:00
+            blockLength = 1440; // Full day in minutes
+        } else {
+            // Calculate length using absolute difference
+            let blockLength = Math.abs(endMinutes - startMinutes);
+            if (blockLength === 0) {
+                // If start and end times are the same (but not 4:00-4:00)
+                blockLength = 0;
+            } else if (endMinutes < startMinutes) {
+                // If end time is before start time, it spans across midnight
+                blockLength = 1440 - blockLength;
+            }
         }
         
         // Only count non-overlapping portions
