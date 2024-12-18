@@ -370,7 +370,7 @@ function initTimeline() {
 }
 
 function createTimeLabel(block) {
-    const isMobile = activeTimeline.getAttribute('data-layout') === 'vertical';
+    const isMobile = window.timelineManager.activeTimeline.getAttribute('data-layout') === 'vertical';
     const label = document.createElement('div');
     label.className = 'time-label';
     label.style.position = 'absolute';
@@ -522,7 +522,7 @@ function initTimelineInteraction(timeline = null) {
     
     targetTimeline.addEventListener('click', (e) => {
         // Only process clicks on the active timeline
-        if (targetTimeline !== window.timelineManager.activeTimeline) return;
+        if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) return;
         
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
@@ -608,7 +608,7 @@ function initTimelineInteraction(timeline = null) {
             currentBlock.style.top = `${DESKTOP_OFFSET}%`;
         }
         
-        const activitiesContainer = targetTimeline.querySelector('.activities');
+        const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities');
         activitiesContainer.appendChild(currentBlock);
 
         // Only create time label initially for desktop mode
