@@ -35,6 +35,9 @@ window.getTimelineCoverage = () => {
         // Special case: If activity is from 4:00 to 4:00, it's a full day
         if (startMinutes === 240 && endMinutes === 240) { // 240 minutes = 4:00
             blockLength = 1440; // Full day in minutes
+        } else if (startMinutes === 240 && endMinutes === 0) {
+            // Special case: 04:00 to 00:00 = 20 hours = 1200 minutes
+            blockLength = 1200;
         } else {
             // Calculate length using absolute difference
             blockLength = Math.abs(endMinutes - startMinutes);
