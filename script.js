@@ -3,8 +3,9 @@ import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
 import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
 
-let selectedActivity = null;
+// Initialize global state
 let isMobile = window.innerWidth < 1024;
+let selectedActivity = null;
 
 let timelines = {}; // Timeline metadata
 let timelineData = {}; // Timeline activity data
@@ -832,7 +833,9 @@ function initButtons() {
 
 function handleResize() {
     const timeline = document.getElementById('timeline');
+    const wasVertical = isMobile;
     isMobile = window.innerWidth < 1024;
+    const layoutChanged = wasVertical !== isMobile;
     
     // Update layout attribute
     timeline.setAttribute('data-layout', isMobile ? 'vertical' : 'horizontal');
