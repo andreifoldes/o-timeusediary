@@ -686,7 +686,7 @@ function initButtons() {
             const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
-            const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
+            const currentType = getCurrentTimelineType();
             timelineData[currentType] = [];
 
             updateButtonStates();
