@@ -442,7 +442,8 @@ function updateTimeLabel(label, startTime, endTime, block) {
         label.style.bottom = '-20px';
         label.style.top = 'auto';
         
-        const existingLabels = activeTimeline.querySelectorAll('.time-label');
+        const timeline = window.timelineManager.activeTimeline;
+        const existingLabels = timeline.querySelectorAll('.time-label');
         existingLabels.forEach(existingLabel => {
             if (existingLabel !== label && isOverlapping(existingLabel, label)) {
                 label.style.bottom = 'auto';
