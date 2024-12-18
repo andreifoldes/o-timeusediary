@@ -563,6 +563,16 @@ function initTimelineInteraction(timeline = null) {
                 ],
                 listeners: {
                     start(event) {
+                        const rect = event.target.getBoundingClientRect();
+                        event.rect = {
+                            left: rect.left,
+                            right: rect.right,
+                            top: rect.top,
+                            bottom: rect.bottom,
+                            width: rect.width,
+                            height: rect.height
+                        };
+                        
                         if (DEBUG_MODE) {
                             console.log('Resize start:', {
                                 target: event.target,
