@@ -399,6 +399,49 @@ function initTimelineInteraction(timeline = null) {
     const targetTimeline = timeline || activeTimeline;
     if (!targetTimeline) return;
     
+    // Initialize interact.js resizable
+    interact('.activity-block').resizable({
+        edges: { right: true },
+        modifiers: [
+            interact.modifiers.restrictEdges({
+                outer: '.timeline'
+            })
+        ],
+        listeners: {
+            start(event) {
+                event.target.classList.add('resizing');
+            },
+            move(event) {
+                const target = event.target;
+                const rect = target.getBoundingClientRect();
+                const timelineRect = targetTimeline.getBoundingClientRect();
+                
+                // Only apply resizing in desktop layout
+                if (window.innerWidth >= 1024) {
+                    let newWidth = (event.rect.width / timelineRect.width) * 100;
+                    newWidth = Math.max(5, Math.min(newWidth, 100)); // Limit between 5% and 100%
+                    target.style.width = `${newWidth}%`;
+                    
+                    // Update time label
+                    const timeLabel = target.querySelector('.time-label');
+                    if (timeLabel) {
+                        const startTime = target.dataset.start;
+                        const endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
+                        const endTime = formatTimeHHMM(endMinutes);
+                        updateTimeLabel(timeLabel, startTime, endTime, target);
+                    }
+                }
+            },
+            end(event) {
+                event.target.classList.remove('resizing');
+                const textDiv = event.target.querySelector('.activity-block-text');
+                if (textDiv) {
+                    textDiv.classList.add('resized');
+                }
+            }
+        }
+    });
+    
     targetTimeline.addEventListener('click', (e) => {
         // Only process clicks on the active timeline
         if (targetTimeline.getAttribute('data-active') !== 'true') return;

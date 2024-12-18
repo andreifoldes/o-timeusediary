@@ -408,6 +408,7 @@ body {
     position: absolute;
     height: 50%;
     top: 25%;
+    min-width: 30px;
     background-color: #29e;
     border-radius: 4px;
     color: black;
@@ -429,6 +430,19 @@ body {
 
 .activity-block.resizing {
     opacity: 0.8;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+}
+
+.resize-handle.right {
+    right: -5px;
+    top: 0;
 }
 
 
