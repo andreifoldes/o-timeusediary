@@ -17,20 +17,25 @@ export function generateUniqueId() {
 }
 
 export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
-    const date = new Date();
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    
     const [startHour, startMin] = startTime.split(':').map(Number);
     const [endHour, endMin] = endTime.split(':').map(Number);
     
-    // Create base date for start time
-    const startDate = new Date(date);
-    if (startHour < 4) { // If before 4 AM, it's the next day
-        startDate.setDate(date.getDate() + 1);
+    // Create base dates - everything starts on yesterday by default
+    // since our timeline starts at 4:00 AM yesterday
+    const startDate = new Date(yesterday);
+    const endDate = new Date(yesterday);
+    
+    // If time is after midnight but before 4 AM, it's today
+    if (startHour >= 0 && startHour < 4) {
+        startDate.setDate(today.getDate());
     }
     
-    // Create base date for end time
-    const endDate = new Date(date);
-    if (endHour < 4) { // If before 4 AM, it's the next day
-        endDate.setDate(date.getDate() + 1);
+    if (endHour >= 0 && endHour < 4) {
+        endDate.setDate(today.getDate());
     }
     
     // Set hours and minutes
