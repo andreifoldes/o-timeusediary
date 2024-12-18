@@ -617,7 +617,20 @@ function initTimelineInteraction(timeline = null) {
                                 deltaRect: event.deltaRect,
                                 edges: event.edges,
                                 timelineWidth: timelineRect.width,
-                                currentWidth: targetRect.width
+                                currentWidth: targetRect.width,
+                                mouseX: event.clientX,
+                                mouseY: event.clientY,
+                                dx: event.dx,
+                                dy: event.dy,
+                                target: {
+                                    width: event.target.style.width,
+                                    left: event.target.style.left,
+                                    currentStyle: window.getComputedStyle(event.target)
+                                },
+                                resizeHandle: {
+                                    present: !!event.target.querySelector('.resize-handle.right'),
+                                    rect: event.target.querySelector('.resize-handle.right')?.getBoundingClientRect()
+                                }
                             });
                         }
                         const target = event.target;
