@@ -633,7 +633,7 @@ function initTimelineInteraction(timeline = null) {
             endTime: formatTimeDDMMYYYYHHMM(endMinutes),
             color: selectedActivity.color
         };
-        getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).push(activityData);
+        getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
 
         updateButtonStates();
@@ -688,7 +688,7 @@ function updateButtonStates() {
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
+        const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
@@ -724,7 +724,7 @@ function initButtons() {
     });
 
     document.getElementById('undoBtn').addEventListener('click', () => {
-        const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
+        const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             if (DEBUG_MODE) {
                 console.log('Before undo - timelineData:', timelineData);
