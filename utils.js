@@ -1,5 +1,7 @@
 import { DEBUG_MODE } from './constants.js';
 
+const MINUTES_PER_DAY = 24 * 60;
+
 // Timeline state management functions
 export function getCurrentTimelineType(timelineTypes, currentTimelineIndex) {
     return timelineTypes[currentTimelineIndex];
