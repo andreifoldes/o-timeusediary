@@ -452,8 +452,8 @@ function updateTimeLabel(label, startTime, endTime, block) {
 }
 
 function initTimelineInteraction(timeline = null) {
-    // If no timeline is provided, use the active timeline
-    const targetTimeline = timeline || activeTimeline;
+    // If no timeline is provided, use the active timeline from timelineManager
+    const targetTimeline = timeline || window.timelineManager.activeTimeline;
     if (!targetTimeline) return;
     
     // Initialize interact.js resizable
