@@ -105,13 +105,13 @@ async function addNextTimeline() {
     }
 
     // Increment timeline index
-    currentTimelineIndex++;
-    if (currentTimelineIndex >= timelineTypes.length) {
+    window.timelineManager.currentIndex++;
+    if (window.timelineManager.currentIndex >= window.timelineManager.types.length) {
         console.log('All timelines completed');
         return;
     }
 
-    const nextTimelineType = timelineTypes[currentTimelineIndex];
+    const nextTimelineType = window.timelineManager.types[window.timelineManager.currentIndex];
 
     try {
         // Load next timeline data
@@ -756,8 +756,8 @@ function initButtons() {
 
     // Add click handler for Next button
     document.getElementById('nextBtn').addEventListener('click', () => {
-        const nextTimelineType = timelineTypes[currentTimelineIndex + 1];
-        if (nextTimelineType && !initializedTimelines.has(nextTimelineType)) {
+        const nextTimelineType = window.timelineManager.types[window.timelineManager.currentIndex + 1];
+        if (nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType)) {
             addNextTimeline();
         } else {
             console.log('No more timelines to initialize');

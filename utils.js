@@ -99,7 +99,7 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timeli
     });
 }
 
-export function canPlaceActivity(newStart, newEnd, excludeId = null, timelineTypes, currentTimelineIndex, timelineData) {
+export function canPlaceActivity(newStart, newEnd, excludeId = null) {
     return !getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
@@ -108,8 +108,8 @@ export function canPlaceActivity(newStart, newEnd, excludeId = null, timelineTyp
     });
 }
 
-export function isTimelineFull(timelineTypes, currentTimelineIndex, timelineData, timelines) {
-    const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
+export function isTimelineFull() {
+    const currentData = getCurrentTimelineData();
     if (currentData.length === 0) return false;
 
     const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
