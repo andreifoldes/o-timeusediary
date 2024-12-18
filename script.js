@@ -577,135 +577,85 @@ function initTimelineInteraction(timeline = null) {
                     move(event) {
                         const timeline = event.target.closest('.timeline');
                         const timelineRect = timeline.getBoundingClientRect();
-                        const targetRect = event.target.getBoundingClientRect();
+                        const target = event.target;
+                        const isMobile = getIsMobile();
+
+                        // Calculate mouse position relative to timeline
+                        const mouseX = event.clientX - timelineRect.left;
+                        const mouseY = event.clientY - timelineRect.top;
                         
-                        // Ensure event has required properties
-                        if (!event.rect) {
-                            event.rect = {
-                                left: targetRect.left,
-                                right: targetRect.right,
-                                top: targetRect.top,
-                                bottom: targetRect.bottom,
-                                width: targetRect.width,
-                                height: targetRect.height
-                            };
-                        }
-                        
-                        // Update current rect dimensions
-                        Object.assign(event.rect, {
-                            left: targetRect.left,
-                            right: targetRect.right,
-                            top: targetRect.top,
-                            bottom: targetRect.bottom,
-                            width: targetRect.width,
-                            height: targetRect.height
-                        });
-                        
-                        // Ensure initial dimensions exist
-                        if (!event.initialDimensions) {
-                            event.initialDimensions = {
-                                width: targetRect.width,
-                                height: targetRect.height
-                            };
-                        }
-                        
-                        // Calculate delta based on current dimensions vs initial dimensions
-                        const deltaWidth = event.rect.width - event.initialDimensions.width;
-                        
-                        // Update deltaRect
-                        if (!event.deltaRect) {
-                            event.deltaRect = {};
-                        }
-                        
-                        Object.assign(event.deltaRect, {
-                            left: 0,
-                            right: deltaWidth,
-                            width: deltaWidth,
-                            top: 0,
-                            bottom: 0,
-                            height: 0
-                        });
+                        // Convert position to percentage
+                        const positionPercent = isMobile ? 
+                            (mouseY / timelineRect.height) * 100 :
+                            (mouseX / timelineRect.width) * 100;
                         
                         if (DEBUG_MODE) {
                             console.log('Resize move:', {
-                                deltaRect: event.deltaRect,
-                                edges: event.edges,
-                                timelineWidth: timelineRect.width,
-                                currentWidth: targetRect.width,
-                                targetRect: targetRect,
-                                originalRect: event.rect,
-                                target: {
-                                    width: event.target.style.width,
-                                    left: event.target.style.left,
-                                    currentStyle: window.getComputedStyle(event.target)
-                                },
-                                resizeHandle: {
-                                    present: !!event.target.querySelector('.resize-handle.right'),
-                                    rect: event.target.querySelector('.resize-handle.right')?.getBoundingClientRect()
-                                }
+                                mousePosition: { x: mouseX, y: mouseY },
+                                positionPercent,
+                                timelineRect,
+                                isMobile
                             });
                         }
-                        const target = event.target;
-                        const isMobile = getIsMobile();
+
+                        // Get the current start position (left or top depending on layout)
+                        const startPositionPercent = parseFloat(isMobile ? target.style.top : target.style.left);
+                        
+                        // Convert percentage positions to minutes
+                        const startMinutes = positionToMinutes(startPositionPercent);
+                        const mouseMinutes = positionToMinutes(positionPercent);
+                        
+                        if (mouseMinutes === null || startMinutes === null) return;
+                        
+                        // Calculate new size based on difference between start and mouse position
+                        let newSizeMinutes = Math.max(mouseMinutes - startMinutes, 10); // Minimum 10 minutes
                         
                         if (isMobile) {
-                            const timelineHeight = targetTimeline.offsetHeight;
-                            let heightPercent = (event.rect.height / timelineHeight) * 100;
-                            const topPercent = parseFloat(target.style.top);
+                            // Round to nearest 10 minutes
+                            newSizeMinutes = Math.round(newSizeMinutes / 10) * 10;
                             
-                            // Enforce minimum height
-                            heightPercent = Math.max(heightPercent, calculateMinimumBlockWidth());
+                            // Convert minutes back to percentage for height
+                            const heightPercent = (newSizeMinutes / (TIMELINE_HOURS * 60)) * 100;
                             
-                            // Prevent resizing past the bottom edge
-                            if (topPercent + heightPercent > 100) {
-                                heightPercent = 100 - topPercent;
+                            // Prevent resizing past timeline bounds
+                            if (startPositionPercent + heightPercent > 100) {
+                                return;
                             }
                             
-                            const heightInMinutes = (heightPercent / 100) * TIMELINE_HOURS * 60;
-                            const roundedHeightMinutes = Math.round(heightInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
-                            heightPercent = (roundedHeightMinutes / (TIMELINE_HOURS * 60)) * 100;
+                            const newEndMinutes = startMinutes + newSizeMinutes;
                             
-                            const newStartMinutes = Math.round((topPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                            const newEndMinutes = Math.round(newStartMinutes + roundedHeightMinutes);
-                            
+                            // Check if new size is valid
                             const blockId = target.dataset.id;
-                            if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
+                            if (!canPlaceActivity(startMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
                                 return;
                             }
 
                             target.style.height = `${heightPercent}%`;
                             
-                            // Check if block height is at least 6x the 10-minute interval
+                            // Update text wrapping based on new size
                             const textElement = target.querySelector('.activity-block-text');
                             if (textElement) {
-                                if (heightPercent >= 4.166667) {
-                                    textElement.classList.add('resized');
-                                } else {
-                                    textElement.classList.remove('resized');
-                                }
+                                textElement.classList.toggle('resized', heightPercent >= 4.166667);
                             }
                             
+                            // Update time label
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
-                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes), target);
+                                updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(newEndMinutes), target);
                             }
                         } else {
-                            const timelineWidth = targetTimeline.offsetWidth;
-                            let widthPercent = (event.rect.width / timelineWidth) * 100;
-                            const leftPercent = parseFloat(target.style.left);
+                            // Round to nearest 10 minutes
+                            newSizeMinutes = Math.round(newSizeMinutes / 10) * 10;
                             
-                            widthPercent = Math.max(widthPercent, calculateMinimumBlockWidth());
+                            // Convert minutes back to percentage for width
+                            const widthPercent = (newSizeMinutes / (TIMELINE_HOURS * 60)) * 100;
                             
-                            if (leftPercent + widthPercent > 100) {
-                                widthPercent = 100 - leftPercent;
+                            // Prevent resizing past timeline bounds
+                            if (startPositionPercent + widthPercent > 100) {
+                                return;
                             }
                             
-                            const widthInMinutes = (widthPercent / 100) * TIMELINE_HOURS * 60;
-                            const roundedWidthMinutes = Math.round(widthInMinutes / INCREMENT_MINUTES) * INCREMENT_MINUTES;
-                            widthPercent = (roundedWidthMinutes / (TIMELINE_HOURS * 60)) * 100;
-                            
-                            const newStartMinutes = Math.round((leftPercent / 100) * TIMELINE_HOURS * 60 + TIMELINE_START_HOUR * 60);
-                            const newEndMinutes = Math.round(newStartMinutes + roundedWidthMinutes);
+                            const newEndMinutes = startMinutes + newSizeMinutes;
                             
                             const blockId = target.dataset.id;
                             if (!canPlaceActivity(newStartMinutes, newEndMinutes, blockId, timelineTypes, currentTimelineIndex, timelineData)) {
