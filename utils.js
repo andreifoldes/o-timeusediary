@@ -110,7 +110,7 @@ export function isTimelineFull(timelineTypes, currentTimelineIndex, timelineData
     const currentData = getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData);
     if (currentData.length === 0) return false;
 
-    const currentType = getCurrentTimelineType();
+    const currentType = getCurrentTimelineType(timelineTypes, currentTimelineIndex);
     const currentTimeline = timelines[currentType];
     if (currentTimeline.coverage !== 'complete') {
         return false;
