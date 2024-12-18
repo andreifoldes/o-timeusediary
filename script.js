@@ -519,7 +519,26 @@ function initTimelineInteraction(timeline = null) {
             .resizable({
                 edges: { right: '.resize-handle.right' },
                 inertia: false,
-                origin: 'self',
+                listeners: {
+                    move (event) {
+                        const target = event.target;
+                        const x = parseFloat(target.getAttribute('data-x') || 0) + event.deltaRect.left;
+                        const y = parseFloat(target.getAttribute('data-y') || 0) + event.deltaRect.top;
+
+                        // Update the element's style
+                        target.style.width = `${event.rect.width}px`;
+                        target.style.height = `${event.rect.height}px`;
+
+                        // Translate when resizing from top or left edges
+                        x += event.deltaRect.left;
+                        y += event.deltaRect.top;
+
+                        target.style.transform = `translate(${x}px, ${y}px)`;
+
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+                    }
+                },
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
@@ -528,11 +547,6 @@ function initTimelineInteraction(timeline = null) {
                         min: { width: calculateMinimumBlockWidth() + '%', height: 20 },
                         max: { width: '100%', height: '100%' }
                     }),
-                    interact.modifiers.snapSize({
-                        targets: [{ width: calculateMinimumBlockWidth() + '%' }],
-                        range: 5,
-                        relativePoints: [{ x: 1, y: 0 }]
-                    })
                 ],
                 listeners: {
                     start(event) {
