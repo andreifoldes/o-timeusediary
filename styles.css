@@ -408,7 +408,6 @@ body {
     position: absolute;
     height: 50%;
     top: 25%;
-    min-width: 30px;
     background-color: #29e;
     border-radius: 4px;
     color: black;
