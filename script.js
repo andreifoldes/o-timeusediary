@@ -443,6 +443,8 @@ function initTimelineInteraction(timeline = null) {
 
         const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
+        currentBlock.dataset.start = formatTimeHHMM(startMinutes);
+        currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.style.backgroundColor = selectedActivity.color;
         const textDiv = document.createElement('div');
         textDiv.className = 'activity-block-text';
