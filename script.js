@@ -519,47 +519,20 @@ function initTimelineInteraction(timeline = null) {
             .resizable({
                 edges: { right: true },
                 inertia: false,
-                margin: 10,
-                enabled: true,
-                listeners: {
-                    move: function (event) {
-                        const { target, rect, deltaRect } = event;
-                        
-                        // Get current dimensions
-                        const width = rect.width;
-                        
-                        // Calculate new width as percentage of timeline
-                        const timelineWidth = targetTimeline.offsetWidth;
-                        const widthPercent = (width / timelineWidth) * 100;
-                        
-                        // Update element width as percentage
-                        target.style.width = `${widthPercent}%`;
-                        
-                        if (DEBUG_MODE) {
-                            console.log('Resize move:', {
-                                width,
-                                widthPercent,
-                                rect,
-                                deltaRect
-                            });
-                        }
-                    }
-                },
+                origin: 'self',
+                modifiers: [
                 modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
                     }),
                     interact.modifiers.restrictSize({
-                        min: { width: 20, height: 20 },
+                        min: { width: calculateMinimumBlockWidth() + '%', height: 20 },
                         max: { width: '100%', height: '100%' }
                     }),
                     interact.modifiers.snapSize({
-                        targets: [
-                            { width: calculateMinimumBlockWidth() + '%' },
-                            { height: calculateMinimumBlockWidth() + '%' }
-                        ],
-                        range: 10,
-                        relativePoints: [ { x: 0, y: 0 } ]
+                        targets: [{ width: calculateMinimumBlockWidth() + '%' }],
+                        range: 5,
+                        relativePoints: [{ x: 0, y: 0 }]
                     })
                 ],
                 listeners: {
