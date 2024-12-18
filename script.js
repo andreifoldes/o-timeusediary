@@ -521,7 +521,6 @@ function initTimelineInteraction(timeline = null) {
                 inertia: false,
                 origin: 'self',
                 modifiers: [
-                modifiers: [
                     interact.modifiers.restrictEdges({
                         outer: '.activities'
                     }),
