@@ -48,4 +48,61 @@ interact('.resize-drag')
         endOnly: true
       })
     ]
-  })
+  })import interact from 'https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js';
+
+// Initialize interact.js resizable
+interact('.resize-item').resizable({
+  edges: { right: true },
+  
+  modifiers: [
+    // Keep the edges inside the parent
+    interact.modifiers.restrictEdges({
+      outer: '.resize-container'
+    }),
+    
+    // Minimum size
+    interact.modifiers.restrictSize({
+      min: { width: 60 }
+    })
+  ],
+
+  listeners: {
+    start(event) {
+      console.log('Resize started');
+      event.target.classList.add('resizing');
+    },
+    
+    move(event) {
+      const target = event.target;
+      let width = event.rect.width;
+      
+      // Update element width
+      target.style.width = `${width}px`;
+      
+      // Log the new size
+      console.log(`New width: ${width}px`);
+    },
+    
+    end(event) {
+      console.log('Resize ended');
+      event.target.classList.remove('resizing');
+    }
+  }
+});
+
+// Create example elements
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.createElement('div');
+  container.className = 'resize-container';
+  
+  const item = document.createElement('div');
+  item.className = 'resize-item';
+  item.textContent = 'Resize me!';
+  
+  const handle = document.createElement('div');
+  handle.className = 'resize-handle right';
+  
+  item.appendChild(handle);
+  container.appendChild(item);
+  document.body.appendChild(container);
+});
