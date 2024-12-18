@@ -669,7 +669,7 @@ function updateButtonStates() {
             hasNextTimeline,
             nextTimelineType,
             nextTimelineNeedsInit,
-            initializedTimelines: Array.from(initializedTimelines)
+            initializedTimelines: Array.from(window.timelineManager.initialized)
         });
     }
     
