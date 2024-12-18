@@ -431,22 +431,6 @@ body {
     opacity: 0.8;
 }
 
-.activity-block .resize-handle {
-    position: absolute;
-    width: 10px;
-    top: 0;
-    bottom: 0;
-    cursor: col-resize;
-    z-index: 15;
-}
-
-.activity-block .resize-handle.left {
-    left: -5px;
-}
-
-.activity-block .resize-handle.right {
-    right: -5px;
-}
 
 .activity-block-text {
     width: 90%;
