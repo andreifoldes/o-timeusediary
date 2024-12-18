@@ -676,7 +676,7 @@ function initTimelineInteraction(timeline = null) {
                             
                             const timeLabel = target.querySelector('.time-label');
                             if (timeLabel) {
-                                updateTimeLabel(timeLabel, formatTimeHHMM(newStartMinutes), formatTimeHHMM(newEndMinutes));
+                                updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(newEndMinutes));
                             }
                         }
                     },
