@@ -508,7 +508,14 @@ function initTimelineInteraction(timeline = null) {
                                 
                         // Update the end time and length in the dataset using calculateTimeDifference
                         target.dataset.end = endTime;
-                        target.dataset.length = calculateTimeDifference(startTime, endTime);
+                        const newLength = calculateTimeDifference(startTime, endTime);
+                        target.dataset.length = newLength;
+                        
+                        // Update text class based on new length
+                        const textDiv = target.querySelector('.activity-block-text');
+                        if (textDiv) {
+                            textDiv.className = newLength >= 60 ? 'activity-block-text resized' : 'activity-block-text';
+                        }
                         
                         // Update the activity data in timelineManager
                         const activityId = target.dataset.id;
@@ -587,12 +594,14 @@ function initTimelineInteraction(timeline = null) {
         currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.style.backgroundColor = selectedActivity.color;
         const textDiv = document.createElement('div');
-        textDiv.className = 'activity-block-text';
         textDiv.textContent = selectedActivity.name;
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
         textDiv.style.textOverflow = 'ellipsis';
         textDiv.style.whiteSpace = 'nowrap';
+        // Set initial class based on length
+        const length = parseInt(currentBlock.dataset.length);
+        textDiv.className = length >= 60 ? 'activity-block-text resized' : 'activity-block-text';
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
