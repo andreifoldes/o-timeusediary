@@ -15,7 +15,7 @@ window.timelineManager = {
     currentIndex: 0 // Current timeline index
 };
 
-// Function to calculate timeline coverage percentage
+// Function to calculate timeline coverage in minutes
 window.getTimelineCoverage = () => {
     const activeTimeline = document.querySelector('.timeline[data-active="true"]');
     if (!activeTimeline) return 0;
@@ -69,10 +69,8 @@ window.getTimelineCoverage = () => {
         latestEndTime = Math.max(latestEndTime, endMinutes);
     });
 
-    // Calculate percentage (24 hours = 1440 minutes)
-    const percentage = (coveredMinutes / 1440) * 100;
-    console.log(`Timeline coverage: ${percentage.toFixed(2)}% (${coveredMinutes} minutes covered)`);
-    return percentage;
+    console.log(`Timeline coverage: ${coveredMinutes} minutes covered`);
+    return coveredMinutes;
 };
 
 const MINUTES_PER_DAY = 24 * 60;
