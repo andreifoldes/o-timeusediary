@@ -229,6 +229,28 @@ function logDebugInfo() {
     }
 }
 
+function validateMinCoverage(coverage) {
+    // Convert to number if it's a string
+    const numCoverage = parseInt(coverage);
+    
+    // Check if it's a valid number
+    if (isNaN(numCoverage)) {
+        throw new Error('min_coverage must be a valid number');
+    }
+    
+    // Check range
+    if (numCoverage < 0 || numCoverage > 1440) {
+        throw new Error('min_coverage must be between 0 and 1440');
+    }
+    
+    // Check if divisible by 10
+    if (numCoverage % 10 !== 0) {
+        throw new Error('min_coverage must be divisible by 10');
+    }
+    
+    return numCoverage;
+}
+
 async function fetchActivities(type) {
     try {
         const response = await fetch('activities.json');
@@ -238,6 +260,20 @@ async function fetchActivities(type) {
         const data = await response.json();
         if (!data) {
             throw new Error('Invalid JSON structure');
+        }
+        
+        // Validate min_coverage
+        if (data[type]) {
+            try {
+                validateMinCoverage(data[type].min_coverage);
+            } catch (error) {
+                const errorMessage = `Timeline "${type}": ${error.message}`;
+                document.getElementById('activitiesContainer').innerHTML = 
+                    `<p style="color: red; padding: 10px; background: #ffebee; border: 1px solid #ef9a9a; border-radius: 4px;">
+                        ${errorMessage}
+                    </p>`;
+                throw new Error(errorMessage);
+            }
         }
 
         // Initialize timeline management structure
@@ -679,7 +715,7 @@ function updateButtonStates() {
     // Enable Next button based on timeline coverage and initialization status
     const currentType = getCurrentTimelineType();
     const currentTimeline = window.timelineManager.metadata[currentType];
-    const requiredCoverage = parseInt(currentTimeline?.coverage) || 0;
+    const requiredCoverage = parseInt(currentTimeline?.min_coverage) || 0;
     const currentCoverage = window.getTimelineCoverage();
     const hasSufficientCoverage = currentCoverage >= requiredCoverage;
     const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
