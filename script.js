@@ -698,8 +698,8 @@ function initTimelineInteraction(timeline = null) {
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
-            startTime: times.start,
-            endTime: times.end,
+            startTime: times.startTime,
+            endTime: times.endTime,
             color: selectedActivity.color
         };
         getCurrentTimelineData().push(activityData);
