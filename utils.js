@@ -7,10 +7,14 @@ export function getCurrentTimelineType() {
     return window.timelineManager.types[window.timelineManager.currentIndex];
 }
 
+// Export to both module and window
 export function getCurrentTimelineData() {
     const currentType = getCurrentTimelineType();
     return window.timelineManager.activities[currentType] || [];
 }
+
+// Make getCurrentTimelineData available globally
+window.getCurrentTimelineData = getCurrentTimelineData;
 
 export function generateUniqueId() {
     return Math.random().toString(36).substr(2, 9);
