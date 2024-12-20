@@ -116,10 +116,10 @@ async function addNextTimeline() {
         const categories = await fetchActivities(nextTimelineType);
         
         // Update UI for next timeline and set it as active
-        timelines[nextTimelineType].isActive = true;
-        document.querySelector('.timeline-title').textContent = timelines[nextTimelineType].name;
-        document.querySelector('.timeline-description').textContent = timelines[nextTimelineType].description;
-        document.title = timelines[nextTimelineType].name;
+        const nextTimeline = window.timelineManager.metadata[nextTimelineType];
+        document.querySelector('.timeline-title').textContent = nextTimeline.name;
+        document.querySelector('.timeline-description').textContent = nextTimeline.description;
+        document.title = nextTimeline.name;
 
         const isMobile = getIsMobile();
         const currentTimelineContainer = document.querySelector('.timeline-container');
