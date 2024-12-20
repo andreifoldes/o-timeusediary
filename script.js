@@ -715,7 +715,7 @@ function updateButtonStates() {
     // Enable Next button based on timeline coverage and initialization status
     const currentType = getCurrentTimelineType();
     const currentTimeline = window.timelineManager.metadata[currentType];
-    const requiredCoverage = parseInt(currentTimeline?.min_coverage) || 0;
+    const requiredCoverage = parseInt(currentTimeline?.minCoverage) || 0;
     const currentCoverage = window.getTimelineCoverage();
     const hasSufficientCoverage = currentCoverage >= requiredCoverage;
     const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
