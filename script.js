@@ -571,6 +571,7 @@ function initTimelineInteraction(timeline = null) {
                             }
                             currentData[activityIndex].startTime = times.startTime;
                             currentData[activityIndex].endTime = times.endTime;
+                            currentData[activityIndex].blockLength = parseInt(target.dataset.length);
                             if (DEBUG_MODE) {
                                 console.log('Updated activity data:', currentData[activityIndex]);
                             }
@@ -708,6 +709,7 @@ function initTimelineInteraction(timeline = null) {
             activity: selectedActivity.name,
             startTime: times.startTime,
             endTime: times.endTime,
+            blockLength: parseInt(currentBlock.dataset.length),
             color: selectedActivity.color
         };
         getCurrentTimelineData().push(activityData);
