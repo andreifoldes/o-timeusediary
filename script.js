@@ -162,9 +162,9 @@ async function addNextTimeline() {
             initTimelineInteraction(newTimeline);
         }
 
-        // Initialize timeline data if not exists
-        if (!timelineData[nextTimelineType]) {
-            timelineData[nextTimelineType] = [];
+        // Initialize activities array if not exists
+        if (!window.timelineManager.activities[nextTimelineType]) {
+            window.timelineManager.activities[nextTimelineType] = [];
         }
 
         // Render activities for next timeline
@@ -174,10 +174,16 @@ async function addNextTimeline() {
         initTimeline();
         
         // Initialize interaction for the timeline
-        initTimelineInteraction(activeTimeline);
+        initTimelineInteraction(window.timelineManager.activeTimeline);
 
         // Reset button states
         updateButtonStates();
+
+        // If this was the last timeline, call sendData (empty for now)
+        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.types.length - 1;
+        if (isLastTimeline) {
+            sendData();
+        }
         
         // Scroll new timeline into view
         window.timelineManager.activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -699,6 +705,11 @@ function initTimelineInteraction(timeline = null) {
 
 
     });
+}
+
+function sendData() {
+    // TODO: Implement data sending functionality
+    console.log('Sending data...', window.timelineManager.activities);
 }
 
 function updateButtonStates() {
