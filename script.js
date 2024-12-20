@@ -694,7 +694,9 @@ function initTimelineInteraction(timeline = null) {
             updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
         }
 
-        const times = formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+        const startTime = currentBlock.dataset.start;
+        const endTime = currentBlock.dataset.end;
+        const times = formatTimeDDMMYYYYHHMM(startTime, endTime);
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
