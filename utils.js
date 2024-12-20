@@ -136,7 +136,8 @@ export function isTimelineFull() {
 
     const currentType = getCurrentTimelineType();
     const currentTimeline = window.timelineManager.metadata[currentType];
-    if (currentTimeline.coverage !== 'complete') {
+    const requiredCoverage = parseInt(currentTimeline?.minCoverage) || 0;
+    if (requiredCoverage === 0) {
         return false;
     }
 
