@@ -687,7 +687,12 @@ function updateButtonStates() {
     const nextTimelineNeedsInit = nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType);
     
     if (nextButton) {
-        nextButton.disabled = (!hasSufficientCoverage) || (!hasNextTimeline || !nextTimelineNeedsInit);
+        // Disable next button if:
+        // 1. Timeline is empty (no activities)
+        // 2. Insufficient coverage
+        // 3. No next timeline available
+        // 4. Next timeline doesn't need initialization
+        nextButton.disabled = isEmpty || (!hasSufficientCoverage) || (!hasNextTimeline || !nextTimelineNeedsInit);
     }
     
     if (DEBUG_MODE) {
