@@ -727,10 +727,9 @@ function updateButtonStates() {
     
     if (nextButton) {
         // Enable next button if:
-        // 1. Timeline has activities
-        // 2. Current coverage meets or exceeds required coverage
-        // 3. There is a next timeline available that needs initialization
-        nextButton.disabled = isEmpty || !hasSufficientCoverage || !hasNextTimeline || !nextTimelineNeedsInit;
+        // 1. Current coverage meets or exceeds required coverage
+        // 2. There is a next timeline available that needs initialization
+        nextButton.disabled = !hasSufficientCoverage || !hasNextTimeline || !nextTimelineNeedsInit;
     }
     
     if (DEBUG_MODE) {
