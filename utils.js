@@ -129,17 +129,45 @@ export function canPlaceActivity(newStart, newEnd, excludeId = null) {
     const currentType = getCurrentTimelineType();
     const activities = window.timelineManager.activities[currentType] || [];
     
+    if (DEBUG_MODE) {
+        console.log('canPlaceActivity check:', {
+            currentType,
+            newStart,
+            newEnd,
+            excludeId,
+            existingActivities: activities.length
+        });
+    }
+    
     // If there are no activities, placement is always valid
     if (activities.length === 0) {
+        if (DEBUG_MODE) console.log('No existing activities, placement allowed');
         return true;
     }
 
-    return !activities.some(activity => {
+    const canPlace = !activities.some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
-        return (newStart < activityEnd && newEnd > activityStart);
+        const overlaps = (newStart < activityEnd && newEnd > activityStart);
+        
+        if (DEBUG_MODE && overlaps) {
+            console.log('Overlap detected:', {
+                existingActivity: activity,
+                activityStart,
+                activityEnd,
+                newStart,
+                newEnd
+            });
+        }
+        return overlaps;
     });
+
+    if (DEBUG_MODE) {
+        console.log('Placement decision:', canPlace);
+    }
+    
+    return canPlace;
 }
 
 export function isTimelineFull() {

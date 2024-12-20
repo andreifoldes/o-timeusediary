@@ -631,8 +631,15 @@ function initTimelineInteraction(timeline = null) {
         
         const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
 
-        if (isNaN(startMinutes) || isNaN(endMinutes) || !canPlaceActivity(startMinutes, endMinutes, null)) {
-            alert('Cannot place activity here due to invalid position or overlap with an existing activity.');
+        if (isNaN(startMinutes) || isNaN(endMinutes)) {
+            console.error('Invalid minutes calculation:', { startMinutes, endMinutes });
+            alert('Cannot place activity here due to invalid position.');
+            return;
+        }
+        
+        if (!canPlaceActivity(startMinutes, endMinutes, null)) {
+            console.error('Activity placement blocked:', { startMinutes, endMinutes });
+            alert('Cannot place activity here due to overlap with an existing activity.');
             return;
         }
 
