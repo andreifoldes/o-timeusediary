@@ -575,6 +575,7 @@ function initTimelineInteraction(timeline = null) {
                 if (textDiv) {
                     textDiv.classList.add('resized');
                 }
+                updateButtonStates();
             }
         }
     });
@@ -712,23 +713,24 @@ function updateButtonStates() {
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     
-    // Enable Next button based on timeline coverage and initialization status
+    // Get current timeline coverage
     const currentType = getCurrentTimelineType();
     const currentTimeline = window.timelineManager.metadata[currentType];
     const requiredCoverage = parseInt(currentTimeline?.minCoverage) || 0;
     const currentCoverage = window.getTimelineCoverage();
+    
+    // Check if we have sufficient coverage and a next timeline to go to
     const hasSufficientCoverage = currentCoverage >= requiredCoverage;
     const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
     const nextTimelineType = hasNextTimeline ? window.timelineManager.types[window.timelineManager.currentIndex + 1] : null;
     const nextTimelineNeedsInit = nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType);
     
     if (nextButton) {
-        // Disable next button if:
-        // 1. Timeline is empty (no activities)
-        // 2. Insufficient coverage
-        // 3. No next timeline available
-        // 4. Next timeline doesn't need initialization
-        nextButton.disabled = isEmpty || (!hasSufficientCoverage) || (!hasNextTimeline || !nextTimelineNeedsInit);
+        // Enable next button if:
+        // 1. Timeline has activities
+        // 2. Current coverage meets or exceeds required coverage
+        // 3. There is a next timeline available that needs initialization
+        nextButton.disabled = isEmpty || !hasSufficientCoverage || !hasNextTimeline || !nextTimelineNeedsInit;
     }
     
     if (DEBUG_MODE) {
