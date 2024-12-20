@@ -667,7 +667,6 @@ function initTimelineInteraction(timeline = null) {
 function updateButtonStates() {
     const undoButton = document.getElementById('undoBtn');
     const cleanRowButton = document.getElementById('cleanRowBtn');
-    const saveButton = document.getElementById('saveBtn');
     const nextButton = document.getElementById('nextBtn');
     
     const currentData = getCurrentTimelineData();
@@ -676,7 +675,6 @@ function updateButtonStates() {
     
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
-    if (saveButton) saveButton.disabled = isEmpty;
     
     // Enable Next button based on timeline coverage and initialization status
     const currentType = getCurrentTimelineType();
@@ -729,24 +727,6 @@ function initButtons() {
         }
     });
 
-    const saveBtn = document.getElementById('saveBtn');
-    saveBtn.addEventListener('click', () => {
-        const jsonData = {
-            primary: window.timelineManager.activities.primary,
-            secondary: window.timelineManager.activities.secondary
-        };
-
-        const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'timeline_data.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
 
     document.getElementById('undoBtn').addEventListener('click', () => {
         const currentData = getCurrentTimelineData();
@@ -832,7 +812,7 @@ function handleResize() {
 async function init() {
     try {
         // Disable all buttons initially
-        const buttons = ['undoBtn', 'cleanRowBtn', 'saveBtn', 'nextBtn'];
+        const buttons = ['undoBtn', 'cleanRowBtn', 'nextBtn'];
         buttons.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) btn.disabled = true;
