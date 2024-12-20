@@ -694,10 +694,12 @@ function initTimelineInteraction(timeline = null) {
             updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
         }
 
+        const times = formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
-            ...formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes)),
+            startTime: times.start,
+            endTime: times.end,
             color: selectedActivity.color
         };
         getCurrentTimelineData().push(activityData);

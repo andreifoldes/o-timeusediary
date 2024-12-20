@@ -52,8 +52,8 @@ export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
     };
     
     return {
-        start: formatDate(startDate),
-        end: formatDate(endDate)
+        startTime: formatDate(startDate),
+        endTime: formatDate(endDate)
     };
 }
 
