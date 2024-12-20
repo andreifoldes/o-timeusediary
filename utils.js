@@ -127,7 +127,14 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timeli
 
 export function canPlaceActivity(newStart, newEnd, excludeId = null) {
     const currentType = getCurrentTimelineType();
-    return !window.timelineManager.activities[currentType].some(activity => {
+    const activities = window.timelineManager.activities[currentType] || [];
+    
+    // If there are no activities, placement is always valid
+    if (activities.length === 0) {
+        return true;
+    }
+
+    return !activities.some(activity => {
         if (excludeId && activity.id === excludeId) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
