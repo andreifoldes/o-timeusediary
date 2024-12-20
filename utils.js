@@ -141,6 +141,10 @@ export function isTimelineFull() {
         return false;
     }
 
+    // Get the active timeline element
+    const activeTimeline = window.timelineManager.activeTimeline;
+    if (!activeTimeline) return false;
+
     const TIMELINE_START_HOUR = 4;
     const TIMELINE_HOURS = 24;
     const timelineStart = TIMELINE_START_HOUR * 60;
