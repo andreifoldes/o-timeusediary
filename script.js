@@ -592,12 +592,14 @@ function initTimelineInteraction(timeline = null) {
         
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
-        const currentData = getCurrentTimelineData();
         const currentType = getCurrentTimelineType();
         if (isTimelineFull()) {
             alert('Timeline is full. Remove some activities first.');
             return;
         }
+        
+        // Ensure we're working with the current timeline data
+        window.timelineManager.activities[currentType] = getCurrentTimelineData();
 
         const rect = targetTimeline.getBoundingClientRect();
         const isMobile = getIsMobile();
@@ -764,14 +766,15 @@ function updateButtonStates() {
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
+        const currentType = getCurrentTimelineType();
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             const activityBlocks = window.timelineManager.activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
-            const currentType = getCurrentTimelineType();
+            // Update timeline manager activities
             window.timelineManager.activities[currentType] = [];
-
+                
             updateButtonStates();
 
             if (DEBUG_MODE) {
@@ -782,6 +785,7 @@ function initButtons() {
 
 
     document.getElementById('undoBtn').addEventListener('click', () => {
+        const currentType = getCurrentTimelineType();
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             if (DEBUG_MODE) {
@@ -789,6 +793,8 @@ function initButtons() {
             }
 
             const lastActivity = currentData.pop();
+            // Update timeline manager activities
+            window.timelineManager.activities[currentType] = currentData;
             
             if (DEBUG_MODE) {
                 console.log('Removing activity:', lastActivity);
