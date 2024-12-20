@@ -10,6 +10,9 @@ export class Timeline {
     }
 
     addActivity(activity) {
+        if (!activity.startTime || !activity.endTime) {
+            throw new Error('Activity start time and end time must be defined');
+        }
         this.activities.push(activity);
     }
 

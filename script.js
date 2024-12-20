@@ -697,6 +697,9 @@ function initTimelineInteraction(timeline = null) {
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
         const times = formatTimeDDMMYYYYHHMM(startTime, endTime);
+        if (!times.startTime || !times.endTime) {
+            throw new Error('Activity start time and end time must be defined');
+        }
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
