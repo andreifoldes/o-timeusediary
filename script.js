@@ -831,10 +831,16 @@ function handleResize() {
 
 async function init() {
     try {
+        // Disable all buttons initially
+        const buttons = ['undoBtn', 'cleanRowBtn', 'saveBtn', 'nextBtn'];
+        buttons.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) btn.disabled = true;
+        });
+
         console.log('isMobile value during init:', getIsMobile());
         initTimeline();
         initTimelineInteraction();
-        updateButtonStates();
         const categories = await fetchActivities('primary');
         // Set initial title and description
         document.querySelector('.timeline-title').textContent = window.timelineManager.metadata.primary.name;
