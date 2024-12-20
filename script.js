@@ -566,8 +566,11 @@ function initTimelineInteraction(timeline = null) {
                         
                         if (activityIndex !== -1) {
                             const times = formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
-                            currentData[activityIndex].startTime = times.start;
-                            currentData[activityIndex].endTime = times.end;
+                            if (!times.startTime || !times.endTime) {
+                                throw new Error('Activity start time and end time must be defined');
+                            }
+                            currentData[activityIndex].startTime = times.startTime;
+                            currentData[activityIndex].endTime = times.endTime;
                             if (DEBUG_MODE) {
                                 console.log('Updated activity data:', currentData[activityIndex]);
                             }
