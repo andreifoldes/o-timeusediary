@@ -590,10 +590,19 @@ function initTimelineInteraction(timeline = null) {
         }
     });
     
+    // Add click handling with debounce
+    let lastClickTime = 0;
+    const CLICK_DELAY = 300; // milliseconds
+
     targetTimeline.addEventListener('click', (e) => {
         // Only process clicks on the active timeline
         if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) return;
         
+        // Prevent double-clicks
+        const currentTime = new Date().getTime();
+        if (currentTime - lastClickTime < CLICK_DELAY) return;
+        lastClickTime = currentTime;
+
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
         const currentType = getCurrentTimelineType();
