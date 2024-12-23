@@ -669,13 +669,17 @@ function initTimelineInteraction(timeline = null) {
             block.className = 'activity-block invalid';
             block.style.backgroundColor = selectedActivity.color;
             
+            // Calculate position percentages
+            const startPositionPercent = minutesToPercentage(startMinutes);
+            const blockSize = (10 / 1440) * 100;  // 10 minutes as percentage of day
+            
             if (isMobile) {
-                block.style.height = `${(10 / 1440) * 100}%`;
+                block.style.height = `${blockSize}%`;
                 block.style.top = `${startPositionPercent}%`;
                 block.style.width = '50%';
                 block.style.left = '25%';
             } else {
-                block.style.width = `${(10 / 1440) * 100}%`;
+                block.style.width = `${blockSize}%`;
                 block.style.left = `${startPositionPercent}%`;
                 block.style.height = '50%';
                 block.style.top = '25%';
