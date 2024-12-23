@@ -286,8 +286,10 @@ async function fetchActivities(type) {
         if (Object.keys(timelineManager.metadata).length === 0) {
             timelineManager.types = Object.keys(data);
             timelineManager.types.forEach(timelineType => {
-                timelineManager.metadata[timelineType] = null;
+                timelineManager.metadata[timelineType] = new Timeline(timelineType, data[timelineType]);
                 timelineManager.activities[timelineType] = [];
+                // Set isActive true only for first timeline, false for others
+                timelineManager.metadata[timelineType].isActive = timelineType === 'primary';
             });
             if (DEBUG_MODE) {
                 console.log('Initialized timeline structure:', timelineManager);
@@ -298,10 +300,7 @@ async function fetchActivities(type) {
             throw new Error(`Timeline type ${type} not found`);
         }
         
-        // Create new Timeline instance with metadata and set active state
-        window.timelineManager.metadata[type] = new Timeline(type, data[type]);
-        // Set isActive true only for first timeline, false for others
-        window.timelineManager.metadata[type].isActive = type === 'primary';
+        // Mark timeline as initialized
         window.timelineManager.initialized.add(type);
         
         if (DEBUG_MODE) {
