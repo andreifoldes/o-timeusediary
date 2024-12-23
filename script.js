@@ -504,6 +504,9 @@ function initTimelineInteraction(timeline = null) {
         modifiers: [
             interact.modifiers.restrictEdges({
                 outer: '.timeline'
+            }),
+            interact.modifiers.restrictSize({
+                min: { width: 10 }
             })
         ],
         listeners: {
@@ -531,7 +534,18 @@ function initTimelineInteraction(timeline = null) {
                     // Apply minimum and maximum constraints
                     newWidth = Math.max(tenMinutesWidth, Math.min(newWidth, 100));
                     
-                    // Update block width
+                    // Check for overlap at new width
+                    const startTime = target.dataset.start;
+                    const startMinutes = timeToMinutes(startTime);
+                    const endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
+                    
+                    if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                        target.classList.add('invalid');
+                        setTimeout(() => target.classList.remove('invalid'), 400);
+                        return;
+                    }
+                    
+                    // Update block width if no overlap
                     target.style.width = `${newWidth}%`;
                     
                     // Update time label

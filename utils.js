@@ -126,48 +126,54 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timeli
 }
 
 export function canPlaceActivity(newStart, newEnd, excludeId = null) {
-    const currentType = getCurrentTimelineType();
-    const activities = window.timelineManager.activities[currentType] || [];
+    // Get all active timelines
+    const timelines = document.querySelectorAll('.timeline[data-active="true"]');
     
-    if (DEBUG_MODE) {
-        console.log('canPlaceActivity check:', {
-            currentType,
-            newStart,
-            newEnd,
-            excludeId,
-            existingActivities: activities.length
-        });
-    }
-    
-    // If there are no activities, placement is always valid
-    if (activities.length === 0) {
-        if (DEBUG_MODE) console.log('No existing activities, placement allowed');
-        return true;
-    }
-
-    const canPlace = !activities.some(activity => {
-        if (excludeId && activity.id === excludeId) return false;
-        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
-        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
-        const overlaps = (newStart < activityEnd && newEnd > activityStart);
+    for (const timeline of timelines) {
+        const timelineType = timeline.getAttribute('data-timeline-type');
+        const activities = window.timelineManager.activities[timelineType] || [];
         
-        if (DEBUG_MODE && overlaps) {
-            console.log('Overlap detected:', {
-                existingActivity: activity,
-                activityStart,
-                activityEnd,
+        if (DEBUG_MODE) {
+            console.log('Checking timeline:', timelineType, {
                 newStart,
-                newEnd
+                newEnd,
+                excludeId,
+                existingActivities: activities.length
             });
         }
-        return overlaps;
-    });
-
-    if (DEBUG_MODE) {
-        console.log('Placement decision:', canPlace);
+        
+        // Check for overlaps in this timeline
+        const hasOverlap = activities.some(activity => {
+            if (excludeId && activity.id === excludeId) return false;
+            const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
+            const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
+            const overlaps = (newStart < activityEnd && newEnd > activityStart);
+            
+            if (DEBUG_MODE && overlaps) {
+                console.log('Overlap detected in timeline', timelineType, {
+                    existingActivity: activity,
+                    activityStart,
+                    activityEnd,
+                    newStart,
+                    newEnd
+                });
+            }
+            return overlaps;
+        });
+        
+        if (hasOverlap) {
+            if (DEBUG_MODE) {
+                console.log('Placement blocked by timeline:', timelineType);
+            }
+            return false;
+        }
     }
     
-    return canPlace;
+    if (DEBUG_MODE) {
+        console.log('Placement allowed - no overlaps in any active timeline');
+    }
+    
+    return true;
 }
 
 export function isTimelineFull() {
