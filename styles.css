@@ -413,6 +413,7 @@ body {
     color: black;
     padding: 4px;
     box-sizing: border-box;
+    transition: outline 0.3s ease-out;
     touch-action: none;
     user-select: none;
     font-size: 12px;
@@ -429,6 +430,19 @@ body {
 
 .activity-block.resizing {
     opacity: 0.8;
+}
+
+.activity-block.invalid {
+    outline: 2px solid #dc3545;
+    animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
 }
 
 .resize-handle {
