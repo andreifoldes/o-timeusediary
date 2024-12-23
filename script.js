@@ -606,8 +606,11 @@ function initTimelineInteraction(timeline = null) {
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
         const currentType = getCurrentTimelineType();
+        // Check if timeline is full before proceeding
         if (isTimelineFull()) {
-            alert('Timeline is full. Remove some activities first.');
+            const block = document.createElement('div');
+            block.className = 'activity-block invalid';
+            setTimeout(() => block.remove(), 400); // Remove after animation
             return;
         }
         
@@ -646,9 +649,27 @@ function initTimelineInteraction(timeline = null) {
             return;
         }
         
+        // Check if activity can be placed at this position
         if (!canPlaceActivity(startMinutes, endMinutes, null)) {
             console.error('Activity placement blocked:', { startMinutes, endMinutes });
-            alert('Cannot place activity here due to overlap with an existing activity.');
+            const block = document.createElement('div');
+            block.className = 'activity-block invalid';
+            block.style.backgroundColor = selectedActivity.color;
+            
+            if (isMobile) {
+                block.style.height = `${(10 / 1440) * 100}%`;
+                block.style.top = `${startPositionPercent}%`;
+                block.style.width = '50%';
+                block.style.left = '25%';
+            } else {
+                block.style.width = `${(10 / 1440) * 100}%`;
+                block.style.left = `${startPositionPercent}%`;
+                block.style.height = '50%';
+                block.style.top = '25%';
+            }
+            
+            targetTimeline.appendChild(block);
+            setTimeout(() => block.remove(), 400); // Remove after animation
             return;
         }
 
