@@ -595,6 +595,7 @@ function initTimelineInteraction(timeline) {
                             
                             // Validate timeline after resizing activity
                             try {
+                                const currentType = getCurrentTimelineType();
                                 window.timelineManager.metadata[currentType].validate();
                             } catch (error) {
                                 console.error('Timeline validation failed:', error);
@@ -796,6 +797,7 @@ function initTimelineInteraction(timeline) {
 
         // Validate timeline after adding activity
         try {
+            const currentType = getCurrentTimelineType();
             window.timelineManager.metadata[currentType].validate();
         } catch (error) {
             console.error('Timeline validation failed:', error);
