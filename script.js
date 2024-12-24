@@ -130,9 +130,20 @@ async function addNextTimeline() {
         newTimeline.className = 'timeline';
         newTimelineContainer.appendChild(newTimeline);
         
-        // Add new timeline below current one
+        // Add new timeline to wrapper based on layout
         const timelinesWrapper = document.querySelector('.timelines-wrapper');
-        timelinesWrapper.appendChild(newTimelineContainer);
+        if (isMobile) {
+            // In mobile, insert after the current timeline
+            const currentTimeline = window.timelineManager.activeTimeline?.closest('.timeline-container');
+            if (currentTimeline) {
+                currentTimeline.insertAdjacentElement('afterend', newTimelineContainer);
+            } else {
+                timelinesWrapper.appendChild(newTimelineContainer);
+            }
+        } else {
+            // In desktop, append to bottom as before
+            timelinesWrapper.appendChild(newTimelineContainer);
+        }
         
         // Only update previous timeline state if we have at least 2 initialized timelines
         if (window.timelineManager.initialized.size >= 2) {
