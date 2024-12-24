@@ -512,6 +512,7 @@ function initTimelineInteraction(timeline) {
                 min: { width: 10, height: 10 }
             })
         ],
+        inertia: false,
         listeners: {
             start(event) {
                 event.target.classList.add('resizing');
@@ -520,7 +521,7 @@ function initTimelineInteraction(timeline) {
                 const target = event.target;
                 const timelineRect = targetTimeline.getBoundingClientRect();
                 
-                let newSize, startTime, startMinutes, endMinutes;
+                let newSize, startTime, startMinutes, endMinutes, newWidth;
                 const isMobile = getIsMobile();
                 
                 if (isMobile) {
@@ -530,13 +531,14 @@ function initTimelineInteraction(timeline) {
                     const intervals = Math.round(newHeight / tenMinutesHeight);
                     newSize = intervals * tenMinutesHeight;
                     newSize = Math.max(tenMinutesHeight, Math.min(newSize, 100));
+                    newWidth = newSize; // Set newWidth for time label calculations
                     
                     startTime = target.dataset.start;
                     startMinutes = timeToMinutes(startTime);
                     endMinutes = positionToMinutes(parseFloat(target.style.top) + newSize);
                 } else {
                     // Desktop: Calculate width in percentage
-                    let newWidth = (event.rect.width / timelineRect.width) * 100;
+                    newWidth = (event.rect.width / timelineRect.width) * 100;
                     const tenMinutesWidth = (10 / (24 * 60)) * 100;
                     const intervals = Math.round(newWidth / tenMinutesWidth);
                     newSize = intervals * tenMinutesWidth;
