@@ -339,7 +339,7 @@ body {
         transform: translateY(-50%);
         white-space: normal;
         text-align: center;
-        width: 50px; /* Increased width */
+        width: 30px; /* Mobile time label width */
         height: auto; /* Allow height to adjust */
         min-height: 30px;
         word-wrap: break-word;
