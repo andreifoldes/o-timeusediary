@@ -595,8 +595,7 @@ function initTimelineInteraction(timeline) {
                             
                             // Validate timeline after resizing activity
                             try {
-                                const currentType = getCurrentTimelineType();
-                                window.timelineManager.metadata[currentType].validate();
+                                window.timelineManager.metadata[this.type].validate();
                             } catch (error) {
                                 console.error('Timeline validation failed:', error);
                                 // Revert the change
@@ -718,6 +717,7 @@ function initTimelineInteraction(timeline) {
 
         const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
+        currentBlock.dataset.timelineType = getCurrentTimelineType();
         currentBlock.dataset.start = formatTimeHHMM(startMinutes);
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.dataset.length = endMinutes - startMinutes;
@@ -797,8 +797,7 @@ function initTimelineInteraction(timeline) {
 
         // Validate timeline after adding activity
         try {
-            const currentType = getCurrentTimelineType();
-            window.timelineManager.metadata[currentType].validate();
+            window.timelineManager.metadata[this.type].validate();
         } catch (error) {
             console.error('Timeline validation failed:', error);
             // Remove the invalid activity
