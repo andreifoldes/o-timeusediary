@@ -288,6 +288,10 @@ body {
         border: none;
     }
     
+    .activities-accordion .activity-category {
+        padding: 0;
+    }
+    
     .activity-category h3 {
         background-color: #f0f0f0;
         padding: 10px;
