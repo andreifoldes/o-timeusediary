@@ -595,7 +595,6 @@ body {
         width: 100%;
         background: white;
         z-index: 1001;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-bottom: 20px;
         flex-wrap: wrap;
         order: 1;
