@@ -811,9 +811,7 @@ function updateButtonStates() {
     if (DEBUG_MODE) {
         console.log('Button state update:', {
             currentType,
-            requiredCoverage,
             currentCoverage,
-            hasSufficientCoverage,
             hasNextTimeline,
             nextTimelineType,
             nextTimelineNeedsInit,
