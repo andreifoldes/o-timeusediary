@@ -113,37 +113,57 @@ export function calculateMinimumBlockWidth() {
 
 export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
     const currentData = getCurrentTimelineData();
-    
+    const MINUTES_IN_DAY = 1440;
+    const TIMELINE_START = 240; // 4:00 AM in minutes
+
+    // Normalize minutes to timeline's 4:00 AM start
+    function normalizeMinutes(minutes) {
+        if (minutes < TIMELINE_START) {
+            minutes += MINUTES_IN_DAY;
+        }
+        return minutes;
+    }
+
+    // Normalize the new activity times
+    const normalizedStart = normalizeMinutes(startMinutes);
+    const normalizedEnd = normalizeMinutes(endMinutes);
+
     return currentData.some(activity => {
         if (excludeBlock && activity.id === excludeBlock) return false;
-        
+
         // Convert activity times to minutes since midnight
         const activityStartTime = activity.startTime.split(' ')[1];
         const activityEndTime = activity.endTime.split(' ')[1];
         const [startHour, startMin] = activityStartTime.split(':').map(Number);
         const [endHour, endMin] = activityEndTime.split(':').map(Number);
         
-        const activityStartMinutes = startHour * 60 + startMin;
-        const activityEndMinutes = endHour * 60 + endMin;
-        
-        // Handle special case for activities ending at 04:00 next day
-        const adjustedActivityEndMinutes = activityEndMinutes === 240 ? 1440 : activityEndMinutes;
-        const adjustedEndMinutes = endMinutes === 240 ? 1440 : endMinutes;
-        
-        // Check for overlap using minute values directly
+        const activityStartMinutes = normalizeMinutes(startHour * 60 + startMin);
+        const activityEndMinutes = normalizeMinutes(endHour * 60 + endMin);
+
+        // Check for overlap considering the normalized timeline
         const hasOverlap = (
-            (startMinutes < adjustedActivityEndMinutes && adjustedEndMinutes > activityStartMinutes) ||
-            (startMinutes === activityStartMinutes && adjustedEndMinutes === adjustedActivityEndMinutes)
+            Math.max(normalizedStart, activityStartMinutes) < 
+            Math.min(normalizedEnd, activityEndMinutes)
         );
-        
+
         if (hasOverlap && DEBUG_MODE) {
             console.log('Overlap detected:', {
-                new: { start: startMinutes, end: adjustedEndMinutes },
-                existing: { start: activityStartMinutes, end: adjustedActivityEndMinutes },
+                new: { 
+                    start: startMinutes, 
+                    end: endMinutes,
+                    normalizedStart,
+                    normalizedEnd 
+                },
+                existing: { 
+                    start: startHour * 60 + startMin,
+                    end: endHour * 60 + endMin,
+                    normalizedStart: activityStartMinutes,
+                    normalizedEnd: activityEndMinutes
+                },
                 activity: activity.activity
             });
         }
-        
+
         return hasOverlap;
     });
 }
