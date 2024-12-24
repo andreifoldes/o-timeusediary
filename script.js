@@ -294,15 +294,15 @@ async function fetchActivities(type) {
             }
         }
 
-        if (!data[key]) {
-            throw new Error(`Timeline key ${key} not found`);
+        if (!data[type]) {
+            throw new Error(`Timeline type ${type} not found`);
         }
         
         // Mark timeline as initialized
-        window.timelineManager.initialized.add(key);
+        window.timelineManager.initialized.add(type);
         
         if (DEBUG_MODE) {
-            console.log(`Loaded timeline metadata for ${key}:`, window.timelineManager.metadata[key]);
+            console.log(`Loaded timeline metadata for ${type}:`, window.timelineManager.metadata[type]);
             console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
