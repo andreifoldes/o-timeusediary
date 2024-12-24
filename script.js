@@ -501,7 +501,7 @@ function initTimelineInteraction(timeline) {
             target.dataset.originalEnd = target.dataset.end;
             target.dataset.originalLength = target.dataset.length;
         },
-        edges: { right: true },
+        edges: { right: !getIsMobile(), bottom: getIsMobile() },
         modifiers: [
             interact.modifiers.restrictEdges({
                 outer: '.timeline'
