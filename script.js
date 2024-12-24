@@ -326,50 +326,85 @@ function renderActivities(categories) {
     const container = document.getElementById('activitiesContainer');
     container.innerHTML = '';
 
-    const accordionContainer = document.createElement('div');
-    accordionContainer.className = 'activities-accordion';
+    const isMobile = getIsMobile();
 
-    categories.forEach(category => {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'activity-category';
+    if (isMobile) {
+        const accordionContainer = document.createElement('div');
+        accordionContainer.className = 'activities-accordion';
 
-        const categoryTitle = document.createElement('h3');
-        categoryTitle.textContent = category.name;
-        categoryDiv.appendChild(categoryTitle);
+        categories.forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'activity-category';
 
-        const activityButtonsDiv = document.createElement('div');
-        activityButtonsDiv.className = 'activity-buttons';
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.name;
+            categoryDiv.appendChild(categoryTitle);
 
-        category.activities.forEach(activity => {
-            const activityButton = document.createElement('button');
-            activityButton.className = 'activity-button';
-            activityButton.style.backgroundColor = activity.color;
-            activityButton.textContent = activity.name;
-            activityButton.addEventListener('click', () => {
-                document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
-                selectedActivity = {
-                    name: activity.name,
-                    color: activity.color
-                };
-                activityButton.classList.add('selected');
+            const activityButtonsDiv = document.createElement('div');
+            activityButtonsDiv.className = 'activity-buttons';
+
+            category.activities.forEach(activity => {
+                const activityButton = document.createElement('button');
+                activityButton.className = 'activity-button';
+                activityButton.style.backgroundColor = activity.color;
+                activityButton.textContent = activity.name;
+                activityButton.addEventListener('click', () => {
+                    document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
+                    selectedActivity = {
+                        name: activity.name,
+                        color: activity.color
+                    };
+                    activityButton.classList.add('selected');
+                });
+                activityButtonsDiv.appendChild(activityButton);
             });
-            activityButtonsDiv.appendChild(activityButton);
+
+            categoryDiv.appendChild(activityButtonsDiv);
+            accordionContainer.appendChild(categoryDiv);
         });
 
-        categoryDiv.appendChild(activityButtonsDiv);
-        accordionContainer.appendChild(categoryDiv);
-    });
+        container.appendChild(accordionContainer);
 
-    container.appendChild(accordionContainer);
-
-    // Add click event listener to category titles
-    const categoryTitles = accordionContainer.querySelectorAll('.activity-category h3');
-    categoryTitles.forEach(title => {
-        title.addEventListener('click', () => {
-            const category = title.parentElement;
-            category.classList.toggle('active');
+        // Add click event listener to category titles
+        const categoryTitles = accordionContainer.querySelectorAll('.activity-category h3');
+        categoryTitles.forEach(title => {
+            title.addEventListener('click', () => {
+                const category = title.parentElement;
+                category.classList.toggle('active');
+            });
         });
-    });
+    } else {
+        categories.forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'activity-category';
+
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.name;
+            categoryDiv.appendChild(categoryTitle);
+
+            const activityButtonsDiv = document.createElement('div');
+            activityButtonsDiv.className = 'activity-buttons';
+
+            category.activities.forEach(activity => {
+                const activityButton = document.createElement('button');
+                activityButton.className = 'activity-button';
+                activityButton.style.backgroundColor = activity.color;
+                activityButton.textContent = activity.name;
+                activityButton.addEventListener('click', () => {
+                    document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
+                    selectedActivity = {
+                        name: activity.name,
+                        color: activity.color
+                    };
+                    activityButton.classList.add('selected');
+                });
+                activityButtonsDiv.appendChild(activityButton);
+            });
+
+            categoryDiv.appendChild(activityButtonsDiv);
+            container.appendChild(categoryDiv);
+        });
+    }
 }
 
 function initTimeline(timeline) {
