@@ -334,7 +334,7 @@ body {
 /* Mobile styles */
 @media (max-width: 1023px) {
     .time-label {
-        right: -60px; /* Increased space from the block */
+        right: -30px; /* Space from the block */
         top: 50%;
         transform: translateY(-50%);
         white-space: normal;
