@@ -1123,8 +1123,27 @@ function handleResize() {
     }
 }
 
+function createFloatingAddButton() {
+    const button = document.createElement('button');
+    button.className = 'floating-add-button';
+    button.innerHTML = '+';
+    button.title = 'Add Activity';
+    
+    button.addEventListener('click', () => {
+        // Scroll activities container into view
+        const activitiesContainer = document.getElementById('activitiesContainer');
+        if (activitiesContainer) {
+            activitiesContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+
+    document.body.appendChild(button);
+}
+
 async function init() {
     try {
+        // Create floating add button
+        createFloatingAddButton();
 
         // Load initial timeline data
         const response = await fetch('activities.json');

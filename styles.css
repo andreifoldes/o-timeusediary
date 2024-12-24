@@ -628,6 +628,38 @@ body {
     background-color: #0069d9;
 }
 
+/* Floating add button for mobile */
+.floating-add-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.floating-add-button:hover {
+    transform: scale(1.1);
+    background-color: #0056b3;
+}
+
+@media (max-width: 1023px) {
+    .floating-add-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
 /* Debug overlay */
 .debugOverlay {
     position: fixed;
