@@ -1053,7 +1053,7 @@ function initButtons() {
 
     // Add click handler for Next button with debounce
     let nextButtonLastClick = 0;
-    const NEXT_BUTTON_COOLDOWN = 1000; // 1 second cooldown
+    const NEXT_BUTTON_COOLDOWN = 2500; // 2.5 second cooldown
     
     document.getElementById('nextBtn').addEventListener('click', () => {
         const currentTime = Date.now();
