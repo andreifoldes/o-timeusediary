@@ -1,7 +1,7 @@
 import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
-import { getCurrentTimelineData, getCurrentTimelineType } from './utils.js';
+import { getCurrentTimelineData, getCurrentTimelineKey } from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 let selectedActivity = null;
 
