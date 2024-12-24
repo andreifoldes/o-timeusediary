@@ -255,7 +255,7 @@ function validateMinCoverage(coverage) {
     return numCoverage;
 }
 
-async function fetchActivities(type) {
+async function fetchActivities(key) {
     try {
         const response = await fetch('activities.json');
         if (!response.ok) {
@@ -267,11 +267,11 @@ async function fetchActivities(type) {
         }
         
         // Validate min_coverage
-        if (data[type]) {
+        if (data[key]) {
             try {
-                validateMinCoverage(data[type].min_coverage);
+                validateMinCoverage(data[key].min_coverage);
             } catch (error) {
-                const errorMessage = `Timeline "${type}": ${error.message}`;
+                const errorMessage = `Timeline "${key}": ${error.message}`;
                 document.getElementById('activitiesContainer').innerHTML = 
                     `<p style="color: red; padding: 10px; background: #ffebee; border: 1px solid #ef9a9a; border-radius: 4px;">
                         ${errorMessage}
@@ -294,15 +294,15 @@ async function fetchActivities(type) {
             }
         }
 
-        if (!data[type]) {
-            throw new Error(`Timeline type ${type} not found`);
+        if (!data[key]) {
+            throw new Error(`Timeline key ${key} not found`);
         }
         
         // Mark timeline as initialized
-        window.timelineManager.initialized.add(type);
+        window.timelineManager.initialized.add(key);
         
         if (DEBUG_MODE) {
-            console.log(`Loaded timeline metadata for ${type}:`, window.timelineManager.metadata[type]);
+            console.log(`Loaded timeline metadata for ${key}:`, window.timelineManager.metadata[key]);
             console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
