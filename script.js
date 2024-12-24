@@ -499,6 +499,13 @@ function initTimelineInteraction(timeline) {
     
     // Initialize interact.js resizable
     interact('.activity-block').resizable({
+        onstart: function(event) {
+            // Store original values before resize
+            const target = event.target;
+            target.dataset.originalStart = target.dataset.start;
+            target.dataset.originalEnd = target.dataset.end;
+            target.dataset.originalLength = target.dataset.length;
+        },
         edges: { right: true },
         modifiers: [
             interact.modifiers.restrictEdges({
@@ -585,6 +592,21 @@ function initTimelineInteraction(timeline) {
                             currentData[activityIndex].startTime = times.startTime;
                             currentData[activityIndex].endTime = times.endTime;
                             currentData[activityIndex].blockLength = parseInt(target.dataset.length);
+                            
+                            // Validate timeline after resizing activity
+                            try {
+                                window.timelineManager.metadata[currentType].validate();
+                            } catch (error) {
+                                console.error('Timeline validation failed:', error);
+                                // Revert the change
+                                const originalTimes = formatTimeDDMMYYYYHHMM(target.dataset.originalStart, target.dataset.originalEnd);
+                                currentData[activityIndex].startTime = originalTimes.startTime;
+                                currentData[activityIndex].endTime = originalTimes.endTime;
+                                currentData[activityIndex].blockLength = parseInt(target.dataset.originalLength);
+                                alert('Timeline validation error: ' + error.message);
+                                return;
+                            }
+
                             if (DEBUG_MODE) {
                                 console.log('Updated activity data:', currentData[activityIndex]);
                             }
@@ -771,6 +793,18 @@ function initTimelineInteraction(timeline) {
         };
         getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
+
+        // Validate timeline after adding activity
+        try {
+            window.timelineManager.metadata[currentType].validate();
+        } catch (error) {
+            console.error('Timeline validation failed:', error);
+            // Remove the invalid activity
+            getCurrentTimelineData().pop();
+            currentBlock.remove();
+            alert('Timeline validation error: ' + error.message);
+            return;
+        }
 
         updateButtonStates();
 
