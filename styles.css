@@ -161,10 +161,10 @@ body {
 
     .minute-marker-30 {
         position: absolute;
-        height: 40%;
+        height: 60%;
         bottom: 0;
-        border-left: 1px solid #bbb;
-        width: 1px;
+        border-left: 2px solid #bbb;
+        width: 0;
         margin-left: -1px;
         transform: translateY(1px);
     }
@@ -213,6 +213,7 @@ body {
         width: 50%;
         right: 0;
         border-top: 2px solid #bbb;
+        height: 0; /* Ensure consistent height */
     }
 }
 
