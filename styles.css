@@ -263,14 +263,16 @@ body {
 .activities-container {
     margin: 20px;
     display: block;
+    width: 100%;
 }
 
 @media (min-width: 1024px) {
     .activities-container {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
         align-items: start;
+        visibility: visible;
     }
 }
 
