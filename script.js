@@ -1001,6 +1001,20 @@ async function init() {
             if (btn) btn.disabled = true;
         });
 
+        // Load initial timeline data
+        const response = await fetch('activities.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Initialize timeline management structure
+        window.timelineManager.keys = Object.keys(data);
+        window.timelineManager.keys.forEach(timelineKey => {
+            window.timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data[timelineKey]);
+            window.timelineManager.activities[timelineKey] = [];
+        });
+
         // Initialize first timeline using addNextTimeline
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
@@ -1009,6 +1023,10 @@ async function init() {
         
         // Add resize event listener
         window.addEventListener('resize', handleResize);
+
+        if (DEBUG_MODE) {
+            console.log('Initialized timeline structure:', window.timelineManager);
+        }
     } catch (error) {
         console.error('Failed to initialize application:', error);
         document.getElementById('activitiesContainer').innerHTML = 
