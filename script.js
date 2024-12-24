@@ -1057,11 +1057,18 @@ function handleResize() {
 async function init() {
     try {
         // Disable all buttons initially
-        const buttons = ['backBtn', 'undoBtn', 'cleanRowBtn', 'nextBtn'];
+        const buttons = ['undoBtn', 'cleanRowBtn', 'nextBtn'];
         buttons.forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) btn.disabled = true;
         });
+        
+        // Explicitly disable back button and set attribute
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.disabled = true;
+            backBtn.setAttribute('disabled', 'disabled');
+        }
 
         // Load initial timeline data
         const response = await fetch('activities.json');
