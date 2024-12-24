@@ -138,40 +138,38 @@ async function addNextTimeline() {
 
         const isMobile = getIsMobile();
 
-        if (isMobile) {
-            // Mobile mode - create new timeline container
-            // AI - same as in desktop mode
-        } else {
-            // Desktop mode - create new timeline container
-            const newTimelineContainer = document.createElement('div');
-            newTimelineContainer.className = 'timeline-container';
-            const newTimeline = document.createElement('div');
-            newTimeline.className = 'timeline';
-            newTimelineContainer.appendChild(newTimeline);
-            
-            // Add new timeline below current one
-            const timelinesWrapper = document.querySelector('.timelines-wrapper');
-            timelinesWrapper.appendChild(newTimelineContainer);
-            
-            // Update previous timeline state
-            currentTimeline.setAttribute('data-active', 'false');
-            currentTimelineContainer.setAttribute('data-active', 'false');
-            
-            // Initialize new timeline and container with proper IDs
-            newTimeline.id = nextTimelineKey;
-            newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
-            newTimeline.setAttribute('data-active', 'true');
-            newTimelineContainer.setAttribute('data-active', 'true');
-            
-            // Create and initialize timeline container with markers
-            const timelineContainer = new TimelineContainer(newTimeline);
-            timelineContainer.initialize(isMobile).createMarkers(isMobile);
-            newTimeline.containerInstance = timelineContainer;
-            
-            // Set active timeline reference and initialize interaction
-            window.timelineManager.activeTimeline = newTimeline;
-            initTimelineInteraction(newTimeline);
+        // Desktop mode - create new timeline container
+        const newTimelineContainer = document.createElement('div');
+        newTimelineContainer.className = 'timeline-container';
+        const newTimeline = document.createElement('div');
+        newTimeline.className = 'timeline';
+        newTimelineContainer.appendChild(newTimeline);
+        
+        // Add new timeline below current one
+        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        timelinesWrapper.appendChild(newTimelineContainer);
+        
+        // Update previous timeline state if it exists
+        const previousTimeline = window.timelineManager.activeTimeline;
+        if (previousTimeline) {
+            previousTimeline.setAttribute('data-active', 'false');
+            previousTimeline.parentElement.setAttribute('data-active', 'false');
         }
+        
+        // Initialize new timeline and container with proper IDs
+        newTimeline.id = nextTimelineKey;
+        newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
+        newTimeline.setAttribute('data-active', 'true');
+        newTimelineContainer.setAttribute('data-active', 'true');
+        
+        // Create and initialize timeline container with markers
+        const timelineContainer = new TimelineContainer(newTimeline);
+        timelineContainer.initialize(isMobile).createMarkers(isMobile);
+        newTimeline.containerInstance = timelineContainer;
+        
+        // Set active timeline reference and initialize interaction
+        window.timelineManager.activeTimeline = newTimeline;
+        initTimelineInteraction(newTimeline);
 
         // Create activities container if it doesn't exist
         const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
