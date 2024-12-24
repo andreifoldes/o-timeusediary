@@ -849,9 +849,8 @@ function updateButtonStates() {
         console.log('Button state update:', {
             currentKey,
             currentCoverage,
-            hasNextTimeline,
-            nextTimelineKey,
-            nextTimelineNeedsInit,
+            isLastTimeline,
+            meetsMinCoverage,
             initializedTimelines: Array.from(window.timelineManager.initialized)
         });
     }
