@@ -272,14 +272,12 @@ async function fetchActivities(key) {
             }
         }
 
-        // Initialize timeline management structure
+        // Initialize timeline management structure if not already initialized
         if (Object.keys(timelineManager.metadata).length === 0) {
             timelineManager.keys = Object.keys(data);
             timelineManager.keys.forEach(timelineKey => {
                 timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data[timelineKey]);
                 timelineManager.activities[timelineKey] = [];
-                // Set isActive true only for first timeline, false for others
-                timelineManager.metadata[timelineKey].isActive = timelineKey === 'primary';
             });
             if (DEBUG_MODE) {
                 console.log('Initialized timeline structure:', timelineManager);
@@ -993,17 +991,11 @@ async function init() {
             if (btn) btn.disabled = true;
         });
 
-        console.log('isMobile value during init:', getIsMobile());
-        initTimeline(window.timelineManager.activeTimeline);
-        initTimelineInteraction(window.timelineManager.activeTimeline);
-        const categories = await fetchActivities('primary');
-        // Set initial title and description
-        document.querySelector('.timeline-title').textContent = window.timelineManager.metadata.primary.name;
-        document.querySelector('.timeline-description').textContent = window.timelineManager.metadata.primary.description;
-        document.title = window.timelineManager.metadata.primary.name;
-        renderActivities(categories);
+        // Initialize first timeline using addNextTimeline
+        window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
+        await addNextTimeline();
+        
         initButtons();
-        updateButtonStates();
         
         // Add resize event listener
         window.addEventListener('resize', handleResize);
