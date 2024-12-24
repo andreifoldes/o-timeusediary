@@ -115,28 +115,13 @@ async function addNextTimeline() {
         // Load next timeline data
         const categories = await fetchActivities(nextTimelineKey);
         
-        // Create new timeline element first
-        const newTimeline = document.createElement('div');
-        newTimeline.className = 'timeline';
-        newTimeline.id = nextTimelineKey;
-        newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
-        newTimeline.setAttribute('data-active', 'true');
-        newTimeline.style.width = '100%';
-
-        // Add timeline to container
-        const currentTimelineContainer = document.querySelector('.timeline-container');
-        currentTimelineContainer.appendChild(newTimeline);
-
-        // Set as active timeline
-        window.timelineManager.activeTimeline = newTimeline;
-
+        const isMobile = getIsMobile();
+        
         // Update UI for next timeline
         const nextTimeline = window.timelineManager.metadata[nextTimelineKey];
         document.querySelector('.timeline-title').textContent = nextTimeline.name;
         document.querySelector('.timeline-description').textContent = nextTimeline.description;
         document.title = nextTimeline.name;
-
-        const isMobile = getIsMobile();
 
         // Desktop mode - create new timeline container
         const newTimelineContainer = document.createElement('div');
