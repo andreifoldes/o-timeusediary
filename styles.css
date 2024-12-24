@@ -299,6 +299,21 @@ body {
         margin: 0 0 0 0;
         cursor: pointer;
         border-radius: 4px;
+        position: relative;
+    }
+
+    .activity-category h3::after {
+        content: '▼';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.3s ease;
+        font-size: 12px;
+    }
+
+    .activity-category.active h3::after {
+        transform: translateY(-50%) rotate(180deg);
     }
     
     .activity-category .activity-buttons {
