@@ -326,6 +326,9 @@ function renderActivities(categories) {
     const container = document.getElementById('activitiesContainer');
     container.innerHTML = '';
 
+    const accordionContainer = document.createElement('div');
+    accordionContainer.className = 'activities-accordion';
+
     categories.forEach(category => {
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'activity-category';
@@ -333,6 +336,9 @@ function renderActivities(categories) {
         const categoryTitle = document.createElement('h3');
         categoryTitle.textContent = category.name;
         categoryDiv.appendChild(categoryTitle);
+
+        const activityButtonsDiv = document.createElement('div');
+        activityButtonsDiv.className = 'activity-buttons';
 
         category.activities.forEach(activity => {
             const activityButton = document.createElement('button');
@@ -347,10 +353,22 @@ function renderActivities(categories) {
                 };
                 activityButton.classList.add('selected');
             });
-            categoryDiv.appendChild(activityButton);
+            activityButtonsDiv.appendChild(activityButton);
         });
 
-        container.appendChild(categoryDiv);
+        categoryDiv.appendChild(activityButtonsDiv);
+        accordionContainer.appendChild(categoryDiv);
+    });
+
+    container.appendChild(accordionContainer);
+
+    // Add click event listener to category titles
+    const categoryTitles = accordionContainer.querySelectorAll('.activity-category h3');
+    categoryTitles.forEach(title => {
+        title.addEventListener('click', () => {
+            const category = title.parentElement;
+            category.classList.toggle('active');
+        });
     });
 }
 
