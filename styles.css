@@ -166,7 +166,6 @@ body {
         border-left: 2px solid #bbb;
         width: 0;
         margin-left: -1px;
-        transform: translateY(1px);
     }
 }
 
