@@ -354,6 +354,11 @@ function renderActivities(categories, container = document.getElementById('activ
                         color: activity.color
                     };
                     activityButton.classList.add('selected');
+                    // Close the modal after selection
+                    const modal = document.querySelector('.modal-overlay');
+                    if (modal) {
+                        modal.style.display = 'none';
+                    }
                 });
                 activityButtonsDiv.appendChild(activityButton);
             });
