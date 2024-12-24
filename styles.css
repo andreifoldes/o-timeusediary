@@ -29,7 +29,7 @@ body {
 /* Mobile layout */
 @media (max-width: 1023px) {
     .timeline-canvas {
-        flex-direction: row-reverse;
+        flex-direction: row;
     }
 }
 
