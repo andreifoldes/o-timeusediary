@@ -595,7 +595,8 @@ function initTimelineInteraction(timeline) {
                             
                             // Validate timeline after resizing activity
                             try {
-                                window.timelineManager.metadata[this.type].validate();
+                                const timelineType = event.target.dataset.timelineType;
+                                window.timelineManager.metadata[timelineType].validate();
                             } catch (error) {
                                 console.error('Timeline validation failed:', error);
                                 // Revert the change
@@ -797,7 +798,8 @@ function initTimelineInteraction(timeline) {
 
         // Validate timeline after adding activity
         try {
-            window.timelineManager.metadata[this.type].validate();
+            const timelineType = currentBlock.dataset.timelineType;
+            window.timelineManager.metadata[timelineType].validate();
         } catch (error) {
             console.error('Timeline validation failed:', error);
             // Remove the invalid activity
