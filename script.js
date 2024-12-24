@@ -567,7 +567,7 @@ function initTimelineInteraction(timeline = null) {
                         target.dataset.length = newLength;
                         
                         // Update text class based on new length
-                        const textDiv = target.querySelector('.activity-block-text');
+                        const textDiv = target.querySelector('.activity-block-text-narrow');
                         if (textDiv) {
                             textDiv.className = newLength >= 60 ? 'activity-block-text resized' : 'activity-block-text';
                         }
@@ -594,7 +594,7 @@ function initTimelineInteraction(timeline = null) {
             },
             end(event) {
                 event.target.classList.remove('resizing');
-                const textDiv = event.target.querySelector('.activity-block-text');
+                const textDiv = event.target.querySelector('.activity-block-text-narrow');
                 if (textDiv) {
                     textDiv.classList.add('resized');
                 }
@@ -704,7 +704,7 @@ function initTimelineInteraction(timeline = null) {
         textDiv.style.whiteSpace = 'nowrap';
         // Set initial class based on length
         const length = parseInt(currentBlock.dataset.length);
-        textDiv.className = length >= 60 ? 'activity-block-text resized' : 'activity-block-text';
+        textDiv.className = length >= 60 ? 'activity-block-text-narrow resized' : 'activity-block-text-narrow';
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning

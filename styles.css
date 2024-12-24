@@ -459,7 +459,7 @@ body {
 }
 
 
-.activity-block-text {
+.activity-block-text-narrow {
     width: 90%;
     padding: 4px;
     box-sizing: border-box;
@@ -473,14 +473,14 @@ body {
 }
 
 /* Initial state - ellipsis */
-.activity-block-text:not(.resized) {
+.activity-block-text-narrow:not(.resized) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 /* After resize - wrap text */
-.activity-block-text.resized {
+.activity-block-text-narrow.resized {
     white-space: normal !important;
     overflow: visible !important;
     word-wrap: break-word !important;
