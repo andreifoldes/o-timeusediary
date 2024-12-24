@@ -283,7 +283,9 @@ body {
     }
     
     .activity-category {
-        margin-bottom: 10px;
+        margin-bottom: 0;
+        padding: 0;
+        border: none;
     }
     
     .activity-category h3 {
