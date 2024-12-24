@@ -599,7 +599,15 @@ function initTimelineInteraction(timeline) {
                                 currentData[activityIndex].startTime = originalTimes.startTime;
                                 currentData[activityIndex].endTime = originalTimes.endTime;
                                 currentData[activityIndex].blockLength = parseInt(target.dataset.originalLength);
-                                alert('Timeline validation error: ' + error.message);
+                                const block = document.createElement('div');
+                                block.className = 'activity-block invalid';
+                                block.style.backgroundColor = currentBlock.style.backgroundColor;
+                                block.style.width = currentBlock.style.width;
+                                block.style.height = currentBlock.style.height;
+                                block.style.top = currentBlock.style.top;
+                                block.style.left = currentBlock.style.left;
+                                targetTimeline.appendChild(block);
+                                setTimeout(() => block.remove(), 400);
                                 return;
                             }
 
@@ -800,7 +808,15 @@ function initTimelineInteraction(timeline) {
             // Remove the invalid activity
             getCurrentTimelineData().pop();
             currentBlock.remove();
-            alert('Timeline validation error: ' + error.message);
+            const block = document.createElement('div');
+            block.className = 'activity-block invalid';
+            block.style.backgroundColor = selectedActivity.color;
+            block.style.width = currentBlock.style.width;
+            block.style.height = currentBlock.style.height;
+            block.style.top = currentBlock.style.top;
+            block.style.left = currentBlock.style.left;
+            targetTimeline.appendChild(block);
+            setTimeout(() => block.remove(), 400);
             return;
         }
 
@@ -909,7 +925,11 @@ function initButtons() {
                 console.error('Timeline validation failed:', error);
                 // Revert the change
                 window.timelineManager.activities[currentKey] = [...currentData, lastActivity];
-                alert('Cannot undo: ' + error.message);
+                const lastBlock = timeline.querySelector(`.activity-block[data-id="${lastActivity.id}"]`);
+                if (lastBlock) {
+                    lastBlock.classList.add('invalid');
+                    setTimeout(() => lastBlock.classList.remove('invalid'), 400);
+                }
                 return;
             }
             
