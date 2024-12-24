@@ -101,7 +101,8 @@ body {
 /* Mobile vertical layout */
 @media (max-width: 1023px) {
     .timeline-container {
-        min-width: 320px;
+        min-width: 260px;
+        max-width: 260px;
         height: 1500px;
         margin: 20px auto;
         padding-left: 2px;
