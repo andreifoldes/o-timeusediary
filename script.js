@@ -168,16 +168,29 @@ async function addNextTimeline() {
             return container;
         })();
 
+        // Create new timeline element
+        const newTimeline = document.createElement('div');
+        newTimeline.className = 'timeline';
+        newTimeline.id = nextTimelineKey;
+        newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
+        newTimeline.setAttribute('data-active', 'true');
+        newTimeline.style.width = '100%';
+
+        // Add timeline to container
+        const timelineContainer = document.querySelector('.timeline-container');
+        timelineContainer.appendChild(newTimeline);
+
+        // Set as active timeline
+        window.timelineManager.activeTimeline = newTimeline;
+
         // Initialize activities array if not exists
         window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
 
+        // Initialize markers for the new timeline
+        initTimeline(window.timelineManager.activeTimeline);
+
         // Render activities for next timeline
         renderActivities(categories);
-
-        // Initialize markers for the new timeline
-        if (!window.timelineManager.activeTimeline.containerInstance) {
-            initTimeline(window.timelineManager.activeTimeline);
-        }
         
         // Initialize interaction for the timeline
         initTimelineInteraction(window.timelineManager.activeTimeline);
