@@ -11,7 +11,7 @@ window.timelineManager = {
     activities: {}, // Timeline activities (former timelineData object)
     initialized: new Set(), // Tracks initialized timelines
     activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
-    types: [], // Available timeline types
+    keys: [], // Available timeline keys
     currentIndex: 0 // Current timeline index
 };
 
@@ -282,33 +282,33 @@ async function fetchActivities(type) {
 
         // Initialize timeline management structure
         if (Object.keys(timelineManager.metadata).length === 0) {
-            timelineManager.types = Object.keys(data);
-            timelineManager.types.forEach(timelineType => {
-                timelineManager.metadata[timelineType] = new Timeline(timelineType, data[timelineType]);
-                timelineManager.activities[timelineType] = [];
+            timelineManager.keys = Object.keys(data);
+            timelineManager.keys.forEach(timelineKey => {
+                timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data[timelineKey]);
+                timelineManager.activities[timelineKey] = [];
                 // Set isActive true only for first timeline, false for others
-                timelineManager.metadata[timelineType].isActive = timelineType === 'primary';
+                timelineManager.metadata[timelineKey].isActive = timelineKey === 'primary';
             });
             if (DEBUG_MODE) {
                 console.log('Initialized timeline structure:', timelineManager);
             }
         }
 
-        if (!data[type]) {
-            throw new Error(`Timeline type ${type} not found`);
+        if (!data[key]) {
+            throw new Error(`Timeline key ${key} not found`);
         }
         
         // Mark timeline as initialized
-        window.timelineManager.initialized.add(type);
+        window.timelineManager.initialized.add(key);
         
         if (DEBUG_MODE) {
-            console.log(`Loaded timeline metadata for ${type}:`, window.timelineManager.metadata[type]);
+            console.log(`Loaded timeline metadata for ${key}:`, window.timelineManager.metadata[key]);
             console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
         }
         
-        return data[type].categories;
+        return data[key].categories;
     } catch (error) {
         console.error('Error loading activities:', error);
         throw error;
@@ -595,8 +595,8 @@ function initTimelineInteraction(timeline) {
                             
                             // Validate timeline after resizing activity
                             try {
-                                const timelineType = event.target.dataset.timelineType;
-                                window.timelineManager.metadata[timelineType].validate();
+                                const timelineKey = event.target.dataset.timelineKey;
+                                window.timelineManager.metadata[timelineKey].validate();
                             } catch (error) {
                                 console.error('Timeline validation failed:', error);
                                 // Revert the change
@@ -644,7 +644,7 @@ function initTimelineInteraction(timeline) {
 
         if (!selectedActivity || e.target.closest('.activity-block')) return;
         
-        const currentType = getCurrentTimelineType();
+        const currentKey = getCurrentTimelineKey();
         // Check if timeline is full before proceeding
         if (isTimelineFull()) {
             const block = document.createElement('div');
@@ -654,7 +654,7 @@ function initTimelineInteraction(timeline) {
         }
         
         // Ensure we're working with the current timeline data
-        window.timelineManager.activities[currentType] = getCurrentTimelineData();
+        window.timelineManager.activities[currentKey] = getCurrentTimelineData();
 
         const rect = targetTimeline.getBoundingClientRect();
         const isMobile = getIsMobile();
@@ -718,7 +718,7 @@ function initTimelineInteraction(timeline) {
 
         const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
-        currentBlock.dataset.timelineType = getCurrentTimelineType();
+        currentBlock.dataset.timelineKey = getCurrentTimelineKey();
         currentBlock.dataset.start = formatTimeHHMM(startMinutes);
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.dataset.length = endMinutes - startMinutes;
@@ -798,8 +798,8 @@ function initTimelineInteraction(timeline) {
 
         // Validate timeline after adding activity
         try {
-            const timelineType = currentBlock.dataset.timelineType;
-            window.timelineManager.metadata[timelineType].validate();
+            const timelineKey = currentBlock.dataset.timelineKey;
+            window.timelineManager.metadata[timelineKey].validate();
         } catch (error) {
             console.error('Timeline validation failed:', error);
             // Remove the invalid activity
@@ -833,14 +833,14 @@ function updateButtonStates() {
     if (cleanRowButton) cleanRowButton.disabled = isEmpty;
     
     // Get current timeline coverage
-    const currentType = getCurrentTimelineType();
-    const currentTimeline = window.timelineManager.metadata[currentType];
+    const currentKey = getCurrentTimelineKey();
+    const currentTimeline = window.timelineManager.metadata[currentKey];
     const currentCoverage = window.getTimelineCoverage();
         
     // Check if we have a next timeline to go to
-    const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
-    const nextTimelineType = hasNextTimeline ? window.timelineManager.types[window.timelineManager.currentIndex + 1] : null;
-    const nextTimelineNeedsInit = nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType);
+    const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.keys.length - 1;
+    const nextTimelineKey = hasNextTimeline ? window.timelineManager.keys[window.timelineManager.currentIndex + 1] : null;
+    const nextTimelineNeedsInit = nextTimelineKey && !window.timelineManager.initialized.has(nextTimelineKey);
     
     if (nextButton) {
         // Enable next button if there is a next timeline available that needs initialization
@@ -849,10 +849,10 @@ function updateButtonStates() {
     
     if (DEBUG_MODE) {
         console.log('Button state update:', {
-            currentType,
+            currentKey,
             currentCoverage,
             hasNextTimeline,
-            nextTimelineType,
+            nextTimelineKey,
             nextTimelineNeedsInit,
             initializedTimelines: Array.from(window.timelineManager.initialized)
         });
@@ -866,16 +866,16 @@ function updateButtonStates() {
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     cleanRowBtn.addEventListener('click', () => {
-        const currentType = getCurrentTimelineType();
+        const currentKey = getCurrentTimelineKey();
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             const activityBlocks = window.timelineManager.activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
             // Update timeline manager activities and validate
-            window.timelineManager.activities[currentType] = [];
+            window.timelineManager.activities[currentKey] = [];
             try {
-                window.timelineManager.metadata[currentType].validate();
+                window.timelineManager.metadata[currentKey].validate();
             } catch (error) {
                 console.error('Timeline validation failed:', error);
                 alert('Timeline validation error: ' + error.message);
@@ -892,7 +892,7 @@ function initButtons() {
 
 
     document.getElementById('undoBtn').addEventListener('click', () => {
-        const currentType = getCurrentTimelineType();
+        const currentKey = getCurrentTimelineKey();
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
             if (DEBUG_MODE) {
@@ -901,13 +901,13 @@ function initButtons() {
 
             const lastActivity = currentData.pop();
             // Update timeline manager activities and validate
-            window.timelineManager.activities[currentType] = currentData;
+            window.timelineManager.activities[currentKey] = currentData;
             try {
-                window.timelineManager.metadata[currentType].validate();
+                window.timelineManager.metadata[currentKey].validate();
             } catch (error) {
                 console.error('Timeline validation failed:', error);
                 // Revert the change
-                window.timelineManager.activities[currentType] = [...currentData, lastActivity];
+                window.timelineManager.activities[currentKey] = [...currentData, lastActivity];
                 alert('Cannot undo: ' + error.message);
                 return;
             }
@@ -943,8 +943,8 @@ function initButtons() {
 
     // Add click handler for Next button
     document.getElementById('nextBtn').addEventListener('click', () => {
-        const nextTimelineType = window.timelineManager.types[window.timelineManager.currentIndex + 1];
-        if (nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType)) {
+        const nextTimelineKey = window.timelineManager.keys[window.timelineManager.currentIndex + 1];
+        if (nextTimelineKey && !window.timelineManager.initialized.has(nextTimelineKey)) {
             addNextTimeline();
         } else {
             console.log('No more timelines to initialize');

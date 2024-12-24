@@ -1,6 +1,6 @@
 export class Timeline {
-    constructor(type, metadata = {}) {
-        this.type = type;
+    constructor(key, metadata = {}) {
+        this.key = key;
         this.name = metadata?.name || '';
         this.description = metadata?.description || '';
         this.mode = metadata?.mode || 'single-choice';

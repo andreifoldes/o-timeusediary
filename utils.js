@@ -3,8 +3,8 @@ import { DEBUG_MODE } from './constants.js';
 const MINUTES_PER_DAY = 24 * 60;
 
 // Timeline state management functions
-export function getCurrentTimelineType() {
-    return window.timelineManager.types[window.timelineManager.currentIndex];
+export function getCurrentTimelineKey() {
+    return window.timelineManager.keys[window.timelineManager.currentIndex];
 }
 
 // Export to both module and window
