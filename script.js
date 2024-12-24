@@ -1056,12 +1056,6 @@ function handleResize() {
 
 async function init() {
     try {
-        // Disable all buttons initially
-        const buttons = ['undoBtn', 'cleanRowBtn', 'nextBtn', 'backBtn'];
-        buttons.forEach(btnId => {
-            const btn = document.getElementById(btnId);
-            if (btn) btn.disabled = true;
-        });
 
         // Load initial timeline data
         const response = await fetch('activities.json');
