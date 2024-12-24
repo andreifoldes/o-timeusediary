@@ -1063,12 +1063,12 @@ async function init() {
             if (btn) btn.disabled = true;
         });
         
-        // Explicitly disable back button
-        const backBtn = document.getElementById('backBtn');
-        if (backBtn) {
-            backBtn.disabled = true;
-            backBtn.setAttribute('disabled', '');
-        }
+        // Disable all buttons initially
+        const buttons = ['undoBtn', 'cleanRowBtn', 'nextBtn', 'backBtn'];
+        buttons.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) btn.disabled = true;
+        });
 
         // Load initial timeline data
         const response = await fetch('activities.json');
