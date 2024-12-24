@@ -104,12 +104,12 @@ async function addNextTimeline() {
 
     // Increment timeline index
     window.timelineManager.currentIndex++;
-    if (window.timelineManager.currentIndex >= window.timelineManager.types.length) {
+    if (window.timelineManager.currentIndex >= window.timelineManager.keys.length) {
         console.log('All timelines completed');
         return;
     }
 
-    const nextTimelineType = window.timelineManager.types[window.timelineManager.currentIndex];
+    const nextTimelineType = window.timelineManager.keys[window.timelineManager.currentIndex];
 
     try {
         // Load next timeline data
