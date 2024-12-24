@@ -334,19 +334,26 @@ body {
 /* Mobile styles */
 @media (max-width: 1023px) {
     .time-label {
-        right: -35px;
+        right: -60px; /* Increased space from the block */
         top: 50%;
         transform: translateY(-50%);
         white-space: normal;
         text-align: center;
-        width: 30px;
-        height: 30px;
+        width: 50px; /* Increased width */
+        height: auto; /* Allow height to adjust */
+        min-height: 30px;
         word-wrap: break-word;
         word-break: break-word;
         overflow-wrap: break-word;
         display: flex;
         align-items: center;
         justify-content: center;
+        background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+        z-index: 100; /* Ensure visibility */
+        padding: 4px 6px; /* More padding */
+        font-size: 12px; /* Slightly larger font */
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 }
 
