@@ -290,6 +290,7 @@ body {
     
     .activities-accordion .activity-category {
         padding: 0;
+        margin-bottom: 0;
     }
     
     .activity-category h3 {
