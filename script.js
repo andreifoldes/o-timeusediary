@@ -1011,6 +1011,12 @@ function initButtons() {
             addNextTimeline();
         }
     });
+
+    // Disable back button initially
+    const backButton = document.getElementById('backBtn');
+    if (backButton) {
+        backButton.disabled = true;
+    }
 }
 
 function handleResize() {
