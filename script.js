@@ -520,77 +520,46 @@ function initTimelineInteraction(timeline) {
                 const target = event.target;
                 const timelineRect = targetTimeline.getBoundingClientRect();
                 
-                if (!getIsMobile()) {
-                    let newSize, startTime, startMinutes, endMinutes;
-                    const isMobile = getIsMobile();
-                    
-                    if (isMobile) {
-                        // Mobile: Calculate height in percentage
-                        let newHeight = (event.rect.height / timelineRect.height) * 100;
-                        const tenMinutesHeight = (10 / (24 * 60)) * 100;
-                        const intervals = Math.round(newHeight / tenMinutesHeight);
-                        newSize = intervals * tenMinutesHeight;
-                        newSize = Math.max(tenMinutesHeight, Math.min(newSize, 100));
-                        
-                        startTime = target.dataset.start;
-                        startMinutes = timeToMinutes(startTime);
-                        endMinutes = positionToMinutes(parseFloat(target.style.top) + newSize);
-                    } else {
-                        // Desktop: Calculate width in percentage
-                        let newWidth = (event.rect.width / timelineRect.width) * 100;
-                        const tenMinutesWidth = (10 / (24 * 60)) * 100;
-                        const intervals = Math.round(newWidth / tenMinutesWidth);
-                        newSize = intervals * tenMinutesWidth;
-                        newSize = Math.max(tenMinutesWidth, Math.min(newSize, 100));
-                        
-                        startTime = target.dataset.start;
-                        startMinutes = timeToMinutes(startTime);
-                        endMinutes = positionToMinutes(parseFloat(target.style.left) + newSize);
-                    }
-                    
-                    if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
-                        target.classList.add('invalid');
-                        setTimeout(() => target.classList.remove('invalid'), 400);
-                        return;
-                    }
-                    
-                    // Update block size if no overlap
-                    if (isMobile) {
-                        target.style.height = `${newSize}%`;
-                        newWidth = newSize; // For time label calculations
-                    } else {
-                        target.style.width = `${newSize}%`;
-                        newWidth = newSize;
-                    }
-                } else {
-                    // Calculate current width in percentage
+                let newSize, startTime, startMinutes, endMinutes;
+                const isMobile = getIsMobile();
+                
+                if (isMobile) {
+                    // Mobile: Calculate height in percentage
                     let newHeight = (event.rect.height / timelineRect.height) * 100;
-                    
-                    // Calculate the width of 10 minutes in percentage
                     const tenMinutesHeight = (10 / (24 * 60)) * 100;
-                    
-                    // Calculate how many 10-minute intervals fit in the current width
                     const intervals = Math.round(newHeight / tenMinutesHeight);
+                    newSize = intervals * tenMinutesHeight;
+                    newSize = Math.max(tenMinutesHeight, Math.min(newSize, 100));
                     
-                    // Snap to nearest 10-minute interval
-                    newHeight = intervals * tenMinutesHeight;
+                    startTime = target.dataset.start;
+                    startMinutes = timeToMinutes(startTime);
+                    endMinutes = positionToMinutes(parseFloat(target.style.top) + newSize);
+                } else {
+                    // Desktop: Calculate width in percentage
+                    let newWidth = (event.rect.width / timelineRect.width) * 100;
+                    const tenMinutesWidth = (10 / (24 * 60)) * 100;
+                    const intervals = Math.round(newWidth / tenMinutesWidth);
+                    newSize = intervals * tenMinutesWidth;
+                    newSize = Math.max(tenMinutesWidth, Math.min(newSize, 100));
                     
-                    // Apply minimum and maximum constraints
-                    newHeight = Math.max(tenMinutesHeight, Math.min(newHeight, 100));
-                    
-                    // Check for overlap at new width
-                    const startTime = target.dataset.start;
-                    const startMinutes = timeToMinutes(startTime);
-                    const endMinutes = positionToMinutes((parseFloat(target.style.top) + newHeight));
-                    
-                    if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
-                        target.classList.add('invalid');
-                        setTimeout(() => target.classList.remove('invalid'), 400);
-                        return;
-                    }
-                    
-                    // Update block width if no overlap
-                    target.style.height = `${newHeight}%`;
+                    startTime = target.dataset.start;
+                    startMinutes = timeToMinutes(startTime);
+                    endMinutes = positionToMinutes(parseFloat(target.style.left) + newSize);
+                }
+                
+                if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                    target.classList.add('invalid');
+                    setTimeout(() => target.classList.remove('invalid'), 400);
+                    return;
+                }
+                
+                // Update block size if no overlap
+                if (isMobile) {
+                    target.style.height = `${newSize}%`;
+                    newWidth = newSize; // For time label calculations
+                } else {
+                    target.style.width = `${newSize}%`;
+                    newWidth = newSize;
                 }
 
                 // Update time label
