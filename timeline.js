@@ -38,7 +38,24 @@ export class Timeline {
     }
 
     validate() {
-        // Implementation depends on timeline requirements
+        // Check for overlaps in activities
+        const sortedActivities = [...this.activities].sort((a, b) => {
+            const aStart = new Date(a.startTime);
+            const bStart = new Date(b.startTime);
+            return aStart - bStart;
+        });
+
+        for (let i = 0; i < sortedActivities.length - 1; i++) {
+            const current = sortedActivities[i];
+            const next = sortedActivities[i + 1];
+            
+            const currentEnd = new Date(current.endTime);
+            const nextStart = new Date(next.startTime);
+            
+            if (currentEnd > nextStart) {
+                throw new Error(`Timeline validation failed: Overlap detected between activities "${current.activity}" and "${next.activity}"`);
+            }
+        }
         return true;
     }
 }

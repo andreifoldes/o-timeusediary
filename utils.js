@@ -111,23 +111,31 @@ export function calculateMinimumBlockWidth() {
     return (INCREMENT_MINUTES / (TIMELINE_HOURS * 60)) * 100;
 }
 
-export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timelineTypes, currentTimelineIndex, timelineData) {
-    return getCurrentTimelineData(timelineTypes, currentTimelineIndex, timelineData).some(activity => {
-        if (excludeBlock && activity === excludeBlock) return false;
-        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
-        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
+export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
+    const currentData = getCurrentTimelineData();
+    const startDate = new Date();
+    startDate.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0);
+    const endDate = new Date();
+    endDate.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0);
+    
+    // Handle day wrapping for times after midnight
+    if (endMinutes < startMinutes) {
+        endDate.setDate(endDate.getDate() + 1);
+    }
+    
+    return currentData.some(activity => {
+        if (excludeBlock && activity.id === excludeBlock) return false;
+        
+        const activityStart = new Date(activity.startTime);
+        const activityEnd = new Date(activity.endTime);
         
         // Check for exact duplicate times first
-        if (startMinutes === activityStart && endMinutes === activityEnd) {
-            return true; // Exact duplicate found
+        if (startDate.getTime() === activityStart.getTime() && 
+            endDate.getTime() === activityEnd.getTime()) {
+            return true;
         }
         
-        return (
-            (startMinutes < activityEnd && endMinutes > activityStart) || // Overlap
-            (startMinutes >= activityStart && endMinutes <= activityEnd) || // Inside
-            (startMinutes <= activityStart && endMinutes >= activityEnd) || // Covers
-            (startMinutes < activityEnd && endMinutes > activityStart) // Partial overlap
-        );
+        return (startDate < activityEnd && endDate > activityStart);
     });
 }
 

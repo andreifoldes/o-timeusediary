@@ -835,8 +835,15 @@ function initButtons() {
             const activityBlocks = window.timelineManager.activeTimeline.querySelectorAll('.activity-block');
             activityBlocks.forEach(block => block.remove());
 
-            // Update timeline manager activities
+            // Update timeline manager activities and validate
             window.timelineManager.activities[currentType] = [];
+            try {
+                window.timelineManager.metadata[currentType].validate();
+            } catch (error) {
+                console.error('Timeline validation failed:', error);
+                alert('Timeline validation error: ' + error.message);
+                return;
+            }
                 
             updateButtonStates();
 
@@ -856,8 +863,17 @@ function initButtons() {
             }
 
             const lastActivity = currentData.pop();
-            // Update timeline manager activities
+            // Update timeline manager activities and validate
             window.timelineManager.activities[currentType] = currentData;
+            try {
+                window.timelineManager.metadata[currentType].validate();
+            } catch (error) {
+                console.error('Timeline validation failed:', error);
+                // Revert the change
+                window.timelineManager.activities[currentType] = [...currentData, lastActivity];
+                alert('Cannot undo: ' + error.message);
+                return;
+            }
             
             if (DEBUG_MODE) {
                 console.log('Removing activity:', lastActivity);
