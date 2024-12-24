@@ -35,9 +35,17 @@ body {
 
 .timelines-wrapper {
     display: flex;
-    flex-direction: column;
     gap: 20px;
     margin-bottom: 20px;
+    width: 100%;
+}
+
+@media (max-width: 1023px) {
+    .timelines-wrapper {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0 20px;
+    }
 }
 
 .timeline-header {
@@ -100,20 +108,8 @@ body {
     }
     
     .timeline-container[data-active="false"] {
-        position: absolute;
         opacity: 0.6;
         pointer-events: none;
-        top: 0;
-    }
-
-    .timeline-container[data-active="false"][data-position="left"] {
-        transform: translateX(-150%);
-        left: 50%;
-    }
-
-    .timeline-container[data-active="false"][data-position="right"] {
-        transform: translateX(150%);
-        right: 50%;
     }
 }
 
