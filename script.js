@@ -1063,11 +1063,11 @@ async function init() {
             if (btn) btn.disabled = true;
         });
         
-        // Explicitly disable back button and set attribute
+        // Explicitly disable back button
         const backBtn = document.getElementById('backBtn');
         if (backBtn) {
             backBtn.disabled = true;
-            backBtn.setAttribute('disabled', 'disabled');
+            backBtn.setAttribute('disabled', '');
         }
 
         // Load initial timeline data
