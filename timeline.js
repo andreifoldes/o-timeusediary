@@ -39,10 +39,12 @@ export class Timeline {
 
     validate() {
         console.log('Starting timeline validation');
-        console.log('Current activities:', this.activities);
+        // Get activities from timelineManager using this timeline's key
+        const activities = window.timelineManager.activities[this.key] || [];
+        console.log('Current activities:', activities);
 
         // Check for overlaps in activities
-        const sortedActivities = [...this.activities].sort((a, b) => {
+        const sortedActivities = [...activities].sort((a, b) => {
             const aStart = new Date(a.startTime);
             const bStart = new Date(b.startTime);
             console.log('Comparing start times:', {
