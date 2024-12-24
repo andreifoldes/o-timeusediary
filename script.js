@@ -1012,6 +1012,12 @@ async function init() {
             window.timelineManager.activities[timelineKey] = [];
         });
 
+        // Create timelines wrapper if it doesn't exist
+        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        if (!timelinesWrapper) {
+            throw new Error('Timelines wrapper not found');
+        }
+
         // Initialize first timeline using addNextTimeline
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
