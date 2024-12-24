@@ -181,20 +181,6 @@ async function addNextTimeline() {
             return container;
         })();
 
-        // Create new timeline element
-        const newTimeline = document.createElement('div');
-        newTimeline.className = 'timeline';
-        newTimeline.id = nextTimelineKey;
-        newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
-        newTimeline.setAttribute('data-active', 'true');
-        newTimeline.style.width = '100%';
-
-        // Add timeline to container
-        const timelineContainer = document.querySelector('.timeline-container');
-        timelineContainer.appendChild(newTimeline);
-
-        // Set as active timeline
-        window.timelineManager.activeTimeline = newTimeline;
 
         // Initialize activities array if not exists
         window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
