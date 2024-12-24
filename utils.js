@@ -113,29 +113,38 @@ export function calculateMinimumBlockWidth() {
 
 export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
     const currentData = getCurrentTimelineData();
-    const startDate = new Date();
-    startDate.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0);
-    const endDate = new Date();
-    endDate.setHours(Math.floor(endMinutes / 60), endMinutes % 60, 0);
-    
-    // Handle day wrapping for times after midnight
-    if (endMinutes < startMinutes) {
-        endDate.setDate(endDate.getDate() + 1);
-    }
     
     return currentData.some(activity => {
         if (excludeBlock && activity.id === excludeBlock) return false;
         
-        const activityStart = new Date(activity.startTime);
-        const activityEnd = new Date(activity.endTime);
+        // Convert activity times to minutes since midnight
+        const activityStartTime = activity.startTime.split(' ')[1];
+        const activityEndTime = activity.endTime.split(' ')[1];
+        const [startHour, startMin] = activityStartTime.split(':').map(Number);
+        const [endHour, endMin] = activityEndTime.split(':').map(Number);
         
-        // Check for exact duplicate times first
-        if (startDate.getTime() === activityStart.getTime() && 
-            endDate.getTime() === activityEnd.getTime()) {
-            return true;
+        const activityStartMinutes = startHour * 60 + startMin;
+        const activityEndMinutes = endHour * 60 + endMin;
+        
+        // Handle special case for activities ending at 04:00 next day
+        const adjustedActivityEndMinutes = activityEndMinutes === 240 ? 1440 : activityEndMinutes;
+        const adjustedEndMinutes = endMinutes === 240 ? 1440 : endMinutes;
+        
+        // Check for overlap using minute values directly
+        const hasOverlap = (
+            (startMinutes < adjustedActivityEndMinutes && adjustedEndMinutes > activityStartMinutes) ||
+            (startMinutes === activityStartMinutes && adjustedEndMinutes === adjustedActivityEndMinutes)
+        );
+        
+        if (hasOverlap && DEBUG_MODE) {
+            console.log('Overlap detected:', {
+                new: { start: startMinutes, end: adjustedEndMinutes },
+                existing: { start: activityStartMinutes, end: adjustedActivityEndMinutes },
+                activity: activity.activity
+            });
         }
         
-        return (startDate < activityEnd && endDate > activityStart);
+        return hasOverlap;
     });
 }
 
