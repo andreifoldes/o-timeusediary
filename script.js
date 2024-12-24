@@ -869,11 +869,18 @@ function initTimelineInteraction(timeline) {
             window.timelineManager.activeTimeline.appendChild(container);
             return container;
         })();
+
+        // Hide all existing time labels
+        activitiesContainer.querySelectorAll('.time-label').forEach(label => {
+            label.style.display = 'none';
+        });
+
         activitiesContainer.appendChild(currentBlock);
 
         // Create time label for both mobile and desktop modes
         const timeLabel = createTimeLabel(currentBlock);
         updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
+        timeLabel.style.display = 'block'; // Ensure the new label is visible
 
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
