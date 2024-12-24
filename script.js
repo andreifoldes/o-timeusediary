@@ -596,7 +596,14 @@ function initTimelineInteraction(timeline = null) {
                 event.target.classList.remove('resizing');
                 const textDiv = event.target.querySelector('.activity-block-text-narrow.wide');
                 if (textDiv) {
-                    textDiv.classList.add('resized');
+                    // Get the current length from the block's dataset
+                    const length = parseInt(event.target.dataset.length);
+                    // Update classes based on length
+                    if (length >= 60) {
+                        textDiv.classList.add('resized');
+                    } else {
+                        textDiv.classList.remove('resized');
+                    }
                 }
                 updateButtonStates();
             }
