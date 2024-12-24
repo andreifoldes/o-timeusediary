@@ -125,6 +125,11 @@ body {
     box-sizing: border-box;
 }
 
+.timeline[data-active="false"] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 .markers {
     position: absolute;
     width: 100%;
