@@ -160,6 +160,14 @@ async function addNextTimeline() {
             initTimelineInteraction(newTimeline);
         }
 
+        // Create activities container if it doesn't exist
+        const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
+            const container = document.createElement('div');
+            container.className = 'activities';
+            window.timelineManager.activeTimeline.appendChild(container);
+            return container;
+        })();
+
         // Initialize activities array if not exists
         window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
 
@@ -167,7 +175,9 @@ async function addNextTimeline() {
         renderActivities(categories);
 
         // Initialize markers for the new timeline
-        initTimeline(window.timelineManager.activeTimeline);
+        if (!window.timelineManager.activeTimeline.containerInstance) {
+            initTimeline(window.timelineManager.activeTimeline);
+        }
         
         // Initialize interaction for the timeline
         initTimelineInteraction(window.timelineManager.activeTimeline);
