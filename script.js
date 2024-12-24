@@ -567,11 +567,20 @@ function initTimelineInteraction(timeline) {
                 if (timeLabel) {
                     const startTime = target.dataset.start;
                     const startMinutes = timeToMinutes(startTime);
-                    let endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
-                        
-                    // If the position is at the end of timeline (100%), set to 04:00
-                    if (parseFloat(target.style.left) + newWidth >= 100) {
-                        endMinutes = 240; // 04:00 in minutes
+                    let endMinutes;
+                    
+                    if (isMobile) {
+                        endMinutes = positionToMinutes((parseFloat(target.style.top) + newSize));
+                        // If the position is at the end of timeline (100%), set to 04:00
+                        if (parseFloat(target.style.top) + newSize >= 100) {
+                            endMinutes = 240; // 04:00 in minutes
+                        }
+                    } else {
+                        endMinutes = positionToMinutes((parseFloat(target.style.left) + newSize));
+                        // If the position is at the end of timeline (100%), set to 04:00
+                        if (parseFloat(target.style.left) + newSize >= 100) {
+                            endMinutes = 240; // 04:00 in minutes
+                        }
                     }
                     const endTime = formatTimeHHMM(endMinutes);
                     updateTimeLabel(timeLabel, startTime, endTime, target);
