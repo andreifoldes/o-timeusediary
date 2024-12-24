@@ -322,8 +322,7 @@ async function fetchActivities(key) {
     }
 }
 
-function renderActivities(categories) {
-    const container = document.getElementById('activitiesContainer');
+function renderActivities(categories, container = document.getElementById('activitiesContainer')) {
     container.innerHTML = '';
 
     const isMobile = getIsMobile();
@@ -1123,17 +1122,58 @@ function handleResize() {
     }
 }
 
+function createModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Activity</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="modalActivitiesContainer"></div>
+        </div>
+    `;
+
+    modal.querySelector('.modal-close').addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    document.body.appendChild(modal);
+    return modal;
+}
+
 function createFloatingAddButton() {
     const button = document.createElement('button');
     button.className = 'floating-add-button';
     button.innerHTML = '+';
     button.title = 'Add Activity';
     
+    const modal = createModal();
+    
     button.addEventListener('click', () => {
-        // Scroll activities container into view
-        const activitiesContainer = document.getElementById('activitiesContainer');
-        if (activitiesContainer) {
-            activitiesContainer.scrollIntoView({ behavior: 'smooth' });
+        // Show modal with activities
+        modal.style.display = 'block';
+        
+        // Get the current activities and render them in the modal
+        const currentKey = getCurrentTimelineKey();
+        const categories = window.timelineManager.metadata[currentKey].categories;
+        
+        // Render activities in modal
+        renderActivities(categories, document.getElementById('modalActivitiesContainer'));
+        
+        // Automatically open first category in mobile view
+        if (getIsMobile()) {
+            const firstCategory = modal.querySelector('.activity-category');
+            if (firstCategory) {
+                firstCategory.classList.add('active');
+            }
         }
     });
 
