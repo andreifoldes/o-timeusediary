@@ -803,11 +803,9 @@ function initTimelineInteraction(timeline) {
         })();
         activitiesContainer.appendChild(currentBlock);
 
-        // Only create time label initially for desktop mode
-        if (!isMobile) {
-            const timeLabel = createTimeLabel(currentBlock);
-            updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
-        }
+        // Create time label for both mobile and desktop modes
+        const timeLabel = createTimeLabel(currentBlock);
+        updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
 
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
