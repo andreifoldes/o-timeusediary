@@ -262,6 +262,7 @@ body {
 
 .activities-container {
     margin: 20px;
+    display: block;
 }
 
 @media (min-width: 1024px) {
