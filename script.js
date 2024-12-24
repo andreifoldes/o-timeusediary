@@ -154,9 +154,8 @@ async function addNextTimeline() {
         timelineContainer.initialize(isMobile).createMarkers(isMobile);
         newTimeline.containerInstance = timelineContainer;
         
-        // Set active timeline reference and initialize interaction
+        // Set active timeline reference
         window.timelineManager.activeTimeline = newTimeline;
-        initTimelineInteraction(newTimeline);
 
         // Create activities container if it doesn't exist
         const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
