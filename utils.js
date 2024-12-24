@@ -116,6 +116,12 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null, timeli
         if (excludeBlock && activity === excludeBlock) return false;
         const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
         const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
+        
+        // Check for exact duplicate times first
+        if (startMinutes === activityStart && endMinutes === activityEnd) {
+            return true; // Exact duplicate found
+        }
+        
         return (
             (startMinutes < activityEnd && endMinutes > activityStart) || // Overlap
             (startMinutes >= activityStart && endMinutes <= activityEnd) || // Inside
