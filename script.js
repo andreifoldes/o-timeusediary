@@ -490,10 +490,12 @@ function updateTimeLabel(label, startTime, endTime, block) {
     }
 }
 
-function initTimelineInteraction(timeline = null) {
-    // If no timeline is provided, use the active timeline from timelineManager
-    const targetTimeline = timeline || window.timelineManager.activeTimeline;
-    if (!targetTimeline) return;
+function initTimelineInteraction(timeline) {
+    if (!timeline) {
+        console.error('Timeline must be provided to initTimelineInteraction');
+        return;
+    }
+    const targetTimeline = timeline;
     
     // Initialize interact.js resizable
     interact('.activity-block').resizable({
@@ -940,7 +942,7 @@ async function init() {
 
         console.log('isMobile value during init:', getIsMobile());
         initTimeline();
-        initTimelineInteraction();
+        initTimelineInteraction(window.timelineManager.activeTimeline);
         const categories = await fetchActivities('primary');
         // Set initial title and description
         document.querySelector('.timeline-title').textContent = window.timelineManager.metadata.primary.name;
