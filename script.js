@@ -351,8 +351,9 @@ function initTimeline(timeline) {
     const timelineContainer = new TimelineContainer(timeline);
     timelineContainer.initialize(getIsMobile()).createMarkers(getIsMobile());
     
-    // Store the container instance on the timeline element for later access
+    // Store the container instance and markers on the timeline element for later access
     timeline.containerInstance = timelineContainer;
+    timeline.markers = timelineContainer.markers || [];
 
     // Add window resize handler to update marker positions
     window.addEventListener('resize', () => {
@@ -385,8 +386,10 @@ function initTimeline(timeline) {
             }
         }
         
-        // Update all markers and their labels
-        timeline.markers.forEach(marker => marker.update(newIsMobile));
+        // Update all markers and their labels if they exist
+        if (timeline.markers && timeline.markers.length > 0) {
+            timeline.markers.forEach(marker => marker.update(newIsMobile));
+        }
     });
 
     if (DEBUG_MODE) {
