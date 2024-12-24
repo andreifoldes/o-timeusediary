@@ -138,7 +138,7 @@ body {
 
 /* Desktop horizontal markers */
 @media (min-width: 1024px) {
-    .hour-marker {
+    .timeline .hour-marker {
         position: absolute;
         height: 100%;
         border-left: 1px solid #ddd;
@@ -149,17 +149,16 @@ body {
         bottom: 0;
     }
 
-    .minute-marker {
+    .timeline .minute-marker {
         position: absolute;
         height: 40%;
         bottom: 0;
         border-left: 1px solid #bbb;
         width: 1px;
         margin-left: -1px;
-        transform: translateY(1px);
     }
 
-    .minute-marker-30 {
+    .timeline .minute-marker-30 {
         position: absolute;
         height: 60%;
         bottom: 0;
@@ -171,7 +170,7 @@ body {
 
 /* Mobile vertical markers */
 @media (max-width: 1023px) {
-    .hour-marker {
+    .timeline .hour-marker {
         position: absolute;
         width: 100%;
         border-top: 1px solid #ddd;
@@ -179,7 +178,7 @@ body {
         color: #666;
     }
 
-    .hour-marker .hour-label {
+    .timeline .hour-marker .hour-label {
         position: absolute;
         top: -6px; /* Align with the marker line */
         left: -40px;
@@ -192,22 +191,22 @@ body {
     }
 
     /* Special handling for first and last hour labels */
-    .hour-marker:first-child .hour-label {
+    .timeline .hour-marker:first-child .hour-label {
         top: 0;
     }
     
-    .hour-marker:last-child .hour-label {
+    .timeline .hour-marker:last-child .hour-label {
         top: -12px;
     }
 
-    .minute-marker {
+    .timeline .minute-marker {
         position: absolute;
         width: 30%;
         right: 0;
         border-top: 2px solid #bbb;
     }
 
-    .minute-marker-30 {
+    .timeline .minute-marker-30 {
         position: absolute;
         width: 50%;
         right: 0;
