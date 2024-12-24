@@ -175,12 +175,6 @@ async function addNextTimeline() {
         // Reset button states
         updateButtonStates();
 
-        // If this was the last timeline, call sendData (empty for now)
-        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
-        if (isLastTimeline) {
-            sendData();
-        }
-        
         // Scroll new timeline into view
         window.timelineManager.activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -834,14 +828,21 @@ function updateButtonStates() {
     const currentTimeline = window.timelineManager.metadata[currentKey];
     const currentCoverage = window.getTimelineCoverage();
         
-    // Check if we have a next timeline to go to
-    const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.keys.length - 1;
-    const nextTimelineKey = hasNextTimeline ? window.timelineManager.keys[window.timelineManager.currentIndex + 1] : null;
-    const nextTimelineNeedsInit = nextTimelineKey && !window.timelineManager.initialized.has(nextTimelineKey);
+    // Get minimum coverage requirement for current timeline
+    const minCoverage = parseInt(currentTimeline.minCoverage) || 0;
+    const meetsMinCoverage = currentCoverage >= minCoverage;
+
+    // Check if we're on the last timeline
+    const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
     
     if (nextButton) {
-        // Enable next button if there is a next timeline available that needs initialization
-        nextButton.disabled = !hasNextTimeline || !nextTimelineNeedsInit;
+        if (isLastTimeline) {
+            // On last timeline, enable Next only if coverage requirement is met
+            nextButton.disabled = !meetsMinCoverage;
+        } else {
+            // For other timelines, enable Next if coverage requirement is met
+            nextButton.disabled = !meetsMinCoverage;
+        }
     }
     
     if (DEBUG_MODE) {
@@ -940,12 +941,15 @@ function initButtons() {
 
     // Add click handler for Next button
     document.getElementById('nextBtn').addEventListener('click', () => {
-        const nextTimelineKey = window.timelineManager.keys[window.timelineManager.currentIndex + 1];
-        if (nextTimelineKey && !window.timelineManager.initialized.has(nextTimelineKey)) {
-            addNextTimeline();
-        } else {
-            console.log('No more timelines to initialize');
+        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
+        
+        if (isLastTimeline) {
+            // On last timeline, clicking Next sends data
+            sendData();
             nextBtn.disabled = true;
+        } else {
+            // For other timelines, proceed to next timeline
+            addNextTimeline();
         }
     });
 }
