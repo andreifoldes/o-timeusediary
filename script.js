@@ -167,7 +167,7 @@ async function addNextTimeline() {
         renderActivities(categories);
 
         // Initialize markers for the new timeline
-        initTimeline();
+        initTimeline(window.timelineManager.activeTimeline);
         
         // Initialize interaction for the timeline
         initTimelineInteraction(window.timelineManager.activeTimeline);
@@ -345,8 +345,7 @@ function renderActivities(categories) {
     });
 }
 
-function initTimeline() {
-    const timeline = window.timelineManager.activeTimeline;
+function initTimeline(timeline) {
     timeline.setAttribute('data-active', 'true');
     timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
     
@@ -992,7 +991,7 @@ async function init() {
         });
 
         console.log('isMobile value during init:', getIsMobile());
-        initTimeline();
+        initTimeline(window.timelineManager.activeTimeline);
         initTimelineInteraction(window.timelineManager.activeTimeline);
         const categories = await fetchActivities('primary');
         // Set initial title and description
