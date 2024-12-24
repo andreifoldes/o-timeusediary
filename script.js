@@ -134,11 +134,13 @@ async function addNextTimeline() {
         const timelinesWrapper = document.querySelector('.timelines-wrapper');
         timelinesWrapper.appendChild(newTimelineContainer);
         
-        // Update previous timeline state if it exists
-        const previousTimeline = window.timelineManager.activeTimeline;
-        if (previousTimeline) {
-            previousTimeline.setAttribute('data-active', 'false');
-            previousTimeline.parentElement.setAttribute('data-active', 'false');
+        // Only update previous timeline state if we have at least 2 initialized timelines
+        if (window.timelineManager.initialized.size >= 2) {
+            const previousTimeline = window.timelineManager.activeTimeline;
+            if (previousTimeline) {
+                previousTimeline.setAttribute('data-active', 'false');
+                previousTimeline.parentElement.setAttribute('data-active', 'false');
+            }
         }
         
         // Initialize new timeline and container with proper IDs
