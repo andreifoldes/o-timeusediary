@@ -998,8 +998,18 @@ function initButtons() {
         }
     });
 
-    // Add click handler for Next button
+    // Add click handler for Next button with debounce
+    let nextButtonLastClick = 0;
+    const NEXT_BUTTON_COOLDOWN = 1000; // 1 second cooldown
+    
     document.getElementById('nextBtn').addEventListener('click', () => {
+        const currentTime = Date.now();
+        if (currentTime - nextButtonLastClick < NEXT_BUTTON_COOLDOWN) {
+            console.log('Next button on cooldown');
+            return;
+        }
+        nextButtonLastClick = currentTime;
+
         const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
         
         if (isLastTimeline) {
