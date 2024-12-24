@@ -104,19 +104,19 @@ async function addNextTimeline() {
 
     // Increment timeline index
     window.timelineManager.currentIndex++;
-    if (window.timelineManager.currentIndex >= window.timelineManager.keys.length) {
-        console.log('All timelines completed');
+    if (window.timelineManager.currentIndex >= window.timelineManager.keys.length && DEBUG_MODE) {
+        console.log('All timelines initialized');
         return;
     }
 
-    const nextTimelineType = window.timelineManager.keys[window.timelineManager.currentIndex];
+    const nextTimelineKey = window.timelineManager.keys[window.timelineManager.currentIndex];
 
     try {
         // Load next timeline data
-        const categories = await fetchActivities(nextTimelineType);
+        const categories = await fetchActivities(nextTimelineKey);
         
         // Update UI for next timeline and set it as active
-        const nextTimeline = window.timelineManager.metadata[nextTimelineType];
+        const nextTimeline = window.timelineManager.metadata[nextTimelineKey];
         document.querySelector('.timeline-title').textContent = nextTimeline.name;
         document.querySelector('.timeline-description').textContent = nextTimeline.description;
         document.title = nextTimeline.name;
@@ -126,10 +126,8 @@ async function addNextTimeline() {
         const currentTimeline = currentTimelineContainer.querySelector('.timeline');
 
         if (isMobile) {
-            // In mobile mode, reuse the existing timeline
-            currentTimeline.id = 'timeline';
-            currentTimeline.setAttribute('data-active', 'true');
-            activeTimeline = currentTimeline;
+            // Mobile mode - create new timeline container
+            // AI - same as in desktop mode
         } else {
             // Desktop mode - create new timeline container
             const newTimelineContainer = document.createElement('div');
@@ -147,8 +145,8 @@ async function addNextTimeline() {
             currentTimelineContainer.setAttribute('data-active', 'false');
             
             // Initialize new timeline and container with proper IDs
-            newTimeline.id = nextTimelineType;
-            newTimeline.setAttribute('data-timeline-type', nextTimelineType);
+            newTimeline.id = nextTimelineKey;
+            newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
             newTimeline.setAttribute('data-active', 'true');
             newTimelineContainer.setAttribute('data-active', 'true');
             
@@ -163,7 +161,7 @@ async function addNextTimeline() {
         }
 
         // Initialize activities array if not exists
-        window.timelineManager.activities[nextTimelineType] = window.timelineManager.activities[nextTimelineType] || [];
+        window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
 
         // Render activities for next timeline
         renderActivities(categories);
@@ -178,7 +176,7 @@ async function addNextTimeline() {
         updateButtonStates();
 
         // If this was the last timeline, call sendData (empty for now)
-        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.types.length - 1;
+        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
         if (isLastTimeline) {
             sendData();
         }
@@ -187,7 +185,7 @@ async function addNextTimeline() {
         window.timelineManager.activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         if (DEBUG_MODE) {
-            console.log(`Switched to ${nextTimelineType} timeline`);
+            console.log(`Switched to ${nextTimelineKey} timeline`);
             console.log('Timeline data structure:', window.timelineManager.activities);
         }
 
@@ -198,8 +196,8 @@ async function addNextTimeline() {
         }
 
     } catch (error) {
-        console.error(`Error switching to ${nextTimelineType} timeline:`, error);
-        throw new Error(`Failed to switch to ${nextTimelineType} timeline: ${error.message}`);
+        console.error(`Error switching to ${nextTimelineKey} timeline:`, error);
+        throw new Error(`Failed to switch to ${nextTimelineKey} timeline: ${error.message}`);
     }
 }
 
