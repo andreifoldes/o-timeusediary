@@ -567,9 +567,9 @@ function initTimelineInteraction(timeline = null) {
                         target.dataset.length = newLength;
                         
                         // Update text class based on new length
-                        const textDiv = target.querySelector('.activity-block-text-narrow.wide');
+                        const textDiv = target.querySelector('div[class^="activity-block-text"]');
                         if (textDiv) {
-                            textDiv.className = newLength >= 60 ? 'activity-block-text resized' : 'activity-block-text';
+                            textDiv.className = newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
                         }
                         
                         // Update the activity data in timelineManager
@@ -594,16 +594,12 @@ function initTimelineInteraction(timeline = null) {
             },
             end(event) {
                 event.target.classList.remove('resizing');
-                const textDiv = event.target.querySelector('.activity-block-text-narrow.wide');
+                const textDiv = event.target.querySelector('div[class^="activity-block-text"]');
                 if (textDiv) {
                     // Get the current length from the block's dataset
                     const length = parseInt(event.target.dataset.length);
                     // Update classes based on length
-                    if (length >= 60) {
-                        textDiv.classList.add('resized');
-                    } else {
-                        textDiv.classList.remove('resized');
-                    }
+                    textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
                 }
                 updateButtonStates();
             }
@@ -711,7 +707,7 @@ function initTimelineInteraction(timeline = null) {
         textDiv.style.whiteSpace = 'nowrap';
         // Set initial class based on length
         const length = parseInt(currentBlock.dataset.length);
-        textDiv.className = length >= 60 ? 'activity-block-text-narrow wide' : 'activity-block-text-narrow';
+        textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
