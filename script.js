@@ -163,9 +163,7 @@ async function addNextTimeline() {
         }
 
         // Initialize activities array if not exists
-        if (!window.timelineManager.activities[nextTimelineType]) {
-            window.timelineManager.activities[nextTimelineType] = [];
-        }
+        window.timelineManager.activities[nextTimelineType] = window.timelineManager.activities[nextTimelineType] || [];
 
         // Render activities for next timeline
         renderActivities(categories);
@@ -798,20 +796,16 @@ function updateButtonStates() {
     // Get current timeline coverage
     const currentType = getCurrentTimelineType();
     const currentTimeline = window.timelineManager.metadata[currentType];
-    const requiredCoverage = parseInt(currentTimeline?.minCoverage) || 0;
     const currentCoverage = window.getTimelineCoverage();
-    
-    // Check if we have sufficient coverage and a next timeline to go to
-    const hasSufficientCoverage = currentCoverage >= requiredCoverage;
+        
+    // Check if we have a next timeline to go to
     const hasNextTimeline = window.timelineManager.currentIndex < window.timelineManager.types.length - 1;
     const nextTimelineType = hasNextTimeline ? window.timelineManager.types[window.timelineManager.currentIndex + 1] : null;
     const nextTimelineNeedsInit = nextTimelineType && !window.timelineManager.initialized.has(nextTimelineType);
     
     if (nextButton) {
-        // Enable next button if:
-        // 1. Current coverage meets or exceeds required coverage
-        // 2. There is a next timeline available that needs initialization
-        nextButton.disabled = !hasSufficientCoverage || !hasNextTimeline || !nextTimelineNeedsInit;
+        // Enable next button if there is a next timeline available that needs initialization
+        nextButton.disabled = !hasNextTimeline || !nextTimelineNeedsInit;
     }
     
     if (DEBUG_MODE) {

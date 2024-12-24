@@ -186,13 +186,6 @@ export function isTimelineFull() {
     const currentData = getCurrentTimelineData();
     if (currentData.length === 0) return false;
 
-    const currentType = getCurrentTimelineType();
-    const currentTimeline = window.timelineManager.metadata[currentType];
-    const requiredCoverage = parseInt(currentTimeline?.minCoverage) || 0;
-    if (requiredCoverage === 0) {
-        return false;
-    }
-
     // Get the active timeline element
     const activeTimeline = window.timelineManager.activeTimeline;
     if (!activeTimeline) return false;
