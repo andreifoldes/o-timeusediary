@@ -959,34 +959,44 @@ function initButtons() {
 }
 
 function handleResize() {
-    const timeline = document.getElementById('timeline');
     const wasVertical = getIsMobile();
     const layoutChanged = wasVertical !== updateIsMobile();
     
-    // Update layout attribute
-    timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
-    
-    // Update container layout using the stored container instance
-    timeline.containerInstance.updateLayout(getIsMobile());
-    
-    // Update all activity blocks for the new layout
-    const activityBlocks = timeline.querySelectorAll('.activity-block');
-    activityBlocks.forEach(block => {
-        const timeLabel = block.querySelector('.time-label');
-        if (timeLabel) {
-            if (getIsMobile()) {
-                timeLabel.style.left = '120%';
-                timeLabel.style.top = '50%';
-                timeLabel.style.transform = 'translateY(-50%)';
-                timeLabel.style.bottom = 'auto';
-            } else {
-                timeLabel.style.left = '50%';
-                timeLabel.style.transform = 'translateX(-50%)';
-                timeLabel.style.bottom = '-20px';
-                timeLabel.style.top = 'auto';
-            }
+    if (layoutChanged) {
+        // Clear the DOM and reinitialize the app
+        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        if (timelinesWrapper) {
+            timelinesWrapper.innerHTML = '';
         }
-    });
+        
+        // Store current timeline data
+        const currentState = {
+            currentIndex: window.timelineManager.currentIndex,
+            activities: { ...window.timelineManager.activities }
+        };
+        
+        // Reset timeline manager state
+        window.timelineManager.initialized.clear();
+        window.timelineManager.currentIndex = -1;
+        window.timelineManager.activeTimeline = null;
+        
+        // Reinitialize with stored data
+        init().then(() => {
+            // Restore activities
+            window.timelineManager.activities = currentState.activities;
+            
+            // Advance to current timeline
+            const advanceToCurrentTimeline = async () => {
+                while (window.timelineManager.currentIndex < currentState.currentIndex) {
+                    await addNextTimeline();
+                }
+            };
+            
+            advanceToCurrentTimeline();
+        }).catch(error => {
+            console.error('Failed to reinitialize after resize:', error);
+        });
+    }
 }
 
 async function init() {
