@@ -430,7 +430,7 @@ function initTimeline(timeline) {
         
         // Update dimensions on layout change
         if (newIsMobile) {
-            const minHeight = '2000px';
+            const minHeight = '2500px';
             timeline.style.height = minHeight;
             timeline.style.width = '';
             timeline.parentElement.style.height = minHeight;
