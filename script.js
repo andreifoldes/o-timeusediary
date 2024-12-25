@@ -1202,7 +1202,7 @@ function createModal() {
                 <h3>Are you sure?</h3>
                 <p>You will not be able to change your responses.</p>
                 <div class="button-container">
-                    <button id="confirmCancel" class="btn">Cancel</button>
+                    <button id="confirmCancel" class="btn btn-secondary">Cancel</button>
                     <button id="confirmOk" class="btn save-btn">OK</button>
                 </div>
             </div>

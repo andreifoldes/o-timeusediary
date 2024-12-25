@@ -730,11 +730,12 @@ body {
 }
 
 .modal .button-container .btn.btn-secondary {
-    background-color: #495057;
+    background-color: #343a40;
+    color: #ffffff;
 }
 
 .modal .button-container .btn.btn-secondary:hover {
-    background-color: #343a40;
+    background-color: #212529;
 }
 
 .modal .button-container .btn {
