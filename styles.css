@@ -355,16 +355,27 @@ body {
 }
 
 .activity-button {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
     padding: 8px 12px;
     margin: 5px 0;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    text-align: left;
     font-size: 14px;
     transition: all 0.2s;
+    background: #f0f0f0;
+    color: #333;
+}
+
+.activity-button::before {
+    content: '';
+    width: 5%;
+    height: 100%;
+    background: #29e;
+    border-radius: 4px 0 0 4px;
+    margin-right: 12px;
 }
 
 .activity-button:hover {
