@@ -616,10 +616,12 @@ function initTimelineInteraction(timeline) {
                     const newLength = calculateTimeDifference(startTime, endTime);
                     target.dataset.length = newLength;
                     
-                    // Update text class based on new length
+                    // Update text class based on length and layout
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
-                        textDiv.className = newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical';
+                        textDiv.className = newLength >= 60 ? 
+                            'activity-block-text-narrow wide resized' : 
+                            (isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical');
                     }
                     
                     // Update the activity data in timelineManager
