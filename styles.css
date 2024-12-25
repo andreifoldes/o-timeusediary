@@ -369,6 +369,14 @@ body {
     color: #000;
 }
 
+.activity-button::before {
+    content: '';
+    width: 5%;
+    height: 100%;
+    background-color: var(--color);
+    border-radius: 4px 0 0 4px;
+}
+
 .activity-button:hover {
     opacity: 0.9;
     transform: translateY(-1px);
