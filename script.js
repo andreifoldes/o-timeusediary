@@ -716,6 +716,10 @@ function initTimelineInteraction(timeline) {
             end(event) {
                 event.target.classList.remove('resizing');
                 const textDiv = event.target.querySelector('div[class^="activity-block-text"]');
+                const timeLabel = event.target.querySelector('.time-label');
+                if (timeLabel) {
+                    timeLabel.style.display = 'block'; // Ensure time label stays visible after resize
+                }
                 if (textDiv) {
                     // Get the current length from the block's dataset
                     const length = parseInt(event.target.dataset.length);
