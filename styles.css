@@ -729,6 +729,14 @@ body {
     margin-top: 20px;
 }
 
+.modal .button-container .btn.btn-secondary {
+    background-color: #495057;
+}
+
+.modal .button-container .btn.btn-secondary:hover {
+    background-color: #343a40;
+}
+
 .modal .button-container .btn {
     min-width: 100px;
 }
