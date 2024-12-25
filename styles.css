@@ -574,7 +574,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 100%;
-    padding: 0px;
+    padding: 0px !important;
     font-size: 11px;
     box-sizing: border-box;
 }
