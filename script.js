@@ -474,54 +474,6 @@ function initTimeline(timeline) {
     }
 }
 
-function createTimeLabel(block) {
-    const isMobile = window.timelineManager.activeTimeline.getAttribute('data-layout') === 'vertical';
-    const label = document.createElement('div');
-    label.className = 'time-label';
-    label.style.position = 'absolute';
-    label.style.left = '50%';
-    label.style.transform = isMobile ? 'translateY(-50%)' : 'translateX(-50%)';
-    label.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-    label.style.color = '#fff';
-    label.style.padding = '2px 4px';
-    label.style.borderRadius = '4px';
-    label.style.fontSize = '10px';
-    label.style.whiteSpace = 'nowrap';
-    label.style.pointerEvents = 'none';
-    label.style.zIndex = '10';
-    if (isMobile) {
-        // Position above activity-block-text in mobile mode
-        const textDiv = block.querySelector('.activity-block-text');
-        if (textDiv) {
-            const textRect = textDiv.getBoundingClientRect();
-            const blockRect = block.getBoundingClientRect();
-            // In mobile mode, position label to the right of the text
-            label.style.left = '120%'; // 20% padding to the right
-            label.style.top = '50%';
-            label.style.transform = 'translateY(-50%)';
-            label.style.bottom = 'auto';
-        }
-    } else {
-        // Keep original positioning for desktop mode
-        label.style.bottom = '-20px';
-        label.style.top = 'auto';
-        
-        // Check for overlaps in desktop mode only
-        block.appendChild(label);
-        const timeline = window.timelineManager.activeTimeline;
-        const existingLabels = timeline.querySelectorAll('.time-label');
-        existingLabels.forEach(existingLabel => {
-            if (existingLabel !== label && isOverlapping(existingLabel, label)) {
-                label.style.bottom = 'auto';
-                label.style.top = '-20px';
-            }
-        });
-    }
-    
-    block.appendChild(label);
-    return label;
-}
-
 function updateTimeLabel(label, startTime, endTime, block) {
     const isMobile = window.timelineManager.activeTimeline.getAttribute('data-layout') === 'vertical';
     
