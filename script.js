@@ -134,12 +134,21 @@ async function addNextTimeline() {
         // Add animation class before content change
         timelineHeader.classList.add('flip-animation');
         
-        // Update content after a small delay to ensure animation starts
-        setTimeout(() => {
-            timelineTitle.textContent = nextTimeline.name;
-            timelineDescription.textContent = nextTimeline.description;
-            document.title = nextTimeline.name;
-        }, 100);
+        // Update content immediately
+        timelineTitle.textContent = nextTimeline.name;
+        timelineDescription.textContent = nextTimeline.description;
+        document.title = nextTimeline.name;
+        
+        // Trigger reflow to ensure animation plays
+        void timelineHeader.offsetWidth;
+        
+        // Add animation class
+        timelineHeader.classList.add('flip-animation');
+        
+        // Remove animation class after it finishes
+        timelineHeader.addEventListener('animationend', () => {
+            timelineHeader.classList.remove('flip-animation');
+        }, {once: true});
 
         // Desktop mode - create new timeline container
         const newTimelineContainer = document.createElement('div');
