@@ -119,8 +119,18 @@ async function addNextTimeline() {
         
         const isMobile = getIsMobile();
         
-        // Update UI for next timeline
+        // Update UI for next timeline with animation
         const nextTimeline = window.timelineManager.metadata[nextTimelineKey];
+        const timelineHeader = document.querySelector('.timeline-header');
+        
+        // Remove existing animation class if present
+        timelineHeader.classList.remove('flip-animation');
+        
+        // Trigger reflow to restart animation
+        void timelineHeader.offsetWidth;
+        
+        // Add animation class and update content
+        timelineHeader.classList.add('flip-animation');
         document.querySelector('.timeline-title').textContent = nextTimeline.name;
         document.querySelector('.timeline-description').textContent = nextTimeline.description;
         document.title = nextTimeline.name;
