@@ -192,8 +192,8 @@ async function addNextTimeline() {
         // Reset button states
         updateButtonStates();
 
-        // Scroll new timeline into view
-        window.timelineManager.activeTimeline.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll to the active timeline
+        scrollToActiveTimeline();
 
         if (DEBUG_MODE) {
             console.log(`Switched to ${nextTimelineKey} timeline`);
@@ -1255,6 +1255,20 @@ function createFloatingAddButton() {
     document.body.appendChild(button);
 }
 
+// Helper function to scroll to active timeline
+function scrollToActiveTimeline() {
+    if (getIsMobile() && window.timelineManager.activeTimeline) {
+        const timelineCanvas = document.querySelector('.timeline-canvas');
+        const activeTimeline = window.timelineManager.activeTimeline.closest('.timeline-container');
+        if (timelineCanvas && activeTimeline) {
+            timelineCanvas.scrollTo({
+                left: activeTimeline.offsetLeft,
+                behavior: 'smooth'
+            });
+        }
+    }
+}
+
 async function init() {
     try {
         // Create floating add button
@@ -1283,6 +1297,9 @@ async function init() {
         // Initialize first timeline using addNextTimeline
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
+        
+        // Scroll to first timeline in mobile layout
+        scrollToActiveTimeline();
         
         initButtons();
         
