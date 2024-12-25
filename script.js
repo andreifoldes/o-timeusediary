@@ -619,7 +619,7 @@ function initTimelineInteraction(timeline) {
                     // Update text class based on new length
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
-                        textDiv.className = newLength < 60 ? 'activity-block-text-vertical' : 'activity-block-text-narrow wide';
+                        textDiv.className = newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical';
                     }
                     
                     // Update the activity data in timelineManager
