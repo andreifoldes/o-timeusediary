@@ -619,7 +619,7 @@ function initTimelineInteraction(timeline) {
                     // Update text class based on new length
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
-                        textDiv.className = newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
+                        textDiv.className = newLength >= 60 ? 'activity-block-text-vertical' : 'activity-block-text-narrow';
                     }
                     
                     // Update the activity data in timelineManager
@@ -676,7 +676,7 @@ function initTimelineInteraction(timeline) {
                     // Get the current length from the block's dataset
                     const length = parseInt(event.target.dataset.length);
                     // Update classes based on length
-                    textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
+                    textDiv.className = length >= 60 ? 'activity-block-text-vertical' : 'activity-block-text-narrow';
                 }
                 updateButtonStates();
             }

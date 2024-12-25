@@ -554,7 +554,7 @@ body {
 }
 
 
-.activity-block-text-narrow.wide {
+.activity-block-text-narrow {
     width: 90%;
     padding: 4px;
     box-sizing: border-box;
@@ -565,6 +565,17 @@ body {
     display: block;
     text-align: center;
     font-size: 12px;
+}
+
+.activity-block-text-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 100%;
+    padding: 4px;
+    box-sizing: border-box;
 }
 
 /* Initial state - ellipsis */
