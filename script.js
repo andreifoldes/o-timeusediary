@@ -785,9 +785,9 @@ function initTimelineInteraction(timeline) {
         textDiv.style.whiteSpace = 'nowrap';
         // Set initial class based on length
         const length = parseInt(currentBlock.dataset.length);
-        textDiv.className = isMobile ? 
-            (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow') : 
-            'activity-block-text-vertical';
+        textDiv.className = length >= 60 ? 
+            'activity-block-text-narrow wide resized' : 
+            (isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical');
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
