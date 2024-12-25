@@ -129,6 +129,10 @@ body {
     pointer-events: none;
 }
 
+.timeline[data-active="false"] .time-label {
+    display: none !important;
+}
+
 .markers {
     position: absolute;
     width: 100%;
