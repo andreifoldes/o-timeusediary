@@ -489,12 +489,12 @@ body {
     background-color: #29e;
     border-radius: 4px;
     color: black;
-    padding: 4px;
+    padding: 0px;
     box-sizing: border-box;
     transition: outline 0.3s ease-out;
     touch-action: none;
     user-select: none;
-    font-size: 12px;
+    font-size: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -575,7 +575,7 @@ body {
     text-overflow: ellipsis;
     max-height: 100%;
     padding: 0px !important;
-    font-size: 11px;
+    font-size: 11px !important;
     box-sizing: border-box;
     margin: 0 auto;
 }
