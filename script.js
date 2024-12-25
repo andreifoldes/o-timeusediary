@@ -931,8 +931,33 @@ function initTimelineInteraction(timeline) {
 }
 
 function sendData() {
-    // TODO: Implement data sending functionality
-    console.log('Sending data...', window.timelineManager.activities);
+    // Get flattened timeline data
+    const timelineData = createTimelineDataFrame();
+    
+    // Convert to CSV
+    const headers = ['timelineKey', 'activity', 'startTime', 'endTime'];
+    const csvContent = [
+        headers.join(','),
+        ...timelineData.map(row => 
+            headers.map(header => 
+                // Wrap values in quotes and escape existing quotes
+                `"${String(row[header]).replace(/"/g, '""')}"`
+            ).join(',')
+        )
+    ].join('\n');
+
+    // Create blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'timeline_activities.csv';
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    console.log('Data exported as CSV:', timelineData);
 }
 
 function updateButtonStates() {
