@@ -3,8 +3,7 @@
     "name": "Primary Timeline",
     "description": "The main timeline to track all activities.",
     "mode": "single-choice",
-    "coverage": "complete",
-    "isActive": true,
+    "min_coverage": "10",
     "categories": [
       {
         "name": "Personal",
@@ -87,8 +86,7 @@
     "name": "Secondary Timeline",
     "description": "An alternate timeline to track specific activities in more detail",
     "mode": "single-choice",
-    "coverage": "partial",
-    "isActive": false,
+    "min_coverage": "10",
     "categories": [
       {
         "name": "Personal",
@@ -171,8 +169,7 @@
       "name": "Tertiary Timeline",
       "description": "A hypothetical timeline with more specific and imaginative categories.",
       "mode": "single-choice",
-      "coverage": "partial", 
-      "isActive": false,
+      "min_coverage": "0", 
   "categories": [
     {
       "name": "Magical Activities",

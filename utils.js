@@ -38,7 +38,7 @@ export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
         startDate.setDate(today.getDate());
     }
     
-    if (endHour >= 0 && endHour < 4) {
+    if (endHour >= 0 && endHour <= 4) {
         endDate.setDate(today.getDate());
     }
     
