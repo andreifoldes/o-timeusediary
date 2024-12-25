@@ -380,7 +380,7 @@ function renderActivities(categories, container = document.getElementById('activ
             category.activities.forEach(activity => {
                 const activityButton = document.createElement('button');
                 activityButton.className = 'activity-button';
-                activityButton.style.backgroundColor = activity.color;
+                activityButton.style.setProperty('--color', activity.color);
                 activityButton.textContent = activity.name;
                 activityButton.addEventListener('click', () => {
                     document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
