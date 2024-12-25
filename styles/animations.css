@@ -19,10 +19,13 @@
     transform-style: preserve-3d;
     perspective: 800px;
     transform-origin: center top;
+    position: relative;
+    z-index: 1;
 }
 
 .flip-animation {
     animation: flipInX 0.8s ease-in-out;
     backface-visibility: visible !important;
     transform-origin: center top;
+    display: block;
 }
