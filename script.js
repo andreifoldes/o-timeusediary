@@ -1081,9 +1081,8 @@ function initButtons() {
         const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
         
         if (isLastTimeline) {
-            // On last timeline, clicking Next sends data
-            sendData();
-            nextBtn.disabled = true;
+            // On last timeline, show confirmation modal
+            document.getElementById('confirmationModal').style.display = 'block';
         } else {
             // For other timelines, proceed to next timeline
             addNextTimeline();
@@ -1139,9 +1138,11 @@ function handleResize() {
 }
 
 function createModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
+    // Create activities modal
+    const activitiesModal = document.createElement('div');
+    activitiesModal.className = 'modal-overlay';
+    activitiesModal.id = 'activitiesModal';
+    activitiesModal.innerHTML = `
         <div class="modal">
             <div class="modal-header">
                 <h3>Add Activity</h3>
@@ -1151,18 +1152,48 @@ function createModal() {
         </div>
     `;
 
-    modal.querySelector('.modal-close').addEventListener('click', () => {
-        modal.style.display = 'none';
+    activitiesModal.querySelector('.modal-close').addEventListener('click', () => {
+        activitiesModal.style.display = 'none';
     });
 
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    activitiesModal.addEventListener('click', (e) => {
+        if (e.target === activitiesModal) {
+            activitiesModal.style.display = 'none';
         }
     });
 
-    document.body.appendChild(modal);
-    return modal;
+    // Create confirmation modal
+    const confirmationModal = document.createElement('div');
+    confirmationModal.className = 'modal-overlay';
+    confirmationModal.id = 'confirmationModal';
+    confirmationModal.innerHTML = `
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Confirm Submission</h3>
+            </div>
+            <div class="modal-content">
+                <p>Are you sure?<br>You will not be able to change your responses.</p>
+                <div class="button-container">
+                    <button id="confirmCancel" class="btn">Cancel</button>
+                    <button id="confirmOk" class="btn save-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    confirmationModal.querySelector('#confirmCancel').addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+    });
+
+    confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
+        confirmationModal.style.display = 'none';
+        sendData();
+        document.getElementById('nextBtn').disabled = true;
+    });
+
+    document.body.appendChild(activitiesModal);
+    document.body.appendChild(confirmationModal);
+    return activitiesModal;
 }
 
 function createFloatingAddButton() {
