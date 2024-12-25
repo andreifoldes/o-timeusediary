@@ -365,17 +365,8 @@ body {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s;
-    background: #f0f0f0;
-    color: #333;
-}
-
-.activity-button::before {
-    content: '';
-    width: 5%;
-    height: 100%;
-    background: #29e;
-    border-radius: 4px 0 0 4px;
-    margin-right: 12px;
+    background: linear-gradient(to right, #29e 0%, #29e 5%, #f0f0f0 5%, #f0f0f0 100%);
+    color: #000;
 }
 
 .activity-button:hover {
