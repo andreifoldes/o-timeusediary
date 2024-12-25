@@ -184,9 +184,9 @@ async function addNextTimeline() {
 
         // Scroll to active timeline in mobile view
         if (getIsMobile()) {
-            window.timelineManager.activeTimeline.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         }
 
