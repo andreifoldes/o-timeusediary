@@ -574,11 +574,12 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 100%;
-    padding: 4px;
+    padding: 0px;
+    font-size: 11px;
     box-sizing: border-box;
 }
 
-/* Initial state - ellipsis */
+/*Initial state - ellipsis */
 .activity-block-text-narrow.wide:not(.resized) {
     white-space: nowrap;
     overflow: hidden;
