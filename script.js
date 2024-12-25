@@ -474,41 +474,6 @@ function initTimeline(timeline) {
     }
 }
 
-function updateTimeLabel(label, startTime, endTime, block) {
-    const isMobile = window.timelineManager.activeTimeline.getAttribute('data-layout') === 'vertical';
-    
-    // Use same format for both layouts
-    label.textContent = `${startTime} - ${endTime}`;
-    
-    if (isMobile) {
-        // Position label to the right in mobile mode with text wrapping
-        label.style.left = '120%';
-        label.style.top = '50%';
-        label.style.transform = 'translateY(-50%)';
-        label.style.bottom = 'auto';
-        label.style.whiteSpace = 'normal';
-        label.style.wordWrap = 'break-word';
-        label.style.wordBreak = 'break-word';
-        label.style.overflowWrap = 'break-word';
-        label.style.height = '30px';
-        label.style.display = 'flex';
-        label.style.alignItems = 'center';
-        label.style.justifyContent = 'center';
-    } else {
-        // Desktop mode positioning
-        label.style.bottom = '-20px';
-        label.style.top = 'auto';
-        
-        const timeline = window.timelineManager.activeTimeline;
-        const existingLabels = timeline.querySelectorAll('.time-label');
-        existingLabels.forEach(existingLabel => {
-            if (existingLabel !== label && isOverlapping(existingLabel, label)) {
-                label.style.bottom = 'auto';
-                label.style.top = '-20px';
-            }
-        });
-    }
-}
 
 function initTimelineInteraction(timeline) {
     if (!timeline) {
