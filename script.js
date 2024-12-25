@@ -1168,11 +1168,9 @@ function createModal() {
     confirmationModal.id = 'confirmationModal';
     confirmationModal.innerHTML = `
         <div class="modal">
-            <div class="modal-header">
-                <h3>Confirm Submission</h3>
-            </div>
             <div class="modal-content">
-                <p>Are you sure?<br>You will not be able to change your responses.</p>
+                <h3>Are you sure?</h3>
+                <p>You will not be able to change your responses.</p>
                 <div class="button-container">
                     <button id="confirmCancel" class="btn">Cancel</button>
                     <button id="confirmOk" class="btn save-btn">OK</button>
