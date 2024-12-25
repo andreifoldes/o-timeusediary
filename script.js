@@ -92,7 +92,9 @@ import {
     canPlaceActivity,
     isTimelineFull,
     isOverlapping,
-    generateUniqueId
+    generateUniqueId,
+    createTimeLabel,
+    updateTimeLabel
 } from './utils.js';
 
 
