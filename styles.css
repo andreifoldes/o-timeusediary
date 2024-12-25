@@ -103,7 +103,7 @@ body {
     .timeline-container {
         min-width: 180px;
         max-width: 180px;
-        height: 2000px;
+        height: 2500px;
         margin: 20px auto;
         padding-left: 2px;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
@@ -402,12 +402,12 @@ body {
 /* Mobile styles */
 @media (max-width: 1023px) {
     .time-label {
-        right: -30px; /* Space from the block */
+        right: -50px; /* Space from the block */
         top: 50%;
         transform: translateY(-50%);
         white-space: normal;
         text-align: center;
-        width: 30px; /* Mobile time label width */
+        width: 36px; /* Mobile time label width */
         height: auto; /* Allow height to adjust */
         min-height: 30px;
         word-wrap: break-word;
