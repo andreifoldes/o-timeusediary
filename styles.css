@@ -577,6 +577,7 @@ body {
     padding: 0px !important;
     font-size: 11px;
     box-sizing: border-box;
+    margin: 0 auto;
 }
 
 /*Initial state - ellipsis */
