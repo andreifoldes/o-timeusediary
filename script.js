@@ -963,12 +963,12 @@ function updateButtonStates() {
         if (isLastTimeline) {
             // On last timeline, enable Next only if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            // Change button text to "Submit" if coverage requirement is met
-            nextButton.textContent = meetsMinCoverage ? "Submit" : "Next";
+            // Change button text to "Submit" if coverage requirement is met, keeping the arrow icon
+            nextButton.innerHTML = meetsMinCoverage ? 'Submit <i class="fas fa-arrow-right"></i>' : 'Next <i class="fas fa-arrow-right"></i>';
         } else {
             // For other timelines, enable Next if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            nextButton.textContent = "Next";
+            nextButton.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
         }
     }
     
