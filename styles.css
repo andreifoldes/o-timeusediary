@@ -365,7 +365,7 @@ body {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s;
-    background: linear-gradient(to right, #29e 0%, #29e 5%, #f0f0f0 5%, #f0f0f0 100%);
+    background: linear-gradient(to right, var(--color) 0%, var(--color) 5%, #f0f0f0 5%, #f0f0f0 100%);
     color: #000;
 }
 
