@@ -297,3 +297,28 @@ export function isOverlapping(elem1, elem2) {
         rect1.top > rect2.bottom
     );
 }
+
+export function createTimelineDataFrame() {
+    // Initialize array to hold all timeline data
+    const dataFrame = [];
+    
+    // Get all timeline keys
+    const timelineKeys = window.timelineManager.keys;
+    
+    // Iterate through each timeline
+    timelineKeys.forEach(timelineKey => {
+        const activities = window.timelineManager.activities[timelineKey] || [];
+        
+        // Add each activity to the dataframe with its timeline key
+        activities.forEach(activity => {
+            dataFrame.push({
+                timelineKey: timelineKey,
+                activity: activity.activity,
+                startTime: activity.startTime,
+                endTime: activity.endTime
+            });
+        });
+    });
+    
+    return dataFrame;
+}
