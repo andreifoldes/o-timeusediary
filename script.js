@@ -182,6 +182,14 @@ async function addNextTimeline() {
         // Initialize activities array if not exists
         window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
 
+        // Scroll to active timeline in mobile view
+        if (getIsMobile()) {
+            window.timelineManager.activeTimeline.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
         // Initialize markers for the new timeline
         initTimeline(window.timelineManager.activeTimeline);
 
