@@ -950,7 +950,9 @@ function sendData() {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'timeline_activities.csv';
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
+    link.download = `${dateStr}_timeline_activities.csv`;
     
     // Trigger download
     document.body.appendChild(link);
