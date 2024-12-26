@@ -401,6 +401,7 @@ export function createTimelineDataFrame() {
             const row = {
                 timelineKey: timelineKey,
                 activity: activity.activity,
+                category: activity.category,
                 startTime: activity.startTime,
                 endTime: activity.endTime
             };
