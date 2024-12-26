@@ -869,6 +869,7 @@ function initTimelineInteraction(timeline) {
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity.name,
+            category: selectedActivity.category,
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
