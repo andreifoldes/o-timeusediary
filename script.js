@@ -449,7 +449,8 @@ function renderActivities(categories, container = document.getElementById('activ
                     document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
                     selectedActivity = {
                         name: activity.name,
-                        color: activity.color
+                        color: activity.color,
+                        category: category.name
                     };
                     activityButton.classList.add('selected');
                 });
