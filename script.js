@@ -16,10 +16,12 @@ window.timelineManager = {
     study: {} // Store URL parameters
 };
 
-// Parse and store URL parameters
+// Only create and populate study parameters if URL parameters exist
 const urlParams = new URLSearchParams(window.location.search);
-for (const [key, value] of urlParams) {
-    window.timelineManager.study[key] = value;
+if(urlParams.toString()) {
+    for (const [key, value] of urlParams) {
+        window.timelineManager.study[key] = value;
+    }
 }
 
 // Function to calculate timeline coverage in minutes

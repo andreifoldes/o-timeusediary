@@ -387,22 +387,30 @@ export function createTimelineDataFrame() {
     // Get all timeline keys
     const timelineKeys = window.timelineManager.keys;
     
-    // Get study parameters
-    const studyParams = window.timelineManager.study || {};
+    // Get study parameters if they exist
+    const studyParams = (window.timelineManager.study && Object.keys(window.timelineManager.study).length > 0) 
+        ? window.timelineManager.study 
+        : {};
     
     // Iterate through each timeline
     timelineKeys.forEach(timelineKey => {
         const activities = window.timelineManager.activities[timelineKey] || [];
         
-        // Add each activity to the dataframe with its timeline key and study params
+        // Add each activity to the dataframe with its timeline key
         activities.forEach(activity => {
-            dataFrame.push({
+            const row = {
                 timelineKey: timelineKey,
                 activity: activity.activity,
                 startTime: activity.startTime,
-                endTime: activity.endTime,
-                ...studyParams // Spread operator adds all study parameters
-            });
+                endTime: activity.endTime
+            };
+            
+            // Only add study params if they exist
+            if(Object.keys(studyParams).length > 0) {
+                Object.assign(row, studyParams);
+            }
+            
+            dataFrame.push(row);
         });
     });
     
