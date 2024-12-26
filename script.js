@@ -333,18 +333,22 @@ async function fetchActivities(key) {
 
         // Initialize timeline management structure if not already initialized
         if (Object.keys(timelineManager.metadata).length === 0) {
+            // Only use timeline keys, excluding 'general'
             timelineManager.keys = Object.keys(data.timeline);
             timelineManager.keys.forEach(timelineKey => {
-                timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
-                timelineManager.activities[timelineKey] = [];
+                if (data.timeline[timelineKey]) {
+                    timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
+                    timelineManager.activities[timelineKey] = [];
+                }
             });
             if (DEBUG_MODE) {
                 console.log('Initialized timeline structure:', timelineManager);
             }
         }
 
-        if (!data.timeline[key]) {
-            throw new Error(`Timeline key ${key} not found`);
+        const timeline = data.timeline[key];
+        if (!timeline || !timeline.categories) {
+            throw new Error(`Invalid timeline data for key: ${key}`);
         }
         
         // Mark timeline as initialized
