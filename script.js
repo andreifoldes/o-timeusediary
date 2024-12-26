@@ -905,8 +905,11 @@ function sendData() {
     // Get flattened timeline data
     const timelineData = createTimelineDataFrame();
     
-    // Convert to CSV
-    const headers = ['timelineKey', 'activity', 'startTime', 'endTime'];
+    // Get all unique headers from study parameters
+    const studyHeaders = Object.keys(window.timelineManager.study || {});
+    
+    // Combine standard headers with study parameter headers
+    const headers = ['timelineKey', 'activity', 'startTime', 'endTime', ...studyHeaders];
     const csvContent = [
         headers.join(','),
         ...timelineData.map(row => 
