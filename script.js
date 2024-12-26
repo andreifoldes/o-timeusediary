@@ -137,7 +137,6 @@ async function addNextTimeline() {
         // Update content immediately
         timelineTitle.textContent = nextTimeline.name;
         timelineDescription.textContent = nextTimeline.description;
-        document.title = nextTimeline.name;
         
         // Trigger reflow to ensure animation plays
         void timelineHeader.offsetWidth;
@@ -310,12 +309,8 @@ async function fetchActivities(key) {
             throw new Error('Invalid JSON structure');
         }
 
-        // Set app name in document title
+        // Set app name in document title once
         document.title = data.general.app_name;
-        const titleElement = document.querySelector('.timeline-title');
-        if (titleElement) {
-            titleElement.textContent = data.general.app_name;
-        }
         
         // Validate min_coverage
         if (data.timeline[key]) {
