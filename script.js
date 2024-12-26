@@ -12,8 +12,15 @@ window.timelineManager = {
     initialized: new Set(), // Tracks initialized timelines
     activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
     keys: [], // Available timeline keys
-    currentIndex: 0 // Current timeline index
+    currentIndex: 0, // Current timeline index
+    study: {} // Store URL parameters
 };
+
+// Parse and store URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+for (const [key, value] of urlParams) {
+    window.timelineManager.study[key] = value;
+}
 
 // Function to calculate timeline coverage in minutes
 window.getTimelineCoverage = () => {
