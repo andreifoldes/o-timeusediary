@@ -912,7 +912,7 @@ function sendData() {
     const studyHeaders = Object.keys(window.timelineManager.study || {});
     
     // Combine standard headers with study parameter headers
-    const headers = ['timelineKey', 'activity', 'startTime', 'endTime', ...studyHeaders];
+    const headers = ['timelineKey', 'activity', 'category', 'startTime', 'endTime', ...studyHeaders];
     const csvContent = [
         headers.join(','),
         ...timelineData.map(row => 
