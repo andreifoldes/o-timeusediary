@@ -1248,10 +1248,10 @@ async function init() {
         }
         const data = await response.json();
         
-        // Initialize timeline management structure
-        window.timelineManager.keys = Object.keys(data);
+        // Initialize timeline management structure with only timeline keys
+        window.timelineManager.keys = Object.keys(data.timeline);
         window.timelineManager.keys.forEach(timelineKey => {
-            window.timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data[timelineKey]);
+            window.timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
             window.timelineManager.activities[timelineKey] = [];
         });
 
