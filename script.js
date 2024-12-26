@@ -401,7 +401,8 @@ function renderActivities(categories, container = document.getElementById('activ
                     document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
                     selectedActivity = {
                         name: activity.name,
-                        color: activity.color
+                        color: activity.color,
+                        category: category.name
                     };
                     activityButton.classList.add('selected');
                     // Close the modal after selection
@@ -793,6 +794,7 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.start = formatTimeHHMM(startMinutes);
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.dataset.length = endMinutes - startMinutes;
+        currentBlock.dataset.category = selectedActivity.category;
         currentBlock.style.backgroundColor = selectedActivity.color;
         const textDiv = document.createElement('div');
         textDiv.textContent = selectedActivity.name;
