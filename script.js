@@ -306,14 +306,21 @@ async function fetchActivities(key) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (!data) {
+        if (!data || !data.timeline || !data.general) {
             throw new Error('Invalid JSON structure');
+        }
+
+        // Set app name in document title
+        document.title = data.general.app_name;
+        const titleElement = document.querySelector('.timeline-title');
+        if (titleElement) {
+            titleElement.textContent = data.general.app_name;
         }
         
         // Validate min_coverage
-        if (data[key]) {
+        if (data.timeline[key]) {
             try {
-                validateMinCoverage(data[key].min_coverage);
+                validateMinCoverage(data.timeline[key].min_coverage);
             } catch (error) {
                 const errorMessage = `Timeline "${key}": ${error.message}`;
                 document.getElementById('activitiesContainer').innerHTML = 
@@ -326,9 +333,9 @@ async function fetchActivities(key) {
 
         // Initialize timeline management structure if not already initialized
         if (Object.keys(timelineManager.metadata).length === 0) {
-            timelineManager.keys = Object.keys(data);
+            timelineManager.keys = Object.keys(data.timeline);
             timelineManager.keys.forEach(timelineKey => {
-                timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data[timelineKey]);
+                timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
                 timelineManager.activities[timelineKey] = [];
             });
             if (DEBUG_MODE) {
@@ -336,7 +343,7 @@ async function fetchActivities(key) {
             }
         }
 
-        if (!data[key]) {
+        if (!data.timeline[key]) {
             throw new Error(`Timeline key ${key} not found`);
         }
         
@@ -350,7 +357,7 @@ async function fetchActivities(key) {
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
         }
         
-        return data[key].categories;
+        return data.timeline[key].categories;
     } catch (error) {
         console.error('Error loading activities:', error);
         throw error;
