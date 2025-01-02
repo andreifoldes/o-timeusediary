@@ -828,9 +828,9 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.end = formatTimeHHMM(adjustedEndMinutes);
 
         // Fixed dimensions for consistency
-        const MOBILE_BLOCK_WIDTH = 50; // 50% width in mobile mode
+        const MOBILE_BLOCK_WIDTH = 75; // 75% width in mobile mode
         const DESKTOP_BLOCK_HEIGHT = 90; // Changed from 60 to 90
-        const MOBILE_OFFSET = 25; // Centers the block at 25% from left
+        const MOBILE_OFFSET = 12.5; // Centers the block at 12.5% from left
         const DESKTOP_OFFSET = 5; // Changed from 25 to 5 to keep blocks centered
 
         if (isMobile) {
