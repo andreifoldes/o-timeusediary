@@ -639,6 +639,7 @@ function initTimelineInteraction(timeline) {
                         if (newLength >= 60) {
                             textDiv.className = 'activity-block-text-narrow wide resized';
                         } else {
+                            // Keep narrow for mobile, vertical for desktop when length < 60
                             textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
                         }
                     }
@@ -810,6 +811,7 @@ function initTimelineInteraction(timeline) {
         if (length >= 60) {
             textDiv.className = 'activity-block-text-narrow wide resized';
         } else {
+            // Keep narrow for mobile, vertical for desktop when length < 60
             textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
         }
         currentBlock.appendChild(textDiv);
