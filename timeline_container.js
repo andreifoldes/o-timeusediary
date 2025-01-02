@@ -26,9 +26,9 @@ export class TimelineContainer {
 
         // Set dimensions based on layout
         if (isMobile) {
-            this.timeline.style.height = '1500px';
+            this.timeline.style.height = '2500px';
             this.timeline.style.width = '100%';
-            this.timeline.parentElement.style.height = '1500px';
+            this.timeline.parentElement.style.height = '20in mob00px';
             this.timeline.parentElement.style.width = '120px';
         } else {
             this.timeline.style.height = '';
@@ -74,7 +74,7 @@ export class TimelineContainer {
 
     updateLayout(isMobile) {
         if (isMobile) {
-            const minHeight = '1500px';
+            const minHeight = '2500px';
             this.timeline.style.height = minHeight;
             this.timeline.style.width = '';
             this.timeline.parentElement.style.height = minHeight;

@@ -8,7 +8,7 @@ export function testTimelineMarkerPositioning() {
     
     // Create timeline element
     const timeline = document.createElement('div');
-    timeline.style.height = '1500px';
+    timeline.style.height = '2500px';
     timeline.style.position = 'relative';
     
     // Add timeline to container and container to document
