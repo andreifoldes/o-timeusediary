@@ -633,12 +633,14 @@ function initTimelineInteraction(timeline) {
                     const newLength = calculateTimeDifference(startTime, endTime);
                     target.dataset.length = newLength;
                     
-                    // Update text class based on length and layout
+                    // Update text class based on length and mode
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
-                        textDiv.className = newLength >= 60 ? 
-                            'activity-block-text-narrow wide resized' : 
-                            (isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical');
+                        if (newLength >= 60) {
+                            textDiv.className = 'activity-block-text-narrow wide resized';
+                        } else {
+                            textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
+                        }
                     }
                     
                     // Update the activity data in timelineManager
@@ -803,11 +805,13 @@ function initTimelineInteraction(timeline) {
         textDiv.style.overflow = 'hidden';
         textDiv.style.textOverflow = 'ellipsis';
         textDiv.style.whiteSpace = 'nowrap';
-        // Set initial class based on length
+        // Set initial class based on length and mode
         const length = parseInt(currentBlock.dataset.length);
-        textDiv.className = length >= 60 ? 
-            'activity-block-text-narrow wide resized' : 
-            (isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical');
+        if (length >= 60) {
+            textDiv.className = 'activity-block-text-narrow wide resized';
+        } else {
+            textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
+        }
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
