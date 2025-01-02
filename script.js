@@ -842,7 +842,7 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.width = `${blockSize}%`;
             currentBlock.style.left = `${startPositionPercent}%`;
             currentBlock.style.height = '75%';
-            currentBlock.style.top = '12.5%';
+            currentBlock.style.top = '25%';
         }
         
         const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
