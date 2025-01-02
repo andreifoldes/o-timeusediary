@@ -1243,15 +1243,30 @@ function createFloatingAddButton() {
 
 // Helper function to scroll to active timeline
 function scrollToActiveTimeline() {
-    if (getIsMobile() && window.timelineManager.activeTimeline) {
+    if (!window.timelineManager.activeTimeline) return;
+    
+    const activeTimeline = window.timelineManager.activeTimeline.closest('.timeline-container');
+    if (!activeTimeline) return;
+
+    if (getIsMobile()) {
+        // Mobile: horizontal scroll
         const timelineCanvas = document.querySelector('.timeline-canvas');
-        const activeTimeline = window.timelineManager.activeTimeline.closest('.timeline-container');
-        if (timelineCanvas && activeTimeline) {
+        if (timelineCanvas) {
             timelineCanvas.scrollTo({
                 left: activeTimeline.offsetLeft,
                 behavior: 'smooth'
             });
         }
+    } else {
+        // Desktop: vertical scroll to center
+        const windowHeight = window.innerHeight;
+        const timelineRect = activeTimeline.getBoundingClientRect();
+        const scrollTarget = window.pageYOffset + timelineRect.top - (windowHeight / 2) + (timelineRect.height / 2);
+        
+        window.scrollTo({
+            top: scrollTarget,
+            behavior: 'smooth'
+        });
     }
 }
 
