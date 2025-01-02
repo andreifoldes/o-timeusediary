@@ -512,8 +512,8 @@ body {
 
 .activity-block {
     position: absolute;
-    height: 70%;
-    top: 15%;
+    height: 90%;
+    top: 5%;
     background-color: #29e;
     border-radius: 4px;
     color: black;
