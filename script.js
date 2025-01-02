@@ -1250,12 +1250,29 @@ function scrollToActiveTimeline() {
 
     if (getIsMobile()) {
         // Mobile: horizontal scroll
-        const timelineCanvas = document.querySelector('.timeline-canvas');
-        if (timelineCanvas) {
-            timelineCanvas.scrollTo({
-                left: activeTimeline.offsetLeft,
-                behavior: 'smooth'
-            });
+        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        if (timelinesWrapper) {
+            // Check if wrapper has scrollable overflow
+            const hasScrollableOverflow = timelinesWrapper.scrollWidth > timelinesWrapper.clientWidth;
+            
+            if (hasScrollableOverflow) {
+                // Calculate if timeline is partially or fully hidden
+                const timelineRect = activeTimeline.getBoundingClientRect();
+                const wrapperRect = timelinesWrapper.getBoundingClientRect();
+                
+                // Check if timeline is not fully visible
+                const isPartiallyHidden = 
+                    timelineRect.left < wrapperRect.left ||
+                    timelineRect.right > wrapperRect.right;
+                
+                if (isPartiallyHidden) {
+                    // Scroll to make timeline fully visible
+                    timelinesWrapper.scrollTo({
+                        left: activeTimeline.offsetLeft,
+                        behavior: 'smooth'
+                    });
+                }
+            }
         }
     } else {
         // Desktop: vertical scroll to center
