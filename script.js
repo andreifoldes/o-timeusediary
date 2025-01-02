@@ -639,8 +639,8 @@ function initTimelineInteraction(timeline) {
                         if (newLength >= 60) {
                             textDiv.className = 'activity-block-text-narrow wide resized';
                         } else {
-                            // Always keep narrow in mobile mode when length < 60
-                            textDiv.className = getIsMobile() ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
+                            // In mobile mode, ALWAYS use narrow text
+                            textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
                         }
                     }
                     
@@ -808,11 +808,14 @@ function initTimelineInteraction(timeline) {
         textDiv.style.whiteSpace = 'nowrap';
         // Set initial class based on length and mode
         const length = parseInt(currentBlock.dataset.length);
-        if (length >= 60) {
-            textDiv.className = 'activity-block-text-narrow wide resized';
+        const isMobile = getIsMobile();
+
+        if (isMobile) {
+            // In mobile mode, ALWAYS use narrow text
+            textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
         } else {
-            // Always keep narrow in mobile mode when length < 60
-            textDiv.className = getIsMobile() ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
+            // Desktop mode behavior remains unchanged
+            textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical';
         }
         currentBlock.appendChild(textDiv);
         
