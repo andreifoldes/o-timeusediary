@@ -860,6 +860,10 @@ function initTimelineInteraction(timeline) {
         updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
         timeLabel.style.display = 'block'; // Ensure the new label is visible
 
+        // Deselect the activity button after successful placement
+        document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('selected'));
+        selectedActivity = null;
+
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
         const times = formatTimeDDMMYYYYHHMM(startTime, endTime);
