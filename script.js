@@ -5,6 +5,11 @@ import { getCurrentTimelineData, getCurrentTimelineKey, createTimelineDataFrame 
 import { updateIsMobile, getIsMobile } from './globals.js';
 let selectedActivity = null;
 
+// TODO: fix Undo in both layouts
+// TODO: fix overlap detection in both layouts
+// TODO: fix refresh issue in mobile mode
+// TODO: fix minute marker thickness, causing people to confuse hour and 30 min marker
+
 // Single timeline management object
 window.timelineManager = {
     metadata: {}, // Timeline metadata (former timelines object)
