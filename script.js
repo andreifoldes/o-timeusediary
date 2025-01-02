@@ -189,10 +189,11 @@ async function addNextTimeline() {
             }
         }
         
-        // Initialize new timeline and container with proper IDs
+        // Initialize new timeline and container with proper IDs and mode
         newTimeline.id = nextTimelineKey;
         newTimeline.setAttribute('data-timeline-type', nextTimelineKey);
         newTimeline.setAttribute('data-active', 'true');
+        newTimeline.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
         newTimelineContainer.setAttribute('data-active', 'true');
         
         // Create and initialize timeline container with markers
