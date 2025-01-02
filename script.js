@@ -170,27 +170,9 @@ async function addNextTimeline() {
         newTimeline.className = 'timeline';
         newTimelineContainer.appendChild(newTimeline);
         
-        // Add new timeline to wrapper based on layout
+        // Add new timeline to active wrapper
         const activeTimelineWrapper = document.querySelector('.active-timeline-wrapper');
-        const inactiveTimelinesWrapper = document.querySelector('.inactive-timelines-wrapper');
-        if (isMobile) {
-            // In mobile, insert after the current timeline in the active wrapper
-            const currentTimeline = window.timelineManager.activeTimeline?.closest('.timeline-container');
-            if (currentTimeline) {
-                currentTimeline.insertAdjacentElement('afterend', newTimelineContainer);
-            } else {
-                activeTimelineWrapper.appendChild(newTimelineContainer);
-            }
-        } else {
-            // In desktop, append to active wrapper
-            activeTimelineWrapper.appendChild(newTimelineContainer);
-        }
-
-        // Move inactive timelines to the inactive wrapper
-        const inactiveTimelines = document.querySelectorAll('.timeline-container[data-active="false"]');
-        inactiveTimelines.forEach(timeline => {
-            inactiveTimelinesWrapper.appendChild(timeline);
-        });
+        activeTimelineWrapper.appendChild(newTimelineContainer);
         
         // Only update previous timeline state if we have at least 2 initialized timelines
         if (window.timelineManager.initialized.size >= 2) {
@@ -198,6 +180,10 @@ async function addNextTimeline() {
             if (previousTimeline) {
                 previousTimeline.setAttribute('data-active', 'false');
                 previousTimeline.parentElement.setAttribute('data-active', 'false');
+                
+                // Move the previous timeline to the inactive wrapper
+                const inactiveTimelinesWrapper = document.querySelector('.inactive-timelines-wrapper');
+                inactiveTimelinesWrapper.appendChild(previousTimeline.parentElement);
             }
         }
         
