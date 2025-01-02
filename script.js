@@ -636,12 +636,9 @@ function initTimelineInteraction(timeline) {
                     // Update text class based on length and mode
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
-                        if (newLength >= 60) {
-                            textDiv.className = 'activity-block-text-narrow wide resized';
-                        } else {
-                            // Always keep narrow in mobile mode
-                            textDiv.className = getIsMobile() ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
-                        }
+                        textDiv.className = getIsMobile()
+                            ? (newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+                            : (newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
                     }
                     
                     // Update the activity data in timelineManager
@@ -697,8 +694,10 @@ function initTimelineInteraction(timeline) {
                 if (textDiv) {
                     // Get the current length from the block's dataset
                     const length = parseInt(event.target.dataset.length);
-                    // Update classes based on length
-                    textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical';
+                    // Update classes based on length and mode
+                    textDiv.className = getIsMobile()
+                        ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+                        : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
                 }
                 updateButtonStates();
             }
@@ -809,13 +808,10 @@ function initTimelineInteraction(timeline) {
         // Set initial class based on length and mode
         const length = parseInt(currentBlock.dataset.length);
 
-        if (getIsMobile()) {
-            // In mobile mode, ALWAYS use narrow text, only add wide resized if length >= 60
-            textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
-        } else {
-            // Desktop mode behavior remains unchanged
-            textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical';
-        }
+        // Always use narrow text in mobile mode, add wide and resized only if length >= 60
+        textDiv.className = getIsMobile() 
+            ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+            : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
         currentBlock.appendChild(textDiv);
         
         // Convert minutes to percentage for positioning
