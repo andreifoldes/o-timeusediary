@@ -34,7 +34,7 @@ body {
     }
 }
 
-.timelines-wrapper {
+.active-timeline-wrapper {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -42,11 +42,25 @@ body {
     width: 100%;
 }
 
+.inactive-timelines-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    overflow-x: auto;
+}
+
 @media (max-width: 1023px) {
-    .timelines-wrapper {
+    .active-timeline-wrapper {
         flex-direction: row;
         overflow-x: auto;
         padding: 0 20px;
+    }
+
+    .inactive-timelines-wrapper {
+        flex-direction: column;
+        overflow-x: visible;
     }
 }
 

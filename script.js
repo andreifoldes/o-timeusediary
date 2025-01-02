@@ -171,19 +171,26 @@ async function addNextTimeline() {
         newTimelineContainer.appendChild(newTimeline);
         
         // Add new timeline to wrapper based on layout
-        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        const activeTimelineWrapper = document.querySelector('.active-timeline-wrapper');
+        const inactiveTimelinesWrapper = document.querySelector('.inactive-timelines-wrapper');
         if (isMobile) {
-            // In mobile, insert after the current timeline
+            // In mobile, insert after the current timeline in the active wrapper
             const currentTimeline = window.timelineManager.activeTimeline?.closest('.timeline-container');
             if (currentTimeline) {
                 currentTimeline.insertAdjacentElement('afterend', newTimelineContainer);
             } else {
-                timelinesWrapper.appendChild(newTimelineContainer);
+                activeTimelineWrapper.appendChild(newTimelineContainer);
             }
         } else {
-            // In desktop, append to bottom as before
-            timelinesWrapper.appendChild(newTimelineContainer);
+            // In desktop, append to active wrapper
+            activeTimelineWrapper.appendChild(newTimelineContainer);
         }
+
+        // Move inactive timelines to the inactive wrapper
+        const inactiveTimelines = document.querySelectorAll('.timeline-container[data-active="false"]');
+        inactiveTimelines.forEach(timeline => {
+            inactiveTimelinesWrapper.appendChild(timeline);
+        });
         
         // Only update previous timeline state if we have at least 2 initialized timelines
         if (window.timelineManager.initialized.size >= 2) {
