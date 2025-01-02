@@ -810,7 +810,7 @@ function initTimelineInteraction(timeline) {
         const length = parseInt(currentBlock.dataset.length);
 
         if (getIsMobile()) {
-            // In mobile mode, ALWAYS use narrow text
+            // In mobile mode, ALWAYS use narrow text, only add wide resized if length >= 60
             textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
         } else {
             // Desktop mode behavior remains unchanged
