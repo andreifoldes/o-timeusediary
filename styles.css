@@ -44,11 +44,11 @@ body {
 
 .inactive-timelines-wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column-reverse;
     gap: 20px;
     margin-bottom: 20px;
     width: 100%;
-    overflow-x: auto;
+    overflow-y: auto;
 }
 
 @media (max-width: 1023px) {
@@ -59,8 +59,8 @@ body {
     }
 
     .inactive-timelines-wrapper {
-        flex-direction: column;
-        overflow-x: visible;
+        flex-direction: row-reverse;
+        overflow-x: auto;
     }
 }
 
