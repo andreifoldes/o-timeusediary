@@ -841,8 +841,8 @@ function initTimelineInteraction(timeline) {
         } else {
             currentBlock.style.width = `${blockSize}%`;
             currentBlock.style.left = `${startPositionPercent}%`;
-            currentBlock.style.height = '90px';
-            currentBlock.style.top = '25%';
+            currentBlock.style.height = '75%';
+            currentBlock.style.top = '12.5%';
         }
         
         const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
