@@ -518,6 +518,8 @@ body {
     border-radius: 4px;
     color: black;
     padding: 0px;
+    width: 75%;
+    left: 12.5%;
     box-sizing: border-box;
     transition: outline 0.3s ease-out;
     touch-action: none;
