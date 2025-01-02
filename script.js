@@ -639,8 +639,8 @@ function initTimelineInteraction(timeline) {
                         if (newLength >= 60) {
                             textDiv.className = 'activity-block-text-narrow wide resized';
                         } else {
-                            // In mobile mode, ALWAYS use narrow text
-                            textDiv.className = isMobile ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
+                            // Always keep narrow in mobile mode
+                            textDiv.className = getIsMobile() ? 'activity-block-text-narrow' : 'activity-block-text-vertical';
                         }
                     }
                     
