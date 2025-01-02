@@ -808,9 +808,8 @@ function initTimelineInteraction(timeline) {
         textDiv.style.whiteSpace = 'nowrap';
         // Set initial class based on length and mode
         const length = parseInt(currentBlock.dataset.length);
-        const isMobile = getIsMobile();
 
-        if (isMobile) {
+        if (getIsMobile()) {
             // In mobile mode, ALWAYS use narrow text
             textDiv.className = length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow';
         } else {
