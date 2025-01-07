@@ -81,6 +81,11 @@ body {
     .past-initialized-timelines-wrapper {
         overflow-x: auto;
     }
+    
+    .past-initialized-timelines-wrapper:empty {
+        width: 0;
+        display: none;
+    }
 }
 
 @media (max-width: 1023px) {
