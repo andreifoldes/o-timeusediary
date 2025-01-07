@@ -34,7 +34,7 @@ body {
     }
 }
 
-.active-timeline-wrapper {
+.last-initialized-timeline-wrapper {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -42,7 +42,7 @@ body {
     width: 100%;
 }
 
-.inactive-timelines-wrapper {
+.past-initialized-timelines-wrapper {
     display: flex;
     flex-direction: column-reverse;
     gap: 20px;
@@ -52,13 +52,13 @@ body {
 
 /* Only show scrollbars in mobile mode */
 @media (max-width: 1023px) {
-    .inactive-timelines-wrapper {
+    .past-initialized-timelines-wrapper {
         overflow-x: auto;
     }
 }
 
 @media (max-width: 1023px) {
-    .active-timeline-wrapper {
+    .last-initialized-timeline-wrapper {
         flex-direction: row;
         overflow-x: auto;
         padding: 0 20px;

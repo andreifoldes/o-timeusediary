@@ -171,7 +171,7 @@ async function addNextTimeline() {
         newTimelineContainer.appendChild(newTimeline);
         
         // Add new timeline to active wrapper
-        const activeTimelineWrapper = document.querySelector('.active-timeline-wrapper');
+        const activeTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
         activeTimelineWrapper.appendChild(newTimelineContainer);
         
         // Only update previous timeline state if we have at least 2 initialized timelines
@@ -182,7 +182,7 @@ async function addNextTimeline() {
                 previousTimeline.parentElement.setAttribute('data-active', 'false');
                 
                 // Move the previous timeline to the inactive wrapper
-                const inactiveTimelinesWrapper = document.querySelector('.inactive-timelines-wrapper');
+                const inactiveTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
                 inactiveTimelinesWrapper.appendChild(previousTimeline.parentElement);
             }
         }
