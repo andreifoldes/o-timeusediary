@@ -166,6 +166,13 @@ async function addNextTimeline() {
         // Desktop mode - create new timeline container
         const newTimelineContainer = document.createElement('div');
         newTimelineContainer.className = 'timeline-container';
+        
+        // Add title element
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'title';
+        titleDiv.textContent = window.timelineManager.metadata[nextTimelineKey].name;
+        newTimelineContainer.appendChild(titleDiv);
+        
         const newTimeline = document.createElement('div');
         newTimeline.className = 'timeline';
         newTimelineContainer.appendChild(newTimeline);

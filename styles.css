@@ -99,6 +99,18 @@ body {
     padding: 2px;
 }
 
+.timeline-container .title {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    padding: 2px;
+    font-weight: bold;
+}
+
 .hour-labels {
     position: absolute;
     width: 100%;
