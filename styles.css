@@ -65,6 +65,7 @@ body {
         overflow-x: auto;
         width: max-content;
         min-width: 100%;
+        justify-content: center;
     }
 
     .last-initialized-timeline-wrapper,
