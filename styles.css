@@ -50,6 +50,19 @@ body {
     width: 100%;
 }
 
+/* Mobile layout - horizontal display */
+@media (max-width: 1023px) {
+    .last-initialized-timeline-wrapper,
+    .past-initialized-timelines-wrapper {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0 20px;
+        gap: 40px;
+        width: max-content;
+        min-width: 100%;
+    }
+}
+
 /* Only show scrollbars in mobile mode */
 @media (max-width: 1023px) {
     .past-initialized-timelines-wrapper {
