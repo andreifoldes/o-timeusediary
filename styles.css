@@ -54,7 +54,7 @@ body {
 @media (max-width: 1023px) {
     .timelines-wrapper {
         display: flex;
-        flex-direction: row;
+        flex-direction: row-reverse;
         gap: 40px;
         padding: 0 20px;
         overflow-x: auto;
