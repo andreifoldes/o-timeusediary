@@ -71,7 +71,7 @@ body {
     .past-initialized-timelines-wrapper {
         display: flex;
         flex-direction: row;
-        gap: 40px;
+        gap: 20px;
     }
 }
 
@@ -86,7 +86,7 @@ body {
     .last-initialized-timeline-wrapper {
         display: flex;
         flex-direction: row;
-        gap: 40px;
+        gap: 20px;
     }
 
     .inactive-timelines-wrapper {
