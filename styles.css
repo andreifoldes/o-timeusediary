@@ -93,6 +93,7 @@ body {
         display: flex;
         flex-direction: row;
         gap: 20px;
+        margin-bottom: 0px;
     }
 
     .inactive-timelines-wrapper {
