@@ -20,11 +20,11 @@ body {
 
 .timeline-canvas {
     position: relative;
-    flex: 1;
     margin: 20px;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
+    height: fit-content;
 }
 
 /* Mobile layout */
