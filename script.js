@@ -864,17 +864,17 @@ function initTimelineInteraction(timeline) {
             const percentage = 100 / numSelections;
             
             if (isMobile) {
-                // Vertical splits for mobile
-                const stops = colors.map((color, index) => 
-                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
-                ).join(', ');
-                currentBlock.style.background = `linear-gradient(to bottom, ${stops})`;
-            } else {
-                // Horizontal splits for desktop
+                // Horizontal splits for mobile
                 const stops = colors.map((color, index) => 
                     `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
                 ).join(', ');
                 currentBlock.style.background = `linear-gradient(to right, ${stops})`;
+            } else {
+                // Vertical splits for desktop
+                const stops = colors.map((color, index) => 
+                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
+                ).join(', ');
+                currentBlock.style.background = `linear-gradient(to bottom, ${stops})`;
             }
         } else {
             currentBlock.style.backgroundColor = selectedActivity.color;
