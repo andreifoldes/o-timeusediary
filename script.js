@@ -995,7 +995,9 @@ function initTimelineInteraction(timeline) {
         
         const activityData = {
             id: generateUniqueId(),
-            activity: activityText,
+            activity: selectedActivity.selections ? 
+                selectedActivity.selections.map(s => s.name).join('|') : 
+                activityText,
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
