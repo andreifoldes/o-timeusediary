@@ -467,13 +467,38 @@ function renderActivities(categories, container = document.getElementById('activ
                 activityButton.style.setProperty('--color', activity.color);
                 activityButton.textContent = activity.name;
                 activityButton.addEventListener('click', () => {
-                    document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
-                    selectedActivity = {
-                        name: activity.name,
-                        color: activity.color,
-                        category: category.name
-                    };
-                    activityButton.classList.add('selected');
+                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
+                    
+                    if (isMultipleChoice) {
+                        // Toggle selection for this button
+                        activityButton.classList.toggle('selected');
+                        
+                        // Get all selected activities in this category
+                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+                        
+                        if (selectedButtons.length > 0) {
+                            selectedActivity = {
+                                selections: selectedButtons.map(btn => ({
+                                    name: btn.textContent,
+                                    color: btn.style.getPropertyValue('--color')
+                                })),
+                                category: category.name
+                            };
+                        } else {
+                            selectedActivity = null;
+                        }
+                    } else {
+                        // Single choice mode
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        selectedActivity = {
+                            name: activity.name,
+                            color: activity.color,
+                            category: category.name
+                        };
+                        activityButton.classList.add('selected');
+                    }
                 });
                 activityButtonsDiv.appendChild(activityButton);
             });
