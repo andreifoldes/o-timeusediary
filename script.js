@@ -456,6 +456,11 @@ function renderActivities(categories, container = document.getElementById('activ
 function initTimeline(timeline) {
     timeline.setAttribute('data-active', 'true');
     timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
+
+    // Remove existing markers
+    if (timeline.containerInstance && timeline.containerInstance.hourLabelsContainer) {
+        timeline.containerInstance.hourLabelsContainer.innerHTML = '';
+    }
     
     // Create and initialize timeline container
     const timelineContainer = new TimelineContainer(timeline);
