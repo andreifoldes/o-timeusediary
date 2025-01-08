@@ -25,8 +25,7 @@ body {
     display: flex;
     flex-direction: column;
     height: fit-content;
-    min-width: 280px;
-}
+/}
 
 /* Mobile layout */
 @media (max-width: 1023px) {
