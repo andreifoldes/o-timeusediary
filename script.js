@@ -911,10 +911,13 @@ function initTimelineInteraction(timeline) {
         }
         const textDiv = document.createElement('div');
         if (selectedActivity.selections) {
-            // For multiple selections, join names with line break
+            // For multiple selections, join names with line break in the text div
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
+            // But join with vertical separator for storing in timelineManager
+            activityText = selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
             textDiv.textContent = selectedActivity.name;
+            activityText = selectedActivity.name;
         }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
@@ -995,9 +998,7 @@ function initTimelineInteraction(timeline) {
             
         const activityData = {
             id: generateUniqueId(),
-            activity: selectedActivity && selectedActivity.selections ? 
-                selectedActivity.selections.map(s => s.name.trim()).join(' | ') : 
-                textDiv.textContent.split('|')[0], // Take first part if already contains separator
+            activity: activityText.trim(),
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
