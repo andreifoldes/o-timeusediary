@@ -992,10 +992,10 @@ function initTimelineInteraction(timeline) {
         // Get activity name and category from the block's text content and dataset
         const activityText = textDiv.textContent;
         const activityCategory = currentBlock.dataset.category;
-        
+            
         const activityData = {
             id: generateUniqueId(),
-            activity: selectedActivity.selections ? 
+            activity: selectedActivity && selectedActivity.selections ? 
                 selectedActivity.selections.map(s => s.name).join('|') : 
                 activityText,
             category: activityCategory,
