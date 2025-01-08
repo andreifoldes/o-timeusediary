@@ -1000,7 +1000,8 @@ function initTimelineInteraction(timeline) {
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: selectedActivity?.color || '#808080'
+            color: selectedActivity?.color || '#808080',
+            count: parseInt(currentBlock.dataset.count) || 1
         };
         getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
