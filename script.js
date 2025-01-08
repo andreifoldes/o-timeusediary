@@ -917,12 +917,27 @@ function sendData() {
     
     // Combine standard headers with study parameter headers
     const headers = ['timelineKey', 'activity', 'category', 'startTime', 'endTime', ...studyHeaders];
+    
+    // Process timeline data to ensure activity and category are properly set
+    const processedData = timelineData.map(row => {
+        // Find the activity block element by ID to get the actual activity data
+        const activityBlock = document.querySelector(`.activity-block[data-id="${row.id}"]`);
+        if (activityBlock) {
+            return {
+                ...row,
+                activity: activityBlock.querySelector('div').textContent || row.activity,
+                category: activityBlock.dataset.category || row.category
+            };
+        }
+        return row;
+    });
+
     const csvContent = [
         headers.join(','),
-        ...timelineData.map(row => 
+        ...processedData.map(row => 
             headers.map(header => 
                 // Wrap values in quotes and escape existing quotes
-                `"${String(row[header]).replace(/"/g, '""')}"`
+                `"${String(row[header] || '').replace(/"/g, '""')}"`
             ).join(',')
         )
     ].join('\n');
