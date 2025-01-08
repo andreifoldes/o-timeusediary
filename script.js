@@ -920,7 +920,7 @@ function initTimelineInteraction(timeline) {
             const combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
             textDiv.textContent = selectedActivity.name;
-            activityText = selectedActivity.name;
+            const combinedActivityText = selectedActivity.name;
         }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
@@ -1002,7 +1002,9 @@ function initTimelineInteraction(timeline) {
         // Create activity data after all variables are defined
         const activityData = {
             id: generateUniqueId(),
-            activity: combinedActivityText,
+            activity: selectedActivity.selections ? 
+                     selectedActivity.selections.map(s => s.name).join(' | ') : 
+                     selectedActivity.name,
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
