@@ -476,7 +476,7 @@ body {
 .activity-button {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     padding: 8px 12px 8px 24px;
     margin: 5px 0;
@@ -488,7 +488,50 @@ body {
     background-color: #f5f5f5;
     color: #000;
     position: relative;
-    text-align: center;
+    text-align: left;
+}
+
+.activity-button.checkbox-style {
+    padding-left: 45px;
+}
+
+.activity-button .activity-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.activity-button .checkmark {
+    position: absolute;
+    left: 24px;
+    height: 18px;
+    width: 18px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+}
+
+.activity-button.selected .checkmark {
+    background-color: var(--color);
+    border-color: var(--color);
+}
+
+.activity-button.selected .checkmark:after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.activity-text {
+    margin-left: 5px;
 }
 
 .activity-button::before {

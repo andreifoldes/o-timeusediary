@@ -395,9 +395,25 @@ function renderActivities(categories, container = document.getElementById('activ
 
             category.activities.forEach(activity => {
                 const activityButton = document.createElement('button');
-                activityButton.className = 'activity-button';
+                const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
+                activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
                 activityButton.style.setProperty('--color', activity.color);
-                activityButton.textContent = activity.name;
+                
+                if (isMultipleChoice) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'activity-checkbox';
+                    activityButton.appendChild(checkbox);
+                    
+                    const checkmark = document.createElement('span');
+                    checkmark.className = 'checkmark';
+                    activityButton.appendChild(checkmark);
+                }
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = 'activity-text';
+                textSpan.textContent = activity.name;
+                activityButton.appendChild(textSpan);
                 activityButton.addEventListener('click', () => {
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
