@@ -911,6 +911,9 @@ function initTimelineInteraction(timeline) {
         }
         const textDiv = document.createElement('div');
         if (selectedActivity.selections) {
+            if (DEBUG_MODE) {
+                console.log('Multiple selections:', selectedActivity.selections);
+            }
             // For multiple selections, join names with line break in the text div
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
