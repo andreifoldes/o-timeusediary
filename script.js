@@ -376,6 +376,11 @@ function renderActivities(categories, container = document.getElementById('activ
     if (isMobile) {
         const accordionContainer = document.createElement('div');
         accordionContainer.className = 'activities-accordion';
+        // Set data-mode attribute to match current timeline's mode
+        const currentKey = getCurrentTimelineKey();
+        if (currentKey && window.timelineManager.metadata[currentKey]) {
+            accordionContainer.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+        }
 
         categories.forEach(category => {
             const categoryDiv = document.createElement('div');
