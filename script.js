@@ -210,12 +210,12 @@ async function addNextTimeline() {
         window.timelineManager.activeTimeline = newTimeline;
 
         // Create activities container if it doesn't exist
-        const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
-            const container = document.createElement('div');
-            container.className = 'activities';
-            window.timelineManager.activeTimeline.appendChild(container);
-            return container;
-        })();
+        let activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities');
+        if (!activitiesContainer) {
+            activitiesContainer = document.createElement('div');
+            activitiesContainer.className = 'activities';
+            window.timelineManager.activeTimeline.appendChild(activitiesContainer);
+        }
 
 
         // Initialize activities array if not exists
