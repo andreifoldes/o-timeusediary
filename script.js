@@ -918,6 +918,9 @@ function initTimelineInteraction(timeline) {
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
             const activityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            if (DEBUG_MODE) {
+                console.log('Multiple selections combined activity text:', activityText);
+            }
         } else {
             textDiv.textContent = selectedActivity.name;
             activityText = selectedActivity.name;
