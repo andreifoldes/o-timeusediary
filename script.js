@@ -370,6 +370,12 @@ async function fetchActivities(key) {
 
 function renderActivities(categories, container = document.getElementById('activitiesContainer')) {
     container.innerHTML = '';
+    
+    // Set data-mode attribute based on current timeline's mode
+    const currentKey = getCurrentTimelineKey();
+    if (currentKey && window.timelineManager.metadata[currentKey]) {
+        container.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+    }
 
     const isMobile = getIsMobile();
 
