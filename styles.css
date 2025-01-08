@@ -858,17 +858,9 @@ body {
     min-width: 100px;
 }
 
-/* Debug overlay */
+/* Debug overlay disabled */
 .debugOverlay {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px;
-    border-radius: 4px;
-    font-family: monospace;
-    z-index: 9999;
+    display: none !important;
 }
 
 /* Controls and button container styles */

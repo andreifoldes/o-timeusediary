@@ -261,28 +261,12 @@ async function addNextTimeline() {
     }
 }
 
-function updateDebugOverlay(mouseX, timelineRect) {
-    if (!DEBUG_MODE) return;
-    
-    const debugOverlay = document.getElementById('debugOverlay');
-    if (!debugOverlay) return;
-
-    const positionPercent = ((mouseX - timelineRect.left) / timelineRect.width) * 100;
-    const minutes = positionToMinutes(positionPercent);
-    const timeStr = minutes !== null ? formatTimeHHMM(minutes) : 'Invalid';
-    
-    debugOverlay.style.display = 'block';
-    debugOverlay.innerHTML = `
-        Position: ${Math.round(positionPercent)}%<br>
-        Time: ${timeStr}
-    `;
+function updateDebugOverlay() {
+    // Debug overlay disabled
 }
 
 function hideDebugOverlay() {
-    const debugOverlay = document.getElementById('debugOverlay');
-    if (debugOverlay) {
-        debugOverlay.style.display = 'none';
-    }
+    // Debug overlay disabled
 }
 
 function logDebugInfo() {
