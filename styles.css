@@ -62,13 +62,15 @@ body {
         display: flex;
         flex-direction: row-reverse;
         gap: 20px;
-        padding: 0 20px;
+        padding: 0 20px 10px 20px;
         overflow-x: auto;
         width: 100%;
         justify-content: flex-start;
         align-items: flex-start;
         scrollbar-width: thin;
         -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
     }
 
     /* Custom scrollbar styles for Webkit browsers */
