@@ -330,7 +330,7 @@ body {
 }
 
 .activities-container {
-    margin: 20px;
+    margin: 0 20px;
     display: none; /* Hide by default */
     width: calc(100% - 40px); /* Account for margins */
     box-sizing: border-box;
