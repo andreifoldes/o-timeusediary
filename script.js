@@ -256,9 +256,9 @@ async function addNextTimeline() {
         }
 
         // Update activities container data-mode
-        const activitiesContainer = document.querySelector("#activitiesContainer");
-        if (activitiesContainer) {
-            activitiesContainer.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
+        const activitiesContainerElement = document.querySelector("#activitiesContainer");
+        if (activitiesContainerElement) {
+            activitiesContainerElement.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
         }
 
     } catch (error) {
@@ -1350,10 +1350,10 @@ async function init() {
         await addNextTimeline();
         
         // Set initial data-mode on activities container
-        const activitiesContainer = document.querySelector("#activitiesContainer");
+        const activitiesContainerElement = document.querySelector("#activitiesContainer");
         const currentKey = getCurrentTimelineKey();
         if (currentKey && window.timelineManager.metadata[currentKey]) {
-            activitiesContainer.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+            activitiesContainerElement.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
         }
         
         // Scroll to first timeline in mobile layout
