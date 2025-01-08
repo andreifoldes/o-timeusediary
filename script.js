@@ -963,8 +963,12 @@ function updateButtonStates() {
     const isEmpty = currentData.length === 0;
     const isFull = isTimelineFull();
     
+    // Check if there's an active timeline with activities
+    const activeTimeline = window.timelineManager.activeTimeline;
+    const hasActivities = activeTimeline && activeTimeline.querySelector('.activity-block');
+    
     if (undoButton) undoButton.disabled = isEmpty;
-    if (cleanRowButton) cleanRowButton.disabled = isEmpty;
+    if (cleanRowButton) cleanRowButton.disabled = !hasActivities;
     
     // Get current timeline coverage
     const currentKey = getCurrentTimelineKey();
