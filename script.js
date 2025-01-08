@@ -1002,9 +1002,9 @@ function initTimelineInteraction(timeline) {
         // Create activity data after all variables are defined
         const activityData = {
             id: generateUniqueId(),
-            activity: selectedActivity?.selections ? 
+            activity: textDiv.textContent || (selectedActivity?.selections ? 
                      selectedActivity.selections.map(s => s.name).join(' | ') : 
-                     selectedActivity?.name || '',
+                     selectedActivity?.name || ''),
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
