@@ -561,17 +561,73 @@ function renderActivities(categories, container = document.getElementById('activ
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
+                    // Check if this is the "other not listed" button
+                    if (activity.name.includes('other not listed (enter)')) {
+                        // Show custom activity modal
+                        const customActivityModal = document.getElementById('customActivityModal');
+                        const customActivityInput = document.getElementById('customActivityInput');
+                        customActivityInput.value = ''; // Clear previous input
+                        customActivityModal.style.display = 'block';
+                        customActivityInput.focus(); // Focus the input field
+                        
+                        // Handle custom activity submission
+                        const handleCustomActivity = () => {
+                            const customText = customActivityInput.value.trim();
+                            if (customText) {
+                                if (isMultipleChoice) {
+                                    activityButton.classList.add('selected');
+                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+                                    selectedActivity = {
+                                        selections: selectedButtons.map(btn => ({
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            color: btn.style.getPropertyValue('--color')
+                                        })),
+                                        category: category.name
+                                    };
+                                } else {
+                                    categoryButtons.forEach(b => b.classList.remove('selected'));
+                                    selectedActivity = {
+                                        name: customText,
+                                        color: activity.color,
+                                        category: category.name
+                                    };
+                                    activityButton.classList.add('selected');
+                                }
+                                customActivityModal.style.display = 'none';
+                                document.getElementById('activitiesModal').style.display = 'none';
+                            }
+                        };
+
+                        // Set up event listeners for custom activity modal
+                        const confirmBtn = document.getElementById('confirmCustomActivity');
+                        const inputField = document.getElementById('customActivityInput');
+                        
+                        // Remove any existing listeners
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                        
+                        // Add new listeners
+                        newConfirmBtn.addEventListener('click', handleCustomActivity);
+                        inputField.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCustomActivity();
+                            }
+                        });
+                        
+                        return;
+                    }
+                    
                     if (isMultipleChoice) {
                         // Toggle selection for this button
                         activityButton.classList.toggle('selected');
-                        
+            
                         // Get all selected activities in this category
                         const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-                        
+            
                         if (selectedButtons.length > 0) {
                             selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
-                                    name: btn.textContent,
+                                    name: btn.querySelector('.activity-text').textContent,
                                     color: btn.style.getPropertyValue('--color')
                                 })),
                                 category: category.name
