@@ -63,9 +63,15 @@ body {
         gap: 20px;
         padding: 0 20px;
         overflow-x: auto;
-        width: max-content;
-        min-width: 100%;
+        width: 100%;
         justify-content: center;
+        align-items: flex-start;
+    }
+
+    .last-initialized-timeline-wrapper {
+        display: flex;
+        justify-content: center;
+        flex: 1;
     }
 
     .last-initialized-timeline-wrapper,
