@@ -406,11 +406,6 @@ function renderActivities(categories, container = document.getElementById('activ
                 activityButton.style.setProperty('--color', activity.color);
                 
                 if (isMultipleChoice) {
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'activity-checkbox';
-                    activityButton.appendChild(checkbox);
-                    
                     const checkmark = document.createElement('span');
                     checkmark.className = 'checkmark';
                     activityButton.appendChild(checkmark);

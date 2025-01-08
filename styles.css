@@ -495,18 +495,6 @@ body {
     padding-left: 45px;
 }
 
-.activity-button .activity-checkbox {
-    position: absolute;
-    opacity: 1;
-    cursor: pointer;
-    height: 18px;
-    width: 18px;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    margin: 0;
-    z-index: 2;
-}
 
 .activity-button .checkmark {
     position: absolute;
@@ -526,14 +514,12 @@ body {
     border-color: var(--color);
 }
 
-/* Hide checkbox and checkmark when not in multiple-choice mode */
-#activitiesContainer:not([data-mode="multiple-choice"]) .activity-checkbox,
+/* Hide checkmark when not in multiple-choice mode */
 #activitiesContainer:not([data-mode="multiple-choice"]) .checkmark {
     display: none !important;
 }
 
-/* Show checkbox and checkmark when in multiple-choice mode */
-#activitiesContainer[data-mode="multiple-choice"] .activity-checkbox,
+/* Show checkmark when in multiple-choice mode */
 #activitiesContainer[data-mode="multiple-choice"] .checkmark {
     display: block !important;
 }
