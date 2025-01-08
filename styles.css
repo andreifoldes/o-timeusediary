@@ -527,14 +527,14 @@ body {
 }
 
 /* Hide checkbox and checkmark when not in multiple-choice mode */
-div:not([data-mode="multiple-choice"]) .activity-checkbox,
-div:not([data-mode="multiple-choice"]) .checkmark {
+#activitiesContainer:not([data-mode="multiple-choice"]) .activity-checkbox,
+#activitiesContainer:not([data-mode="multiple-choice"]) .checkmark {
     display: none !important;
 }
 
 /* Show checkbox and checkmark when in multiple-choice mode */
-div[data-mode="multiple-choice"] .activity-checkbox,
-div[data-mode="multiple-choice"] .checkmark {
+#activitiesContainer[data-mode="multiple-choice"] .activity-checkbox,
+#activitiesContainer[data-mode="multiple-choice"] .checkmark {
     display: block !important;
 }
 
