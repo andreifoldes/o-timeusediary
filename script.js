@@ -419,7 +419,62 @@ function renderActivities(categories, container = document.getElementById('activ
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
-        
+                    
+                    // Check if this is the "other not listed" button
+                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                        // Show custom activity modal
+                        const customActivityModal = document.getElementById('customActivityModal');
+                        const customActivityInput = document.getElementById('customActivityInput');
+                        customActivityInput.value = ''; // Clear previous input
+                        customActivityModal.style.display = 'block';
+                        
+                        // Handle custom activity submission
+                        const handleCustomActivity = () => {
+                            const customText = customActivityInput.value.trim();
+                            if (customText) {
+                                if (isMultipleChoice) {
+                                    activityButton.classList.add('selected');
+                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+                                    selectedActivity = {
+                                        selections: selectedButtons.map(btn => ({
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            color: btn.style.getPropertyValue('--color')
+                                        })),
+                                        category: category.name
+                                    };
+                                } else {
+                                    categoryButtons.forEach(b => b.classList.remove('selected'));
+                                    selectedActivity = {
+                                        name: customText,
+                                        color: activityButton.style.getPropertyValue('--color'),
+                                        category: category.name
+                                    };
+                                    activityButton.classList.add('selected');
+                                }
+                                customActivityModal.style.display = 'none';
+                                document.getElementById('activitiesModal').style.display = 'none';
+                            }
+                        };
+
+                        // Set up event listeners for custom activity modal
+                        const confirmBtn = document.getElementById('confirmCustomActivity');
+                        const inputField = document.getElementById('customActivityInput');
+                        
+                        // Remove any existing listeners
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                        
+                        // Add new listeners
+                        newConfirmBtn.addEventListener('click', handleCustomActivity);
+                        inputField.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCustomActivity();
+                            }
+                        });
+                        
+                        return;
+                    }
+                    
                     if (isMultipleChoice) {
                         // Toggle selection for this button
                         activityButton.classList.toggle('selected');
@@ -1311,6 +1366,35 @@ function handleResize() {
 }
 
 function createModal() {
+    // Create custom activity input modal
+    const customActivityModal = document.createElement('div');
+    customActivityModal.className = 'modal-overlay';
+    customActivityModal.id = 'customActivityModal';
+    customActivityModal.innerHTML = `
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Enter Custom Activity</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-content">
+                <input type="text" id="customActivityInput" maxlength="30" placeholder="Enter your activity (max 30 chars)">
+                <div class="button-container">
+                    <button id="confirmCustomActivity" class="btn save-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    customActivityModal.querySelector('.modal-close').addEventListener('click', () => {
+        customActivityModal.style.display = 'none';
+    });
+
+    customActivityModal.addEventListener('click', (e) => {
+        if (e.target === customActivityModal) {
+            customActivityModal.style.display = 'none';
+        }
+    });
+
     // Create activities modal
     const activitiesModal = document.createElement('div');
     activitiesModal.className = 'modal-overlay';
@@ -1364,6 +1448,7 @@ function createModal() {
 
     document.body.appendChild(activitiesModal);
     document.body.appendChild(confirmationModal);
+    document.body.appendChild(customActivityModal);
     return activitiesModal;
 }
 

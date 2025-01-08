@@ -922,6 +922,22 @@ body {
     text-align: center;
 }
 
+#customActivityInput {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#customActivityInput:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
 .modal-content p {
     margin-bottom: 20px;
     font-size: 16px;
