@@ -272,7 +272,7 @@ body {
     .timeline .hour-marker {
         position: absolute;
         width: 100%;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #666;
         font-size: 12px;
         color: #666;
     }
@@ -303,6 +303,7 @@ body {
         width: 30%;
         right: 0;
         border-top: 1px solid #ddd;
+        opacity: 0.5;
     }
 
     .timeline .minute-marker-30 {
@@ -311,6 +312,7 @@ body {
         right: 0;
         border-top: 1px solid #999;
         height: 0; /* Ensure consistent height */
+        opacity: 0.8;
     }
 }
 
