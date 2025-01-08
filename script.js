@@ -869,10 +869,14 @@ function initTimelineInteraction(timeline) {
         if (!times.startTime || !times.endTime) {
             throw new Error('Activity start time and end time must be defined');
         }
+        // Get activity name and category from the block's text content and dataset
+        const activityText = textDiv.textContent;
+        const activityCategory = currentBlock.dataset.category;
+        
         const activityData = {
             id: generateUniqueId(),
-            activity: selectedActivity?.name || 'Unknown Activity',
-            category: selectedActivity?.category || 'Uncategorized',
+            activity: activityText,
+            category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
