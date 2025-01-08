@@ -856,6 +856,7 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.dataset.category = selectedActivity.category;
+        currentBlock.dataset.mode = selectedActivity.selections ? 'multiple-choice' : 'single-choice';
         if (selectedActivity.selections) {
             // Multiple selections - create split background
             const colors = selectedActivity.selections.map(s => s.color);
