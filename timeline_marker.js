@@ -73,8 +73,10 @@ export class TimelineMarker {
                     const adjustedHour = (hour < 4) ? hour + 24 : hour;
                     const position = ((adjustedHour - 4) / 24) * 100;
                     labelWrapper.style.top = `${position}%`;
+                    labelWrapper.style.left = ''; // Clear left position
                 } else {
                     labelWrapper.style.left = this.element.style.left;
+                    labelWrapper.style.top = ''; // Clear top position
                 }
                 
                 labelWrapper.appendChild(label);
@@ -107,10 +109,17 @@ export class TimelineMarker {
             // Update hour label wrapper position if this is an hour marker
             if (this.type === 'hour') {
                 const timeline = this.element.closest('.timeline');
-                const labelWrapper = timeline?.querySelector(`.hour-label-wrapper:nth-child(${Math.floor(this.position)})`);
-                if (labelWrapper) {
-                    labelWrapper.style.top = `${this.position}%`;
-                    labelWrapper.style.left = '';
+                const hourLabelsContainer = timeline?.parentElement.querySelector('.hour-labels');
+                if (hourLabelsContainer) {
+                    // Find label by hour text instead of position
+                    const hour = parseInt(this.label.split(':')[0]);
+                    const adjustedHour = (hour < 4) ? hour + 24 : hour;
+                    const position = ((adjustedHour - 4) / 24) * 100;
+                    const labelWrapper = hourLabelsContainer.querySelector(`.hour-label-wrapper:has(.hour-label:contains('${this.label}'))`);
+                    if (labelWrapper) {
+                        labelWrapper.style.top = `${position}%`;
+                        labelWrapper.style.left = '';
+                    }
                 }
             }
         } else {
@@ -120,10 +129,13 @@ export class TimelineMarker {
             // Update hour label wrapper position if this is an hour marker
             if (this.type === 'hour') {
                 const timeline = this.element.closest('.timeline');
-                const labelWrapper = timeline?.querySelector(`.hour-label-wrapper:nth-child(${Math.floor(this.position)})`);
-                if (labelWrapper) {
-                    labelWrapper.style.left = `${this.position}%`;
-                    labelWrapper.style.top = '';
+                const hourLabelsContainer = timeline?.parentElement.querySelector('.hour-labels');
+                if (hourLabelsContainer) {
+                    const labelWrapper = hourLabelsContainer.querySelector(`.hour-label-wrapper:has(.hour-label:contains('${this.label}'))`);
+                    if (labelWrapper) {
+                        labelWrapper.style.left = `${this.position}%`;
+                        labelWrapper.style.top = '';
+                    }
                 }
             }
         }
