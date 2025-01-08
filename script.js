@@ -996,7 +996,7 @@ function initTimelineInteraction(timeline) {
         const activityData = {
             id: generateUniqueId(),
             activity: selectedActivity && selectedActivity.selections ? 
-                selectedActivity.selections.map(s => s.name.trim()).join('|') : 
+                selectedActivity.selections.map(s => s.name.trim()).join(' | ') : 
                 textDiv.textContent.split('|')[0], // Take first part if already contains separator
             category: activityCategory,
             startTime: times.startTime,
