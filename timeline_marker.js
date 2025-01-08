@@ -64,8 +64,19 @@ export class TimelineMarker {
                 const labelWrapper = document.createElement('div');
                 labelWrapper.className = 'hour-label-wrapper';
                 labelWrapper.style.position = 'absolute';
-                labelWrapper.style.top = this.element.style.top;
-                labelWrapper.style.left = this.element.style.left;
+                
+                // Calculate correct position based on layout
+                if (isMobile) {
+                    // In mobile mode, position is based on percentage of 24 hours
+                    const hour = parseInt(this.label.split(':')[0]);
+                    // Adjust for timeline starting at 4am
+                    const adjustedHour = (hour < 4) ? hour + 24 : hour;
+                    const position = ((adjustedHour - 4) / 24) * 100;
+                    labelWrapper.style.top = `${position}%`;
+                } else {
+                    labelWrapper.style.left = this.element.style.left;
+                }
+                
                 labelWrapper.appendChild(label);
                 hourLabelsContainer.appendChild(labelWrapper);
 
