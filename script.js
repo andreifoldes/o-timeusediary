@@ -1016,11 +1016,20 @@ function initButtons() {
         const currentKey = getCurrentTimelineKey();
         const currentData = getCurrentTimelineData();
         if (currentData.length > 0) {
-            const activityBlocks = window.timelineManager.activeTimeline.querySelectorAll('.activity-block');
-            activityBlocks.forEach(block => block.remove());
+            // Get the activities container of the active timeline
+            const activeTimeline = window.timelineManager.activeTimeline;
+            const activitiesContainer = activeTimeline.querySelector('.activities');
+            
+            if (activitiesContainer) {
+                // Remove all activity blocks from the DOM
+                while (activitiesContainer.firstChild) {
+                    activitiesContainer.removeChild(activitiesContainer.firstChild);
+                }
+            }
 
-            // Update timeline manager activities and validate
+            // Clear the activities data for current timeline
             window.timelineManager.activities[currentKey] = [];
+            
             try {
                 window.timelineManager.metadata[currentKey].validate();
             } catch (error) {
