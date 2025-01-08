@@ -255,6 +255,12 @@ async function addNextTimeline() {
             backButton.disabled = false;
         }
 
+        // Update activities container data-mode
+        const activitiesContainer = document.querySelector("#activitiesContainer");
+        if (activitiesContainer) {
+            activitiesContainer.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
+        }
+
     } catch (error) {
         console.error(`Error switching to ${nextTimelineKey} timeline:`, error);
         throw new Error(`Failed to switch to ${nextTimelineKey} timeline: ${error.message}`);
@@ -1342,6 +1348,13 @@ async function init() {
         // Initialize first timeline using addNextTimeline
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
+        
+        // Set initial data-mode on activities container
+        const activitiesContainer = document.querySelector("#activitiesContainer");
+        const currentKey = getCurrentTimelineKey();
+        if (currentKey && window.timelineManager.metadata[currentKey]) {
+            activitiesContainer.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+        }
         
         // Scroll to first timeline in mobile layout
         scrollToActiveTimeline();
