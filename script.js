@@ -882,12 +882,12 @@ function initTimelineInteraction(timeline) {
         }
         const activityData = {
             id: generateUniqueId(),
-            activity: selectedActivity.name,
-            category: selectedActivity.category,
+            activity: selectedActivity?.name || 'Unknown Activity',
+            category: selectedActivity?.category || 'Uncategorized',
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: selectedActivity.color
+            color: selectedActivity?.color || '#808080'
         };
         getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
