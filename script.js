@@ -431,10 +431,12 @@ function renderActivities(categories, container = document.getElementById('activ
                         };
                         activityButton.classList.add('selected');
                     }
-                    // Close the modal after selection
-                    const modal = document.querySelector('.modal-overlay');
-                    if (modal) {
-                        modal.style.display = 'none';
+                    // Only close modal in single-choice mode
+                    if (!isMultipleChoice) {
+                        const modal = document.querySelector('.modal-overlay');
+                        if (modal) {
+                            modal.style.display = 'none';
+                        }
                     }
                 });
                 activityButtonsDiv.appendChild(activityButton);
@@ -855,13 +857,25 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.dataset.category = selectedActivity.category;
         if (selectedActivity.selections) {
-            // Multiple selections - create gradient background
+            // Multiple selections - create split background
             const colors = selectedActivity.selections.map(s => s.color);
             const isMobile = getIsMobile();
-            const gradient = isMobile 
-                ? `linear-gradient(to bottom, ${colors.join(' 50%, ')} 50%)`
-                : `linear-gradient(to right, ${colors.join(' 50%, ')} 50%)`;
-            currentBlock.style.background = gradient;
+            const numSelections = colors.length;
+            const percentage = 100 / numSelections;
+            
+            if (isMobile) {
+                // Vertical splits for mobile
+                const stops = colors.map((color, index) => 
+                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
+                ).join(', ');
+                currentBlock.style.background = `linear-gradient(to bottom, ${stops})`;
+            } else {
+                // Horizontal splits for desktop
+                const stops = colors.map((color, index) => 
+                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
+                ).join(', ');
+                currentBlock.style.background = `linear-gradient(to right, ${stops})`;
+            }
         } else {
             currentBlock.style.backgroundColor = selectedActivity.color;
         }

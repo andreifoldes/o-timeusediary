@@ -628,6 +628,7 @@ body {
     padding: 0px;
     width: 75%;
     left: 25%;
+    background-repeat: no-repeat;
     box-sizing: border-box;
     transition: outline 0.3s ease-out;
     touch-action: none;
@@ -700,9 +701,12 @@ body {
     left: 50%;
     transform: translateX(-50%);
     max-width: 90%;
-    display: block;
+    display: flex;
+    flex-direction: column;
     text-align: center;
     font-size: 12px;
+    justify-content: space-around;
+    height: 100%;
 }
 
 .activity-block-text-vertical {
