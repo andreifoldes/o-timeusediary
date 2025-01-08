@@ -527,9 +527,15 @@ body {
 }
 
 /* Hide checkbox and checkmark when not in multiple-choice mode */
-#activitiesContainer:not([data-mode="multiple-choice"]) .activity-checkbox,
-#activitiesContainer:not([data-mode="multiple-choice"]) .checkmark {
-    display: none;
+div:not([data-mode="multiple-choice"]) .activity-checkbox,
+div:not([data-mode="multiple-choice"]) .checkmark {
+    display: none !important;
+}
+
+/* Show checkbox and checkmark when in multiple-choice mode */
+div[data-mode="multiple-choice"] .activity-checkbox,
+div[data-mode="multiple-choice"] .checkmark {
+    display: block !important;
 }
 
 .activity-button.selected .checkmark:after {
