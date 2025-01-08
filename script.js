@@ -917,7 +917,7 @@ function initTimelineInteraction(timeline) {
             // For multiple selections, join names with line break in the text div
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
-            const activityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            const combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
             if (DEBUG_MODE) {
                 console.log('Multiple selections combined activity text:', activityText);
             }
@@ -1004,7 +1004,7 @@ function initTimelineInteraction(timeline) {
             
         const activityData = {
             id: generateUniqueId(),
-            activity: activityText.trim(),
+            activity: combinedActivityText.trim(),
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
