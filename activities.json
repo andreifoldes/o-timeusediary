@@ -8,7 +8,7 @@
     "primary": {
       "name": "Primary Timeline",
       "description": "",
-      "mode": "single-choice",
+      "mode": "multiple-choice",
       "min_coverage": "10",
       "categories": [
         {
@@ -19,7 +19,7 @@
             {"name": "washing, dressing", "color": "#90CAF9"},
             {"name": "eating, drinking, meal, at home or work", "color": "#FFCC80"},
             {"name": "preparing food, cooking, washing up", "color": "#EF9A9A"},
-            {"name": "services eg. doctor/dentist/hairdresser", "color": "#FFAB91"},
+            {"name": "services eg. doctor/ dentist/ hairdresser", "color": "#FFAB91"},
             {"name": "church, temple, mosque, synagogue, prayer", "color": "#CE93D8"}
           ]
         },
