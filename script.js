@@ -394,13 +394,38 @@ function renderActivities(categories, container = document.getElementById('activ
                 activityButton.style.setProperty('--color', activity.color);
                 activityButton.textContent = activity.name;
                 activityButton.addEventListener('click', () => {
-                    document.querySelectorAll('.activity-button').forEach(b => b.classList.remove('selected'));
-                    selectedActivity = {
-                        name: activity.name,
-                        color: activity.color,
-                        category: category.name
-                    };
-                    activityButton.classList.add('selected');
+                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
+        
+                    if (isMultipleChoice) {
+                        // Toggle selection for this button
+                        activityButton.classList.toggle('selected');
+            
+                        // Get all selected activities in this category
+                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+            
+                        if (selectedButtons.length > 0) {
+                            selectedActivity = {
+                                selections: selectedButtons.map(btn => ({
+                                    name: btn.textContent,
+                                    color: btn.style.getPropertyValue('--color')
+                                })),
+                                category: category.name
+                            };
+                        } else {
+                            selectedActivity = null;
+                        }
+                    } else {
+                        // Single choice mode
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        selectedActivity = {
+                            name: activity.name,
+                            color: activity.color,
+                            category: category.name
+                        };
+                        activityButton.classList.add('selected');
+                    }
                     // Close the modal after selection
                     const modal = document.querySelector('.modal-overlay');
                     if (modal) {
@@ -799,9 +824,24 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.end = formatTimeHHMM(endMinutes);
         currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.dataset.category = selectedActivity.category;
-        currentBlock.style.backgroundColor = selectedActivity.color;
+        if (selectedActivity.selections) {
+            // Multiple selections - create gradient background
+            const colors = selectedActivity.selections.map(s => s.color);
+            const isMobile = getIsMobile();
+            const gradient = isMobile 
+                ? `linear-gradient(to bottom, ${colors.join(' 50%, ')} 50%)`
+                : `linear-gradient(to right, ${colors.join(' 50%, ')} 50%)`;
+            currentBlock.style.background = gradient;
+        } else {
+            currentBlock.style.backgroundColor = selectedActivity.color;
+        }
         const textDiv = document.createElement('div');
-        textDiv.textContent = selectedActivity.name;
+        if (selectedActivity.selections) {
+            // For multiple selections, join names with line break
+            textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
+        } else {
+            textDiv.textContent = selectedActivity.name;
+        }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
         textDiv.style.textOverflow = 'ellipsis';
