@@ -910,12 +910,11 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.backgroundColor = selectedActivity.color;
         }
         const textDiv = document.createElement('div');
-        let activityText;
         if (selectedActivity.selections) {
             // For multiple selections, join names with line break in the text div
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
-            // But join with vertical separator for storing in timelineManager
-            activityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            // But join with vertical separator for storing in timelineManager 
+            const activityText = selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
             textDiv.textContent = selectedActivity.name;
             activityText = selectedActivity.name;
