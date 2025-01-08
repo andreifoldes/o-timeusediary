@@ -399,7 +399,7 @@ body {
     .activity-category {
         flex: 1;
         min-width: 0;
-        max-width: none;
+        max-width: 300px;
     }
 }
 

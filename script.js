@@ -910,6 +910,8 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.backgroundColor = selectedActivity.color;
         }
         const textDiv = document.createElement('div');
+        let combinedActivityText;
+
         if (selectedActivity.selections) {
             if (DEBUG_MODE) {
                 console.log('Multiple selections:', selectedActivity.selections);
@@ -917,10 +919,10 @@ function initTimelineInteraction(timeline) {
             // For multiple selections, join names with line break in the text div
             textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
-            const combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
             textDiv.textContent = selectedActivity.name;
-            const combinedActivityText = selectedActivity.name;
+            combinedActivityText = selectedActivity.name;
         }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
@@ -1002,9 +1004,7 @@ function initTimelineInteraction(timeline) {
         // Create activity data after all variables are defined
         const activityData = {
             id: generateUniqueId(),
-            activity: textDiv.textContent || (selectedActivity?.selections ? 
-                     selectedActivity.selections.map(s => s.name).join(' | ') : 
-                     selectedActivity?.name || ''),
+            activity: combinedActivityText,
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
