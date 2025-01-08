@@ -1002,9 +1002,10 @@ function initTimelineInteraction(timeline) {
         const activityText = textDiv.textContent;
         const activityCategory = currentBlock.dataset.category;
             
+        // Create activity data after all variables are defined
         const activityData = {
             id: generateUniqueId(),
-            activity: combinedActivityText.trim(),
+            activity: combinedActivityText,
             category: activityCategory,
             startTime: times.startTime,
             endTime: times.endTime,
