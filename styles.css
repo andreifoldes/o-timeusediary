@@ -1011,6 +1011,11 @@ body {
         margin-top: 20px;
     }
 
+    #instructionsFooter {
+        order: 5;
+        margin-top: 20px;
+    }
+
     .button-container {
         width: 100%;
         background: white;
