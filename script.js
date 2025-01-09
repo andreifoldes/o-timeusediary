@@ -1587,15 +1587,18 @@ function scrollToActiveTimeline() {
 
 async function init() {
     try {
-        // Create floating add button
-        createFloatingAddButton();
-
         // Load initial timeline data
         const response = await fetch('activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        
+        // Check if instructions are enabled
+        if (data.general && data.general.instructions) {
+            window.location.href = 'instructions/1.html';
+            return;
+        }
         
         // Initialize timeline management structure with only timeline keys
         window.timelineManager.keys = Object.keys(data.timeline);
