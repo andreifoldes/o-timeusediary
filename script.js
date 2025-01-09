@@ -1594,8 +1594,9 @@ async function init() {
         }
         const data = await response.json();
         
-        // Check if instructions are enabled and we're not already in instructions
-        if (data.general && data.general.instructions && !window.location.pathname.includes('/instructions/')) {
+        // Check if instructions are enabled and we're coming from instructions page 3
+        const fromInstructions = document.referrer.includes('instructions/3.html');
+        if (data.general && data.general.instructions && !fromInstructions && !window.location.pathname.includes('/instructions/')) {
             window.location.href = 'instructions/1.html';
             return;
         }
