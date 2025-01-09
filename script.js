@@ -1594,11 +1594,7 @@ async function init() {
         }
         const data = await response.json();
         
-        // Show instructions footer if instructions are enabled
-        const instructionsFooter = document.getElementById('instructionsFooter');
-        if (data.general && data.general.instructions) {
-            instructionsFooter.style.display = 'block';
-        }
+        // Instructions footer is now always visible by default
         
         // Check if instructions are enabled
         if (data.general && data.general.instructions) {
