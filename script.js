@@ -1594,6 +1594,12 @@ async function init() {
         }
         const data = await response.json();
         
+        // Show instructions footer if instructions are enabled
+        const instructionsFooter = document.getElementById('instructionsFooter');
+        if (data.general && data.general.instructions) {
+            instructionsFooter.style.display = 'block';
+        }
+        
         // Check if instructions are enabled and we're coming from instructions page 3
         const fromInstructions = document.referrer.includes('instructions/3.html');
         if (data.general && data.general.instructions && !fromInstructions && !window.location.pathname.includes('/instructions/')) {
