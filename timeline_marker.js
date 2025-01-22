@@ -115,7 +115,12 @@ export class TimelineMarker {
                     const hour = parseInt(this.label.split(':')[0]);
                     const adjustedHour = (hour < 4) ? hour + 24 : hour;
                     const position = ((adjustedHour - 4) / 24) * 100;
-                    const labelWrapper = hourLabelsContainer.querySelector(`.hour-label-wrapper:has(.hour-label:contains('${this.label}'))`);
+                    // Find the wrapper containing the label with matching text
+                    const labelWrappers = hourLabelsContainer.querySelectorAll('.hour-label-wrapper');
+                    const labelWrapper = Array.from(labelWrappers).find(wrapper => {
+                        const label = wrapper.querySelector('.hour-label');
+                        return label && label.textContent === this.label;
+                    });
                     if (labelWrapper) {
                         labelWrapper.style.top = `${position}%`;
                         labelWrapper.style.left = '';
@@ -131,7 +136,12 @@ export class TimelineMarker {
                 const timeline = this.element.closest('.timeline');
                 const hourLabelsContainer = timeline?.parentElement.querySelector('.hour-labels');
                 if (hourLabelsContainer) {
-                    const labelWrapper = hourLabelsContainer.querySelector(`.hour-label-wrapper:has(.hour-label:contains('${this.label}'))`);
+                    // Find the wrapper containing the label with matching text
+                    const labelWrappers = hourLabelsContainer.querySelectorAll('.hour-label-wrapper');
+                    const labelWrapper = Array.from(labelWrappers).find(wrapper => {
+                        const label = wrapper.querySelector('.hour-label');
+                        return label && label.textContent === this.label;
+                    });
                     if (labelWrapper) {
                         labelWrapper.style.left = `${this.position}%`;
                         labelWrapper.style.top = '';
