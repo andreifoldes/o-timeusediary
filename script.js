@@ -1629,6 +1629,12 @@ async function init() {
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
         
+        // Create and show floating add button for mobile
+        createFloatingAddButton();
+        if (getIsMobile()) {
+            document.querySelector('.floating-add-button').style.display = 'flex';
+        }
+        
         // Set initial data-mode on activities container
         const activitiesContainerElement = document.querySelector("#activitiesContainer");
         const currentKey = getCurrentTimelineKey();

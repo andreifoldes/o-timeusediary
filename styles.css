@@ -840,7 +840,7 @@ body {
 
 /* Floating add button for mobile */
 .floating-add-button {
-    display: none;
+    display: none; /* Hidden by default */
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -850,11 +850,13 @@ body {
     background-color: #007bff;
     color: white;
     border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     font-size: 24px;
     cursor: pointer;
-    z-index: 1000;
+    z-index: 9999; /* Ensure it's above other elements */
     transition: transform 0.2s, background-color 0.2s;
+    align-items: center;
+    justify-content: center;
 }
 
 .floating-add-button:hover {
