@@ -1595,8 +1595,8 @@ async function init() {
         const data = await response.json();
         
         // New instructions redirect logic
-        if (data.general?.instructions) {
-            // Only redirect if not already on an instructions page
+        if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
+            // Only redirect if not already on an instructions page and no instructions param
             if (!window.location.pathname.includes('/instructions/')) {
                 window.location.href = 'instructions/1.html';
                 return;
