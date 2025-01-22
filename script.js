@@ -1594,22 +1594,17 @@ async function init() {
         }
         const data = await response.json();
         
-        // Instructions footer is now always visible by default
-        
-        // Check if instructions are enabled
-        if (data.general && data.general.instructions) {
-            const fromInstructions = document.referrer.includes('instructions/3.html');
-            const inInstructions = window.location.pathname.includes('/instructions/');
-            
-            // Only redirect to instructions if:
-            // 1. Not coming from instructions page 3
-            // 2. Not already in instructions
-            // 3. No instruction pages in browser history
-            if (!fromInstructions && !inInstructions && !sessionStorage.getItem('instructionsViewed')) {
-                sessionStorage.setItem('instructionsViewed', 'true');
+        // New instructions redirect logic
+        if (data.general?.instructions) {
+            // Only redirect if not already on an instructions page
+            if (!window.location.pathname.includes('/instructions/')) {
                 window.location.href = 'instructions/1.html';
                 return;
             }
+        } else if (window.location.pathname.includes('/instructions/')) {
+            // Redirect to index if instructions are disabled but user is on instructions
+            window.location.href = 'index.html';
+            return;
         }
         
         // Initialize timeline management structure with only timeline keys
