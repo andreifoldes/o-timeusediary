@@ -2,7 +2,8 @@
   "general": {
   "app_name": "O-ELIDDI",
   "version": "1.0.0",
-  "author": "John Doe"
+  "author": "John Doe",
+  "instructions": true
   },
   "timeline": {
     "primary": {
@@ -200,7 +201,12 @@
         {
           "name": " ",
           "activities": [
-            {"name": "Alone", "color": "#673AB7"},
+            {"name": "Alone", "color": "#673AB7"}
+          ]
+        },
+        {
+          "name": " ",
+          "activities": [
             {"name": "Spouse / partner", "color": "#00BCD4"},
             {"name": "Child under 12 from your household", "color": "#FFEB3B"},
             {"name": "Young Person 12-16 from your household", "color": "#FF5722"},
