@@ -5,6 +5,8 @@ let isMobile = window.innerWidth < 1024;
 export function getIsMobile() {
     return isMobile;
 }
+// Make getIsMobile available globally
+window.getIsMobile = getIsMobile;
 
 // Update function
 export function updateIsMobile() {
