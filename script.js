@@ -1524,11 +1524,11 @@ function createModal() {
 
 function updateFloatingButtonPosition() {
     const button = document.querySelector('.floating-add-button');
-    const lastTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+    const lastTimelineContainer = document.querySelector('.last-initialized-timeline-wrapper > .timeline-container');
     
-    if (button && lastTimelineWrapper && getIsMobile()) {
-        const rect = lastTimelineWrapper.getBoundingClientRect();
-        button.style.left = `${rect.right + 10}px`; // 10px to the right of the timeline
+    if (button && lastTimelineContainer && getIsMobile()) {
+        const rect = lastTimelineContainer.getBoundingClientRect();
+        button.style.left = `${rect.right + 10}px`; // 10px to the right of the timeline container
     }
 }
 
