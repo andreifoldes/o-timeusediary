@@ -28,8 +28,8 @@ export class TimelineContainer {
         if (isMobile) {
             this.timeline.style.height = '2500px';
             this.timeline.style.width = '100%';
-            this.timeline.parentElement.style.height = '20in mob00px';
-            this.timeline.parentElement.style.width = '120px';
+            this.timeline.parentElement.style.height = '2500px';
+            this.timeline.parentElement.style.width = '180px';
         } else {
             this.timeline.style.height = '';
             this.timeline.style.width = '100%';
