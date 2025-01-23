@@ -1380,9 +1380,19 @@ function initButtons() {
     }
 }
 
+function updateGradientBarLayout() {
+    const gradientBar = document.querySelector('.gradient-bar');
+    if (gradientBar) {
+        gradientBar.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
+    }
+}
+
 function handleResize() {
     const wasVertical = getIsMobile();
     const layoutChanged = wasVertical !== updateIsMobile();
+    
+    // Update gradient bar layout regardless of layout change
+    updateGradientBarLayout();
     
     if (layoutChanged) {
         // Clear the DOM and reinitialize the app
@@ -1624,6 +1634,9 @@ async function init() {
         window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
         await addNextTimeline();
         
+        // Update gradient bar layout
+        updateGradientBarLayout();
+        
         // Create and show floating add button for mobile
         createFloatingAddButton();
         if (getIsMobile()) {
@@ -1643,7 +1656,10 @@ async function init() {
         initButtons();
         
         // Add resize event listener
-        window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', () => {
+            handleResize();
+            updateGradientBarLayout();
+        });
 
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);
