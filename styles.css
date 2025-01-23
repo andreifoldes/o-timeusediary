@@ -802,15 +802,8 @@ body {
 
 /* Mobile vertical gradient bar */
 @media (max-width: 1023px) {
-    .gradient-bar {
-        width: 10px;
-        height: 100%;
-        margin: 0;
-        background: linear-gradient(to bottom, #fde725, #5ec962, #21918c, #3b528b, #440154);
-        position: absolute;
-        left: -15px;
-        top: 0;
-        z-index: 1;
+    .gradient-bar[data-layout="vertical"] {
+        display: none;
     }
 
     .timeline-container {
