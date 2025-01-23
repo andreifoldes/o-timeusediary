@@ -28,7 +28,7 @@ body {
 }
 
 /* Mobile layout */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timeline-canvas {
         flex-direction: row;
         overflow-x: hidden; /* Hide outer scroll */
@@ -58,7 +58,7 @@ body {
 }
 
 /* Mobile layout - column display */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timelines-wrapper {
         display: flex;
         flex-direction: row-reverse;
@@ -117,7 +117,7 @@ body {
 }
 
 /* Only show scrollbars in mobile mode */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .past-initialized-timelines-wrapper {
         overflow-x: auto;
     }
@@ -128,7 +128,7 @@ body {
     }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .last-initialized-timeline-wrapper {
         display: flex;
         flex-direction: row;
@@ -204,7 +204,7 @@ body {
 }
 
 /* Mobile vertical layout */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timeline-container {
         min-width: 180px;
         max-width: 180px;
@@ -281,7 +281,7 @@ body {
 }
 
 /* Mobile vertical markers */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timeline .hour-marker {
         position: absolute;
         width: 100%;
@@ -363,7 +363,7 @@ body {
 }
 
 /* Mobile vertical layout */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .hour-label {
         top: 50%;
         transform: translateY(-50%);
@@ -407,7 +407,7 @@ body {
     display: none;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .activities-accordion {
         display: block;
     }
@@ -584,7 +584,7 @@ body {
 }
 
 /* Mobile styles */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .time-label {
         right: -50px; /* Space from the block */
         top: 50%;
@@ -731,7 +731,7 @@ body {
 }
 
 /* Mobile resize handle */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .resize-handle {
         width: 100%;
         height: 10px;
@@ -801,7 +801,7 @@ body {
 }
 
 /* Mobile vertical gradient bar */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .gradient-bar[data-layout="vertical"] {
         display: none;
     }
@@ -857,7 +857,7 @@ body {
     background-color: #0056b3;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
         align-items: center;
