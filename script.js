@@ -1431,6 +1431,8 @@ function handleResize() {
             console.error('Failed to reinitialize after resize:', error);
         });
     }
+    
+    updateFloatingButtonPosition();
 }
 
 function createModal() {
@@ -1520,6 +1522,16 @@ function createModal() {
     return activitiesModal;
 }
 
+function updateFloatingButtonPosition() {
+    const button = document.querySelector('.floating-add-button');
+    const lastTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+    
+    if (button && lastTimelineWrapper && getIsMobile()) {
+        const rect = lastTimelineWrapper.getBoundingClientRect();
+        button.style.left = `${rect.right + 10}px`; // 10px to the right of the timeline
+    }
+}
+
 function createFloatingAddButton() {
     const button = document.createElement('button');
     button.className = 'floating-add-button';
@@ -1529,17 +1541,11 @@ function createFloatingAddButton() {
     const modal = createModal();
     
     button.addEventListener('click', () => {
-        // Show modal with activities
         modal.style.display = 'block';
-        
-        // Get the current activities and render them in the modal
         const currentKey = getCurrentTimelineKey();
         const categories = window.timelineManager.metadata[currentKey].categories;
-        
-        // Render activities in modal
         renderActivities(categories, document.getElementById('modalActivitiesContainer'));
         
-        // Automatically open first category in mobile view
         if (getIsMobile()) {
             const firstCategory = modal.querySelector('.activity-category');
             if (firstCategory) {
@@ -1549,6 +1555,17 @@ function createFloatingAddButton() {
     });
 
     document.body.appendChild(button);
+    
+    // Initial position update
+    updateFloatingButtonPosition();
+    
+    // Update position on scroll
+    window.addEventListener('scroll', updateFloatingButtonPosition);
+    
+    // Update position on resize
+    window.addEventListener('resize', updateFloatingButtonPosition);
+    
+    return button;
 }
 
 // Helper function to scroll to active timeline
