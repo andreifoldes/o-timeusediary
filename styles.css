@@ -28,7 +28,7 @@ body {
 }
 
 /* Mobile layout */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timeline-canvas {
         flex-direction: row;
         overflow-x: hidden; /* Hide outer scroll */
@@ -58,7 +58,7 @@ body {
 }
 
 /* Mobile layout - column display */
-@media (max-width: 1023px) {
+@media (max-width: 1439px) {
     .timelines-wrapper {
         display: flex;
         flex-direction: row-reverse;
@@ -196,7 +196,7 @@ body {
 }
 
 /* Desktop horizontal layout */
-@media (min-width: 1024px) {
+@media (min-width: 1440px) {
     .timeline-container {
         width: 100%;
         height: 120px;
@@ -980,7 +980,7 @@ body {
     padding: 10px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1440px) {
     body {
         display: flex;
         flex-direction: column;
