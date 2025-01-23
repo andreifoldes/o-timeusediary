@@ -1,5 +1,5 @@
 // Global state
-let isMobile = window.innerWidth < 1024;
+let isMobile = window.innerWidth < 1440;
 
 // Get current mobile state
 export function getIsMobile() {
@@ -10,7 +10,7 @@ window.getIsMobile = getIsMobile;
 
 // Update function
 export function updateIsMobile() {
-    isMobile = window.innerWidth < 1440;  // Changed from 1024 to 1440
+    isMobile = window.innerWidth < 1440;  // Changed from 1440 to 1440
     return isMobile;
 }
 

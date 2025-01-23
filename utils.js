@@ -19,7 +19,7 @@ window.getCurrentTimelineData = getCurrentTimelineData;
 // UI Functions
 function createTimeLabel(block, showImmediately = false) {
     // Check if we're in vertical mode by looking at window width
-    const isVerticalMode = window.innerWidth <= 1024;
+    const isVerticalMode = window.innerWidth <= 1440;
     
     if (isVerticalMode) {
         // Create activity text container
@@ -70,7 +70,7 @@ function createTimeLabel(block, showImmediately = false) {
 }
 
 function updateTimeLabel(label, startTime, endTime) {
-    const isVerticalMode = window.innerWidth <= 1024;
+    const isVerticalMode = window.innerWidth <= 1440;
     
     label.textContent = `${startTime} - ${endTime}`;
     

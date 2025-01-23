@@ -676,7 +676,7 @@ function initTimeline(timeline) {
 
     // Add window resize handler to update marker positions
     window.addEventListener('resize', () => {
-        const newIsMobile = window.innerWidth < 1024;
+        const newIsMobile = window.innerWidth < 1440;
         timeline.setAttribute('data-layout', newIsMobile ? 'vertical' : 'horizontal');
         
         // Update dimensions on layout change
