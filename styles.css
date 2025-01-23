@@ -404,12 +404,18 @@ body {
 }
 
 .activities-accordion {
-    display: none;
+    display: none; /* Hide by default */
 }
 
+/* Only show activities-accordion when inside modal */
+#modalActivitiesContainer .activities-accordion {
+    display: block;
+}
+
+/* Hide main activities container in mobile/tablet view */
 @media (max-width: 1439px) {
-    .activities-accordion {
-        display: block;
+    #activitiesContainer {
+        display: none;
     }
     
     .activity-category {

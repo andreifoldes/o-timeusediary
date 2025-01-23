@@ -378,8 +378,10 @@ function renderActivities(categories, container = document.getElementById('activ
     }
 
     const isMobile = getIsMobile();
+    const isModal = container.id === 'modalActivitiesContainer';
 
-    if (isMobile) {
+    // Only create accordion if this is the modal container and in mobile view
+    if (isMobile && isModal) {
         const accordionContainer = document.createElement('div');
         accordionContainer.className = 'activities-accordion';
         // Set data-mode attribute to match current timeline's mode
