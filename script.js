@@ -305,7 +305,7 @@ function validateMinCoverage(coverage) {
 
 async function fetchActivities(key) {
     try {
-        const response = await fetch('activities.json');
+        const response = await fetch('settings/activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -1617,7 +1617,7 @@ function scrollToActiveTimeline() {
 async function init() {
     try {
         // Load initial timeline data
-        const response = await fetch('activities.json');
+        const response = await fetch('settings/activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
