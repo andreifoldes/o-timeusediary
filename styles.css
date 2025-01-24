@@ -841,14 +841,15 @@ body {
 .floating-add-button {
     display: none; /* Hidden by default */
     position: fixed;
-    bottom: 20px;
-    right: 20px; /* Changed from left positioning */
-    width: 56px;
-    height: 56px;
-    min-width: 56px; /* Prevent scaling */
-    max-width: 56px; /* Prevent scaling */
-    min-height: 56px; /* Prevent scaling */
-    max-height: 56px; /* Prevent scaling */
+    bottom: 5vw;
+    right: 5vw;
+    left: auto;
+    width: 14.5vw;
+    height: 14.5vw;
+    min-width: 14.5vw;
+    max-width: 14.5vw;
+    min-height: 14.5vw;
+    max-height: 14.5vw;
     border-radius: 50%;
     background-color: #007bff;
     color: white;
@@ -861,14 +862,15 @@ body {
     align-items: center;
     justify-content: center;
     touch-action: none; /* Prevent zoom gestures on the button */
-    transform: scale(1); /* Ensure consistent scaling */
+    transform: scale(1) translateZ(0); /* Ensure consistent scaling with GPU layer */
 }
 
 /* Remove the existing media query positioning */
 @media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
-        /* Remove any position transforms */
+        width: clamp(40px, 14.5vw, 56px);
+        height: clamp(40px, 14.5vw, 56px);
     }
 }
 
