@@ -842,8 +842,13 @@ body {
     display: none; /* Hidden by default */
     position: fixed;
     bottom: 20px;
+    right: 20px; /* Changed from left positioning */
     width: 56px;
     height: 56px;
+    min-width: 56px; /* Prevent scaling */
+    max-width: 56px; /* Prevent scaling */
+    min-height: 56px; /* Prevent scaling */
+    max-height: 56px; /* Prevent scaling */
     border-radius: 50%;
     background-color: #007bff;
     color: white;
@@ -851,23 +856,26 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     font-size: 24px;
     cursor: pointer;
-    z-index: 9999; /* Ensure it's above other elements */
+    z-index: 9999;
     transition: transform 0.2s, background-color 0.2s;
     align-items: center;
     justify-content: center;
+    touch-action: none; /* Prevent zoom gestures on the button */
+    transform: scale(1); /* Ensure consistent scaling */
 }
 
-.floating-add-button:hover {
-    transform: scale(1.1);
-    background-color: #0056b3;
-}
-
+/* Remove the existing media query positioning */
 @media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        /* Remove any position transforms */
     }
+}
+
+/* Update hover state */
+.floating-add-button:hover {
+    transform: scale(1.1) translateZ(0); /* Maintain 3D context */
+    background-color: #0056b3;
 }
 
 /* Modal styles */
