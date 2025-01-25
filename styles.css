@@ -618,7 +618,7 @@ body {
 .controls {
     display: flex;
     justify-content: center;
-    margin: 5px 0;
+    margin: 5px 0px;
     gap: 10px;
 }
 
@@ -978,6 +978,7 @@ body {
     gap: 10px;
     justify-content: center;
     padding: 10px;
+    margin: 5px 0; /* Set both top and bottom margins to 5px */
 }
 
 @media (max-width: 1440px) {
@@ -992,7 +993,7 @@ body {
         width: 100%;
         background: white;
         z-index: 1001;
-        margin-bottom: 20px;
+        margin: 5px 0 !important; /* Force 5px margins with !important */
         flex-wrap: wrap;
         order: 1;
     }
@@ -1056,4 +1057,25 @@ body {
     backface-visibility: visible !important;
     transform-origin: center top;
     display: block;
+}
+
+/* Further mobile adjustments for header section */
+@media (max-width: 1439px) {
+    .header-section {
+        padding: 6px 8px; /* Further reduce padding for better scalability */
+    }
+
+    .header-section h1, 
+    .header-section h2, 
+    .header-section h3, 
+    .header-section p {
+        font-size: 0.9rem; /* Smaller font sizes to prevent excessive growth */
+        line-height: 1.1;
+    }
+
+    .header-section .timeline-title {
+        margin: 0;
+        font-size: 1rem; /* Adjust font size as needed */
+        /* Additional styles if necessary */
+    }
 }
