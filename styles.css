@@ -840,48 +840,36 @@ body {
 /* Floating add button for mobile */
 .floating-add-button {
     display: none; /* Hidden by default */
-    position: fixed;
-    bottom: 5vw;
-    right: 5vw;
-    left: auto;
-    width: 14.5vw;
-    height: 14.5vw;
-    min-width: 14.5vw;
-    max-width: 14.5vw;
-    min-height: 14.5vw;
-    max-height: 14.5vw;
-    border-radius: 50%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 9999;
-    transition: transform 0.2s, background-color 0.2s;
-    align-items: center;
-    justify-content: center;
-    touch-action: none; /* Prevent zoom gestures on the button */
-    transform: scale(1) translateZ(0); /* Ensure consistent scaling with GPU layer */
 }
 
-/* Remove the existing media query positioning */
 @media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
-        width: 50px;
-        height: 50px;
-         max-width: 65px;
-        max-height: 65px;
+        position: fixed;
         bottom: 20px;
         right: 20px;
+        width: 50px;
+        height: 50px;
+        max-width: 65px;
+        max-height: 65px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 9999;
+        transition: transform 0.2s, background-color 0.2s;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
     }
-}
 
-/* Update hover state */
-.floating-add-button:hover {
-    transform: scale(1.1) translateZ(0); /* Maintain 3D context */
-    background-color: #0056b3;
+    .floating-add-button:hover {
+        transform: scale(1.1);
+        background-color: #0056b3;
+    }
 }
 
 /* Modal styles */
