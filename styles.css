@@ -12,7 +12,7 @@ body {
     top: 0;
     background: white;
     z-index: 1000;
-    padding: 10px;
+    padding: 8px 6px;
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -145,11 +145,11 @@ body {
 
 .timeline-header {
     text-align: center;
-    margin-bottom: 5px;
+    margin: 4px 0;
 }
 
 .timeline-title {
-    margin-bottom: 10px;
+    margin: 4px 0;
     font-size: 18px;
     color: #333;
 }
@@ -618,21 +618,18 @@ body {
 .controls {
     display: flex;
     justify-content: center;
-    margin: 5px 0px;
-    gap: 10px;
+    margin: 4px 0;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    gap: 6px;
+    padding: 8px 16px;
     font-size: 14px;
-    transition: all 0.2s;
+    color: white; /* Add white text color */
 }
 
 .btn:hover:not(:disabled) {
@@ -845,9 +842,9 @@ body {
 @media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
-        position: fixed;
+        position: fixed; /* Change from absolute to fixed */
         bottom: 20px;
-        right: 20px;
+        right: 20px; /* Use right instead of left positioning */
         width: 60px;
         height: 60px;
         max-width: 65px;
@@ -864,10 +861,13 @@ body {
         align-items: center;
         justify-content: center;
         touch-action: none;
+        will-change: transform; /* Optimize performance */
+        transform: none !important; /* Prevent any transforms */
     }
 
+    /* Only allow hover effect */
     .floating-add-button:hover {
-        transform: scale(1.1);
+        transform: scale(1.1) !important;
         background-color: #0056b3;
     }
 }
@@ -1077,5 +1077,60 @@ body {
         margin: 0;
         font-size: 1rem; /* Adjust font size as needed */
         /* Additional styles if necessary */
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .header-section {
+        padding: 4px;
+    }
+
+    .controls {
+        margin: 2px 0;
+        gap: 4px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 3.2vw; /* Relative font size */
+        min-width: auto;
+    }
+
+    .btn i {
+        font-size: 3.2vw; /* Match button text size */
+    }
+
+    .timeline-title {
+        font-size: 4vw;
+        margin: 2px 0;
+    }
+
+    .timeline-description {
+        font-size: 3vw;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .header-section {
+        padding: 2px;
+    }
+
+    .controls {
+        gap: 2px;
+    }
+
+    .btn {
+        padding: 4px 8px;
+    }
+
+    .timeline-title {
+        font-size: 4.5vw;
+        margin: 2px 0;
+    }
+
+    .timeline-description {
+        font-size: 3.2vw;
     }
 }

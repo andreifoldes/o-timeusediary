@@ -1426,8 +1426,6 @@ function handleResize() {
             console.error('Failed to reinitialize after resize:', error);
         });
     }
-    
-    updateFloatingButtonPosition();
 }
 
 function createModal() {
@@ -1517,16 +1515,6 @@ function createModal() {
     return activitiesModal;
 }
 
-function updateFloatingButtonPosition() {
-    const button = document.querySelector('.floating-add-button');
-    const lastTimelineContainer = document.querySelector('.last-initialized-timeline-wrapper > .timeline-container');
-    
-    if (button && lastTimelineContainer && getIsMobile()) {
-        const rect = lastTimelineContainer.getBoundingClientRect();
-        button.style.left = `${rect.right + 10}px`; // 10px to the right of the timeline container
-    }
-}
-
 function createFloatingAddButton() {
     const button = document.createElement('button');
     button.className = 'floating-add-button';
@@ -1550,16 +1538,6 @@ function createFloatingAddButton() {
     });
 
     document.body.appendChild(button);
-    
-    // Initial position update
-    updateFloatingButtonPosition();
-    
-    // Update position on scroll
-    window.addEventListener('scroll', updateFloatingButtonPosition);
-    
-    // Update position on resize
-    window.addEventListener('resize', updateFloatingButtonPosition);
-    
     return button;
 }
 
