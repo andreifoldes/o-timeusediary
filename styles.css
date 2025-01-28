@@ -79,6 +79,7 @@ body {
         flex-direction: row;
         gap: 10px;
         margin-right: 10px;
+        flex: 0 0 auto; /* Allow container to grow based on content */
     }
 
     .last-initialized-timeline-wrapper {
@@ -87,6 +88,22 @@ body {
         gap: 20px;
         margin-bottom: 0px;
         margin-right: auto;
+        flex: 1; /* Take remaining space */
+    }
+
+    /* Empty past timelines wrapper should have no width */
+    .past-initialized-timelines-wrapper:empty {
+        width: 0;
+        display: none;
+    }
+
+    /* Dynamic width ratios based on number of timelines */
+    .past-initialized-timelines-wrapper:not(:empty) {
+        width: calc(var(--timeline-count, 1) * (100% / (var(--timeline-count, 1) + 1)));
+    }
+
+    .past-initialized-timelines-wrapper:not(:empty) + .last-initialized-timeline-wrapper {
+        width: calc(100% / (var(--timeline-count, 1) + 1));
     }
 
     /* Custom scrollbar styles for Webkit browsers */
@@ -120,7 +137,6 @@ body {
     .last-initialized-timeline-wrapper {
         display: flex;
         justify-content: center;
-        flex: 1;
     }
 
     .last-initialized-timeline-wrapper,

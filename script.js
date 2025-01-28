@@ -106,6 +106,14 @@ import {
     updateTimeLabel
 } from './utils.js';
 
+// Add this function after the existing imports
+function updateTimelineCountVariable() {
+    const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+    if (!pastTimelinesWrapper) return;
+    
+    const timelineCount = pastTimelinesWrapper.querySelectorAll('.timeline-container').length;
+    pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
+}
 
 // Function to add next timeline
 async function addNextTimeline() {
@@ -186,6 +194,9 @@ async function addNextTimeline() {
                 // Move the previous timeline to the inactive wrapper
                 const inactiveTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
                 inactiveTimelinesWrapper.appendChild(previousTimeline.parentElement);
+                
+                // Update timeline count variable
+                updateTimelineCountVariable();
             }
         }
         
@@ -1371,7 +1382,10 @@ function handleResize() {
                 }
             };
             
-            advanceToCurrentTimeline();
+            advanceToCurrentTimeline().then(() => {
+                // Update timeline count variable after restoring state
+                updateTimelineCountVariable();
+            });
         }).catch(error => {
             console.error('Failed to reinitialize after resize:', error);
         });
