@@ -753,7 +753,6 @@ function initTimelineInteraction(timeline) {
             target.dataset.originalEnd = target.dataset.end;
             target.dataset.originalLength = target.dataset.length;
             target.dataset.originalHeight = target.dataset.height;
-
         },
         edges: { right: !getIsMobile(), bottom: getIsMobile() },
         modifiers: [
@@ -772,6 +771,25 @@ function initTimelineInteraction(timeline) {
             move(event) {
                 const target = event.target;
                 const timelineRect = targetTimeline.getBoundingClientRect();
+                
+                // Auto-scroll functionality for mobile view
+                if (getIsMobile()) {
+                    const mouseY = event.clientY;
+                    const viewportHeight = window.innerHeight;
+                    const scrollThreshold = 100; // pixels from top/bottom of viewport to trigger scroll
+                    const scrollSpeed = 10; // pixels to scroll per frame
+                    
+                    // Check if near bottom of viewport
+                    if (mouseY > viewportHeight - scrollThreshold) {
+                        // Scroll down
+                        window.scrollBy(0, scrollSpeed);
+                    }
+                    // Check if near top of viewport
+                    else if (mouseY < scrollThreshold) {
+                        // Scroll up
+                        window.scrollBy(0, -scrollSpeed);
+                    }
+                }
                 
                 let newSize, startTime, startMinutes, endMinutes, newWidth;
                 const isMobile = getIsMobile();
