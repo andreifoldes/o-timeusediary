@@ -22,7 +22,14 @@ import {
     scrollToActiveTimeline,
     updateTimelineCountVariable
 } from './ui.js';
-import { DEBUG_MODE } from './constants.js';
+import { 
+    DEBUG_MODE,
+    MINUTES_PER_DAY,
+    INCREMENT_MINUTES,
+    DEFAULT_ACTIVITY_LENGTH,
+    TIMELINE_START_HOUR,
+    TIMELINE_HOURS
+} from './constants.js';
 
 let selectedActivity = null;
 
@@ -47,12 +54,6 @@ if(urlParams.toString()) {
 
 // Function to calculate timeline coverage in minutes
 window.getTimelineCoverage = getTimelineCoverage;
-
-const MINUTES_PER_DAY = 24 * 60;
-const INCREMENT_MINUTES = 10;
-const DEFAULT_ACTIVITY_LENGTH = 10;
-const TIMELINE_START_HOUR = 4;
-const TIMELINE_HOURS = 24;
 
 import { 
     formatTimeDDMMYYYYHHMM,
