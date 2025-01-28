@@ -267,6 +267,9 @@ async function addNextTimeline() {
             activitiesContainerElement.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
         }
 
+        // Update floating button position after timeline changes
+        updateFloatingButtonPosition();
+
     } catch (error) {
         console.error(`Error switching to ${nextTimelineKey} timeline:`, error);
         throw new Error(`Failed to switch to ${nextTimelineKey} timeline: ${error.message}`);
@@ -1352,6 +1355,9 @@ function handleResize() {
     // Update gradient bar layout regardless of layout change
     updateGradientBarLayout();
     
+    // Update floating button position on any resize
+    updateFloatingButtonPosition();
+    
     if (layoutChanged) {
         // Clear the DOM and reinitialize the app
         const timelinesWrapper = document.querySelector('.timelines-wrapper');
@@ -1551,6 +1557,28 @@ function scrollToActiveTimeline() {
     }
 }
 
+// Add this function after the existing imports
+function updateFloatingButtonPosition() {
+    if (!getIsMobile()) return;
+
+    const floatingButton = document.querySelector('.floating-add-button');
+    const lastTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+    
+    if (!floatingButton || !lastTimelineWrapper) return;
+
+    const wrapperRect = lastTimelineWrapper.getBoundingClientRect();
+    const buttonWidth = floatingButton.offsetWidth;
+    
+    // Position the button 10px to the right of the wrapper (changed from 20px)
+    const leftPosition = wrapperRect.right + 10;
+    
+    // Ensure button doesn't go off screen
+    const maxLeft = window.innerWidth - buttonWidth - 10; // Also adjusted this padding
+    const finalLeft = Math.min(leftPosition, maxLeft);
+    
+    floatingButton.style.left = `${finalLeft}px`;
+}
+
 async function init() {
     try {
         // Load initial timeline data
@@ -1597,6 +1625,7 @@ async function init() {
         createFloatingAddButton();
         if (getIsMobile()) {
             document.querySelector('.floating-add-button').style.display = 'flex';
+            updateFloatingButtonPosition();
         }
         
         // Set initial data-mode on activities container
@@ -1611,10 +1640,20 @@ async function init() {
         
         initButtons();
         
-        // Add resize event listener
+        // Add resize event listener with debounce
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            handleResize();
-            updateGradientBarLayout();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                handleResize();
+            }, 100);
+        });
+
+        // Add scroll listener to update button position
+        window.addEventListener('scroll', () => {
+            if (getIsMobile()) {
+                updateFloatingButtonPosition();
+            }
         });
 
         if (DEBUG_MODE) {

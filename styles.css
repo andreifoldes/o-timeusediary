@@ -878,9 +878,8 @@ body {
 @media (max-width: 1439px) {
     .floating-add-button {
         display: flex;
-        position: fixed; /* Change from absolute to fixed */
+        position: fixed;
         bottom: 20px;
-        right: 20px; /* Use right instead of left positioning */
         width: 60px;
         height: 60px;
         max-width: 65px;
@@ -897,8 +896,8 @@ body {
         align-items: center;
         justify-content: center;
         touch-action: none;
-        will-change: transform; /* Optimize performance */
-        transform: none !important; /* Prevent any transforms */
+        will-change: transform;
+        transform: none !important;
     }
 
     /* Only allow hover effect */

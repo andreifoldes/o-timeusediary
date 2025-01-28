@@ -1,6 +1,4 @@
-import { DEBUG_MODE } from './constants.js';
-
-const MINUTES_PER_DAY = 24 * 60;
+import { DEBUG_MODE, MINUTES_PER_DAY } from './constants.js';
 
 // Timeline state management functions
 export function getCurrentTimelineKey() {
@@ -166,7 +164,6 @@ export function findNearestMarkers(minutes, isMobile = false) {
 export function minutesToPercentage(minutes) {
     const TIMELINE_START_HOUR = 4;
     const TIMELINE_HOURS = 24;
-    const MINUTES_PER_DAY = 24 * 60;
     const minutesSince4AM = (minutes - TIMELINE_START_HOUR * 60 + MINUTES_PER_DAY) % MINUTES_PER_DAY;
     return (minutesSince4AM / (TIMELINE_HOURS * 60)) * 100;
 }
@@ -174,7 +171,6 @@ export function minutesToPercentage(minutes) {
 export function positionToMinutes(positionPercent) {
     const TIMELINE_START_HOUR = 4;
     const TIMELINE_HOURS = 24;
-    const MINUTES_PER_DAY = 24 * 60;
     
     if (positionPercent >= 100) {
         return null;
