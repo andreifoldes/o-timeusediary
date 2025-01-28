@@ -1,5 +1,4 @@
 .aider*
 .env
-private.md
-activities_mc.json
 .cursor
+.gitignore
