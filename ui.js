@@ -372,6 +372,14 @@ function scrollToActiveTimeline() {
     }
 }
 
+export function updateTimelineCountVariable() {
+    const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+    if (!pastTimelinesWrapper) return;
+    
+    const timelineCount = pastTimelinesWrapper.querySelectorAll('.timeline-container').length;
+    pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
+}
+
 // Export the functions
 export {
     createModal,

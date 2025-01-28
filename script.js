@@ -1,7 +1,14 @@
 import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
-import { getCurrentTimelineData, getCurrentTimelineKey, createTimelineDataFrame, sendData } from './utils.js';
+import { 
+    getCurrentTimelineData, 
+    getCurrentTimelineKey, 
+    createTimelineDataFrame, 
+    sendData,
+    validateMinCoverage,
+    getTimelineCoverage
+} from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 import { 
     createModal, 
@@ -12,7 +19,8 @@ import {
     updateDebugOverlay,
     hideDebugOverlay,
     updateGradientBarLayout,
-    scrollToActiveTimeline
+    scrollToActiveTimeline,
+    updateTimelineCountVariable
 } from './ui.js';
 import { DEBUG_MODE } from './constants.js';
 
@@ -38,62 +46,7 @@ if(urlParams.toString()) {
 }
 
 // Function to calculate timeline coverage in minutes
-window.getTimelineCoverage = () => {
-    const activeTimeline = document.querySelector('.timeline[data-active="true"]');
-    if (!activeTimeline) return 0;
-
-    const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
-    if (!activityBlocks.length) return 0;
-
-    // Calculate total minutes covered using data-length attributes
-    let coveredMinutes = 0;
-    const sortedBlocks = [...activityBlocks].sort((a, b) => 
-        timeToMinutes(a.dataset.start) - timeToMinutes(b.dataset.start)
-    );
-
-    // Track the latest end time seen
-    let latestEndTime = 0;
-
-    sortedBlocks.forEach(block => {
-        const startMinutes = timeToMinutes(block.dataset.start);
-        const endMinutes = timeToMinutes(block.dataset.end);
-        let blockLength;
-        // Special case: If activity is from 4:00 to 4:00, it's a full day
-        if (startMinutes === 240 && endMinutes === 240) { // 240 minutes = 4:00
-            blockLength = 1440; // Full day in minutes
-        } else if (startMinutes === 240 && endMinutes === 0) {
-            // Special case: 04:00 to 00:00 = 20 hours = 1200 minutes
-            blockLength = 1200;
-        } else {
-            // Calculate length using absolute difference
-            blockLength = Math.abs(endMinutes - startMinutes);
-            if (blockLength === 0) {
-                // If start and end times are the same (but not 4:00-4:00)
-                blockLength = 0;
-            } else if (endMinutes < startMinutes) {
-                // If end time is before start time, it spans across midnight
-                blockLength = 1440 - blockLength;
-            }
-        }
-        
-        // Validate that block length is positive
-        if (blockLength < 0) {
-            throw new Error(`Invalid negative block length: ${blockLength} minutes. Start: ${startMinutes}, End: ${endMinutes}`);
-        }
-        
-        // Only count non-overlapping portions
-        if (startMinutes > latestEndTime) {
-            coveredMinutes += blockLength;
-        } else if (endMinutes > latestEndTime) {
-            coveredMinutes += endMinutes - latestEndTime;
-        }
-        
-        latestEndTime = Math.max(latestEndTime, endMinutes);
-    });
-
-    console.log(`Timeline coverage: ${coveredMinutes} minutes covered`);
-    return coveredMinutes;
-};
+window.getTimelineCoverage = getTimelineCoverage;
 
 const MINUTES_PER_DAY = 24 * 60;
 const INCREMENT_MINUTES = 10;
@@ -117,15 +70,6 @@ import {
     createTimeLabel,
     updateTimeLabel
 } from './utils.js';
-
-// Add this function after the existing imports
-function updateTimelineCountVariable() {
-    const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
-    if (!pastTimelinesWrapper) return;
-    
-    const timelineCount = pastTimelinesWrapper.querySelectorAll('.timeline-container').length;
-    pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
-}
 
 // Function to add next timeline
 async function addNextTimeline() {
@@ -292,28 +236,6 @@ function logDebugInfo() {
     if (DEBUG_MODE) {
         console.log('timelineData:', timelineData);
     }
-}
-
-function validateMinCoverage(coverage) {
-    // Convert to number if it's a string
-    const numCoverage = parseInt(coverage);
-    
-    // Check if it's a valid number
-    if (isNaN(numCoverage)) {
-        throw new Error('min_coverage must be a valid number');
-    }
-    
-    // Check range
-    if (numCoverage < 0 || numCoverage > 1440) {
-        throw new Error('min_coverage must be between 0 and 1440');
-    }
-    
-    // Check if divisible by 10
-    if (numCoverage % 10 !== 0) {
-        throw new Error('min_coverage must be divisible by 10');
-    }
-    
-    return numCoverage;
 }
 
 async function fetchActivities(key) {
