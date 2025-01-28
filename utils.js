@@ -417,3 +417,53 @@ export function createTimelineDataFrame() {
     
     return dataFrame;
 }
+
+export function sendData() {
+    // Get flattened timeline data
+    const timelineData = createTimelineDataFrame();
+    
+    // Get all unique headers from study parameters
+    const studyHeaders = Object.keys(window.timelineManager.study || {});
+    
+    // Combine standard headers with study parameter headers
+    const headers = ['timelineKey', 'activity', 'category', 'startTime', 'endTime', ...studyHeaders];
+    
+    // Process timeline data to ensure activity and category are properly set
+    const processedData = timelineData.map(row => {
+        // Find the activity block element by ID to get the actual activity data
+        const activityBlock = document.querySelector(`.activity-block[data-id="${row.id}"]`);
+        if (activityBlock) {
+            return {
+                ...row,
+                activity: activityBlock.querySelector('div').textContent || row.activity,
+                category: activityBlock.dataset.category || row.category
+            };
+        }
+        return row;
+    });
+
+    const csvContent = [
+        headers.join(','),
+        ...processedData.map(row => 
+            headers.map(header => 
+                // Wrap values in quotes and escape existing quotes
+                `"${String(row[header] || '').replace(/"/g, '""')}"`
+            ).join(',')
+        )
+    ].join('\n');
+
+    // Create blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
+    link.download = `${dateStr}_timeline_activities.csv`;
+    
+    // Trigger download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    console.log('Data exported as CSV:', timelineData);
+}
