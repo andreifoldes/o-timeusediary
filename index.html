@@ -69,13 +69,13 @@
     <script src="timeline.js" type="module"></script>
     <script src="utils.js" type="module"></script>
     <script src="script.js" type="module"></script>
-    <script src="timeline_test.js" type="module"></script>
+    <script src="tests/timeline_test.js" type="module"></script>
     <script type="module">
         import { calculateTimeDifference } from './utils.js';
         window.calculateTimeDifference = calculateTimeDifference;
     </script>
     <script type="module">
-        import { testTimelineMarkerPositioning } from './timeline_test.js';
+        import { testTimelineMarkerPositioning } from './tests/timeline_test.js';
         
         // Run tests after page load
         window.addEventListener('load', () => {

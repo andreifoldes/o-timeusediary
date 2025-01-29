@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeUse Tool Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        #test-results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success {
+            color: #2e7d32;
+        }
+        .error {
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <h1>TimeUse Tool Tests</h1>
+    <div id="test-results">
+        <p>Running tests... Check the console (F12) for detailed results.</p>
+    </div>
+    
+    <script type="module" src="./index.js"></script>
+    <script type="module" src="./button_test.js"></script>
+</body>
+</html> 

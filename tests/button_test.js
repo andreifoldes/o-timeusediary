@@ -16,4 +16,4 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.log('All buttons are correctly disabled at startup.');
     }
-});
+}); 

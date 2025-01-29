@@ -1,4 +1,4 @@
-import { TimelineMarker } from './timeline_marker.js';
+import { TimelineMarker } from '../timeline_marker.js';
 
 // Test suite for timeline marker positioning
 export function testTimelineMarkerPositioning() {
@@ -62,4 +62,4 @@ export function testTimelineMarkerPositioning() {
         success: errors.length === 0,
         errors: errors
     };
-}
+} 
