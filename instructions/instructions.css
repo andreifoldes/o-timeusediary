@@ -12,7 +12,7 @@ body {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    padding-bottom: calc(clamp(48px, 8vh, 60px) + 20px); /* Navigation height + extra padding */
+    padding-bottom: calc(clamp(64px, 10vh, 80px) + 20px); /* Increased Navigation height + extra padding */
 }
 
 .content {
@@ -60,11 +60,11 @@ ul, ol {
     box-sizing: border-box;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     z-index: 1000;
-    height: clamp(48px, 8vh, 60px);
+    height: clamp(64px, 10vh, 80px); /* Increased height */
 }
 
 button {
-    padding: clamp(14px, 2.5vw, 20px) 0;
+    padding: clamp(16px, 3vw, 24px) 0;
     font-size: clamp(16px, 2.5vw, 20px);
     cursor: pointer;
     background: #007bff;
@@ -72,7 +72,7 @@ button {
     border: none;
     border-radius: 0;
     flex: 1;
-    min-height: clamp(48px, 8vh, 60px);
+    min-height: clamp(64px, 10vh, 80px); /* Increased height */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,11 +122,11 @@ button:disabled {
 /* Small screens */
 @media (max-width: 480px) {
     body {
-        padding-bottom: calc(clamp(44px, 7vh, 48px) + 20px);
+        padding-bottom: calc(clamp(56px, 9vh, 64px) + 20px);
     }
     
     .navigation {
-        height: clamp(44px, 7vh, 48px);
+        height: clamp(56px, 9vh, 64px);
     }
     
     .navigation {
@@ -136,19 +136,19 @@ button:disabled {
     }
     
     button {
-        padding: clamp(12px, 2vw, 14px) 0;
-        min-height: clamp(44px, 7vh, 48px);
+        padding: clamp(14px, 2.5vw, 16px) 0;
+        min-height: clamp(56px, 9vh, 64px);
     }
 }
 
 /* Extra small screens */
 @media (max-width: 320px) {
     body {
-        padding-bottom: calc(clamp(40px, 6vh, 44px) + 20px);
+        padding-bottom: calc(clamp(52px, 8vh, 56px) + 20px);
     }
     
     .navigation {
-        height: clamp(40px, 6vh, 44px);
+        height: clamp(52px, 8vh, 56px);
     }
     
     .navigation {
@@ -157,7 +157,8 @@ button:disabled {
     }
     
     button {
-        padding: clamp(10px, 2vw, 12px) 0;
+        padding: clamp(12px, 2vw, 14px) 0;
+        min-height: clamp(52px, 8vh, 56px);
     }
 }
 
@@ -169,10 +170,10 @@ button:disabled {
     
     .navigation {
         position: relative;
-        height: clamp(44px, 12vh, 48px);
+        height: clamp(56px, 14vh, 64px);
     }
     
     button {
-        min-height: clamp(44px, 12vh, 48px);
+        min-height: clamp(56px, 14vh, 64px);
     }
 }
