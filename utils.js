@@ -462,6 +462,33 @@ export function sendData() {
     document.body.removeChild(link);
     
     console.log('Data exported as CSV:', timelineData);
+
+    // Check if redirect URL is specified in settings
+    fetch('settings/activities.json')
+        .then(response => response.json())
+        .then(data => {
+            const redirectUrl = data.general?.redirect_url;
+            if (redirectUrl) {
+                // Get current URL parameters
+                const currentParams = new URLSearchParams(window.location.search);
+                
+                // Create URL object from redirect URL to handle both URLs with and without existing parameters
+                const finalUrl = new URL(redirectUrl);
+                
+                // Append all current parameters to the redirect URL
+                currentParams.forEach((value, key) => {
+                    finalUrl.searchParams.append(key, value);
+                });
+
+                // Small delay to ensure file download starts before redirect
+                setTimeout(() => {
+                    window.location.href = finalUrl.toString();
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking redirect URL:', error);
+        });
 }
 
 export function validateMinCoverage(coverage) {

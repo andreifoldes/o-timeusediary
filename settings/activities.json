@@ -3,7 +3,8 @@
   "app_name": "O-ELIDDI",
   "version": "1.0.0",
   "author": "John Doe",
-  "instructions": true
+  "instructions": true,
+  "redirect_url": "https://www.timeuse.org/"
   },
   "timeline": {
     "primary": {

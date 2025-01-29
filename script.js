@@ -1172,12 +1172,24 @@ async function init() {
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
             // Only redirect if not already on an instructions page and no instructions param
             if (!window.location.pathname.includes('/instructions/')) {
-                window.location.href = 'instructions/1.html';
+                // Preserve current URL parameters
+                const currentParams = new URLSearchParams(window.location.search);
+                const redirectUrl = new URL('instructions/1.html', window.location.href);
+                currentParams.forEach((value, key) => {
+                    redirectUrl.searchParams.append(key, value);
+                });
+                window.location.href = redirectUrl.toString();
                 return;
             }
         } else if (window.location.pathname.includes('/instructions/')) {
             // Redirect to index if instructions are disabled but user is on instructions
-            window.location.href = 'index.html';
+            // Preserve current URL parameters
+            const currentParams = new URLSearchParams(window.location.search);
+            const redirectUrl = new URL('index.html', window.location.href);
+            currentParams.forEach((value, key) => {
+                redirectUrl.searchParams.append(key, value);
+            });
+            window.location.href = redirectUrl.toString();
             return;
         }
         
