@@ -55,6 +55,8 @@ body {
     gap: 20px;
     margin-bottom: 20px;
     width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Mobile layout - column display */
@@ -79,7 +81,9 @@ body {
         flex-direction: row;
         gap: 10px;
         margin-right: 10px;
-        flex: 0 0 auto; /* Allow container to grow based on content */
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
     }
 
     .last-initialized-timeline-wrapper {

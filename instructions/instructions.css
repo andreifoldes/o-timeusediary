@@ -1,3 +1,7 @@
+html {
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     max-width: min(800px, 95vw);
@@ -5,9 +9,14 @@ body {
     padding: clamp(10px, 3vw, 20px);
     font-size: clamp(14px, 2vw, 16px);
     line-height: 1.5;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: calc(clamp(48px, 8vh, 60px) + 20px); /* Navigation height + extra padding */
 }
 
 .content {
+    flex: 1;
     margin-bottom: clamp(20px, 5vh, 40px);
 }
 
@@ -37,43 +46,63 @@ ul, ol {
 }
 
 .navigation {
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    padding: clamp(15px, 4vw, 25px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
     background: white;
     border-top: 1px solid #ddd;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     box-sizing: border-box;
-    width: 100%;
-    margin-top: clamp(20px, 5vh, 40px);
-    gap: clamp(15px, 4vw, 30px);
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    height: clamp(48px, 8vh, 60px);
 }
 
 button {
-    padding: clamp(14px, 2.5vw, 20px) clamp(20px, 3vw, 30px);
+    padding: clamp(14px, 2.5vw, 20px) 0;
     font-size: clamp(16px, 2.5vw, 20px);
     cursor: pointer;
     background: #007bff;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 0;
     flex: 1;
     min-height: clamp(48px, 8vh, 60px);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
     white-space: nowrap;
-    width: 100%;
+    width: 50%;
     max-width: none;
+    margin: 0;
+}
+
+/* Back button specific styles */
+button:first-child {
+    background: #6c757d;
+}
+
+button:first-child:hover:not(:disabled) {
+    background: #5a6268;
+}
+
+/* Continue button specific styles */
+button:last-child {
+    background: #007bff;
+}
+
+button:last-child:hover:not(:disabled) {
+    background: #0056b3;
 }
 
 button:hover:not(:disabled) {
-    background: #0056b3;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
@@ -92,66 +121,58 @@ button:disabled {
 
 /* Small screens */
 @media (max-width: 480px) {
-    .navigation {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100vw;
-        margin: 0;
-        padding: clamp(12px, 3vw, 15px);
-        gap: clamp(12px, 3vw, 15px);
-        max-width: none;
-        transform: translateX(calc((100vw - 100%) / -2));
+    body {
+        padding-bottom: calc(clamp(44px, 7vh, 48px) + 20px);
     }
     
-    /* Add padding to body to prevent content from being hidden behind fixed navigation */
-    body {
-        padding-bottom: calc(clamp(44px, 7vh, 48px) + clamp(24px, 6vw, 30px));
+    .navigation {
+        height: clamp(44px, 7vh, 48px);
+    }
+    
+    .navigation {
+        position: fixed;
+        padding: 0;
+        gap: 0;
     }
     
     button {
-        padding: clamp(12px, 2vw, 14px) clamp(10px, 2vw, 15px);
-        font-size: clamp(15px, 2.5vw, 16px);
+        padding: clamp(12px, 2vw, 14px) 0;
         min-height: clamp(44px, 7vh, 48px);
     }
 }
 
 /* Extra small screens */
 @media (max-width: 320px) {
+    body {
+        padding-bottom: calc(clamp(40px, 6vh, 44px) + 20px);
+    }
+    
     .navigation {
-        padding: clamp(10px, 2.5vw, 12px);
-        gap: clamp(8px, 2vw, 10px);
+        height: clamp(40px, 6vh, 44px);
+    }
+    
+    .navigation {
+        padding: 0;
+        gap: 0;
     }
     
     button {
-        padding: clamp(10px, 2vw, 12px) clamp(8px, 1.5vw, 10px);
-        font-size: clamp(14px, 2.5vw, 15px);
-        min-height: clamp(40px, 6vh, 44px);
-    }
-    
-    /* Adjust body padding for smaller navigation height */
-    body {
-        padding-bottom: calc(clamp(40px, 6vh, 44px) + clamp(20px, 5vw, 24px));
+        padding: clamp(10px, 2vw, 12px) 0;
     }
 }
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) and (max-height: 600px) {
+    body {
+        padding-bottom: clamp(10px, 3vw, 20px);
+    }
+    
     .navigation {
         position: relative;
-        margin-top: 20px;
-        padding: clamp(12px, 3vw, 15px);
-        transform: none;
-        width: 100%;
+        height: clamp(44px, 12vh, 48px);
     }
     
     button {
         min-height: clamp(44px, 12vh, 48px);
-    }
-    
-    /* Remove extra padding in landscape mode since navigation isn't fixed */
-    body {
-        padding-bottom: clamp(10px, 3vw, 20px);
     }
 }
