@@ -1010,10 +1010,31 @@ body {
 .button-container,
 .controls {
     display: flex;
-    gap: 10px;
+    gap: clamp(4px, 1vw, 10px);
     justify-content: center;
-    padding: 10px;
-    margin: 5px 0; /* Set both top and bottom margins to 5px */
+    padding: clamp(5px, 2vw, 10px);
+    margin: 5px 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 6px);
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2vw, 14px);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    white-space: nowrap;
+    min-height: clamp(32px, 5vh, 40px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn i {
+    font-size: clamp(14px, 2.5vw, 16px);
 }
 
 @media (max-width: 1440px) {
@@ -1118,31 +1139,31 @@ body {
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .header-section {
-        padding: 4px;
+        padding: clamp(4px, 1vw, 8px);
     }
 
     .controls {
         margin: 2px 0;
-        gap: 4px;
+        gap: clamp(2px, 1vw, 4px);
     }
 
     .btn {
-        padding: 6px 12px;
-        font-size: 3.2vw; /* Relative font size */
-        min-width: auto;
+        padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
+        font-size: clamp(11px, 3.2vw, 13px);
+        min-height: clamp(28px, 4vh, 32px);
     }
 
     .btn i {
-        font-size: 3.2vw; /* Match button text size */
+        font-size: clamp(12px, 3.2vw, 14px);
     }
 
     .timeline-title {
-        font-size: 4vw;
+        font-size: clamp(14px, 4vw, 16px);
         margin: 2px 0;
     }
 
     .timeline-description {
-        font-size: 3vw;
+        font-size: clamp(12px, 3vw, 14px);
     }
 }
 
@@ -1154,18 +1175,59 @@ body {
 
     .controls {
         gap: 2px;
+        padding: 4px;
     }
 
     .btn {
         padding: 4px 8px;
+        font-size: clamp(10px, 3vw, 12px);
+        min-height: 26px;
+    }
+
+    .btn i {
+        font-size: clamp(11px, 3vw, 13px);
     }
 
     .timeline-title {
-        font-size: 4.5vw;
+        font-size: clamp(13px, 4.5vw, 15px);
         margin: 2px 0;
     }
 
     .timeline-description {
-        font-size: 3.2vw;
+        font-size: clamp(11px, 3.2vw, 13px);
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .header-section {
+        padding: 4px;
+    }
+
+    .controls {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .btn {
+        padding: 4px 10px;
+        min-height: 30px;
+    }
+
+    .timeline-title {
+        margin: 4px 0;
+    }
+}
+
+/* Floating add button adjustments */
+@media (max-width: 1439px) {
+    .floating-add-button {
+        width: clamp(50px, 15vw, 60px);
+        height: clamp(50px, 15vw, 60px);
+        max-width: clamp(50px, 15vw, 65px);
+        max-height: clamp(50px, 15vw, 65px);
+        font-size: clamp(20px, 6vw, 24px);
+        bottom: clamp(10px, 3vh, 20px);
+        right: clamp(10px, 3vw, 20px);
     }
 }
