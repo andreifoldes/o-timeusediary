@@ -813,41 +813,29 @@ function initTimelineInteraction(timeline) {
                         // Keep original start time fixed
                         startMinutes = parseInt(target.dataset.startMinutes);
                         
-                        // Get viewport and header dimensions
-                        const viewportHeight = window.innerHeight;
-                        const headerSection = document.querySelector('.header-section');
-                        const headerBottom = headerSection ? headerSection.getBoundingClientRect().bottom : 0;
+                        // Get cursor position from event coordinates instead of element rect
+                        const clientY = getIsMobile() ? (event.touches ? event.touches[0].clientY : event.clientY) : event.clientY;
+                        const timelineRect = targetTimeline.getBoundingClientRect();
                         
-                        // Calculate available height (space between header bottom and viewport bottom)
-                        const availableHeight = viewportHeight - headerBottom;
+                        // Calculate relative Y position within timeline
+                        const relativeY = clientY - timelineRect.top;
+                        const positionPercent = Math.min(100, Math.max(0, (relativeY / timelineRect.height) * 100));
                         
-                        // Calculate normalized distances relative to available height
-                        const distanceToBottom = (viewportHeight - event.rect.bottom) / availableHeight;
-                        const distanceToHeader = (event.rect.bottom - headerBottom) / availableHeight;
-                        
-                        // Calculate cursor position percentage (same as debugOverlay)
-                        const relativeY = event.rect.bottom - timelineRect.top;
-                        const positionPercent = (relativeY / timelineRect.height) * 100;
-                        
-                        // Convert to minutes, ensuring we maintain 10-minute precision
+                        // Convert to minutes using the actual cursor position
                         const rawMinutes = positionToMinutes(positionPercent, true);
                         endMinutes = Math.round(rawMinutes / 10) * 10;
-                        const timeString = formatTimeHHMM(endMinutes);
-
-                        // Debug logging with same values as debugOverlay
+                        
+                        // Debug logging with corrected values
                         if (DEBUG_MODE) {
                             console.log('[Resize Bottom Edge]:', {
-                                mouseY: event.rect.bottom,
+                                clientY: clientY,
+                                timelineTop: timelineRect.top,
+                                relativeY: relativeY,
                                 timelineHeight: timelineRect.height,
-                                position: positionPercent.toFixed(2) + '%',  // Same as debugOverlay
-                                cursorPercent: positionPercent.toFixed(2) + '%',  // Keep for comparison
-                                time: timeString,
-                                distanceToBottom: distanceToBottom.toFixed(3),
-                                distanceToHeader: distanceToHeader.toFixed(3),
-                                // Additional resize-specific debug info
-                                rawMinutes,
-                                roundedMinutes: endMinutes,
-                                startMinutes
+                                position: positionPercent.toFixed(2) + '%',
+                                time: formatTimeHHMM(endMinutes),
+                                startMinutes: startMinutes,
+                                endMinutes: endMinutes
                             });
                         }
 
