@@ -6,9 +6,10 @@ import {
     timeToMinutes,
     generateUniqueId,
     createTimeLabel,
-    updateTimeLabel
+    updateTimeLabel,
+    positionToMinutes
 } from './utils.js';
-import { getIsMobile } from './globals.js';
+import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
@@ -310,13 +311,96 @@ function initButtons() {
     }
 }
 
-// Debug UI functions
-function updateDebugOverlay() {
-    // Debug overlay disabled
+// Debug overlay functions
+function updateDebugOverlay(mouseX, mouseY, timelineRect) {
+    const debugOverlay = document.getElementById('debugOverlay');
+    if (!debugOverlay) return;
+
+    const isMobile = getIsMobile();
+    
+    // In mobile mode, if no timelineRect is provided, get it from active timeline
+    if (isMobile && !timelineRect) {
+        const activeTimeline = window.timelineManager.activeTimeline;
+        if (!activeTimeline) return;
+        timelineRect = activeTimeline.getBoundingClientRect();
+    }
+    
+    let positionPercent, axisPosition, axisSize;
+
+    // Get viewport and header dimensions
+    const viewportHeight = window.innerHeight;
+    const headerSection = document.querySelector('.header-section');
+    const headerBottom = headerSection ? headerSection.getBoundingClientRect().bottom : 0;
+    
+    // Calculate available height (space between header bottom and viewport bottom)
+    const availableHeight = viewportHeight - headerBottom;
+
+    // Calculate normalized distances relative to available height
+    const distanceToBottom = (viewportHeight - mouseY) / availableHeight;
+    const distanceToHeader = (mouseY - headerBottom) / availableHeight;
+
+    if (isMobile) {
+        // Vertical layout calculations
+        const relativeY = mouseY - timelineRect.top;
+        positionPercent = (relativeY / timelineRect.height) * 100;
+        axisPosition = Math.round(relativeY);
+        axisSize = Math.round(timelineRect.height);
+    } else {
+        // Horizontal layout calculations
+        const relativeX = mouseX - timelineRect.left;
+        positionPercent = (relativeX / timelineRect.width) * 100;
+        axisPosition = Math.round(relativeX);
+        axisSize = Math.round(timelineRect.width);
+    }
+
+    const minutes = positionToMinutes(positionPercent, isMobile);
+    // Format time - no need to adjust minutes since formatTimeHHMM now handles the offset
+    const timeString = formatTimeHHMM(minutes);
+
+    debugOverlay.innerHTML = isMobile
+        ? `Mouse Position: ${axisPosition}px<br>
+           Timeline Height: ${axisSize}px<br>
+           Position: ${positionPercent.toFixed(2)}%<br>
+           Time: ${timeString}<br>
+           Distance to Bottom: ${distanceToBottom.toFixed(3)}<br>
+           Distance to Header: ${distanceToHeader.toFixed(3)}`
+        : `Mouse Position: ${axisPosition}px<br>
+           Timeline Width: ${axisSize}px<br>
+           Position: ${positionPercent.toFixed(2)}%<br>
+           Time: ${timeString}<br>
+           Distance to Bottom: ${distanceToBottom.toFixed(3)}<br>
+           Distance to Header: ${distanceToHeader.toFixed(3)}`;
+}
+
+// Initialize continuous debug overlay updates for mobile layout
+function initDebugOverlay() {
+    if (!DEBUG_MODE) return;
+
+    let lastUpdateTime = 0;
+    const UPDATE_INTERVAL = 50; // Update every 50ms
+
+    // Function to handle both mouse and touch events
+    const handleMove = (e) => {
+        const currentTime = Date.now();
+        if (getIsMobile() && currentTime - lastUpdateTime > UPDATE_INTERVAL) {
+            // Get coordinates from either mouse or touch event
+            const x = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+            const y = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+            updateDebugOverlay(x, y);
+            lastUpdateTime = currentTime;
+        }
+    };
+
+    // Add both mouse and touch event listeners
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('touchmove', handleMove);
 }
 
 function hideDebugOverlay() {
-    // Debug overlay disabled
+    const debugOverlay = document.getElementById('debugOverlay');
+    if (debugOverlay) {
+        debugOverlay.innerHTML = '';
+    }
 }
 
 function updateGradientBarLayout() {
@@ -372,12 +456,62 @@ function scrollToActiveTimeline() {
     }
 }
 
-export function updateTimelineCountVariable() {
+function updateTimelineCountVariable() {
     const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
     if (!pastTimelinesWrapper) return;
     
     const timelineCount = pastTimelinesWrapper.querySelectorAll('.timeline-container').length;
     pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
+}
+
+function handleResize() {
+    const wasVertical = getIsMobile();
+    const layoutChanged = wasVertical !== updateIsMobile();
+    
+    // Update gradient bar layout regardless of layout change
+    updateGradientBarLayout();
+    
+    // Update floating button position on any resize
+    updateFloatingButtonPosition();
+    
+    if (layoutChanged) {
+        // Clear the DOM and reinitialize the app
+        const timelinesWrapper = document.querySelector('.timelines-wrapper');
+        if (timelinesWrapper) {
+            timelinesWrapper.innerHTML = '';
+        }
+        
+        // Store current timeline data
+        const currentState = {
+            currentIndex: window.timelineManager.currentIndex,
+            activities: { ...window.timelineManager.activities }
+        };
+        
+        // Reset timeline manager state
+        window.timelineManager.initialized.clear();
+        window.timelineManager.currentIndex = -1;
+        window.timelineManager.activeTimeline = null;
+        
+        // Reinitialize with stored data
+        init().then(() => {
+            // Restore activities
+            window.timelineManager.activities = currentState.activities;
+            
+            // Advance to current timeline
+            const advanceToCurrentTimeline = async () => {
+                while (window.timelineManager.currentIndex < currentState.currentIndex) {
+                    await addNextTimeline();
+                }
+            };
+            
+            advanceToCurrentTimeline().then(() => {
+                // Update timeline count variable after restoring state
+                updateTimelineCountVariable();
+            });
+        }).catch(error => {
+            console.error('Failed to reinitialize after resize:', error);
+        });
+    }
 }
 
 // Export the functions
@@ -390,5 +524,8 @@ export {
     updateDebugOverlay,
     hideDebugOverlay,
     updateGradientBarLayout,
-    scrollToActiveTimeline
+    scrollToActiveTimeline,
+    updateTimelineCountVariable,
+    initDebugOverlay,
+    handleResize
 };

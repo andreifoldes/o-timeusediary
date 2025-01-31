@@ -38,25 +38,25 @@ export class Timeline {
     }
 
     validate() {
-        console.log('Starting timeline validation');
+        // console.log('Starting timeline validation');
         // Get activities from timelineManager using this timeline's key
         const activities = window.timelineManager.activities[this.key] || [];
-        console.log('Current activities:', activities);
+        // console.log('Current activities:', activities);
 
         // Check for overlaps in activities
         const sortedActivities = [...activities].sort((a, b) => {
             const aStart = new Date(a.startTime);
             const bStart = new Date(b.startTime);
-            console.log('Comparing start times:', {
-                activity1: a.activity,
-                time1: a.startTime,
-                activity2: b.activity,
-                time2: b.startTime
-            });
+            // console.log('Comparing start times:', {
+            //     activity1: a.activity,
+            //     time1: a.startTime,
+            //     activity2: b.activity,
+            //     time2: b.startTime
+            // });
             return aStart - bStart;
         });
 
-        console.log('Sorted activities:', sortedActivities);
+        // console.log('Sorted activities:', sortedActivities);
 
         for (let i = 0; i < sortedActivities.length - 1; i++) {
             const current = sortedActivities[i];
@@ -65,27 +65,27 @@ export class Timeline {
             const currentEnd = new Date(current.endTime);
             const nextStart = new Date(next.startTime);
             
-            console.log('Checking overlap:', {
-                currentActivity: current.activity,
-                currentStart: current.startTime,
-                currentEnd: current.endTime,
-                nextActivity: next.activity,
-                nextStart: next.startTime,
-                nextEnd: next.endTime,
-                isOverlapping: currentEnd > nextStart
-            });
+            // console.log('Checking overlap:', {
+            //     currentActivity: current.activity,
+            //     currentStart: current.startTime,
+            //     currentEnd: current.endTime,
+            //     nextActivity: next.activity,
+            //     nextStart: next.startTime,
+            //     nextEnd: next.endTime,
+            //     isOverlapping: currentEnd > nextStart
+            // });
             
             if (currentEnd > nextStart) {
-                console.error('Overlap detected:', {
-                    current: current,
-                    next: next,
-                    currentEndTime: currentEnd,
-                    nextStartTime: nextStart
-                });
+                // console.error('Overlap detected:', {
+                //     current: current,
+                //     next: next,
+                //     currentEndTime: currentEnd,
+                //     nextStartTime: nextStart
+                // });
                 throw new Error(`Timeline validation failed: Overlap detected between activities "${current.activity}" and "${next.activity}"`);
             }
         }
-        console.log('Timeline validation successful');
+        // console.log('Timeline validation successful');
         return true;
     }
 }

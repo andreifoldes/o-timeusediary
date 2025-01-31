@@ -177,3 +177,16 @@ button:disabled {
         min-height: clamp(56px, 14vh, 64px);
     }
 }
+
+.layout-specific {
+    display: none;
+}
+
+/* These classes will be toggled via JavaScript */
+.is-horizontal .horizontal-layout {
+    display: block;
+}
+
+.is-vertical .vertical-layout {
+    display: block;
+}

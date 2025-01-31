@@ -7,7 +7,8 @@ import {
     createTimelineDataFrame, 
     sendData,
     validateMinCoverage,
-    getTimelineCoverage
+    getTimelineCoverage,
+    calculateTimeDifference
 } from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 import { 
@@ -20,7 +21,9 @@ import {
     hideDebugOverlay,
     updateGradientBarLayout,
     scrollToActiveTimeline,
-    updateTimelineCountVariable
+    updateTimelineCountVariable,
+    initDebugOverlay,
+    handleResize
 } from './ui.js';
 import { 
     DEBUG_MODE,
@@ -650,7 +653,7 @@ function initTimeline(timeline) {
     if (DEBUG_MODE) {
         timeline.addEventListener('mousemove', (e) => {
             const rect = timeline.getBoundingClientRect();
-            updateDebugOverlay(e.clientX, rect);
+            updateDebugOverlay(e.clientX, e.clientY, rect);
         });
 
         timeline.addEventListener('mouseleave', () => {
@@ -659,6 +662,40 @@ function initTimeline(timeline) {
     }
 }
 
+// Add validation function before the interact.js initialization
+function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
+    const MIN_BLOCK_LENGTH = 10; // Minimum block length in minutes
+    const TIMELINE_START = 240; // 4:00 AM in minutes
+    const TIMELINE_END = 1680; // 4:00 AM next day in minutes
+
+    // Normalize end minutes if it wraps to next day
+    const normalizedEndMinutes = endMinutes < startMinutes ? endMinutes + 1440 : endMinutes;
+
+    // Calculate block length
+    const blockLength = normalizedEndMinutes - startMinutes;
+
+    // Validation checks
+    if (blockLength <= 0 || blockLength < MIN_BLOCK_LENGTH) {
+        console.warn('Invalid block length:', {
+            startTime: formatTimeHHMM(startMinutes),
+            endTime: formatTimeHHMM(endMinutes),
+            length: blockLength,
+            minLength: MIN_BLOCK_LENGTH
+        });
+        return false;
+    }
+
+    if (startMinutes < TIMELINE_START || endMinutes > TIMELINE_END) {
+        console.warn('Time out of valid range:', {
+            startTime: formatTimeHHMM(startMinutes),
+            endTime: formatTimeHHMM(endMinutes),
+            validRange: '04:00-04:00(+1)'
+        });
+        return false;
+    }
+
+    return true;
+}
 
 function initTimelineInteraction(timeline) {
     if (!timeline) {
@@ -675,15 +712,38 @@ function initTimelineInteraction(timeline) {
             target.dataset.originalStart = target.dataset.start;
             target.dataset.originalEnd = target.dataset.end;
             target.dataset.originalLength = target.dataset.length;
-            target.dataset.originalHeight = target.dataset.height;
+            target.dataset.originalHeight = target.style.height;
+            target.dataset.originalLeft = target.style.left;
+            target.dataset.originalTop = target.style.top;
+            target.dataset.originalWidth = target.style.width;  // Add original width
+            // Store original raw minutes
+            target.dataset.originalStartMinutes = target.dataset.startMinutes || timeToMinutes(target.dataset.start);
+            target.dataset.originalEndMinutes = target.dataset.endMinutes || timeToMinutes(target.dataset.end);
         },
-        edges: { right: !getIsMobile(), bottom: getIsMobile() },
+        edges: { 
+            right: !getIsMobile(), 
+            left: !getIsMobile(),
+            bottom: getIsMobile(),
+            top: getIsMobile()
+        },
         modifiers: [
             interact.modifiers.restrictEdges({
-                outer: '.timeline'
+                outer: '.timeline',
+                endOnly: true
             }),
             interact.modifiers.restrictSize({
                 min: { width: 10, height: 10 }
+            }),
+            // Add snap modifier for 10-minute intervals
+            interact.modifiers.snap({
+                targets: [
+                    interact.snappers.grid({
+                        x: timelineRect => (10 / (24 * 60)) * timelineRect.width, // 10-minute intervals
+                        y: timelineRect => (10 / (24 * 60)) * timelineRect.height
+                    })
+                ],
+                range: Infinity,
+                relativePoints: [ { x: 0, y: 0 } ]
             })
         ],
         inertia: false,
@@ -694,104 +754,358 @@ function initTimelineInteraction(timeline) {
             move(event) {
                 const target = event.target;
                 const timelineRect = targetTimeline.getBoundingClientRect();
+                let startMinutes, endMinutes;
                 
-                // Auto-scroll functionality for mobile view
+                target.classList.add('resizing');
+                
                 if (getIsMobile()) {
-                    const mouseY = event.clientY;
-                    const viewportHeight = window.innerHeight;
-                    const scrollThreshold = 100; // pixels from top/bottom of viewport to trigger scroll
-                    const scrollSpeed = 10; // pixels to scroll per frame
-                    
-                    // Check if near bottom of viewport
-                    if (mouseY > viewportHeight - scrollThreshold) {
-                        // Scroll down
-                        window.scrollBy(0, scrollSpeed);
-                    }
-                    // Check if near top of viewport
-                    else if (mouseY < scrollThreshold) {
-                        // Scroll up
-                        window.scrollBy(0, -scrollSpeed);
-                    }
-                }
-                
-                let newSize, startTime, startMinutes, endMinutes, newWidth;
-                const isMobile = getIsMobile();
-                
-                if (isMobile) {
-                    // Mobile: Calculate height in percentage
-                    let newHeight = (event.rect.height / timelineRect.height) * 100;
-                    const tenMinutesHeight = (10 / (24 * 60)) * 100;
-                    const intervals = Math.round(newHeight / tenMinutesHeight);
-                    newSize = intervals * tenMinutesHeight;
-                    newSize = Math.max(tenMinutesHeight, Math.min(newSize, 100));
-                    newWidth = newSize; // Set newWidth for time label calculations
-                    
-                    startTime = target.dataset.start;
-                    startMinutes = timeToMinutes(startTime);
-                    endMinutes = positionToMinutes(parseFloat(target.style.top) + newSize);
-                } else {
-                    // Desktop: Calculate width in percentage
-                    newWidth = (event.rect.width / timelineRect.width) * 100;
-                    const tenMinutesWidth = (10 / (24 * 60)) * 100;
-                    const intervals = Math.round(newWidth / tenMinutesWidth);
-                    newSize = intervals * tenMinutesWidth;
-                    newSize = Math.max(tenMinutesWidth, Math.min(newSize, 100));
-                    
-                    startTime = target.dataset.start;
-                    startMinutes = timeToMinutes(startTime);
-                    endMinutes = positionToMinutes(parseFloat(target.style.left) + newSize);
-                }
-                
-                if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
-                    target.classList.add('invalid');
-                    setTimeout(() => target.classList.remove('invalid'), 400);
-                    return;
-                }
-                
-                // Update block size if no overlap
-                if (isMobile) {
-                    target.style.height = `${newSize}%`;
-                    newWidth = newSize; // For time label calculations
-                } else {
-                    target.style.width = `${newSize}%`;
-                    newWidth = newSize;
-                }
+                    // Mobile: Handle vertical resizing
+                    if (event.edges.top) {
+                        // Keep original end time fixed
+                        endMinutes = parseInt(target.dataset.endMinutes);
+                        
+                        // Convert cursor position directly to minutes
+                        startMinutes = positionToMinutes((event.rect.top - timelineRect.top) / timelineRect.height * 100, true);
+                        startMinutes = Math.round(startMinutes / 10) * 10;
 
-                // Update time label
+                        // Debug logging
+                        if (DEBUG_MODE) {
+                            console.log('[Resize Top Edge]:', {
+                                cursorPosition: event.rect.top - timelineRect.top,
+                                timelineHeight: timelineRect.height,
+                                minutes: startMinutes,
+                                endMinutes
+                            });
+                        }
+
+                        // Validate time order
+                        if (startMinutes >= endMinutes) {
+                            target.style.top = target.dataset.originalTop;
+                            target.style.height = target.dataset.originalHeight;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Validate transformations
+                        if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                            target.style.top = target.dataset.originalTop;
+                            target.style.height = target.dataset.originalHeight;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Check for overlaps
+                        if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                            target.style.top = target.dataset.originalTop;
+                            target.style.height = target.dataset.originalHeight;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Update position and size using percentages
+                        target.style.top = `${minutesToPercentage(startMinutes)}%`;
+                        target.style.height = `${((endMinutes - startMinutes) / MINUTES_PER_DAY) * 100}%`;
+
+                    } else if (event.edges.bottom) {
+                        // Keep original start time fixed
+                        startMinutes = parseInt(target.dataset.startMinutes);
+                        
+                        // Get viewport and header dimensions
+                        const viewportHeight = window.innerHeight;
+                        const headerSection = document.querySelector('.header-section');
+                        const headerBottom = headerSection ? headerSection.getBoundingClientRect().bottom : 0;
+                        
+                        // Calculate available height (space between header bottom and viewport bottom)
+                        const availableHeight = viewportHeight - headerBottom;
+                        
+                        // Calculate normalized distances relative to available height
+                        const distanceToBottom = (viewportHeight - event.rect.bottom) / availableHeight;
+                        const distanceToHeader = (event.rect.bottom - headerBottom) / availableHeight;
+                        
+                        // Calculate cursor position percentage (same as debugOverlay)
+                        const relativeY = event.rect.bottom - timelineRect.top;
+                        const positionPercent = (relativeY / timelineRect.height) * 100;
+                        
+                        // Convert to minutes, ensuring we maintain 10-minute precision
+                        const rawMinutes = positionToMinutes(positionPercent, true);
+                        endMinutes = Math.round(rawMinutes / 10) * 10;
+                        const timeString = formatTimeHHMM(endMinutes);
+
+                        // Debug logging with same values as debugOverlay
+                        if (DEBUG_MODE) {
+                            console.log('[Resize Bottom Edge]:', {
+                                mouseY: event.rect.bottom,
+                                timelineHeight: timelineRect.height,
+                                position: positionPercent.toFixed(2) + '%',  // Same as debugOverlay
+                                cursorPercent: positionPercent.toFixed(2) + '%',  // Keep for comparison
+                                time: timeString,
+                                distanceToBottom: distanceToBottom.toFixed(3),
+                                distanceToHeader: distanceToHeader.toFixed(3),
+                                // Additional resize-specific debug info
+                                rawMinutes,
+                                roundedMinutes: endMinutes,
+                                startMinutes
+                            });
+                        }
+
+                        // Add snap behavior for smoother resizing
+                        const currentEndMinutes = parseInt(target.dataset.endMinutes);
+                        const minutesDiff = Math.abs(endMinutes - currentEndMinutes);
+                        
+                        // Only update if the change is at least 10 minutes
+                        if (minutesDiff >= 10) {
+                            // Validate time order
+                            if (endMinutes <= startMinutes) {
+                                target.style.height = target.dataset.originalHeight;
+                                target.classList.add('invalid');
+                                setTimeout(() => target.classList.remove('invalid'), 400);
+                                return;
+                            }
+
+                            // Validate transformations
+                            if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                                target.style.height = target.dataset.originalHeight;
+                                target.classList.add('invalid');
+                                setTimeout(() => target.classList.remove('invalid'), 400);
+                                return;
+                            }
+
+                            // Check for overlaps
+                            if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                                target.style.height = target.dataset.originalHeight;
+                                target.classList.add('invalid');
+                                setTimeout(() => target.classList.remove('invalid'), 400);
+                                return;
+                            }
+
+                            // Update size using percentages
+                            target.style.height = `${((endMinutes - startMinutes) / MINUTES_PER_DAY) * 100}%`;
+                        }
+                    }
+                } else {
+                    // Desktop: Handle left and right edge resizing differently
+                    const tenMinutesWidth = (10 / (24 * 60)) * 100; // Width of 10-minute interval as percentage
+                    
+                    if (event.edges.left) {
+                        // Left edge resizing - adjust start time
+                        const newLeft = (event.rect.left - timelineRect.left) / timelineRect.width * 100;
+                        startMinutes = positionToMinutes(newLeft);
+                        endMinutes = timeToMinutes(target.dataset.originalEnd);
+
+                        // Validate transformation
+                        if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                            // Revert to original values
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+                        
+                        // Handle wrap-around for end time
+                        if (startMinutes > endMinutes && !target.dataset.originalEnd.includes('(+1)')) {
+                            // If the start time is after the end time and we weren't spanning midnight before,
+                            // prevent this by reverting
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            
+                            // Reset data attributes to original values
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            
+                            console.warn('Invalid resize detected (horizontal/left): Start time would be after end time', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id,
+                                wasSpanningMidnight: false
+                            });
+                            
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        } else if (startMinutes > endMinutes) {
+                            // If we were already spanning midnight, adjust end minutes
+                            endMinutes = endMinutes + MINUTES_PER_DAY;
+                        } else {
+                            endMinutes = endMinutes;
+                        }
+                        
+                        // Check if the new position would create an overlap
+                        if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                            // Revert to original values
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            
+                            // Reset data attributes to original values
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            
+                            console.warn('Invalid resize detected (horizontal/left): Activity overlap', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id
+                            });
+                            
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Calculate the actual width needed based on time difference
+                        const timeDiff = endMinutes - startMinutes;
+                        const adjustedWidth = (timeDiff / MINUTES_PER_DAY) * 100;
+
+                        // Clamp adjusted width to not exceed timeline bounds
+                        target.style.width = `${Math.min(adjustedWidth, 100 - newLeft)}%`;
+
+                        // Update all data attributes including raw minutes
+                        target.dataset.start = formatTimeHHMM(startMinutes);
+                        target.dataset.end = formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true);
+                        target.dataset.length = endMinutes - startMinutes;
+                        target.dataset.startMinutes = startMinutes;
+                        target.dataset.endMinutes = endMinutes;
+                        // Add raw minutes for debugging
+                        target.dataset.rawStartMinutes = startMinutes;
+                        target.dataset.rawEndMinutes = endMinutes;
+                        updateTimeLabel(target.querySelector('.time-label'), target.dataset.start, target.dataset.end, target);
+                    } else {
+                        // Right edge resizing - adjust end time
+                        startMinutes = timeToMinutes(target.dataset.originalStart);
+                        const newWidth = (event.rect.width / timelineRect.width) * 100;
+                        endMinutes = positionToMinutes(newLeft + newWidth);
+
+                        // Validate transformation
+                        if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                            // Revert to original values
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Keep original left position
+                        newLeft = parseFloat(target.style.left);
+
+                        // Get the original start time in minutes
+                        startMinutes = timeToMinutes(target.dataset.originalStart);
+
+                        // Calculate raw end minutes based on width
+                        let rawEndMinutes = positionToMinutes(newLeft + newWidth);
+                        
+                        // Special case: if we're very close to the end of timeline (100%), 
+                        // it should be 04:00(+1) which is 1680 minutes (1440 + 240)
+                        const SNAP_THRESHOLD = 99.65;
+                        if (newLeft + newWidth >= SNAP_THRESHOLD) {
+                            rawEndMinutes = MINUTES_PER_DAY + (4 * 60); // 04:00(+1)
+                        }
+                        
+                        // Handle wrap-around correctly
+                        const wasSpanningMidnight = timeToMinutes(target.dataset.originalEnd) < startMinutes || target.dataset.originalEnd.includes('(+1)');
+                        const isResizingToNextDay = rawEndMinutes >= MINUTES_PER_DAY || (rawEndMinutes >= 0 && rawEndMinutes <= 4 * 60);
+
+                        // Ensure end time is after start time unless we're spanning midnight
+                        if (rawEndMinutes < startMinutes && !wasSpanningMidnight && !isResizingToNextDay) {
+                            // Prevent wrap-around if it wasn't spanning midnight before
+                            rawEndMinutes = startMinutes + tenMinutesWidth;
+                        }
+
+                        endMinutes = rawEndMinutes;
+
+                        // Check if the new position would create an overlap
+                        if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                            // Revert to original values
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            
+                            // Reset data attributes to original values
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            
+                            console.warn('Invalid resize detected (horizontal/right): Activity overlap', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id
+                            });
+                            
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
+                            return;
+                        }
+
+                        // Calculate the actual width needed based on time difference
+                        const timeDiff = endMinutes - startMinutes;
+                        const adjustedWidth = (timeDiff / MINUTES_PER_DAY) * 100;
+
+                        // Clamp adjusted width to not exceed timeline bounds
+                        target.style.width = `${Math.min(adjustedWidth, 100 - newLeft)}%`;
+
+                        // Update all data attributes including raw minutes
+                        target.dataset.start = formatTimeHHMM(startMinutes);
+                        target.dataset.end = formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true);
+                        target.dataset.length = endMinutes - startMinutes;
+                        target.dataset.startMinutes = startMinutes;
+                        target.dataset.endMinutes = endMinutes;
+                        // Add raw minutes for debugging
+                        target.dataset.rawStartMinutes = startMinutes;
+                        target.dataset.rawEndMinutes = endMinutes;
+                        updateTimeLabel(target.querySelector('.time-label'), target.dataset.start, target.dataset.end, target);
+                    }
+                }
+                
+                // Update time label and dataset
                 const timeLabel = target.querySelector('.time-label');
                 if (timeLabel) {
-                    const startTime = target.dataset.start;
-                    const startMinutes = timeToMinutes(startTime);
-                    let endMinutes;
-                    let newWidth = newSize; // Ensure newWidth is defined for time label calculations
+                    // Format and update times - (+1) notation is handled automatically
+                    const newStartTime = formatTimeHHMM(startMinutes, false);  // Start time
+                    const newEndTime = formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true);
+                    
+                    // Final validation to ensure we never have negative length
+                    let timeDiff = endMinutes - startMinutes;
+                    if (timeDiff < 0 && !newEndTime.includes('(+1)')) {
+                        // If we have negative length and we're not spanning midnight, revert
+                        target.dataset.start = target.dataset.originalStart;
+                        target.dataset.end = target.dataset.originalEnd;
+                        target.dataset.length = target.dataset.originalLength;
+                        target.style.left = target.dataset.originalLeft;
+                        target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
                         
-                    if (isMobile) {
-                        endMinutes = positionToMinutes((parseFloat(target.style.top) + newWidth));
-                        // If the position is at the end of timeline (100%), set to 04:00
-                        if (parseFloat(target.style.top) + newWidth >= 100) {
-                            endMinutes = 240; // 04:00 in minutes
-                        }
-                    } else {
-                        endMinutes = positionToMinutes((parseFloat(target.style.left) + newWidth));
-                        // If the position is at the end of timeline (100%), set to 04:00
-                        if (parseFloat(target.style.left) + newWidth >= 100) {
-                            endMinutes = 240; // 04:00 in minutes
-                        }
+                        console.warn('Invalid resize detected (final validation): Negative length', {
+                            startTime: newStartTime,
+                            endTime: newEndTime,
+                            length: timeDiff,
+                            blockId: target.dataset.id
+                        });
+                        
+                        target.classList.add('invalid');
+                        setTimeout(() => target.classList.remove('invalid'), 400);
+                        return;
                     }
-                    const endTime = formatTimeHHMM(endMinutes);
-                    updateTimeLabel(timeLabel, startTime, endTime, target);
-                            
-                    // Update the end time and length in the dataset using calculateTimeDifference
-                    target.dataset.end = endTime;
-                    const newLength = calculateTimeDifference(startTime, endTime);
-                    target.dataset.length = newLength;
+                    
+                    target.dataset.start = newStartTime;
+                    target.dataset.end = newEndTime;
+                    target.dataset.length = timeDiff;
+                    target.dataset.startMinutes = startMinutes;
+                    target.dataset.endMinutes = endMinutes;
+                    updateTimeLabel(timeLabel, newStartTime, newEndTime, target);
                     
                     // Update text class based on length and mode
                     const textDiv = target.querySelector('div[class^="activity-block-text"]');
                     if (textDiv) {
                         textDiv.className = getIsMobile()
-                            ? (newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
-                            : (newLength >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
+                            ? (timeDiff >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+                            : (timeDiff >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
                     }
                     
                     // Update the activity data in timelineManager
@@ -800,39 +1114,40 @@ function initTimelineInteraction(timeline) {
                     const activityIndex = currentData.findIndex(activity => activity.id === activityId);
                     
                     if (activityIndex !== -1) {
-                        const times = formatTimeDDMMYYYYHHMM(formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes));
+                        const times = formatTimeDDMMYYYYHHMM(newStartTime, newEndTime);
                         if (!times.startTime || !times.endTime) {
                             throw new Error('Activity start time and end time must be defined');
                         }
                         currentData[activityIndex].startTime = times.startTime;
                         currentData[activityIndex].endTime = times.endTime;
                         currentData[activityIndex].blockLength = parseInt(target.dataset.length);
+
+                        // Update original values incrementally
+                        target.dataset.originalStart = newStartTime;
+                        target.dataset.originalEnd = newEndTime;
+                        target.dataset.originalLength = target.dataset.length;
+                        target.dataset.originalHeight = target.style.height;
+                        target.dataset.originalLeft = target.style.left;
+                        target.dataset.originalTop = target.style.top;
                         
                         // Validate timeline after resizing activity
                         try {
-                            const timelineKey = event.target.dataset.timelineKey;
+                            const timelineKey = target.dataset.timelineKey;
+                            if (!timelineKey) {
+                                throw new Error('Timeline key not found on activity block');
+                            }
                             window.timelineManager.metadata[timelineKey].validate();
                         } catch (error) {
                             console.error('Timeline validation failed:', error);
                             // Revert the change
-                            const originalTimes = formatTimeDDMMYYYYHHMM(target.dataset.originalStart, target.dataset.originalEnd);
-                            currentData[activityIndex].startTime = originalTimes.startTime;
-                            currentData[activityIndex].endTime = originalTimes.endTime;
-                            currentData[activityIndex].blockLength = parseInt(target.dataset.originalLength);
-                            const block = document.createElement('div');
-                            block.className = 'activity-block invalid';
-                            block.style.backgroundColor = currentBlock.style.backgroundColor;
-                            block.style.width = currentBlock.style.width;
-                            block.style.height = currentBlock.style.height;
-                            block.style.top = currentBlock.style.top;
-                            block.style.left = currentBlock.style.left;
-                            targetTimeline.appendChild(block);
-                            setTimeout(() => block.remove(), 400);
+                            target.dataset.start = target.dataset.originalStart;
+                            target.dataset.end = target.dataset.originalEnd;
+                            target.dataset.length = target.dataset.originalLength;
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.width = `${parseFloat(target.dataset.originalLength) * (100 / 1440)}%`;
+                            target.classList.add('invalid');
+                            setTimeout(() => target.classList.remove('invalid'), 400);
                             return;
-                        }
-
-                        if (DEBUG_MODE) {
-                            console.log('Updated activity data:', currentData[activityIndex]);
                         }
                     }
                 }
@@ -842,12 +1157,10 @@ function initTimelineInteraction(timeline) {
                 const textDiv = event.target.querySelector('div[class^="activity-block-text"]');
                 const timeLabel = event.target.querySelector('.time-label');
                 if (timeLabel) {
-                    timeLabel.style.display = 'block'; // Ensure time label stays visible after resize
+                    timeLabel.style.display = 'block';
                 }
                 if (textDiv) {
-                    // Get the current length from the block's dataset
                     const length = parseInt(event.target.dataset.length);
-                    // Update classes based on length and mode
                     textDiv.className = getIsMobile()
                         ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
                         : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
@@ -918,7 +1231,12 @@ function initTimelineInteraction(timeline) {
         
         // Check if activity can be placed at this position
         if (!canPlaceActivity(startMinutes, endMinutes, null)) {
-            console.error('Activity placement blocked:', { startMinutes, endMinutes });
+            console.warn('Invalid activity placement attempt:', {
+                activity: selectedActivity.name,
+                startMinutes,
+                endMinutes,
+                reason: 'Activity cannot be placed at this position due to overlap or timeline bounds'
+            });
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
             block.style.backgroundColor = selectedActivity.color;
@@ -953,6 +1271,9 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.category = selectedActivity.category;
         currentBlock.dataset.mode = selectedActivity.selections ? 'multiple-choice' : 'single-choice';
         currentBlock.dataset.count = selectedActivity.selections ? selectedActivity.selections.length : 1;
+        // Add raw minutes data attributes
+        currentBlock.dataset.startMinutes = startMinutes;
+        currentBlock.dataset.endMinutes = endMinutes;
         if (selectedActivity.selections) {
             // Multiple selections - create split background
             const colors = selectedActivity.selections.map(s => s.color);
@@ -1015,7 +1336,11 @@ function initTimelineInteraction(timeline) {
         
         // Adjust end time to match the block size
         const adjustedEndMinutes = startMinutes + 10;
-        currentBlock.dataset.end = formatTimeHHMM(adjustedEndMinutes);
+        currentBlock.dataset.start = formatTimeHHMM(startMinutes);
+        currentBlock.dataset.end = formatTimeHHMM(adjustedEndMinutes % MINUTES_PER_DAY, true);
+        currentBlock.dataset.length = adjustedEndMinutes - startMinutes;
+        currentBlock.dataset.startMinutes = startMinutes;
+        currentBlock.dataset.endMinutes = adjustedEndMinutes;
 
         // Fixed dimensions for consistency
         const MOBILE_BLOCK_WIDTH = 75; // 75% width in mobile mode
@@ -1028,11 +1353,29 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.top = `${startPositionPercent}%`;
             currentBlock.style.width = `${MOBILE_BLOCK_WIDTH}%`;
             currentBlock.style.left = `${MOBILE_OFFSET}%`;
+            
+            // Add original data attributes for mobile/vertical layout
+            currentBlock.dataset.originalStart = formatTimeHHMM(startMinutes);
+            currentBlock.dataset.originalEnd = formatTimeHHMM(adjustedEndMinutes % MINUTES_PER_DAY, true);
+            currentBlock.dataset.originalLength = adjustedEndMinutes - startMinutes;
+            currentBlock.dataset.originalHeight = `${blockSize}%`;
+            currentBlock.dataset.originalWidth = `${MOBILE_BLOCK_WIDTH}%`;  // Add original width
+            currentBlock.dataset.originalTop = `${startPositionPercent}%`;
+            currentBlock.dataset.originalLeft = `${MOBILE_OFFSET}%`;
         } else {
             currentBlock.style.width = `${blockSize}%`;
             currentBlock.style.left = `${startPositionPercent}%`;
             currentBlock.style.height = '75%';
             currentBlock.style.top = '25%';
+            
+            // Existing original data attributes for desktop/horizontal layout
+            currentBlock.dataset.originalStart = formatTimeHHMM(startMinutes);
+            currentBlock.dataset.originalEnd = formatTimeHHMM(endMinutes);
+            currentBlock.dataset.originalLength = endMinutes - startMinutes;
+            currentBlock.dataset.originalHeight = '75%';
+            currentBlock.dataset.originalWidth = `${blockSize}%`;  // Add original width
+            currentBlock.dataset.originalLeft = `${startPositionPercent}%`;
+            currentBlock.dataset.originalTop = '25%';
         }
         
         const activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities') || (() => {
@@ -1051,7 +1394,7 @@ function initTimelineInteraction(timeline) {
 
         // Create time label for both mobile and desktop modes
         const timeLabel = createTimeLabel(currentBlock);
-        updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes), formatTimeHHMM(endMinutes), currentBlock);
+        updateTimeLabel(timeLabel, formatTimeHHMM(startMinutes, false), formatTimeHHMM(endMinutes, true), currentBlock);
         timeLabel.style.display = 'block'; // Ensure the new label is visible
 
         // Deselect the activity button after successful placement
@@ -1088,6 +1431,12 @@ function initTimelineInteraction(timeline) {
             window.timelineManager.metadata[timelineKey].validate();
         } catch (error) {
             console.error('Timeline validation failed:', error);
+            console.warn('Invalid activity placement:', {
+                activity: combinedActivityText,
+                category: activityCategory,
+                timelineKey,
+                reason: error.message
+            });
             // Remove the invalid activity
             getCurrentTimelineData().pop();
             currentBlock.remove();
@@ -1105,58 +1454,9 @@ function initTimelineInteraction(timeline) {
 
         updateButtonStates();
 
+        console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     });
-}
-
-function handleResize() {
-    const wasVertical = getIsMobile();
-    const layoutChanged = wasVertical !== updateIsMobile();
-    
-    // Update gradient bar layout regardless of layout change
-    updateGradientBarLayout();
-    
-    // Update floating button position on any resize
-    updateFloatingButtonPosition();
-    
-    if (layoutChanged) {
-        // Clear the DOM and reinitialize the app
-        const timelinesWrapper = document.querySelector('.timelines-wrapper');
-        if (timelinesWrapper) {
-            timelinesWrapper.innerHTML = '';
-        }
-        
-        // Store current timeline data
-        const currentState = {
-            currentIndex: window.timelineManager.currentIndex,
-            activities: { ...window.timelineManager.activities }
-        };
-        
-        // Reset timeline manager state
-        window.timelineManager.initialized.clear();
-        window.timelineManager.currentIndex = -1;
-        window.timelineManager.activeTimeline = null;
-        
-        // Reinitialize with stored data
-        init().then(() => {
-            // Restore activities
-            window.timelineManager.activities = currentState.activities;
-            
-            // Advance to current timeline
-            const advanceToCurrentTimeline = async () => {
-                while (window.timelineManager.currentIndex < currentState.currentIndex) {
-                    await addNextTimeline();
-                }
-            };
-            
-            advanceToCurrentTimeline().then(() => {
-                // Update timeline count variable after restoring state
-                updateTimelineCountVariable();
-            });
-        }).catch(error => {
-            console.error('Failed to reinitialize after resize:', error);
-        });
-    }
 }
 
 async function init() {
@@ -1247,6 +1547,9 @@ async function init() {
                 updateFloatingButtonPosition();
             }
         });
+
+        // Initialize debug overlay
+        initDebugOverlay();
 
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);

@@ -1,3 +1,5 @@
+import { getIsMobile, updateIsMobile } from '../globals.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('backBtn');
     const continueBtn = document.getElementById('continueBtn');
@@ -42,4 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = redirectUrl.toString();
         };
     }
+});
+
+function updateLayout() {
+    const isHorizontal = !getIsMobile();
+    document.body.classList.toggle('is-horizontal', isHorizontal);
+    document.body.classList.toggle('is-vertical', !isHorizontal);
+}
+
+// Initial layout
+updateLayout();
+
+// Update on resize by listening to global mobile state changes
+window.addEventListener('resize', () => {
+    updateIsMobile();
+    updateLayout();
 });

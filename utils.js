@@ -68,9 +68,26 @@ function createTimeLabel(block, showImmediately = false) {
 }
 
 function updateTimeLabel(label, startTime, endTime) {
-    const isVerticalMode = window.innerWidth <= 1440;
+    if (!label || !label.parentElement) return;
     
-    label.textContent = `${startTime} - ${endTime}`;
+    // Always read times from parent block's data attributes
+    const parentBlock = label.parentElement;
+    const blockStartTime = parentBlock.dataset.start;
+    const blockEndTime = parentBlock.dataset.end;
+    
+    if (!blockStartTime || !blockEndTime) {
+        console.warn('Parent block missing time data:', parentBlock);
+        return;
+    }
+    
+    // Remove (+1) notation for display
+    const displayStartTime = blockStartTime.replace('(+1)', '');
+    const displayEndTime = blockEndTime.replace('(+1)', '');
+    
+    // Update label text directly without storing in data attributes
+    label.textContent = `${displayStartTime} - ${displayEndTime}`;
+    
+    const isVerticalMode = window.innerWidth <= 1440;
     
     if (isVerticalMode) {
         // Show the label when updating in vertical mode
@@ -105,20 +122,24 @@ export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     
-    const [startHour, startMin] = startTime.split(':').map(Number);
-    const [endHour, endMin] = endTime.split(':').map(Number);
+    // Remove (+1) notation for date processing
+    const startTimeOnly = startTime.replace('(+1)', '').trim();
+    const endTimeOnly = endTime.replace('(+1)', '').trim();
+    
+    const [startHour, startMin] = startTimeOnly.split(':').map(Number);
+    const [endHour, endMin] = endTimeOnly.split(':').map(Number);
     
     // Create base dates - everything starts on yesterday by default
     // since our timeline starts at 4:00 AM yesterday
     const startDate = new Date(yesterday);
     const endDate = new Date(yesterday);
     
-    // If time is after midnight but before 4 AM, it's today
-    if (startHour >= 0 && startHour < 4) {
+    // If time has (+1) or is between 00:00-03:59, it's next day
+    if (startTime.includes('(+1)') || (startHour >= 0 && startHour < 4)) {
         startDate.setDate(today.getDate());
     }
     
-    if (endHour >= 0 && endHour <= 4) {
+    if (endTime.includes('(+1)') || (endHour >= 0 && endHour < 4)) {
         endDate.setDate(today.getDate());
     }
     
@@ -137,19 +158,51 @@ export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
     };
 }
 
-export function formatTimeHHMM(minutes) {
-    const roundedMinutes = Math.round(minutes);
-    const h = Math.floor(roundedMinutes / 60) % 24;
-    const m = roundedMinutes % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+/**
+ * Formats absolute minutes into HH:MM format with (+1) notation for next day times.
+ * Uses absolute minutes scale where:
+ * - 240 = 04:00 (timeline start)
+ * - 1440 = 00:00(+1)
+ * - 1680 = 04:00(+1) (timeline end)
+ *
+ * @param {number} minutes - Absolute minutes (240 = 04:00, 1680 = 04:00(+1))
+ * @param {boolean} isEndTime - Whether this time is an end time (affects (+1) notation)
+ * @returns {string} Formatted time string (e.g., "04:00", "00:00(+1)", "04:00(+1)")
+ */
+export function formatTimeHHMM(minutes, isEndTime = false) {
+    // No need to add offset since we're using absolute minutes
+    let totalMinutes = minutes;
+
+    // Get hours and minutes
+    const h = Math.floor(totalMinutes / 60) % 24;
+    const m = totalMinutes % 60;
+
+    // Add (+1) for:
+    // - Times between 00:00-03:59 after the first day (minutes >= 1440)
+    // - 04:00 only when it's an end time and minutes = 1680
+    const isNextDay = (minutes >= 1440 && h < 4) || minutes === 1680;
+
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}${isNextDay ? '(+1)' : ''}`;
 }
 
 export function timeToMinutes(timeStr) {
     if (typeof timeStr === 'number') {
         return Math.round(timeStr);
     }
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
+    const isNextDay = timeStr.includes('(+1)');
+    const timeOnly = timeStr.replace('(+1)', '').trim();
+    let [hours, minutes] = timeOnly.split(':').map(Number);
+    let totalMinutes = (hours - 4) * 60 + minutes; // Relative to 4 AM
+
+    if (totalMinutes < 0) {
+        totalMinutes += MINUTES_PER_DAY; // Adjust for times before 4 AM
+    }
+
+    if (isNextDay) {
+        totalMinutes += MINUTES_PER_DAY; // Add a full day for next day times
+    }
+
+    return totalMinutes;
 }
 
 export function findNearestMarkers(minutes, isMobile = false) {
@@ -162,26 +215,46 @@ export function findNearestMarkers(minutes, isMobile = false) {
 }
 
 export function minutesToPercentage(minutes) {
-    const TIMELINE_START_HOUR = 4;
-    const TIMELINE_HOURS = 24;
-    const minutesSince4AM = (minutes - TIMELINE_START_HOUR * 60 + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-    return (minutesSince4AM / (TIMELINE_HOURS * 60)) * 100;
-}
-
-export function positionToMinutes(positionPercent) {
-    const TIMELINE_START_HOUR = 4;
+    const TIMELINE_START = 240; // 04:00 in minutes
     const TIMELINE_HOURS = 24;
     
-    if (positionPercent >= 100) {
-        return null;
+    // Normalize minutes to be relative to timeline start (04:00 AM)
+    let minutesSinceStart = minutes - TIMELINE_START;
+    
+    // If the time is before 04:00 AM, adjust it to be after the previous day
+    if (minutes < TIMELINE_START) {
+        minutesSinceStart += MINUTES_PER_DAY;
     }
     
-    const minutesSinceStart = (positionPercent / 100) * TIMELINE_HOURS * 60;
-    let totalMinutes = minutesSinceStart + (TIMELINE_START_HOUR * 60);
-    totalMinutes = Math.round(totalMinutes) % MINUTES_PER_DAY;
+    // Calculate percentage, ensuring it stays within 0-100 range
+    return Math.min(100, Math.max(0, (minutesSinceStart / MINUTES_PER_DAY) * 100));
+}
+
+export function positionToMinutes(positionPercent, isMobile = false) {
+    const TIMELINE_HOURS = 24;
+    const SNAP_LOWER_THRESHOLD = 0.35;
+    const SNAP_UPPER_THRESHOLD = 99.65; // Threshold for snapping to end of day
+    const TIMELINE_START = 240; // 04:00 in minutes
+
+    // Handle lower snap threshold
+    if (positionPercent <= SNAP_LOWER_THRESHOLD) {
+        return TIMELINE_START; // 04:00 = 240 minutes
+    }
+
+    // Handle upper snap threshold
+    if (positionPercent >= SNAP_UPPER_THRESHOLD) {
+        return TIMELINE_START + MINUTES_PER_DAY; // 04:00(+1) = 1680 minutes
+    }
+
+    // Calculate minutes based on timeline orientation
+    const timelineMinutes = (positionPercent / 100) * TIMELINE_HOURS * 60;
+    
+    // Round to nearest 10 minutes and offset by timeline start
+    const totalMinutes = Math.round(timelineMinutes / 10) * 10 + TIMELINE_START;
     
     return totalMinutes;
 }
+
 
 export function calculateMinimumBlockWidth() {
     const INCREMENT_MINUTES = 10;
@@ -225,7 +298,7 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
         );
 
         if (hasOverlap && DEBUG_MODE) {
-            console.log('Overlap detected:', {
+            console.warn('Overlap detected:', {
                 new: { 
                     start: startMinutes, 
                     end: endMinutes,
@@ -246,102 +319,93 @@ export function hasOverlap(startMinutes, endMinutes, excludeBlock = null) {
     });
 }
 
+// ... [Other imports and code]
+
 export function canPlaceActivity(newStart, newEnd, excludeId = null) {
     // Get current timeline key and activities
     const currentKey = getCurrentTimelineKey();
     const activities = window.timelineManager.activities[currentKey] || [];
     
-    if (DEBUG_MODE) {
-        console.log('Checking timeline:', currentKey, {
-            newStart,
-            newEnd,
-            excludeId,
-            existingActivities: activities.length
-        });
+    // Normalize minutes to handle day wrap-around
+    const MINUTES_IN_DAY = 1440;
+    const TIMELINE_START = 240; // 4:00 AM in minutes
+
+    function normalizeMinutes(minutes) {
+        if (minutes < TIMELINE_START) {
+            minutes += MINUTES_IN_DAY;
+        }
+        return minutes;
     }
+
+    // Normalize the new activity times
+    const normalizedNewStart = normalizeMinutes(newStart);
+    const normalizedNewEnd = normalizeMinutes(newEnd);
     
     // Check for overlaps in current timeline only
     const hasOverlap = activities.some(activity => {
         if (excludeId && activity.id === excludeId) return false;
-        const activityStart = timeToMinutes(activity.startTime.split(' ')[1]);
-        const activityEnd = timeToMinutes(activity.endTime.split(' ')[1]);
-        const overlaps = (newStart < activityEnd && newEnd > activityStart);
+
+        // Extract and normalize existing activity times
+        const [activityStartHour, activityStartMin] = activity.startTime.split(' ')[1].split(':').map(Number);
+        const [activityEndHour, activityEndMin] = activity.endTime.split(' ')[1].split(':').map(Number);
+        
+        const activityStart = activityStartHour * 60 + activityStartMin;
+        const activityEnd = activityEndHour * 60 + activityEndMin;
+        
+        const normalizedActivityStart = normalizeMinutes(activityStart);
+        const normalizedActivityEnd = normalizeMinutes(activityEnd);
+
+        // Check for overlap considering normalized times and 10-minute increments
+        const overlaps = (
+            normalizedNewStart < normalizedActivityEnd &&
+            normalizedNewEnd > normalizedActivityStart
+        );
         
         if (DEBUG_MODE && overlaps) {
-            console.log('Overlap detected in timeline', currentKey, {
-                existingActivity: activity,
-                activityStart,
-                activityEnd,
-                newStart,
-                newEnd
+            console.warn('Overlap detected:', {
+                existingActivity: activity.activity,
+                newTime: `${newStart}-${newEnd}`,
+                existingTime: `${activity.startTime}-${activity.endTime}`,
+                normalizedTimes: {
+                    new: [normalizedNewStart, normalizedNewEnd],
+                    existing: [normalizedActivityStart, normalizedActivityEnd]
+                }
             });
         }
+
         return overlaps;
     });
     
-    if (hasOverlap) {
-        if (DEBUG_MODE) {
-            console.log('Placement blocked by timeline:', currentKey);
-        }
-        return false;
-    }
-    
-    if (DEBUG_MODE) {
-        console.log('Placement allowed - no overlaps in current timeline');
-    }
-    
-    return true;
+    return !hasOverlap;
 }
 
+
 export function isTimelineFull() {
+    const currentKey = getCurrentTimelineKey();
     const currentData = getCurrentTimelineData();
-    if (currentData.length === 0) return false;
-
-    // Get the active timeline element
-    const activeTimeline = window.timelineManager.activeTimeline;
-    if (!activeTimeline) return false;
-
-    const TIMELINE_START_HOUR = 4;
-    const TIMELINE_HOURS = 24;
-    const timelineStart = TIMELINE_START_HOUR * 60;
-    const totalTimelineMinutes = TIMELINE_HOURS * 60;
     
-    const timelineCoverage = new Array(totalTimelineMinutes).fill(false);
+    // Calculate total covered minutes
+    const coveredMinutes = currentData.reduce((total, activity) => {
+        const startMinutes = timeToMinutes(activity.startTime.split(' ')[1]);
+        const endMinutes = timeToMinutes(activity.endTime.split(' ')[1]);
+        return total + (endMinutes - startMinutes);
+    }, 0);
 
-    currentData.forEach(activity => {
-        // Safely extract time portions
-        const startTime = activity.startTime?.split(' ')?.[1] || '00:00';
-        const endTime = activity.endTime?.split(' ')?.[1] || '00:00';
-        
-        const startMinutes = timeToMinutes(startTime);
-        const endMinutes = timeToMinutes(endTime);
-
-        let relativeStart = (startMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-        let relativeEnd = (endMinutes - timelineStart + MINUTES_PER_DAY) % MINUTES_PER_DAY;
-
-        if (relativeEnd <= relativeStart) {
-            relativeEnd += MINUTES_PER_DAY;
-        }
-
-        for (let i = relativeStart; i < relativeEnd; i++) {
-            const index = i % totalTimelineMinutes;
-            timelineCoverage[index] = true;
-        }
-    });
-
-    const coveredMinutes = timelineCoverage.filter(covered => covered).length;
-    const coveragePercentage = (coveredMinutes / totalTimelineMinutes) * 100;
-
-    if (DEBUG_MODE) {
-        console.log(`Timeline coverage: ${coveragePercentage.toFixed(2)}%`);
+    // Get timeline metadata
+    const timeline = window.timelineManager.metadata[currentKey];
+    if (!timeline) {
+        console.error('Timeline metadata not found for key:', currentKey);
+        return false;
     }
 
-    return coveredMinutes === totalTimelineMinutes;
+    // Check if timeline is full based on coverage
+    const currentCoverage = (coveredMinutes / MINUTES_PER_DAY) * 100;
+    return currentCoverage >= 100;
 }
 
 export function calculateTimeDifference(startTime, endTime) {
-    // Special case: If both times are 4:00, return full day minutes
-    if (startTime === '04:00' && endTime === '04:00') {
+    // Special case: If start is 4:00 and end is 4:00(+1), it's a full day
+    if (startTime === '04:00' && endTime === '04:00(+1)') {
         return 1440; // 24 hours * 60 minutes
     }
 
@@ -566,8 +630,56 @@ export function getTimelineCoverage() {
         latestEndTime = Math.max(latestEndTime, endMinutes);
     });
 
-    if (DEBUG_MODE) {
-        console.log(`Timeline coverage: ${coveredMinutes} minutes covered`);
-    }
+    // if (DEBUG_MODE) {
+    //     console.log(`Timeline coverage: ${coveredMinutes} minutes covered`);
+    // }
     return coveredMinutes;
+}
+
+function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
+    const MIN_BLOCK_LENGTH = 10; // Minimum block length in minutes
+    const TIMELINE_START = 240; // 4:00 AM in minutes
+    const TIMELINE_END = 1680; // 4:00 AM next day in minutes
+
+    // Normalize minutes to handle day wrap-around
+    let normalizedStartMinutes = startMinutes;
+    let normalizedEndMinutes = endMinutes;
+
+    // If start time is before timeline start (4:00 AM), add 24 hours
+    if (normalizedStartMinutes < TIMELINE_START) {
+        normalizedStartMinutes += MINUTES_PER_DAY;
+    }
+
+    // If end time is before timeline start (4:00 AM), add 24 hours
+    if (normalizedEndMinutes < TIMELINE_START) {
+        normalizedEndMinutes += MINUTES_PER_DAY;
+    }
+
+    // Calculate block length considering wrap-around
+    const blockLength = normalizedEndMinutes - normalizedStartMinutes;
+
+    // Validation checks
+    if (blockLength <= 0 || blockLength < MIN_BLOCK_LENGTH) {
+        console.warn('Invalid block length:', {
+            startTime: formatTimeHHMM(startMinutes),
+            endTime: formatTimeHHMM(endMinutes),
+            length: blockLength,
+            minLength: MIN_BLOCK_LENGTH
+        });
+        return false;
+    }
+
+    // Check if normalized times are within valid range
+    if (normalizedStartMinutes < TIMELINE_START || normalizedEndMinutes > TIMELINE_END) {
+        console.warn('Time out of valid range:', {
+            startTime: formatTimeHHMM(startMinutes),
+            endTime: formatTimeHHMM(endMinutes),
+            validRange: '04:00-04:00(+1)',
+            normalizedStart: normalizedStartMinutes,
+            normalizedEnd: normalizedEndMinutes
+        });
+        return false;
+    }
+
+    return true;
 }

@@ -1,10 +1,10 @@
 { 
   "general": {
   "app_name": "O-ELIDDI",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "John Doe",
   "instructions": true,
-  "redirect_url": "https://www.timeuse.org/"
+  "redirect_url": ""
   },
   "timeline": {
     "primary": {
