@@ -771,15 +771,24 @@ function initTimelineInteraction(timeline) {
                         // Debug logging
                         if (DEBUG_MODE) {
                             console.log('[Resize Top Edge]:', {
-                                cursorPosition: event.rect.top - timelineRect.top,
+                                clientY: event.touches ? event.touches[0].clientY : event.clientY,
+                                timelineTop: timelineRect.top,
+                                relativeY: event.rect.top - timelineRect.top,
                                 timelineHeight: timelineRect.height,
-                                minutes: startMinutes,
-                                endMinutes
+                                position: ((event.rect.top - timelineRect.top) / timelineRect.height * 100).toFixed(2) + '%',
+                                time: formatTimeHHMM(startMinutes),
+                                startMinutes: startMinutes,
+                                endMinutes: endMinutes
                             });
                         }
 
                         // Validate time order
                         if (startMinutes >= endMinutes) {
+                            console.warn('Invalid resize detected (vertical/top): Start time would be after end time', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id
+                            });
                             target.style.top = target.dataset.originalTop;
                             target.style.height = target.dataset.originalHeight;
                             target.classList.add('invalid');
@@ -789,6 +798,12 @@ function initTimelineInteraction(timeline) {
 
                         // Validate transformations
                         if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                            console.warn('Invalid resize detected (vertical/top): Invalid block transformation', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id,
+                                reason: 'Block transformation validation failed'
+                            });
                             target.style.top = target.dataset.originalTop;
                             target.style.height = target.dataset.originalHeight;
                             target.classList.add('invalid');
@@ -798,6 +813,11 @@ function initTimelineInteraction(timeline) {
 
                         // Check for overlaps
                         if (!canPlaceActivity(startMinutes, endMinutes, target.dataset.id)) {
+                            console.warn('Invalid resize detected (vertical/top): Activity overlap', {
+                                startTime: formatTimeHHMM(startMinutes),
+                                endTime: formatTimeHHMM(endMinutes),
+                                blockId: target.dataset.id
+                            });
                             target.style.top = target.dataset.originalTop;
                             target.style.height = target.dataset.originalHeight;
                             target.classList.add('invalid');
