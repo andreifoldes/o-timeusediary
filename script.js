@@ -756,6 +756,9 @@ function initTimelineInteraction(timeline) {
                 const timelineRect = targetTimeline.getBoundingClientRect();
                 let startMinutes, endMinutes;
                 
+                // Get time label at the beginning of the handler
+                const timeLabel = target.querySelector('.time-label');
+                
                 target.classList.add('resizing');
                 
                 if (getIsMobile()) {
@@ -1031,12 +1034,13 @@ function initTimelineInteraction(timeline) {
                         target.dataset.endMinutes = absoluteEndMinutes;
                         
                         // Update time label with correct absolute times
-                        updateTimeLabel(timeLabel, newStartTime, newEndTime, target);
+                        if (timeLabel) {
+                            updateTimeLabel(timeLabel, newStartTime, newEndTime, target);
+                        }
                     }
                 }
                 
                 // Update time label and dataset
-                const timeLabel = target.querySelector('.time-label');
                 if (timeLabel) {
                     // Format and update times - (+1) notation is handled automatically
                     const newStartTime = formatTimeHHMM(startMinutes, false);  // Start time
