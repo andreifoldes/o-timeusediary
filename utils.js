@@ -170,38 +170,32 @@ export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
  * @returns {string} Formatted time string (e.g., "04:00", "00:00(+1)", "04:00(+1)")
  */
 export function formatTimeHHMM(minutes, isEndTime = false) {
-    // No need to add offset since we're using absolute minutes
-    let totalMinutes = minutes;
-
-    // Get hours and minutes
-    const h = Math.floor(totalMinutes / 60) % 24;
+    const totalMinutes = minutes % 1440; // Normalize to 0-1439
+    const h = Math.floor(totalMinutes / 60);
     const m = totalMinutes % 60;
+    const isNextDay = minutes >= 1440;
 
-    // Add (+1) for:
-    // - Times between 00:00-03:59 after the first day (minutes >= 1440)
-    // - 04:00 only when it's an end time and minutes = 1680
-    const isNextDay = (minutes >= 1440 && h < 4) || minutes === 1680;
+    // Special case for exact 24-hour wrap
+    const isMidnightWrap = isEndTime && totalMinutes === 240; // 04:00 next day
 
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}${isNextDay ? '(+1)' : ''}`;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}${
+        isNextDay || isMidnightWrap ? '(+1)' : ''
+    }`;
 }
 
 export function timeToMinutes(timeStr) {
-    if (typeof timeStr === 'number') {
-        return Math.round(timeStr);
-    }
+    if (typeof timeStr === 'number') return Math.round(timeStr);
+    
     const isNextDay = timeStr.includes('(+1)');
     const timeOnly = timeStr.replace('(+1)', '').trim();
-    let [hours, minutes] = timeOnly.split(':').map(Number);
-    let totalMinutes = (hours - 4) * 60 + minutes; // Relative to 4 AM
-
-    if (totalMinutes < 0) {
-        totalMinutes += MINUTES_PER_DAY; // Adjust for times before 4 AM
-    }
-
-    if (isNextDay) {
-        totalMinutes += MINUTES_PER_DAY; // Add a full day for next day times
-    }
-
+    const [hours, minutes] = timeOnly.split(':').map(Number);
+    
+    // Calculate absolute minutes since midnight
+    let totalMinutes = (hours * 60) + minutes;
+    
+    // Adjust for next day notation
+    if (isNextDay) totalMinutes += 1440;
+    
     return totalMinutes;
 }
 
@@ -637,28 +631,14 @@ export function getTimelineCoverage() {
 }
 
 function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
-    const MIN_BLOCK_LENGTH = 10; // Minimum block length in minutes
-    const TIMELINE_START = 240; // 4:00 AM in minutes
-    const TIMELINE_END = 1680; // 4:00 AM next day in minutes
+    const MIN_BLOCK_LENGTH = 10;
+    const TIMELINE_START = 240; // 4:00 AM in absolute minutes
+    const TIMELINE_END = 1680; // 4:00 AM next day in absolute minutes
 
-    // Normalize minutes to handle day wrap-around
-    let normalizedStartMinutes = startMinutes;
-    let normalizedEndMinutes = endMinutes;
+    // No normalization needed - inputs should already be absolute
+    const blockLength = endMinutes - startMinutes;
 
-    // If start time is before timeline start (4:00 AM), add 24 hours
-    if (normalizedStartMinutes < TIMELINE_START) {
-        normalizedStartMinutes += MINUTES_PER_DAY;
-    }
-
-    // If end time is before timeline start (4:00 AM), add 24 hours
-    if (normalizedEndMinutes < TIMELINE_START) {
-        normalizedEndMinutes += MINUTES_PER_DAY;
-    }
-
-    // Calculate block length considering wrap-around
-    const blockLength = normalizedEndMinutes - normalizedStartMinutes;
-
-    // Validation checks
+    // Validate block length
     if (blockLength <= 0 || blockLength < MIN_BLOCK_LENGTH) {
         console.warn('Invalid block length:', {
             startTime: formatTimeHHMM(startMinutes),
@@ -669,14 +649,18 @@ function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
         return false;
     }
 
-    // Check if normalized times are within valid range
-    if (normalizedStartMinutes < TIMELINE_START || normalizedEndMinutes > TIMELINE_END) {
+    // Validate timeline bounds
+    const isStartValid = (startMinutes >= TIMELINE_START && startMinutes <= TIMELINE_END) ||
+                        (startMinutes + 1440 >= TIMELINE_START && startMinutes + 1440 <= TIMELINE_END);
+    
+    const isEndValid = (endMinutes >= TIMELINE_START && endMinutes <= TIMELINE_END) ||
+                      (endMinutes + 1440 >= TIMELINE_START && endMinutes + 1440 <= TIMELINE_END);
+
+    if (!isStartValid || !isEndValid) {
         console.warn('Time out of valid range:', {
             startTime: formatTimeHHMM(startMinutes),
             endTime: formatTimeHHMM(endMinutes),
-            validRange: '04:00-04:00(+1)',
-            normalizedStart: normalizedStartMinutes,
-            normalizedEnd: normalizedEndMinutes
+            validRange: '04:00-04:00(+1)'
         });
         return false;
     }

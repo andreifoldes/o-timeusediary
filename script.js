@@ -976,7 +976,7 @@ function initTimelineInteraction(timeline) {
                     } else if (event.edges.right) {
                         // Right edge resizing - adjust end time
                         startMinutes = timeToMinutes(target.dataset.originalStart);
-                        const newLeft = parseFloat(target.style.left);
+                        const absoluteStartMinutes = startMinutes + 240; // Convert to absolute time
                         
                         // Get cursor position from event coordinates
                         const clientX = event.touches ? event.touches[0].clientX : event.clientX;
@@ -991,26 +991,8 @@ function initTimelineInteraction(timeline) {
                         const rawMinutes = positionToMinutes(positionPercent, false);
                         endMinutes = Math.round(rawMinutes / 10) * 10;
 
-                        // Adjust end minutes if it's before 04:00
-                        if (endMinutes < 240) { // 240 = 4 * 60 (04:00)
-                            endMinutes += MINUTES_PER_DAY; // Add 24 hours to make it next day
-                        }
-
-                        // Debug logging with corrected values
-                        if (DEBUG_MODE) {
-                            console.log('[Resize Right Edge]:', {
-                                clientX,
-                                timelineLeft: timelineRect.left,
-                                relativeX: clampedRelativeX,
-                                timelineWidth: timelineRect.width,
-                                position: positionPercent.toFixed(2) + '%',
-                                rawMinutes,
-                                adjustedMinutes: endMinutes,
-                                time: formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true),
-                                startMinutes,
-                                endMinutes
-                            });
-                        }
+                        // Convert to absolute time for validation and formatting
+                        const absoluteEndMinutes = endMinutes;
 
                         // Special case: if we're very close to the end of timeline (100%)
                         const SNAP_THRESHOLD = 99.65;
@@ -1018,24 +1000,11 @@ function initTimelineInteraction(timeline) {
                             endMinutes = MINUTES_PER_DAY + (4 * 60); // 04:00(+1)
                         }
 
-                        // Validate time order and range
-                        if (endMinutes <= startMinutes && !target.dataset.originalEnd.includes('(+1)')) {
-                            console.warn('Invalid resize detected (horizontal/right): End time would be before start time', {
-                                startTime: formatTimeHHMM(startMinutes),
-                                endTime: formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true),
-                                blockId: target.dataset.id
-                            });
-                            target.style.width = target.dataset.originalWidth;
-                            target.classList.add('invalid');
-                            setTimeout(() => target.classList.remove('invalid'), 400);
-                            return;
-                        }
-
-                        // Validate transformations
-                        if (!validateActivityBlockTransformation(startMinutes, endMinutes % MINUTES_PER_DAY, target)) {
+                        // Validate transformations with absolute times
+                        if (!validateActivityBlockTransformation(absoluteStartMinutes, absoluteEndMinutes, target)) {
                             console.warn('Invalid resize detected (horizontal/right): Invalid block transformation', {
-                                startTime: formatTimeHHMM(startMinutes),
-                                endTime: formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true),
+                                startTime: formatTimeHHMM(absoluteStartMinutes, false),
+                                endTime: formatTimeHHMM(absoluteEndMinutes, true),
                                 blockId: target.dataset.id,
                                 reason: 'Block transformation validation failed'
                             });
@@ -1045,25 +1014,24 @@ function initTimelineInteraction(timeline) {
                             return;
                         }
 
-                        // Check for overlaps
-                        if (!canPlaceActivity(startMinutes, endMinutes % MINUTES_PER_DAY, target.dataset.id)) {
-                            console.warn('Invalid resize detected (horizontal/right): Activity overlap', {
-                                startTime: formatTimeHHMM(startMinutes),
-                                endTime: formatTimeHHMM(endMinutes % MINUTES_PER_DAY, true),
-                                blockId: target.dataset.id
-                            });
-                            target.style.width = target.dataset.originalWidth;
-                            target.classList.add('invalid');
-                            setTimeout(() => target.classList.remove('invalid'), 400);
-                            return;
-                        }
-
-                        // Calculate the actual width needed based on time difference
-                        const timeDiff = endMinutes - startMinutes;
+                        // Update dataset with correct absolute times
+                        const newStartTime = formatTimeHHMM(absoluteStartMinutes, false);
+                        const newEndTime = formatTimeHHMM(absoluteEndMinutes, true);
+                        
+                        // Calculate time difference using absolute values
+                        const timeDiff = absoluteEndMinutes - absoluteStartMinutes;
                         const adjustedWidth = (timeDiff / MINUTES_PER_DAY) * 100;
 
-                        // Update size using percentages
+                        // Update element styles and dataset
                         target.style.width = `${adjustedWidth}%`;
+                        target.dataset.start = newStartTime;
+                        target.dataset.end = newEndTime;
+                        target.dataset.length = timeDiff;
+                        target.dataset.startMinutes = absoluteStartMinutes;
+                        target.dataset.endMinutes = absoluteEndMinutes;
+                        
+                        // Update time label with correct absolute times
+                        updateTimeLabel(timeLabel, newStartTime, newEndTime, target);
                     }
                 }
                 
