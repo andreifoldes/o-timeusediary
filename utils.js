@@ -84,17 +84,15 @@ function updateTimeLabel(label, startTime, endTime) {
     const formattedStartTime = formatTimeHHMM(startMinutes);
     const formattedEndTime = formatTimeHHMM(endMinutes, true);
     
-    // Remove the (+1) marker from the displayed label text
+    // Always remove the (+1) marker from the displayed label text.
     label.textContent = `${formattedStartTime.replace('(+1)', '')} - ${formattedEndTime.replace('(+1)', '')}`;
     
-    const isVerticalMode = window.innerWidth <= 1440;
-    
-    if (isVerticalMode) {
+    // Position label based on layout
+    if (window.innerWidth <= 1440) {
         label.style.display = 'block';
     } else {
         label.style.bottom = '-20px';
         label.style.top = 'auto';
-        
         const existingLabels = label.parentElement.parentElement.querySelectorAll('.time-label');
         existingLabels.forEach(existingLabel => {
             if (existingLabel !== label && isOverlapping(existingLabel, label)) {
@@ -221,7 +219,7 @@ export function minutesToPercentage(minutes) {
     return Math.min(100, Math.max(0, (minutesSinceStart / MINUTES_PER_DAY) * 100));
 }
 
-export function positionToMinutes(positionPercent, isMobile = false) {
+export function positionToMinutes(positionPercent, isMobile = false, options = {}) {
     const TIMELINE_START = 240; // 4:00 AM in absolute minutes
     const TIMELINE_END = 1680; // 4:00 AM (+1) in absolute minutes
     const VISIBLE_TIMELINE_MINUTES = TIMELINE_END - TIMELINE_START; // 1440 minutes
@@ -232,15 +230,19 @@ export function positionToMinutes(positionPercent, isMobile = false) {
     // Round to nearest 10 minutes
     let roundedMinutes = Math.round(timelineMinutes / 10) * 10;
     
-    // Ensure that new activities don't start at or after the timeline's end.
-    // Force the new activity's start time to be the last valid block start:
-    // 3:50(+1) => 1680 - 10 = 1660 minutes.
-    if (roundedMinutes >= TIMELINE_END) {
+    // Check for allowEnd option (defaults to false)
+    const allowEnd = options.allowEnd === true;
+    
+    // For new activity placements, clamp so that start time never reaches TIMELINE_END.
+    if (!allowEnd && roundedMinutes >= TIMELINE_END) {
         roundedMinutes = TIMELINE_END - 10;
     }
 
-    // Clamp to timeline bounds and return the value
-    return Math.min(TIMELINE_END - 10, Math.max(TIMELINE_START, roundedMinutes));
+    // Set maximum value based on allowEnd flag:
+    const maxVal = allowEnd ? TIMELINE_END : TIMELINE_END - 10;
+    
+    // Clamp within timeline bounds and return the value
+    return Math.min(maxVal, Math.max(TIMELINE_START, roundedMinutes));
 }
 
 
@@ -805,3 +807,21 @@ export function toggleDebugOverlay(show = true) {
 
 // Make toggleDebugOverlay available globally
 window.toggleDebugOverlay = toggleDebugOverlay;
+
+/**
+ * Validates that if the startTime string includes the (+1) marker,
+ * then the endTime string must also include it.
+ * This enforces that an activity starting on the next day (indicated by (+1))
+ * cannot have an end time without the next-day marker.
+ *
+ * @param {string} startTime - The start time string (e.g., "01:10(+1)")
+ * @param {string} endTime - The end time string (e.g., "02:20" or "02:20(+1)")
+ * @throws {Error} if startTime includes (+1) but endTime does not.
+ * @returns {boolean} true if the time markers are valid.
+ */
+export function validateTimeMarkers(startTime, endTime) {
+    if (startTime.includes('(+1)') && !endTime.includes('(+1)')) {
+        throw new Error("Invalid time markers: if startTime includes '(+1)', then endTime must also include '(+1)'.");
+    }
+    return true;
+}

@@ -869,8 +869,9 @@ function initTimelineInteraction(timeline) {
                         const relativeY = clientY - timelineRect.top;
                         const positionPercent = Math.min(100, Math.max(0, (relativeY / timelineRect.height) * 100));
                         
-                        // Convert to minutes using the actual cursor position
-                        const rawMinutes = positionToMinutes(positionPercent, true);
+                        // For vertical bottom-edge resizing we want to allow reaching the timeline end (04:00(+1))
+                        const rawMinutes = positionToMinutes(positionPercent, true, { allowEnd: true });
+                        
                         endMinutes = Math.round(rawMinutes / 10) * 10;
                         
                         // Debug logging with corrected values
@@ -1253,7 +1254,10 @@ function initTimelineInteraction(timeline) {
             return;
         }
         
-        const [startMinutes, endMinutes] = findNearestMarkers(clickMinutes, isMobile);
+        // In vertical mode, we only need the start time from the click position
+        // End time should always be start time + 10 minutes
+        const startMinutes = Math.round(clickMinutes / 10) * 10;
+        const endMinutes = startMinutes + 10;
 
         if (isNaN(startMinutes) || isNaN(endMinutes)) {
             console.error('Invalid minutes calculation:', { startMinutes, endMinutes });
@@ -1297,12 +1301,21 @@ function initTimelineInteraction(timeline) {
         const currentBlock = document.createElement('div');
         currentBlock.className = 'activity-block';
         currentBlock.dataset.timelineKey = getCurrentTimelineKey();
-        currentBlock.dataset.start = formatTimelineStart(startMinutes);
-        currentBlock.dataset.end = formatTimelineEnd(endMinutes);
+
+        // Replace this section with proper time formatting that handles (+1) notation
+        const isNextDayStart = startMinutes >= 1440 || startMinutes < 240; // Time is after midnight (1440) or before 04:00 next day
+        const formattedStartTime = formatTimeHHMM(startMinutes, false);
+        const formattedEndTime = formatTimeHHMM(endMinutes, true);
+        
+        currentBlock.dataset.start = formattedStartTime;
+        currentBlock.dataset.end = formattedEndTime;
         currentBlock.dataset.length = endMinutes - startMinutes;
         currentBlock.dataset.category = selectedActivity.category;
         currentBlock.dataset.mode = selectedActivity.selections ? 'multiple-choice' : 'single-choice';
         currentBlock.dataset.count = selectedActivity.selections ? selectedActivity.selections.length : 1;
+        currentBlock.dataset.startMinutes = startMinutes;
+        currentBlock.dataset.endMinutes = endMinutes;
+
         // Add raw minutes data attributes
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
@@ -1368,11 +1381,6 @@ function initTimelineInteraction(timeline) {
         
         // Adjust end time to match the block size
         const adjustedEndMinutes = startMinutes + 10;
-        currentBlock.dataset.start = formatTimelineStart(startMinutes);
-        currentBlock.dataset.end = formatTimelineEnd(adjustedEndMinutes);
-        currentBlock.dataset.length = adjustedEndMinutes - startMinutes;
-        currentBlock.dataset.startMinutes = startMinutes;
-        currentBlock.dataset.endMinutes = adjustedEndMinutes;
 
         // Fixed dimensions for consistency
         const MOBILE_BLOCK_WIDTH = 75; // 75% width in mobile mode
@@ -1387,11 +1395,11 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.left = `${MOBILE_OFFSET}%`;
             
             // Add original data attributes for mobile/vertical layout
-            currentBlock.dataset.originalStart = formatTimelineStart(startMinutes);
-            currentBlock.dataset.originalEnd = formatTimelineEnd(adjustedEndMinutes);
+            currentBlock.dataset.originalStart = formattedStartTime;
+            currentBlock.dataset.originalEnd = formattedEndTime;
             currentBlock.dataset.originalLength = adjustedEndMinutes - startMinutes;
             currentBlock.dataset.originalHeight = `${blockSize}%`;
-            currentBlock.dataset.originalWidth = `${MOBILE_BLOCK_WIDTH}%`;  // Add original width
+            currentBlock.dataset.originalWidth = `${MOBILE_BLOCK_WIDTH}%`;
             currentBlock.dataset.originalTop = `${startPositionPercent}%`;
             currentBlock.dataset.originalLeft = `${MOBILE_OFFSET}%`;
         } else {
@@ -1400,12 +1408,12 @@ function initTimelineInteraction(timeline) {
             currentBlock.style.height = '75%';
             currentBlock.style.top = '25%';
             
-            // Existing original data attributes for desktop/horizontal layout
-            currentBlock.dataset.originalStart = formatTimelineStart(startMinutes);
-            currentBlock.dataset.originalEnd = formatTimelineEnd(endMinutes);
-            currentBlock.dataset.originalLength = endMinutes - startMinutes;
+            // Update desktop/horizontal layout attributes
+            currentBlock.dataset.originalStart = formattedStartTime;
+            currentBlock.dataset.originalEnd = formattedEndTime;
+            currentBlock.dataset.originalLength = adjustedEndMinutes - startMinutes;
             currentBlock.dataset.originalHeight = '75%';
-            currentBlock.dataset.originalWidth = `${blockSize}%`;  // Add original width
+            currentBlock.dataset.originalWidth = `${blockSize}%`;
             currentBlock.dataset.originalLeft = `${startPositionPercent}%`;
             currentBlock.dataset.originalTop = '25%';
         }
@@ -1426,7 +1434,7 @@ function initTimelineInteraction(timeline) {
 
         // Create time label for both mobile and desktop modes
         const timeLabel = createTimeLabel(currentBlock);
-        updateTimeLabel(timeLabel, formatTimelineStart(startMinutes), formatTimelineEnd(endMinutes), currentBlock);
+        updateTimeLabel(timeLabel, formattedStartTime, formattedEndTime, currentBlock);
         timeLabel.style.display = 'block'; // Ensure the new label is visible
 
         // Deselect the activity button after successful placement
