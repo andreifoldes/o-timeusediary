@@ -70,34 +70,31 @@ function createTimeLabel(block, showImmediately = false) {
 function updateTimeLabel(label, startTime, endTime) {
     if (!label || !label.parentElement) return;
     
-    // Always read times from parent block's data attributes
     const parentBlock = label.parentElement;
-    const blockStartTime = parentBlock.dataset.start;
-    const blockEndTime = parentBlock.dataset.end;
+    // Instead of using data-start and data-end directly (which lack the (+1) marker),
+    // use data-start-minutes and data-end-minutes if available.
+    const startMinutes = parentBlock.dataset.startMinutes 
+        ? parseInt(parentBlock.dataset.startMinutes, 10)
+        : timeToMinutes(parentBlock.dataset.start);
+    const endMinutes = parentBlock.dataset.endMinutes 
+        ? parseInt(parentBlock.dataset.endMinutes, 10)
+        : timeToMinutes(parentBlock.dataset.end);
     
-    if (!blockStartTime || !blockEndTime) {
-        console.warn('Parent block missing time data:', parentBlock);
-        return;
-    }
+    // Get formatted times using formatTimeHHMM; for the end time, pass isEndTime=true.
+    const formattedStartTime = formatTimeHHMM(startMinutes);
+    const formattedEndTime = formatTimeHHMM(endMinutes, true);
     
-    // Remove (+1) notation for display
-    const displayStartTime = blockStartTime.replace('(+1)', '');
-    const displayEndTime = blockEndTime.replace('(+1)', '');
-    
-    // Update label text directly without storing in data attributes
-    label.textContent = `${displayStartTime} - ${displayEndTime}`;
+    // Remove the (+1) marker from the displayed label text
+    label.textContent = `${formattedStartTime.replace('(+1)', '')} - ${formattedEndTime.replace('(+1)', '')}`;
     
     const isVerticalMode = window.innerWidth <= 1440;
     
     if (isVerticalMode) {
-        // Show the label when updating in vertical mode
         label.style.display = 'block';
     } else {
-        // Original horizontal mode behavior
         label.style.bottom = '-20px';
         label.style.top = 'auto';
         
-        // Only look for labels within the active timeline
         const existingLabels = label.parentElement.parentElement.querySelectorAll('.time-label');
         existingLabels.forEach(existingLabel => {
             if (existingLabel !== label && isOverlapping(existingLabel, label)) {
@@ -230,13 +227,20 @@ export function positionToMinutes(positionPercent, isMobile = false) {
     const VISIBLE_TIMELINE_MINUTES = TIMELINE_END - TIMELINE_START; // 1440 minutes
 
     // Convert percentage to absolute timeline minutes
-    const timelineMinutes = TIMELINE_START + (positionPercent / 100) * VISIBLE_TIMELINE_MINUTES;
+    let timelineMinutes = TIMELINE_START + (positionPercent / 100) * VISIBLE_TIMELINE_MINUTES;
     
-    // Round to nearest 10 minutes and clamp to timeline bounds
-    return Math.min(TIMELINE_END, 
-         Math.max(TIMELINE_START, 
-         Math.round(timelineMinutes / 10) * 10
-    ));
+    // Round to nearest 10 minutes
+    let roundedMinutes = Math.round(timelineMinutes / 10) * 10;
+    
+    // Ensure that new activities don't start at or after the timeline's end.
+    // Force the new activity's start time to be the last valid block start:
+    // 3:50(+1) => 1680 - 10 = 1660 minutes.
+    if (roundedMinutes >= TIMELINE_END) {
+        roundedMinutes = TIMELINE_END - 10;
+    }
+
+    // Clamp to timeline bounds and return the value
+    return Math.min(TIMELINE_END - 10, Math.max(TIMELINE_START, roundedMinutes));
 }
 
 
@@ -657,3 +661,147 @@ function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
 
     return true;
 }
+
+/**
+ * Formats a time for timeline start/end with next-day marker when needed
+ * @param {number} minutes - Absolute minutes (240 = 04:00, 1680 = 04:00(+1))
+ * @param {boolean} isEndTime - Whether this is an end time (affects (+1) notation)
+ * @returns {string} Formatted time string with (+1) when needed
+ */
+export function formatTimelineTime(minutes, isEndTime = false) {
+    const h = Math.floor((minutes % 1440) / 60);
+    const m = Math.floor(minutes % 60);
+    const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    
+    // Add (+1) marker for:
+    // 1. Times between 00:00-03:59 (0-239 minutes)
+    // 2. When minutes >= 1440 (next day)
+    // 3. When it's exactly 04:00 next day (1680 minutes) and it's an end time
+    const needsNextDayMarker = minutes < 240 || minutes >= 1440 || (isEndTime && minutes === 240);
+    
+    return needsNextDayMarker ? `${timeStr}(+1)` : timeStr;
+}
+
+// Helper functions specifically for timeline start and end times
+export function formatTimelineStart(minutes) {
+    return formatTimelineTime(minutes, false);
+}
+
+export function formatTimelineEnd(minutes) {
+    return formatTimelineTime(minutes, true);
+}
+
+// Add after the imports at the top
+let debugOverlay = null;
+
+export function toggleDebugOverlay(show = true) {
+    if (show && !debugOverlay) {
+        // Create debug overlay
+        debugOverlay = document.createElement('div');
+        debugOverlay.id = 'debug-overlay';
+        debugOverlay.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 9999;
+            min-width: 200px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            cursor: move;
+            user-select: none;
+            border: 1px solid #444;
+        `;
+        document.body.appendChild(debugOverlay);
+        
+        // Make overlay draggable
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        debugOverlay.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            if (e.target === debugOverlay) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+                debugOverlay.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            }
+        }
+
+        function dragEnd() {
+            isDragging = false;
+        }
+
+        // Add mousemove listener to active timeline
+        const updateDebugInfo = (e) => {
+            const activeTimeline = document.querySelector('.timeline[data-active="true"]');
+            if (!activeTimeline || !debugOverlay) return;
+
+            const rect = activeTimeline.getBoundingClientRect();
+            const isMobile = window.innerWidth <= 1440;
+            
+            // Calculate relative position
+            let relativePos;
+            let positionPercent;
+            
+            if (isMobile) {
+                relativePos = e.clientY - rect.top;
+                positionPercent = (relativePos / rect.height) * 100;
+            } else {
+                relativePos = e.clientX - rect.left;
+                positionPercent = (relativePos / rect.width) * 100;
+            }
+
+            // Calculate time
+            const minutes = positionToMinutes(positionPercent);
+            const timeStr = formatTimeHHMM(minutes);
+
+            // Update debug overlay content
+            debugOverlay.innerHTML = `
+                <div style="margin-bottom: 8px; font-weight: bold; color: #00ff00;">Cursor Debug</div>
+                <div style="border-bottom: 1px solid #444; margin-bottom: 8px;"></div>
+                Position: ${Math.round(relativePos)}px<br>
+                Percent: ${positionPercent.toFixed(2)}%<br>
+                Minutes: ${minutes}<br>
+                Time: ${timeStr}<br>
+                Mode: ${isMobile ? 'Vertical' : 'Horizontal'}<br>
+                <div style="font-size: 10px; margin-top: 8px; color: #888;">
+                    (Drag to move)
+                </div>
+            `;
+        };
+
+        // Add mousemove listener to document
+        document.addEventListener('mousemove', updateDebugInfo);
+        
+    } else if (!show && debugOverlay) {
+        debugOverlay.remove();
+        debugOverlay = null;
+    }
+}
+
+// Make toggleDebugOverlay available globally
+window.toggleDebugOverlay = toggleDebugOverlay;
