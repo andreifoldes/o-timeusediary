@@ -225,28 +225,18 @@ export function minutesToPercentage(minutes) {
 }
 
 export function positionToMinutes(positionPercent, isMobile = false) {
-    const TIMELINE_HOURS = 24;
-    const SNAP_LOWER_THRESHOLD = 0.35;
-    const SNAP_UPPER_THRESHOLD = 99.65; // Threshold for snapping to end of day
-    const TIMELINE_START = 240; // 04:00 in minutes
+    const TIMELINE_START = 240; // 4:00 AM in absolute minutes
+    const TIMELINE_END = 1680; // 4:00 AM (+1) in absolute minutes
+    const VISIBLE_TIMELINE_MINUTES = TIMELINE_END - TIMELINE_START; // 1440 minutes
 
-    // Handle lower snap threshold
-    if (positionPercent <= SNAP_LOWER_THRESHOLD) {
-        return TIMELINE_START; // 04:00 = 240 minutes
-    }
-
-    // Handle upper snap threshold
-    if (positionPercent >= SNAP_UPPER_THRESHOLD) {
-        return TIMELINE_START + MINUTES_PER_DAY; // 04:00(+1) = 1680 minutes
-    }
-
-    // Calculate minutes based on timeline orientation
-    const timelineMinutes = (positionPercent / 100) * TIMELINE_HOURS * 60;
+    // Convert percentage to absolute timeline minutes
+    const timelineMinutes = TIMELINE_START + (positionPercent / 100) * VISIBLE_TIMELINE_MINUTES;
     
-    // Round to nearest 10 minutes and offset by timeline start
-    const totalMinutes = Math.round(timelineMinutes / 10) * 10 + TIMELINE_START;
-    
-    return totalMinutes;
+    // Round to nearest 10 minutes and clamp to timeline bounds
+    return Math.min(TIMELINE_END, 
+         Math.max(TIMELINE_START, 
+         Math.round(timelineMinutes / 10) * 10
+    ));
 }
 
 

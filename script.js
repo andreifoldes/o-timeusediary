@@ -977,37 +977,36 @@ function initTimelineInteraction(timeline) {
                         target.style.width = `${adjustedWidth}%`;
 
                     } else if (event.edges.right) {
-                        // Right edge resizing - adjust end time
-                        startMinutes = timeToMinutes(target.dataset.originalStart);
-                        const absoluteStartMinutes = startMinutes + 240; // Convert to absolute time
-                        
-                        // Get cursor position from event coordinates
-                        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+                        // Right edge resizing - adjust end time using absolute timeline
+                        const target = event.target;
                         const timelineRect = targetTimeline.getBoundingClientRect();
+                        
+                        // Get raw cursor position from event coordinates
+                        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
                         
                         // Calculate relative X position within timeline bounds
                         const relativeX = clientX - timelineRect.left;
                         const clampedRelativeX = Math.max(0, Math.min(relativeX, timelineRect.width));
                         const positionPercent = (clampedRelativeX / timelineRect.width) * 100;
                         
-                        // Convert to raw minutes using timeline-based position
-                        const rawMinutes = positionToMinutes(positionPercent, false);
+                        // Convert to absolute timeline minutes (240-1680 range)
+                        const rawMinutes = positionToMinutes(positionPercent, false); // Returns 240-1680 directly
                         endMinutes = Math.round(rawMinutes / 10) * 10;
+                        
+                        // Maintain original start time in absolute minutes
+                        startMinutes = parseInt(target.dataset.startMinutes);
 
-                        // Convert to absolute time for validation and formatting
-                        const absoluteEndMinutes = endMinutes;
-
-                        // Special case: if we're very close to the end of timeline (100%)
+                        // Special case: If we're at the end of timeline (1680 minutes/04:00(+1))
                         const SNAP_THRESHOLD = 99.65;
                         if (positionPercent >= SNAP_THRESHOLD) {
-                            endMinutes = MINUTES_PER_DAY + (4 * 60); // 04:00(+1)
+                            endMinutes = 1680; // Absolute end of timeline
                         }
 
                         // Validate transformations with absolute times
-                        if (!validateActivityBlockTransformation(absoluteStartMinutes, absoluteEndMinutes, target)) {
-                            console.warn('Invalid resize detected (horizontal/right): Invalid block transformation', {
-                                startTime: formatTimeHHMM(absoluteStartMinutes, false),
-                                endTime: formatTimeHHMM(absoluteEndMinutes, true),
+                        if (!validateActivityBlockTransformation(startMinutes, endMinutes, target)) {
+                            console.warn('Invalid resize detected (horizontal/right):', {
+                                startTime: formatTimeHHMM(startMinutes, false),
+                                endTime: formatTimeHHMM(endMinutes, true),
                                 blockId: target.dataset.id,
                                 reason: 'Block transformation validation failed'
                             });
@@ -1017,26 +1016,24 @@ function initTimelineInteraction(timeline) {
                             return;
                         }
 
-                        // Update dataset with correct absolute times
-                        const newStartTime = formatTimeHHMM(absoluteStartMinutes, false);
-                        const newEndTime = formatTimeHHMM(absoluteEndMinutes, true);
-                        
                         // Calculate time difference using absolute values
-                        const timeDiff = absoluteEndMinutes - absoluteStartMinutes;
-                        const adjustedWidth = (timeDiff / MINUTES_PER_DAY) * 100;
+                        const timeDiff = endMinutes - startMinutes;
+                        const adjustedWidth = (timeDiff / 1440) * 100; // 1440 = total visible timeline minutes
 
                         // Update element styles and dataset
                         target.style.width = `${adjustedWidth}%`;
-                        target.dataset.start = newStartTime;
-                        target.dataset.end = newEndTime;
+                        target.dataset.start = formatTimeHHMM(startMinutes, false);
+                        target.dataset.end = formatTimeHHMM(endMinutes, true);
                         target.dataset.length = timeDiff;
-                        target.dataset.startMinutes = absoluteStartMinutes;
-                        target.dataset.endMinutes = absoluteEndMinutes;
+                        target.dataset.startMinutes = startMinutes;
+                        target.dataset.endMinutes = endMinutes;
                         
                         // Update time label with correct absolute times
-                        if (timeLabel) {
-                            updateTimeLabel(timeLabel, newStartTime, newEndTime, target);
-                        }
+                        updateTimeLabel(timeLabel, 
+                            formatTimeHHMM(startMinutes, false), 
+                            formatTimeHHMM(endMinutes, true), 
+                            target
+                        );
                     }
                 }
                 
