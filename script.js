@@ -761,24 +761,33 @@ function initTimelineInteraction(timeline) {
                 if (getIsMobile()) {
                     // Mobile: Handle vertical resizing
                     if (event.edges.top) {
+                        // Get raw cursor position from event coordinates
+                        const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+                        const timelineRect = targetTimeline.getBoundingClientRect();
+                        
+                        // Calculate relative Y position within timeline bounds
+                        const relativeY = clientY - timelineRect.top;
+                        const clampedRelativeY = Math.max(0, Math.min(relativeY, timelineRect.height));
+                        const positionPercent = (clampedRelativeY / timelineRect.height) * 100;
+                        
+                        // Convert to raw minutes using timeline-based position
+                        const rawMinutes = positionToMinutes(positionPercent, true);
+                        startMinutes = Math.round(rawMinutes / 10) * 10;
+                        
                         // Keep original end time fixed
                         endMinutes = parseInt(target.dataset.endMinutes);
-                        
-                        // Convert cursor position directly to minutes
-                        startMinutes = positionToMinutes((event.rect.top - timelineRect.top) / timelineRect.height * 100, true);
-                        startMinutes = Math.round(startMinutes / 10) * 10;
 
-                        // Debug logging
+                        // Debug logging with accurate values
                         if (DEBUG_MODE) {
                             console.log('[Resize Top Edge]:', {
-                                clientY: event.touches ? event.touches[0].clientY : event.clientY,
+                                clientY,
                                 timelineTop: timelineRect.top,
-                                relativeY: event.rect.top - timelineRect.top,
+                                relativeY: clampedRelativeY,
                                 timelineHeight: timelineRect.height,
-                                position: ((event.rect.top - timelineRect.top) / timelineRect.height * 100).toFixed(2) + '%',
+                                position: positionPercent.toFixed(2) + '%',
                                 time: formatTimeHHMM(startMinutes),
-                                startMinutes: startMinutes,
-                                endMinutes: endMinutes
+                                startMinutes,
+                                endMinutes
                             });
                         }
 
