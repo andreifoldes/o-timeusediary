@@ -735,6 +735,11 @@ function initTimelineInteraction(timeline) {
             // Store original raw minutes
             target.dataset.originalStartMinutes = target.dataset.startMinutes || timeToMinutes(target.dataset.start);
             target.dataset.originalEndMinutes = target.dataset.endMinutes || timeToMinutes(target.dataset.end);
+
+            // Ensure autoscroll is enabled when resizing starts
+            if (window.autoScrollModule && getIsMobile()) {
+                window.autoScrollModule.enable();
+            }
         },
         edges: { 
             right: !getIsMobile(), 
@@ -1197,6 +1202,10 @@ function initTimelineInteraction(timeline) {
                     textDiv.className = getIsMobile()
                         ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
                         : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
+                }
+                // Disable autoscroll when resizing ends
+                if (window.autoScrollModule) {
+                    window.autoScrollModule.disable();
                 }
                 updateButtonStates();
             }
