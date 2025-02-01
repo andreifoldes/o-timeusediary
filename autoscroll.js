@@ -32,8 +32,16 @@ const autoScrollModule = (() => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollHeight = document.documentElement.scrollHeight;
 
-    // Only scroll if we're not at the bottom of the page
-    if (distanceToBottom < config.threshold && scrollTop < scrollHeight - viewportHeight) {
+    // Retrieve footer element to prevent scrolling past it
+    const footer = document.querySelector("#instructionsFooter");
+    let footerLimit = Infinity;
+    if (footer) {
+      // Calculate the absolute top position of the footer
+      footerLimit = footer.getBoundingClientRect().top + scrollTop;
+    }
+
+    // Only scroll if we're not at the bottom of the page and not past the footer
+    if (distanceToBottom < config.threshold && scrollTop < scrollHeight - viewportHeight && (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit) {
       window.scrollBy({
         top: config.scrollSpeed,
         behavior: 'auto'
