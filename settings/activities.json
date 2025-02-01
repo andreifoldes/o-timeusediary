@@ -536,31 +536,31 @@
           "activities": [
             {
               "name": "7 - Enjoyed very much",
-              "color": "#f0d0a8"
+              "color": "#FF9EC0"
             },
             {
               "name": "6",
-              "color": "#f0eda8"
+              "color": "#FFACC9"
             },
             {
               "name": "5",
-              "color": "#f0b1a8"
+              "color": "#FFBAD2"
             },
             {
               "name": "4",
-              "color": "#a8f0ae"
+              "color": "#FFC8DB"
             },
             {
               "name": "3",
-              "color": "#b8a8f0"
+              "color": "#FFD6E4"
             },
             {
               "name": "2",
-              "color": "#f0a8cb"
+              "color": "#FFE4ED"
             },
             {
               "name": "1 - Didn't enjoy at all",
-              "color": "#f0f0a8"
+              "color": "#FFF2F6"
             }
           ]
         }
