@@ -10,7 +10,7 @@ import {
     positionToMinutes
 } from './utils.js';
 import { getIsMobile, updateIsMobile } from './globals.js';
-import { addNextTimeline, renderActivities } from './script.js';
+import { addNextTimeline } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
 // Modal management
@@ -469,7 +469,303 @@ function handleResize() {
     location.reload();
 }
 
-// Export the functions
+// Add renderActivities function
+function renderActivities(categories, container = document.getElementById('activitiesContainer')) {
+    container.innerHTML = '';
+    
+    // Set data-mode attribute based on current timeline's mode
+    const currentKey = getCurrentTimelineKey();
+    if (currentKey && window.timelineManager.metadata[currentKey]) {
+        container.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+    }
+
+    const isMobile = getIsMobile();
+    const isModal = container.id === 'modalActivitiesContainer';
+
+    // Only create accordion if this is the modal container and in mobile view
+    if (isMobile && isModal) {
+        const accordionContainer = document.createElement('div');
+        accordionContainer.className = 'activities-accordion';
+        // Set data-mode attribute to match current timeline's mode
+        if (currentKey && window.timelineManager.metadata[currentKey]) {
+            accordionContainer.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
+        }
+
+        // Disable collapsibility if there is only one category
+        const isAccordionCollapsible = categories.length > 1;
+
+        categories.forEach(category => {
+            const categoryDiv = document.createElement('div');
+            // If only one category, always mark it as active (no collapsibility)
+            categoryDiv.className = isAccordionCollapsible ? 'activity-category' : 'activity-category active';
+
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.name;
+            categoryDiv.appendChild(categoryTitle);
+
+            const activityButtonsDiv = document.createElement('div');
+            activityButtonsDiv.className = 'activity-buttons';
+
+            category.activities.forEach(activity => {
+                const activityButton = document.createElement('button');
+                // Determine mode from container attribute
+                const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
+                activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
+                activityButton.style.setProperty('--color', activity.color);
+                
+                if (isMultipleChoice) {
+                    const checkmark = document.createElement('span');
+                    checkmark.className = 'checkmark';
+                    activityButton.appendChild(checkmark);
+                }
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = 'activity-text';
+                textSpan.textContent = activity.name;
+                activityButton.appendChild(textSpan);
+                activityButton.addEventListener('click', () => {
+                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
+                    
+                    // Check if this is the "other not listed" button
+                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                        // Show custom activity modal
+                        const customActivityModal = document.getElementById('customActivityModal');
+                        const customActivityInput = document.getElementById('customActivityInput');
+                        customActivityInput.value = ''; // Clear previous input
+                        customActivityModal.style.display = 'block';
+                        
+                        // Handle custom activity submission
+                        const handleCustomActivity = () => {
+                            const customText = customActivityInput.value.trim();
+                            if (customText) {
+                                if (isMultipleChoice) {
+                                    activityButton.classList.add('selected');
+                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+                                    window.selectedActivity = {
+                                        selections: selectedButtons.map(btn => ({
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            color: btn.style.getPropertyValue('--color')
+                                        })),
+                                        category: category.name
+                                    };
+                                } else {
+                                    categoryButtons.forEach(b => b.classList.remove('selected'));
+                                    window.selectedActivity = {
+                                        name: customText,
+                                        color: activityButton.style.getPropertyValue('--color'),
+                                        category: category.name
+                                    };
+                                    activityButton.classList.add('selected');
+                                }
+                                customActivityModal.style.display = 'none';
+                                document.getElementById('activitiesModal').style.display = 'none';
+                            }
+                        };
+
+                        // Set up event listeners for custom activity modal
+                        const confirmBtn = document.getElementById('confirmCustomActivity');
+                        const inputField = document.getElementById('customActivityInput');
+                        
+                        // Remove any existing listeners
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                        
+                        // Add new listeners
+                        newConfirmBtn.addEventListener('click', handleCustomActivity);
+                        inputField.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCustomActivity();
+                            }
+                        });
+                        
+                        return;
+                    }
+                    
+                    if (isMultipleChoice) {
+                        // Toggle selection for this button
+                        activityButton.classList.toggle('selected');
+            
+                        // Get all selected activities in this category
+                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+            
+                        if (selectedButtons.length > 0) {
+                            window.selectedActivity = {
+                                selections: selectedButtons.map(btn => ({
+                                    name: btn.textContent,
+                                    color: btn.style.getPropertyValue('--color')
+                                })),
+                                category: category.name
+                            };
+                        } else {
+                            window.selectedActivity = null;
+                        }
+                    } else {
+                        // Single choice mode
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        window.selectedActivity = {
+                            name: activity.name,
+                            color: activity.color,
+                            category: category.name
+                        };
+                        activityButton.classList.add('selected');
+                    }
+                    // Only close modal in single-choice mode
+                    if (!isMultipleChoice) {
+                        const modal = document.querySelector('.modal-overlay');
+                        if (modal) {
+                            modal.style.display = 'none';
+                        }
+                    }
+                });
+                activityButtonsDiv.appendChild(activityButton);
+            });
+
+            categoryDiv.appendChild(activityButtonsDiv);
+            accordionContainer.appendChild(categoryDiv);
+        });
+
+        container.appendChild(accordionContainer);
+
+        // Attach click listeners for collapsible accordion only if it's collapsible (multiple categories)
+        if (isAccordionCollapsible) {
+            const categoryTitles = accordionContainer.querySelectorAll('.activity-category h3');
+            categoryTitles.forEach(title => {
+                title.addEventListener('click', () => {
+                    const category = title.parentElement;
+                    category.classList.toggle('active');
+                });
+            });
+        }
+    } else {
+        categories.forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'activity-category';
+
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.name;
+            categoryDiv.appendChild(categoryTitle);
+
+            const activityButtonsDiv = document.createElement('div');
+            activityButtonsDiv.className = 'activity-buttons';
+
+            category.activities.forEach(activity => {
+                const activityButton = document.createElement('button');
+                const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
+                activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
+                activityButton.style.setProperty('--color', activity.color);
+                
+                if (isMultipleChoice) {
+                    const checkmark = document.createElement('span');
+                    checkmark.className = 'checkmark';
+                    activityButton.appendChild(checkmark);
+                }
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = 'activity-text';
+                textSpan.textContent = activity.name;
+                activityButton.appendChild(textSpan);
+                activityButton.addEventListener('click', () => {
+                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
+                    
+                    // Check if this is the "other not listed" button
+                    if (activity.name.includes('other not listed (enter)')) {
+                        // Show custom activity modal
+                        const customActivityModal = document.getElementById('customActivityModal');
+                        const customActivityInput = document.getElementById('customActivityInput');
+                        customActivityInput.value = ''; // Clear previous input
+                        customActivityModal.style.display = 'block';
+                        customActivityInput.focus(); // Focus the input field
+                        
+                        // Handle custom activity submission
+                        const handleCustomActivity = () => {
+                            const customText = customActivityInput.value.trim();
+                            if (customText) {
+                                if (isMultipleChoice) {
+                                    activityButton.classList.add('selected');
+                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+                                    window.selectedActivity = {
+                                        selections: selectedButtons.map(btn => ({
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            color: btn.style.getPropertyValue('--color')
+                                        })),
+                                        category: category.name
+                                    };
+                                } else {
+                                    categoryButtons.forEach(b => b.classList.remove('selected'));
+                                    window.selectedActivity = {
+                                        name: customText,
+                                        color: activity.color,
+                                        category: category.name
+                                    };
+                                    activityButton.classList.add('selected');
+                                }
+                                customActivityModal.style.display = 'none';
+                                document.getElementById('activitiesModal').style.display = 'none';
+                            }
+                        };
+
+                        // Set up event listeners for custom activity modal
+                        const confirmBtn = document.getElementById('confirmCustomActivity');
+                        const inputField = document.getElementById('customActivityInput');
+                        
+                        // Remove any existing listeners
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                        
+                        // Add new listeners
+                        newConfirmBtn.addEventListener('click', handleCustomActivity);
+                        inputField.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCustomActivity();
+                            }
+                        });
+                        
+                        return;
+                    }
+                    
+                    if (isMultipleChoice) {
+                        // Toggle selection for this button
+                        activityButton.classList.toggle('selected');
+            
+                        // Get all selected activities in this category
+                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
+            
+                        if (selectedButtons.length > 0) {
+                            window.selectedActivity = {
+                                selections: selectedButtons.map(btn => ({
+                                    name: btn.querySelector('.activity-text').textContent,
+                                    color: btn.style.getPropertyValue('--color')
+                                })),
+                                category: category.name
+                            };
+                        } else {
+                            window.selectedActivity = null;
+                        }
+                    } else {
+                        // Single choice mode
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        window.selectedActivity = {
+                            name: activity.name,
+                            color: activity.color,
+                            category: category.name
+                        };
+                        activityButton.classList.add('selected');
+                    }
+                });
+                activityButtonsDiv.appendChild(activityButton);
+            });
+
+            categoryDiv.appendChild(activityButtonsDiv);
+            container.appendChild(categoryDiv);
+        });
+    }
+}
+
+// Export all functions
 export {
     createModal,
     createFloatingAddButton,
@@ -482,5 +778,6 @@ export {
     scrollToActiveTimeline,
     updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize
+    handleResize,
+    renderActivities
 };

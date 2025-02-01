@@ -23,7 +23,8 @@ import {
     scrollToActiveTimeline,
     updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize
+    handleResize,
+    renderActivities
 } from './ui.js';
 import { 
     DEBUG_MODE,
@@ -33,8 +34,6 @@ import {
     TIMELINE_START_HOUR,
     TIMELINE_HOURS
 } from './constants.js';
-
-let selectedActivity = null;
 
 // Single timeline management object
 window.timelineManager = {
@@ -46,6 +45,9 @@ window.timelineManager = {
     currentIndex: 0, // Current timeline index
     study: {} // Store URL parameters
 };
+
+// Initialize selectedActivity in the global scope
+window.selectedActivity = null;
 
 // Only create and populate study parameters if URL parameters exist
 const urlParams = new URLSearchParams(window.location.search);
@@ -320,295 +322,6 @@ async function fetchActivities(key) {
     } catch (error) {
         console.error('Error loading activities:', error);
         throw error;
-    }
-}
-
-function renderActivities(categories, container = document.getElementById('activitiesContainer')) {
-    container.innerHTML = '';
-    
-    // Set data-mode attribute based on current timeline's mode
-    const currentKey = getCurrentTimelineKey();
-    if (currentKey && window.timelineManager.metadata[currentKey]) {
-        container.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
-    }
-
-    const isMobile = getIsMobile();
-    const isModal = container.id === 'modalActivitiesContainer';
-
-    // Only create accordion if this is the modal container and in mobile view
-    if (isMobile && isModal) {
-        const accordionContainer = document.createElement('div');
-        accordionContainer.className = 'activities-accordion';
-        // Set data-mode attribute to match current timeline's mode
-        const currentKey = getCurrentTimelineKey();
-        if (currentKey && window.timelineManager.metadata[currentKey]) {
-            accordionContainer.setAttribute('data-mode', window.timelineManager.metadata[currentKey].mode);
-        }
-
-        categories.forEach(category => {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'activity-category';
-
-            const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = category.name;
-            categoryDiv.appendChild(categoryTitle);
-
-            const activityButtonsDiv = document.createElement('div');
-            activityButtonsDiv.className = 'activity-buttons';
-
-            category.activities.forEach(activity => {
-                const activityButton = document.createElement('button');
-                const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
-                activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
-                activityButton.style.setProperty('--color', activity.color);
-                
-                if (isMultipleChoice) {
-                    const checkmark = document.createElement('span');
-                    checkmark.className = 'checkmark';
-                    activityButton.appendChild(checkmark);
-                }
-                
-                const textSpan = document.createElement('span');
-                textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
-                activityButton.appendChild(textSpan);
-                activityButton.addEventListener('click', () => {
-                    const activitiesContainer = document.getElementById('activitiesContainer');
-                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
-                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
-                    
-                    // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
-                        // Show custom activity modal
-                        const customActivityModal = document.getElementById('customActivityModal');
-                        const customActivityInput = document.getElementById('customActivityInput');
-                        customActivityInput.value = ''; // Clear previous input
-                        customActivityModal.style.display = 'block';
-                        
-                        // Handle custom activity submission
-                        const handleCustomActivity = () => {
-                            const customText = customActivityInput.value.trim();
-                            if (customText) {
-                                if (isMultipleChoice) {
-                                    activityButton.classList.add('selected');
-                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-                                    selectedActivity = {
-                                        selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
-                                            color: btn.style.getPropertyValue('--color')
-                                        })),
-                                        category: category.name
-                                    };
-                                } else {
-                                    categoryButtons.forEach(b => b.classList.remove('selected'));
-                                    selectedActivity = {
-                                        name: customText,
-                                        color: activityButton.style.getPropertyValue('--color'),
-                                        category: category.name
-                                    };
-                                    activityButton.classList.add('selected');
-                                }
-                                customActivityModal.style.display = 'none';
-                                document.getElementById('activitiesModal').style.display = 'none';
-                            }
-                        };
-
-                        // Set up event listeners for custom activity modal
-                        const confirmBtn = document.getElementById('confirmCustomActivity');
-                        const inputField = document.getElementById('customActivityInput');
-                        
-                        // Remove any existing listeners
-                        const newConfirmBtn = confirmBtn.cloneNode(true);
-                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-                        
-                        // Add new listeners
-                        newConfirmBtn.addEventListener('click', handleCustomActivity);
-                        inputField.addEventListener('keypress', (e) => {
-                            if (e.key === 'Enter') {
-                                handleCustomActivity();
-                            }
-                        });
-                        
-                        return;
-                    }
-                    
-                    if (isMultipleChoice) {
-                        // Toggle selection for this button
-                        activityButton.classList.toggle('selected');
-            
-                        // Get all selected activities in this category
-                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-            
-                        if (selectedButtons.length > 0) {
-                            selectedActivity = {
-                                selections: selectedButtons.map(btn => ({
-                                    name: btn.textContent,
-                                    color: btn.style.getPropertyValue('--color')
-                                })),
-                                category: category.name
-                            };
-                        } else {
-                            selectedActivity = null;
-                        }
-                    } else {
-                        // Single choice mode
-                        categoryButtons.forEach(b => b.classList.remove('selected'));
-                        selectedActivity = {
-                            name: activity.name,
-                            color: activity.color,
-                            category: category.name
-                        };
-                        activityButton.classList.add('selected');
-                    }
-                    // Only close modal in single-choice mode
-                    if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
-                        if (modal) {
-                            modal.style.display = 'none';
-                        }
-                    }
-                });
-                activityButtonsDiv.appendChild(activityButton);
-            });
-
-            categoryDiv.appendChild(activityButtonsDiv);
-            accordionContainer.appendChild(categoryDiv);
-        });
-
-        container.appendChild(accordionContainer);
-
-        // Add click event listener to category titles
-        const categoryTitles = accordionContainer.querySelectorAll('.activity-category h3');
-        categoryTitles.forEach(title => {
-            title.addEventListener('click', () => {
-                const category = title.parentElement;
-                category.classList.toggle('active');
-            });
-        });
-    } else {
-        categories.forEach(category => {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'activity-category';
-
-            const categoryTitle = document.createElement('h3');
-            categoryTitle.textContent = category.name;
-            categoryDiv.appendChild(categoryTitle);
-
-            const activityButtonsDiv = document.createElement('div');
-            activityButtonsDiv.className = 'activity-buttons';
-
-            category.activities.forEach(activity => {
-                const activityButton = document.createElement('button');
-                const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
-                activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
-                activityButton.style.setProperty('--color', activity.color);
-                
-                if (isMultipleChoice) {
-                    const checkmark = document.createElement('span');
-                    checkmark.className = 'checkmark';
-                    activityButton.appendChild(checkmark);
-                }
-                
-                const textSpan = document.createElement('span');
-                textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
-                activityButton.appendChild(textSpan);
-                activityButton.addEventListener('click', () => {
-                    const activitiesContainer = document.getElementById('activitiesContainer');
-                    const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
-                    const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
-                    
-                    // Check if this is the "other not listed" button
-                    if (activity.name.includes('other not listed (enter)')) {
-                        // Show custom activity modal
-                        const customActivityModal = document.getElementById('customActivityModal');
-                        const customActivityInput = document.getElementById('customActivityInput');
-                        customActivityInput.value = ''; // Clear previous input
-                        customActivityModal.style.display = 'block';
-                        customActivityInput.focus(); // Focus the input field
-                        
-                        // Handle custom activity submission
-                        const handleCustomActivity = () => {
-                            const customText = customActivityInput.value.trim();
-                            if (customText) {
-                                if (isMultipleChoice) {
-                                    activityButton.classList.add('selected');
-                                    const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-                                    selectedActivity = {
-                                        selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
-                                            color: btn.style.getPropertyValue('--color')
-                                        })),
-                                        category: category.name
-                                    };
-                                } else {
-                                    categoryButtons.forEach(b => b.classList.remove('selected'));
-                                    selectedActivity = {
-                                        name: customText,
-                                        color: activity.color,
-                                        category: category.name
-                                    };
-                                    activityButton.classList.add('selected');
-                                }
-                                customActivityModal.style.display = 'none';
-                                document.getElementById('activitiesModal').style.display = 'none';
-                            }
-                        };
-
-                        // Set up event listeners for custom activity modal
-                        const confirmBtn = document.getElementById('confirmCustomActivity');
-                        const inputField = document.getElementById('customActivityInput');
-                        
-                        // Remove any existing listeners
-                        const newConfirmBtn = confirmBtn.cloneNode(true);
-                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-                        
-                        // Add new listeners
-                        newConfirmBtn.addEventListener('click', handleCustomActivity);
-                        inputField.addEventListener('keypress', (e) => {
-                            if (e.key === 'Enter') {
-                                handleCustomActivity();
-                            }
-                        });
-                        
-                        return;
-                    }
-                    
-                    if (isMultipleChoice) {
-                        // Toggle selection for this button
-                        activityButton.classList.toggle('selected');
-            
-                        // Get all selected activities in this category
-                        const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-            
-                        if (selectedButtons.length > 0) {
-                            selectedActivity = {
-                                selections: selectedButtons.map(btn => ({
-                                    name: btn.querySelector('.activity-text').textContent,
-                                    color: btn.style.getPropertyValue('--color')
-                                })),
-                                category: category.name
-                            };
-                        } else {
-                            selectedActivity = null;
-                        }
-                    } else {
-                        // Single choice mode
-                        categoryButtons.forEach(b => b.classList.remove('selected'));
-                        selectedActivity = {
-                            name: activity.name,
-                            color: activity.color,
-                            category: category.name
-                        };
-                        activityButton.classList.add('selected');
-                    }
-                });
-                activityButtonsDiv.appendChild(activityButton);
-            });
-
-            categoryDiv.appendChild(activityButtonsDiv);
-            container.appendChild(categoryDiv);
-        });
     }
 }
 
@@ -1225,7 +938,7 @@ function initTimelineInteraction(timeline) {
         if (currentTime - lastClickTime < CLICK_DELAY) return;
         lastClickTime = currentTime;
 
-        if (!selectedActivity || e.target.closest('.activity-block')) return;
+        if (!window.selectedActivity || e.target.closest('.activity-block')) return;
         
         const currentKey = getCurrentTimelineKey();
         // Check if timeline is full before proceeding
@@ -1277,14 +990,14 @@ function initTimelineInteraction(timeline) {
         // Check if activity can be placed at this position
         if (!canPlaceActivity(startMinutes, endMinutes, null)) {
             console.warn('Invalid activity placement attempt:', {
-                activity: selectedActivity.name,
+                activity: window.selectedActivity.name,
                 startMinutes,
                 endMinutes,
                 reason: 'Activity cannot be placed at this position due to overlap or timeline bounds'
             });
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = selectedActivity.color;
+            block.style.backgroundColor = window.selectedActivity.color;
             
             // Calculate position percentages
             const startPositionPercent = minutesToPercentage(startMinutes);
@@ -1319,18 +1032,18 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.start = formattedStartTime;
         currentBlock.dataset.end = formattedEndTime;
         currentBlock.dataset.length = endMinutes - startMinutes;
-        currentBlock.dataset.category = selectedActivity.category;
-        currentBlock.dataset.mode = selectedActivity.selections ? 'multiple-choice' : 'single-choice';
-        currentBlock.dataset.count = selectedActivity.selections ? selectedActivity.selections.length : 1;
+        currentBlock.dataset.category = window.selectedActivity.category;
+        currentBlock.dataset.mode = window.selectedActivity.selections ? 'multiple-choice' : 'single-choice';
+        currentBlock.dataset.count = window.selectedActivity.selections ? window.selectedActivity.selections.length : 1;
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
 
         // Add raw minutes data attributes
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
-        if (selectedActivity.selections) {
+        if (window.selectedActivity.selections) {
             // Multiple selections - create split background
-            const colors = selectedActivity.selections.map(s => s.color);
+            const colors = window.selectedActivity.selections.map(s => s.color);
             const isMobile = getIsMobile();
             const numSelections = colors.length;
             const percentage = 100 / numSelections;
@@ -1349,22 +1062,22 @@ function initTimelineInteraction(timeline) {
                 currentBlock.style.background = `linear-gradient(to bottom, ${stops})`;
             }
         } else {
-            currentBlock.style.backgroundColor = selectedActivity.color;
+            currentBlock.style.backgroundColor = window.selectedActivity.color;
         }
         const textDiv = document.createElement('div');
         let combinedActivityText;
 
-        if (selectedActivity.selections) {
+        if (window.selectedActivity.selections) {
             if (DEBUG_MODE) {
-                console.log('Multiple selections:', selectedActivity.selections);
+                console.log('Multiple selections:', window.selectedActivity.selections);
             }
             // For multiple selections, join names with line break in the text div
-            textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
+            textDiv.innerHTML = window.selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
-            combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            combinedActivityText = window.selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
-            textDiv.textContent = selectedActivity.name;
-            combinedActivityText = selectedActivity.name;
+            textDiv.textContent = window.selectedActivity.name;
+            combinedActivityText = window.selectedActivity.name;
         }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
@@ -1448,7 +1161,7 @@ function initTimelineInteraction(timeline) {
 
         // Deselect the activity button after successful placement
         document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('selected'));
-        selectedActivity = null;
+        window.selectedActivity = null;
 
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
@@ -1468,7 +1181,7 @@ function initTimelineInteraction(timeline) {
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: selectedActivity?.color || '#808080',
+            color: window.selectedActivity?.color || '#808080',
             count: parseInt(currentBlock.dataset.count) || 1
         };
         getCurrentTimelineData().push(activityData);
@@ -1491,7 +1204,7 @@ function initTimelineInteraction(timeline) {
             currentBlock.remove();
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = selectedActivity.color;
+            block.style.backgroundColor = window.selectedActivity.color;
             block.style.width = currentBlock.style.width;
             block.style.height = currentBlock.style.height;
             block.style.top = currentBlock.style.top;
@@ -1616,5 +1329,5 @@ init().catch(error => {
         '<p style="color: red;">Error loading activities. Please refresh the page to try again. Error: ' + error.message + '</p>';
 });
 
-// Export addNextTimeline and renderActivities for ui.js
-export { addNextTimeline, renderActivities };
+// Export addNextTimeline for ui.js
+export { addNextTimeline };
