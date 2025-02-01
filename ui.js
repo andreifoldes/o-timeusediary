@@ -465,53 +465,8 @@ function updateTimelineCountVariable() {
 }
 
 function handleResize() {
-    const wasVertical = getIsMobile();
-    const layoutChanged = wasVertical !== updateIsMobile();
-    
-    // Update gradient bar layout regardless of layout change
-    updateGradientBarLayout();
-    
-    // Update floating button position on any resize
-    updateFloatingButtonPosition();
-    
-    if (layoutChanged) {
-        // Clear the DOM and reinitialize the app
-        const timelinesWrapper = document.querySelector('.timelines-wrapper');
-        if (timelinesWrapper) {
-            timelinesWrapper.innerHTML = '';
-        }
-        
-        // Store current timeline data
-        const currentState = {
-            currentIndex: window.timelineManager.currentIndex,
-            activities: { ...window.timelineManager.activities }
-        };
-        
-        // Reset timeline manager state
-        window.timelineManager.initialized.clear();
-        window.timelineManager.currentIndex = -1;
-        window.timelineManager.activeTimeline = null;
-        
-        // Reinitialize with stored data
-        init().then(() => {
-            // Restore activities
-            window.timelineManager.activities = currentState.activities;
-            
-            // Advance to current timeline
-            const advanceToCurrentTimeline = async () => {
-                while (window.timelineManager.currentIndex < currentState.currentIndex) {
-                    await addNextTimeline();
-                }
-            };
-            
-            advanceToCurrentTimeline().then(() => {
-                // Update timeline count variable after restoring state
-                updateTimelineCountVariable();
-            });
-        }).catch(error => {
-            console.error('Failed to reinitialize after resize:', error);
-        });
-    }
+    // Instead of reinitializing components, reload the entire DOM on resize
+    location.reload();
 }
 
 // Export the functions

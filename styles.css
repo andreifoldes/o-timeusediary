@@ -1271,3 +1271,14 @@ body {
         right: clamp(10px, 3vw, 20px);
     }
 }
+
+/* Responsive styling for modal text input */
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: clamp(14px, 2vw, 18px);
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
