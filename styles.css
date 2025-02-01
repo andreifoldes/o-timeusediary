@@ -28,7 +28,7 @@ body {
 }
 
 /* Mobile layout */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .timeline-canvas {
         flex-direction: row;
         overflow-x: hidden;
@@ -107,6 +107,10 @@ body {
         width: auto !important;
         margin-bottom: 0 !important;
     }
+
+    .gradient-bar {
+        display: none !important;
+    }
 }
 
 /* Base styles (outside media query) */
@@ -183,7 +187,7 @@ body {
 }
 
 /* Mobile vertical layout */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .timeline-container {
         min-width: 180px;
         max-width: 180px;
@@ -202,6 +206,10 @@ body {
     .timeline-container[data-active="false"] {
         opacity: 0.6;
         pointer-events: none;
+    }
+
+    .gradient-bar {
+        display: none !important;
     }
 }
 
@@ -266,7 +274,7 @@ body {
 }
 
 /* Mobile vertical markers */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .timeline .hour-marker {
         position: absolute;
         width: 100%;
@@ -348,7 +356,7 @@ body {
 }
 
 /* Mobile vertical layout */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .hour-label {
         top: 50%;
         transform: translateY(-50%);
@@ -398,7 +406,7 @@ body {
 }
 
 /* Hide main activities container in mobile/tablet view */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     #activitiesContainer {
         display: none;
     }
@@ -575,7 +583,7 @@ body {
 }
 
 /* Mobile styles */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .time-label {
         right: -50px; /* Space from the block */
         top: 50%;
@@ -741,7 +749,7 @@ body {
 }
 
 /* Mobile resize handle */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .activity-block {
         cursor: ns-resize;
     }
@@ -806,7 +814,7 @@ body {
 }
 
 /* Mobile vertical gradient bar */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .gradient-bar[data-layout="vertical"] {
         display: none;
     }
@@ -841,7 +849,7 @@ body {
     display: none; /* Hidden by default */
 }
 
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .floating-add-button {
         display: flex;
         position: fixed;
@@ -1156,7 +1164,7 @@ body {
 }
 
 /* Further mobile adjustments for header section */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .header-section {
         padding: 6px 8px; /* Further reduce padding for better scalability */
     }
@@ -1260,7 +1268,7 @@ body {
 }
 
 /* Floating add button adjustments */
-@media (max-width: 1439px) {
+@media (max-width: 1439.98px) {
     .floating-add-button {
         width: clamp(50px, 15vw, 60px);
         height: clamp(50px, 15vw, 60px);
