@@ -4,7 +4,8 @@
     "version": "0.0.1",
     "author": "John Doe",
     "instructions": true,
-    "redirect_url": "https://www.timeuse.org/"
+    "redirect_url": "https://www.timeuse.org/",
+    "database_solution": "local"
   },
   "timeline": {
     "primary": {

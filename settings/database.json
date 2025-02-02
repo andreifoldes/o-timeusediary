@@ -1,0 +1,8 @@
+{
+  "database_solution": "supabase",
+  "supabase": {
+    "supabase_url": "https://your-project.supabase.co",
+    "supabase_key": "your-anon-or-service-key",
+    "table": "your_timeline_table"
+  }
+} 
