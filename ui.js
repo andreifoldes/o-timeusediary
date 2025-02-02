@@ -465,8 +465,33 @@ function updateTimelineCountVariable() {
 }
 
 function handleResize() {
-    // Instead of reinitializing components, reload the entire DOM on resize
-    location.reload();
+    // Debounce the resize handling to avoid excessive processing on rapid resize events
+    clearTimeout(window.handleResizeDebounce);
+    
+    window.handleResizeDebounce = setTimeout(() => {
+        // Update the mobile/desktop state (vertical vs. horizontal layout)
+        updateIsMobile();
+        
+        // Update the gradient bar layout depending on the new mode
+        updateGradientBarLayout();
+        
+        // If in mobile mode (vertical layout), adjust the floating add button's position
+        if (getIsMobile()) {
+            updateFloatingButtonPosition();
+        }
+        
+        // Update the timeline count variable used by CSS
+        updateTimelineCountVariable();
+        
+        // Re-adjust the view to center or correctly display the active timeline
+        scrollToActiveTimeline();
+        
+        // Update button states (undo, clean, next) based on the current timeline data
+        updateButtonStates();
+        
+        // Optionally, re-render other UI components if needed
+        console.log('Components reinitialized after resize');
+    }, 100); // 100ms debounce interval
 }
 
 // Add renderActivities function
