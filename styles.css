@@ -1,4 +1,9 @@
+html {
+    overscroll-behavior: none;
+}
+
 body {
+    overscroll-behavior: none;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
