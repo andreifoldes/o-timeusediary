@@ -580,8 +580,10 @@ body {
 .activity-text {
     margin-left: 5px;
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    flex-direction: row;
+    gap: 4px;
+    align-items: baseline;
+    flex-wrap: wrap;
 }
 
 .activity-name {
