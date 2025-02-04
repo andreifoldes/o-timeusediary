@@ -19,30 +19,37 @@
           "activities": [
             {
               "name": "sleeping",
+              "examples": "testing examples",
               "color": "#a8eaf0"
             },
             {
               "name": "resting",
+              "examples": "",
               "color": "#f0e6a8"
             },
             {
               "name": "washing, dressing",
+              "examples": "",
               "color": "#a8e3f0"
             },
             {
               "name": "eating, drinking, meal, at home or work",
+              "examples": "",
               "color": "#f0a8ef"
             },
             {
               "name": "preparing food, cooking, washing up",
+              "examples": "",
               "color": "#a8ccf0"
             },
             {
               "name": "services eg. doctor/ dentist/ hairdresser",
+              "examples": "",
               "color": "#c0f0a8"
             },
             {
               "name": "church, temple, mosque, synagogue, prayer",
+              "examples": "",
               "color": "#a8d6f0"
             }
           ]
@@ -52,18 +59,22 @@
           "activities": [
             {
               "name": "cleaning tidying house",
+              "examples": "",
               "color": "#a8c2f0"
             },
             {
               "name": "clothes washing, mending, sewing",
+              "examples": "",
               "color": "#aea8f0"
             },
             {
               "name": "maintenance of house, DIY, gardening, pet care",
+              "examples": "",
               "color": "#a8f0b2"
             },
             {
               "name": "shopping, bank etc including internet",
+              "examples": "",
               "color": "#a8f0d1"
             }
           ]
@@ -73,18 +84,22 @@
           "activities": [
             {
               "name": "caring for own children",
+              "examples": "",
               "color": "#f0d4a8"
             },
             {
               "name": "caring for other children",
+              "examples": "",
               "color": "#e7a8f0"
             },
             {
               "name": "help, caring for adult household members",
+              "examples": "",
               "color": "#dba8f0"
             },
             {
               "name": "unpaid help, caring for adults not in your household",
+              "examples": "",
               "color": "#f0dea8"
             }
           ]
@@ -94,22 +109,27 @@
           "activities": [
             {
               "name": "paid work (including at home)",
+              "examples": "",
               "color": "#a8f0b4"
             },
             {
               "name": "formal education",
+              "examples": "",
               "color": "#f0a8b7"
             },
             {
               "name": "recreational courses, study",
+              "examples": "",
               "color": "#a8f0d2"
             },
             {
               "name": "voluntary work for club, organisation",
+              "examples": "",
               "color": "#f0cba8"
             },
             {
               "name": "work/study break",
+              "examples": "",
               "color": "#f0a8ec"
             }
           ]
@@ -119,30 +139,37 @@
           "activities": [
             {
               "name": "travelling: walking/jogging",
+              "examples": "",
               "color": "#e0a8f0"
             },
             {
               "name": "travelling: cycle",
+              "examples": "",
               "color": "#a8d1f0"
             },
             {
               "name": "travelling: motorbike, moped",
+              "examples": "",
               "color": "#f0e1a8"
             },
             {
               "name": "travelling: in own car",
+              "examples": "",
               "color": "#f0a9a8"
             },
             {
               "name": "travelling: taxi/uber/lift",
+              "examples": "",
               "color": "#d9a8f0"
             },
             {
               "name": "travelling: public transport",
+              "examples": "",
               "color": "#aef0a8"
             },
             {
               "name": "travelling: other",
+              "examples": "",
               "color": "#a8a9f0"
             }
           ]
@@ -152,46 +179,57 @@
           "activities": [
             {
               "name": "Watching TV/DVD, listening to music",
+              "examples": "",
               "color": "#b4f0a8"
             },
             {
               "name": "Talking on phone, texting, email, social media, read/write letters",
+              "examples": "",
               "color": "#f0bea8"
             },
             {
               "name": "reading including e-books",
+              "examples": "",
               "color": "#f0a8db"
             },
             {
               "name": "using computer",
+              "examples": "",
               "color": "#c7a8f0"
             },
             {
               "name": "playing computer games",
+              "examples": "",
               "color": "#caf0a8"
             },
             {
               "name": "spending time with friends, family",
+              "examples": "",
               "color": "#f0a8d4"
             },
             {
               "name": "hobbies",
+              "examples": "",
               "color": "#cbf0a8"
             },
             {
               "name": "walking/dog walking",
+              "examples": "",
               "color": "#a8f0c5"
             },
             {
               "name": "playing sports, exercise",
+              "examples": "",
               "color": "#c2f0a8"
             },
             {
               "name": "going out to eat, drink eg pub, restaurant",
+              "examples": "",
               "color": "#a8dbf0"
             },
             {
               "name": "cinema, theatre, sports, cultural event",
+              "examples": "",
               "color": "#a8f0b5"
             }
           ]
@@ -201,10 +239,12 @@
           "activities": [
             {
               "name": "Filling in the time use diary",
+              "examples": "",
               "color": "#baa8f0"
             },
             {
               "name": "other not listed (enter)",
+              "examples": "",
               "color": "#e9a8f0"
             }
           ]
@@ -222,30 +262,37 @@
           "activities": [
             {
               "name": "sleeping",
+              "examples": "",
               "color": "#f0a8dd"
             },
             {
               "name": "resting",
+              "examples": "",
               "color": "#f0c1a8"
             },
             {
               "name": "washing, dressing",
+              "examples": "",
               "color": "#c5f0a8"
             },
             {
               "name": "eating, drinking, meal, at home or work",
+              "examples": "",
               "color": "#b5f0a8"
             },
             {
               "name": "preparing food, cooking, washing up",
+              "examples": "",
               "color": "#f0c2a8"
             },
             {
               "name": "services eg. doctor/dentist/hairdresser",
+              "examples": "",
               "color": "#a8f0be"
             },
             {
               "name": "church, temple, mosque, synagogue, prayer",
+              "examples": "",
               "color": "#a8daf0"
             }
           ]
@@ -255,18 +302,22 @@
           "activities": [
             {
               "name": "cleaning tidying house",
+              "examples": "",
               "color": "#c0a8f0"
             },
             {
               "name": "clothes washing, mending, sewing",
+              "examples": "",
               "color": "#e3f0a8"
             },
             {
               "name": "maintenance of house, DIY, gardening, pet care",
+              "examples": "",
               "color": "#cef0a8"
             },
             {
               "name": "shopping, bank etc including internet",
+              "examples": "",
               "color": "#f0d6a8"
             }
           ]
@@ -276,18 +327,22 @@
           "activities": [
             {
               "name": "caring for own children",
+              "examples": "",
               "color": "#cea8f0"
             },
             {
               "name": "caring for other children",
+              "examples": "",
               "color": "#f0a8ad"
             },
             {
               "name": "help, caring for adult household members",
+              "examples": "",
               "color": "#f0b4a8"
             },
             {
               "name": "unpaid help, caring for adults not in your household",
+              "examples": "",
               "color": "#adf0a8"
             }
           ]
@@ -297,22 +352,27 @@
           "activities": [
             {
               "name": "paid work (including at home)",
+              "examples": "",
               "color": "#c5a8f0"
             },
             {
               "name": "formal education",
+              "examples": "",
               "color": "#f0a8df"
             },
             {
               "name": "recreational courses, study",
+              "examples": "",
               "color": "#f0a8c7"
             },
             {
               "name": "voluntary work for club, organisation",
+              "examples": "",
               "color": "#f0dba8"
             },
             {
               "name": "work/study break",
+              "examples": "",
               "color": "#f0e7a8"
             }
           ]
@@ -322,30 +382,37 @@
           "activities": [
             {
               "name": "travelling: walking/jogging",
+              "examples": "",
               "color": "#a8f0c4"
             },
             {
               "name": "travelling: cycle",
+              "examples": "",
               "color": "#ebf0a8"
             },
             {
               "name": "travelling: motorbike, moped",
+              "examples": "",
               "color": "#f0caa8"
             },
             {
               "name": "travelling: in own car",
+              "examples": "",
               "color": "#a8f0a9"
             },
             {
               "name": "travelling: taxi/uber/lift",
+              "examples": "",
               "color": "#eda8f0"
             },
             {
               "name": "travelling: public transport",
+              "examples": "",
               "color": "#a8f0af"
             },
             {
               "name": "travelling: other",
+              "examples": "",
               "color": "#b7a8f0"
             }
           ]
@@ -355,46 +422,57 @@
           "activities": [
             {
               "name": "Watching TV/DVD, listening to music",
+              "examples": "",
               "color": "#f0a8e1"
             },
             {
               "name": "Talking on phone, texting, email, social media, read/write letters",
+              "examples": "",
               "color": "#f0d1a8"
             },
             {
               "name": "reading including e-books",
+              "examples": "",
               "color": "#a8f0b9"
             },
             {
               "name": "using computer",
+              "examples": "",
               "color": "#f0a8c2"
             },
             {
               "name": "playing computer games",
+              "examples": "",
               "color": "#a8f0e7"
             },
             {
               "name": "spending time with friends, family",
+              "examples": "",
               "color": "#a8f0c2"
             },
             {
               "name": "hobbies",
+              "examples": "",
               "color": "#d6a8f0"
             },
             {
               "name": "walking/dog walking",
+              "examples": "",
               "color": "#a8f0c6"
             },
             {
               "name": "playing sports, exercise",
+              "examples": "",
               "color": "#a8b1f0"
             },
             {
               "name": "going out to eat, drink eg pub, restaurant",
+              "examples": "",
               "color": "#a8f0d4"
             },
             {
               "name": "cinema, theatre, sports, cultural event",
+              "examples": "",
               "color": "#f0a8eb"
             }
           ]
@@ -404,10 +482,12 @@
           "activities": [
             {
               "name": "Filling in the time use diary",
+              "examples": "",
               "color": "#abf0a8"
             },
             {
               "name": "other not listed (enter)",
+              "examples": "",
               "color": "#a8f0d9"
             }
           ]
@@ -425,30 +505,37 @@
           "activities": [
             {
               "name": "Home",
+              "examples": "",
               "color": "#a8f0de"
             },
             {
               "name": "Work",
+              "examples": "",
               "color": "#f0a8ac"
             },
             {
               "name": "School/College",
+              "examples": "",
               "color": "#c1f0a8"
             },
             {
               "name": "Other people's home",
+              "examples": "",
               "color": "#a8f0ba"
             },
             {
               "name": "Restaurant, cafe or pub",
+              "examples": "",
               "color": "#a8b5f0"
             },
             {
               "name": "Shops, shopping centres, malls, markets",
+              "examples": "",
               "color": "#f0c6a8"
             },
             {
               "name": "Other",
+              "examples": "",
               "color": "#a8f0b1"
             }
           ]
@@ -466,6 +553,7 @@
           "activities": [
             {
               "name": "Alone",
+              "examples": "",
               "color": "#cdf0a8"
             }
           ]
@@ -475,26 +563,32 @@
           "activities": [
             {
               "name": "Spouse / partner",
+              "examples": "",
               "color": "#f0a8d1"
             },
             {
               "name": "Child under 12 from your household",
+              "examples": "",
               "color": "#a8bff0"
             },
             {
               "name": "Young Person 12-16 from your household",
+              "examples": "",
               "color": "#caa8f0"
             },
             {
               "name": "Other household member",
+              "examples": "",
               "color": "#b5a8f0"
             },
             {
               "name": "Non-household children",
+              "examples": "",
               "color": "#a8e6f0"
             },
             {
               "name": "Other non-household",
+              "examples": "",
               "color": "#a8f0dd"
             }
           ]
@@ -512,14 +606,17 @@
           "activities": [
             {
               "name": "Computer",
+              "examples": "",
               "color": "#a8f0a8"
             },
             {
               "name": "Tablet",
+              "examples": "",
               "color": "#f0a8d7"
             },
             {
               "name": "Smartphone",
+              "examples": "",
               "color": "#a8f0ef"
             }
           ]
@@ -537,30 +634,37 @@
           "activities": [
             {
               "name": "7 - Enjoyed very much",
+              "examples": "",
               "color": "#FF9EC0"
             },
             {
               "name": "6",
+              "examples": "",
               "color": "#FFACC9"
             },
             {
               "name": "5",
+              "examples": "",
               "color": "#FFBAD2"
             },
             {
               "name": "4",
+              "examples": "",
               "color": "#FFC8DB"
             },
             {
               "name": "3",
+              "examples": "",
               "color": "#FFD6E4"
             },
             {
               "name": "2",
+              "examples": "",
               "color": "#FFE4ED"
             },
             {
               "name": "1 - Didn't enjoy at all",
+              "examples": "",
               "color": "#FFF2F6"
             }
           ]

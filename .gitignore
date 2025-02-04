@@ -3,5 +3,6 @@
 .cursor
 .gitignore
 .cursorrules
+.cursor-template.xml
 misc/
 screenshots/

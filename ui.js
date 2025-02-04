@@ -544,22 +544,34 @@ function renderActivities(categories, container = document.getElementById('activ
                     activityButton.appendChild(checkmark);
                 }
                 
-                const textSpan = document.createElement('span');
-                textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
-                activityButton.appendChild(textSpan);
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'activity-name';
+                nameSpan.textContent = activity.name;
+                
+                const examplesSpan = document.createElement('span');
+                examplesSpan.className = 'activity-examples';
+                examplesSpan.textContent = activity.examples || '';
+                
+                activityItem.appendChild(nameSpan);
+                activityItem.appendChild(examplesSpan);
+                activityButton.appendChild(activityItem);
+                
                 activityButton.addEventListener('click', () => {
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                    if (activity.name.includes('other not listed (enter)')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
                         customActivityInput.value = ''; // Clear previous input
                         customActivityModal.style.display = 'block';
+                        customActivityInput.focus(); // Focus the input field
                         
                         // Handle custom activity submission
                         const handleCustomActivity = () => {
@@ -570,7 +582,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     window.selectedActivity = {
                                         selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-name').textContent,
                                             color: btn.style.getPropertyValue('--color')
                                         })),
                                         category: category.name
@@ -579,7 +591,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
                                     window.selectedActivity = {
                                         name: customText,
-                                        color: activityButton.style.getPropertyValue('--color'),
+                                        color: activity.color,
                                         category: category.name
                                     };
                                     activityButton.classList.add('selected');
@@ -618,7 +630,7 @@ function renderActivities(categories, container = document.getElementById('activ
                         if (selectedButtons.length > 0) {
                             window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
-                                    name: btn.textContent,
+                                    name: btn.querySelector('.activity-name').textContent,
                                     color: btn.style.getPropertyValue('--color')
                                 })),
                                 category: category.name
@@ -635,10 +647,8 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                    }
-                    // Only close modal in single-choice mode
-                    if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
+                        // Close the modal in single-choice mode
+                        const modal = document.getElementById('activitiesModal');
                         if (modal) {
                             modal.style.display = 'none';
                         }
@@ -687,10 +697,21 @@ function renderActivities(categories, container = document.getElementById('activ
                     activityButton.appendChild(checkmark);
                 }
                 
-                const textSpan = document.createElement('span');
-                textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
-                activityButton.appendChild(textSpan);
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'activity-name';
+                nameSpan.textContent = activity.name;
+                
+                const examplesSpan = document.createElement('span');
+                examplesSpan.className = 'activity-examples';
+                examplesSpan.textContent = activity.examples || '';
+                
+                activityItem.appendChild(nameSpan);
+                activityItem.appendChild(examplesSpan);
+                activityButton.appendChild(activityItem);
+                
                 activityButton.addEventListener('click', () => {
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
@@ -714,7 +735,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     window.selectedActivity = {
                                         selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            name: btn === activityButton ? customText : btn.querySelector('.activity-name').textContent,
                                             color: btn.style.getPropertyValue('--color')
                                         })),
                                         category: category.name
@@ -762,7 +783,7 @@ function renderActivities(categories, container = document.getElementById('activ
                         if (selectedButtons.length > 0) {
                             window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
-                                    name: btn.querySelector('.activity-text').textContent,
+                                    name: btn.querySelector('.activity-name').textContent,
                                     color: btn.style.getPropertyValue('--color')
                                 })),
                                 category: category.name
@@ -779,6 +800,11 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
+                        // Close the modal in single-choice mode
+                        const modal = document.getElementById('activitiesModal');
+                        if (modal) {
+                            modal.style.display = 'none';
+                        }
                     }
                 });
                 activityButtonsDiv.appendChild(activityButton);
