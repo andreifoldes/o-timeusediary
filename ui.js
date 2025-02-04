@@ -23,7 +23,7 @@ function createModal() {
         <div class="modal">
             <div class="modal-header">
                 <h3>Enter Custom Activity</h3>
-                <button class="modal-close">&times;</button>
+                <button type="button" class="modal-close">&times;</button>
             </div>
             <div class="modal-content">
                 <input type="text" id="customActivityInput" maxlength="30" placeholder="Enter your activity (max 30 chars)">
@@ -34,9 +34,9 @@ function createModal() {
         </div>
     `;
 
-    customActivityModal.querySelector('.modal-close').addEventListener('click', () => {
-        customActivityModal.style.display = 'none';
-    });
+    const customClose = customActivityModal.querySelector('.modal-close');
+    customClose.addEventListener('click', () => { customActivityModal.style.display = 'none'; });
+    customClose.addEventListener('touchend', () => { customActivityModal.style.display = 'none'; });
 
     customActivityModal.addEventListener('click', (e) => {
         if (e.target === customActivityModal) {
@@ -52,15 +52,15 @@ function createModal() {
         <div class="modal">
             <div class="modal-header">
                 <h3>Add Activity</h3>
-                <button class="modal-close">&times;</button>
+                <button type="button" class="modal-close">&times;</button>
             </div>
             <div id="modalActivitiesContainer"></div>
         </div>
     `;
 
-    activitiesModal.querySelector('.modal-close').addEventListener('click', () => {
-        activitiesModal.style.display = 'none';
-    });
+    const activitiesClose = activitiesModal.querySelector('.modal-close');
+    activitiesClose.addEventListener('click', () => { activitiesModal.style.display = 'none'; });
+    activitiesClose.addEventListener('touchend', () => { activitiesModal.style.display = 'none'; });
 
     activitiesModal.addEventListener('click', (e) => {
         if (e.target === activitiesModal) {
@@ -78,22 +78,25 @@ function createModal() {
                 <h3>Are you sure?</h3>
                 <p>You will not be able to change your responses.</p>
                 <div class="button-container">
-                    <button id="confirmCancel" class="btn btn-secondary">Cancel</button>
-                    <button id="confirmOk" class="btn save-btn">OK</button>
+                    <button type="button" id="confirmCancel" class="btn btn-secondary">Cancel</button>
+                    <button type="button" id="confirmOk" class="btn save-btn">OK</button>
                 </div>
             </div>
         </div>
     `;
 
-    confirmationModal.querySelector('#confirmCancel').addEventListener('click', () => {
-        confirmationModal.style.display = 'none';
-    });
+    const confirmCancelBtn = confirmationModal.querySelector('#confirmCancel');
+    confirmCancelBtn.addEventListener('click', () => { confirmationModal.style.display = 'none'; });
+    confirmCancelBtn.addEventListener('touchend', () => { confirmationModal.style.display = 'none'; });
 
-    confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
+    const confirmOkBtn = confirmationModal.querySelector('#confirmOk');
+    const handleConfirmOk = () => {
         confirmationModal.style.display = 'none';
         sendData();
         document.getElementById('nextBtn').disabled = true;
-    });
+    };
+    confirmOkBtn.addEventListener('click', handleConfirmOk);
+    confirmOkBtn.addEventListener('touchend', handleConfirmOk);
 
     document.body.appendChild(activitiesModal);
     document.body.appendChild(confirmationModal);
