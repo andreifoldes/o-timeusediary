@@ -462,23 +462,27 @@ function renderActivities(categories, container = document.getElementById('activ
                     }
                     // Only close modal in single-choice mode
                     if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
-                        if (modal) {
-                            if (getIsMobile()) {
-                                // Force close both modals with a slight delay on mobile
-                                setTimeout(() => {
-                                    const activitiesModal = document.getElementById('activitiesModal');
-                                    const customActivityModal = document.getElementById('customActivityModal');
-                                    if (activitiesModal) {
-                                        activitiesModal.style.display = 'none';
-                                    }
-                                    if (customActivityModal) {
-                                        customActivityModal.style.display = 'none';
-                                    }
-                                }, 50);
-                            } else {
-                                // Immediate close on desktop
-                                modal.style.display = 'none';
+                        // Force close modals with a slight delay on mobile
+                        if (getIsMobile()) {
+                            setTimeout(() => {
+                                const activitiesModal = document.getElementById('activitiesModal');
+                                const customActivityModal = document.getElementById('customActivityModal');
+                                if (activitiesModal) {
+                                    activitiesModal.style.cssText = 'display: none !important';
+                                }
+                                if (customActivityModal) {
+                                    customActivityModal.style.cssText = 'display: none !important';
+                                }
+                            }, 50);
+                        } else {
+                            // Immediate close on desktop
+                            const activitiesModal = document.getElementById('activitiesModal');
+                            const customActivityModal = document.getElementById('customActivityModal');
+                            if (activitiesModal) {
+                                activitiesModal.style.cssText = 'display: none !important';
+                            }
+                            if (customActivityModal) {
+                                customActivityModal.style.cssText = 'display: none !important';
                             }
                         }
                     }
@@ -619,23 +623,27 @@ function renderActivities(categories, container = document.getElementById('activ
                     }
                     // Only close modal in single-choice mode
                     if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
-                        if (modal) {
-                            if (getIsMobile()) {
-                                // Force close both modals with a slight delay on mobile
-                                setTimeout(() => {
-                                    const activitiesModal = document.getElementById('activitiesModal');
-                                    const customActivityModal = document.getElementById('customActivityModal');
-                                    if (activitiesModal) {
-                                        activitiesModal.style.display = 'none';
-                                    }
-                                    if (customActivityModal) {
-                                        customActivityModal.style.display = 'none';
-                                    }
-                                }, 50);
-                            } else {
-                                // Immediate close on desktop
-                                modal.style.display = 'none';
+                        // Force close modals with a slight delay on mobile
+                        if (getIsMobile()) {
+                            setTimeout(() => {
+                                const activitiesModal = document.getElementById('activitiesModal');
+                                const customActivityModal = document.getElementById('customActivityModal');
+                                if (activitiesModal) {
+                                    activitiesModal.style.cssText = 'display: none !important';
+                                }
+                                if (customActivityModal) {
+                                    customActivityModal.style.cssText = 'display: none !important';
+                                }
+                            }, 50);
+                        } else {
+                            // Immediate close on desktop
+                            const activitiesModal = document.getElementById('activitiesModal');
+                            const customActivityModal = document.getElementById('customActivityModal');
+                            if (activitiesModal) {
+                                activitiesModal.style.cssText = 'display: none !important';
+                            }
+                            if (customActivityModal) {
+                                customActivityModal.style.cssText = 'display: none !important';
                             }
                         }
                     }
