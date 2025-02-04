@@ -579,6 +579,20 @@ body {
 
 .activity-text {
     margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.activity-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.activity-examples {
+    font-size: 0.85em;
+    color: #666;
+    font-weight: 300;
 }
 
 .activity-button::before {
@@ -647,6 +661,14 @@ body {
         font-size: 12px; /* Slightly larger font */
         border-radius: 4px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .activity-text {
+        gap: 1px;
+    }
+    
+    .activity-examples {
+        font-size: 0.8em;
     }
 }
 

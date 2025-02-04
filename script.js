@@ -371,7 +371,21 @@ function renderActivities(categories, container = document.getElementById('activ
                 
                 const textSpan = document.createElement('span');
                 textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
+                
+                // Create name span
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'activity-name';
+                nameSpan.textContent = activity.name;
+                textSpan.appendChild(nameSpan);
+                
+                // Add examples if they exist
+                if (activity.examples) {
+                    const examplesSpan = document.createElement('span');
+                    examplesSpan.className = 'activity-examples';
+                    examplesSpan.textContent = activity.examples;
+                    textSpan.appendChild(examplesSpan);
+                }
+                
                 activityButton.appendChild(textSpan);
                 activityButton.addEventListener('click', () => {
                     const activitiesContainer = document.getElementById('activitiesContainer');
@@ -531,7 +545,21 @@ function renderActivities(categories, container = document.getElementById('activ
                 
                 const textSpan = document.createElement('span');
                 textSpan.className = 'activity-text';
-                textSpan.textContent = activity.name;
+                
+                // Create name span
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'activity-name';
+                nameSpan.textContent = activity.name;
+                textSpan.appendChild(nameSpan);
+                
+                // Add examples if they exist
+                if (activity.examples) {
+                    const examplesSpan = document.createElement('span');
+                    examplesSpan.className = 'activity-examples';
+                    examplesSpan.textContent = activity.examples;
+                    textSpan.appendChild(examplesSpan);
+                }
+                
                 activityButton.appendChild(textSpan);
                 activityButton.addEventListener('click', () => {
                     const activitiesContainer = document.getElementById('activitiesContainer');
