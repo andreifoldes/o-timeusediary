@@ -35,10 +35,21 @@ function createModal() {
         </div>
     `;
 
-    customActivityModal.querySelector('.modal-close').addEventListener('click', () => {
+    const customCloseBtn = customActivityModal.querySelector('.modal-close');
+    customCloseBtn.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        customActivityModal.style.display = 'none';
+    });
+    customCloseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         customActivityModal.style.display = 'none';
     });
 
+    customActivityModal.addEventListener('pointerup', (e) => {
+        if (e.target === customActivityModal) {
+            customActivityModal.style.display = 'none';
+        }
+    });
     customActivityModal.addEventListener('click', (e) => {
         if (e.target === customActivityModal) {
             customActivityModal.style.display = 'none';
@@ -59,10 +70,21 @@ function createModal() {
         </div>
     `;
 
-    activitiesModal.querySelector('.modal-close').addEventListener('click', () => {
+    const activitiesCloseBtn = activitiesModal.querySelector('.modal-close');
+    activitiesCloseBtn.addEventListener('pointerup', (e) => {
+        e.preventDefault();
+        activitiesModal.style.display = 'none';
+    });
+    activitiesCloseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         activitiesModal.style.display = 'none';
     });
 
+    activitiesModal.addEventListener('pointerup', (e) => {
+        if (e.target === activitiesModal) {
+            activitiesModal.style.display = 'none';
+        }
+    });
     activitiesModal.addEventListener('click', (e) => {
         if (e.target === activitiesModal) {
             activitiesModal.style.display = 'none';
