@@ -487,19 +487,10 @@ function preventPullToRefresh() {
 }
 
 function handleResize() {
-    const breakpointChanged = updateIsMobile();
-    if (breakpointChanged) {
-        // Only update layout-dependent elements if breakpoint changed
-        updateGradientBarLayout();
-        updateFloatingButtonPosition();
-        // Trigger any other necessary layout updates
-        window.dispatchEvent(new CustomEvent('layoutChange', { 
-            detail: { isMobile: getIsMobile() } 
-        }));
-    } else {
-        // Always update floating button position as it depends on actual window size
-        updateFloatingButtonPosition();
-    }
+    // updateIsMobile will now handle the reload at breakpoint
+    updateIsMobile();
+    // Only update floating button position since other updates will happen after reload
+    updateFloatingButtonPosition();
 }
 
 // Initialize UI components
