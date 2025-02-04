@@ -462,9 +462,28 @@ function renderActivities(categories, container = document.getElementById('activ
                     }
                     // Only close modal in single-choice mode
                     if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
-                        if (modal) {
-                            modal.style.display = 'none';
+                        // Force close modals with a slight delay on mobile
+                        if (getIsMobile()) {
+                            setTimeout(() => {
+                                const activitiesModal = document.getElementById('activitiesModal');
+                                const customActivityModal = document.getElementById('customActivityModal');
+                                if (activitiesModal) {
+                                    activitiesModal.style.cssText = 'display: none !important';
+                                }
+                                if (customActivityModal) {
+                                    customActivityModal.style.cssText = 'display: none !important';
+                                }
+                            }, 50);
+                        } else {
+                            // Immediate close on desktop
+                            const activitiesModal = document.getElementById('activitiesModal');
+                            const customActivityModal = document.getElementById('customActivityModal');
+                            if (activitiesModal) {
+                                activitiesModal.style.cssText = 'display: none !important';
+                            }
+                            if (customActivityModal) {
+                                customActivityModal.style.cssText = 'display: none !important';
+                            }
                         }
                     }
                 });
@@ -601,6 +620,32 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
+                    }
+                    // Only close modal in single-choice mode
+                    if (!isMultipleChoice) {
+                        // Force close modals with a slight delay on mobile
+                        if (getIsMobile()) {
+                            setTimeout(() => {
+                                const activitiesModal = document.getElementById('activitiesModal');
+                                const customActivityModal = document.getElementById('customActivityModal');
+                                if (activitiesModal) {
+                                    activitiesModal.style.cssText = 'display: none !important';
+                                }
+                                if (customActivityModal) {
+                                    customActivityModal.style.cssText = 'display: none !important';
+                                }
+                            }, 50);
+                        } else {
+                            // Immediate close on desktop
+                            const activitiesModal = document.getElementById('activitiesModal');
+                            const customActivityModal = document.getElementById('customActivityModal');
+                            if (activitiesModal) {
+                                activitiesModal.style.cssText = 'display: none !important';
+                            }
+                            if (customActivityModal) {
+                                customActivityModal.style.cssText = 'display: none !important';
+                            }
+                        }
                     }
                 });
                 activityButtonsDiv.appendChild(activityButton);

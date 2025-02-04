@@ -35,12 +35,12 @@ function createModal() {
     `;
 
     customActivityModal.querySelector('.modal-close').addEventListener('click', () => {
-        customActivityModal.style.display = 'none';
+        customActivityModal.style.cssText = 'display: none !important';
     });
 
     customActivityModal.addEventListener('click', (e) => {
         if (e.target === customActivityModal) {
-            customActivityModal.style.display = 'none';
+            customActivityModal.style.cssText = 'display: none !important';
         }
     });
 
@@ -59,12 +59,12 @@ function createModal() {
     `;
 
     activitiesModal.querySelector('.modal-close').addEventListener('click', () => {
-        activitiesModal.style.display = 'none';
+        activitiesModal.style.cssText = 'display: none !important';
     });
 
     activitiesModal.addEventListener('click', (e) => {
         if (e.target === activitiesModal) {
-            activitiesModal.style.display = 'none';
+            activitiesModal.style.cssText = 'display: none !important';
         }
     });
 
@@ -86,11 +86,11 @@ function createModal() {
     `;
 
     confirmationModal.querySelector('#confirmCancel').addEventListener('click', () => {
-        confirmationModal.style.display = 'none';
+        confirmationModal.style.cssText = 'display: none !important';
     });
 
     confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
-        confirmationModal.style.display = 'none';
+        confirmationModal.style.cssText = 'display: none !important';
         sendData();
         document.getElementById('nextBtn').disabled = true;
     });
