@@ -1330,4 +1330,4 @@ init().catch(error => {
 });
 
 // Export addNextTimeline for ui.js
-export { addNextTimeline };
+export { addNextTimeline, initTimelineInteraction };
