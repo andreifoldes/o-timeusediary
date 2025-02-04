@@ -40,6 +40,7 @@ body {
         padding: 0 2px;
         width: 100%;
         min-height: 100vh;
+        overscroll-behavior: none;
     }
 
     .timelines-wrapper {
@@ -112,6 +113,26 @@ body {
         flex-direction: row !important;
         width: auto !important;
         margin-bottom: 0 !important;
+    }
+
+    .gradient-bar {
+        display: none !important;
+    }
+
+    .timeline-container {
+        min-width: 180px;
+        max-width: 180px;
+        height: 2500px;
+        margin: 0;
+        padding-left: 2px;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        position: relative;
+        overscroll-behavior: none;
+    }
+    
+    .timeline-container[data-active="false"] {
+        opacity: 0.6;
+        pointer-events: none;
     }
 
     .gradient-bar {
@@ -202,6 +223,7 @@ body {
         padding-left: 2px;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         position: relative;
+        overscroll-behavior: none;
     }
 
     /* Additional timeline container styles for past timelines */
