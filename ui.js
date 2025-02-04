@@ -64,7 +64,18 @@ function createModal() {
         <div class="modal">
             <div class="modal-header">
                 <h3>Add Activity</h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close" style="
+                    padding: 15px;
+                    font-size: 24px;
+                    background: transparent;
+                    border: none;
+                    position: absolute;
+                    right: 10px;
+                    top: 10px;
+                    z-index: 1000;
+                    cursor: pointer;
+                    touch-action: manipulation;
+                ">&times;</button>
             </div>
             <div id="modalActivitiesContainer"></div>
         </div>
@@ -73,23 +84,37 @@ function createModal() {
     const activitiesCloseBtn = activitiesModal.querySelector('.modal-close');
     activitiesCloseBtn.addEventListener('pointerup', (e) => {
         e.preventDefault();
+        console.log('[Modal X] pointerup triggered on close button');
         activitiesModal.style.display = 'none';
+        console.log('[Modal X] activities modal display set to:', activitiesModal.style.display);
     });
     activitiesCloseBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        console.log('[Modal X] click triggered on close button');
         activitiesModal.style.display = 'none';
+        console.log('[Modal X] activities modal display set to:', activitiesModal.style.display);
     });
+
+    activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
+    activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
 
     activitiesModal.addEventListener('pointerup', (e) => {
         if (e.target === activitiesModal) {
+            console.log('[Modal Overlay] pointerup triggered on overlay');
             activitiesModal.style.display = 'none';
+            console.log('[Modal Overlay] activities modal display set to:', activitiesModal.style.display);
         }
     });
     activitiesModal.addEventListener('click', (e) => {
         if (e.target === activitiesModal) {
+            console.log('[Modal Overlay] click triggered on overlay');
             activitiesModal.style.display = 'none';
+            console.log('[Modal Overlay] activities modal display set to:', activitiesModal.style.display);
         }
     });
+
+    activitiesModal.addEventListener('touchstart', (e) => logTouchEvent(e, 'Modal Overlay'));
+    activitiesModal.addEventListener('touchend', (e) => logTouchEvent(e, 'Modal Overlay'));
 
     // Create confirmation modal
     const confirmationModal = document.createElement('div');
@@ -708,9 +733,12 @@ function renderActivities(categories, container = document.getElementById('activ
                 activityButton.addEventListener('pointerup', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-    
+                    console.log('[Activity Button] pointerup triggered');
+
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    console.log('[Activity Button] Mode:', isMultipleChoice ? 'multiple-choice' : 'single-choice');
+
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
     
                     // Check if this is the "other not listed" button
@@ -791,12 +819,23 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                        // Close the activities modal explicitly after a short delay
+                        console.log('[Activity Button] Attempting immediate close');
+                        
+                        // Try both approaches
                         const activitiesModal = document.getElementById('activitiesModal');
                         if (activitiesModal) {
+                            // Immediate hide
+                            activitiesModal.style.display = 'none';
+                            console.log('[Activity Button] Immediate hide attempted');
+                            
+                            // Backup delayed hide
                             setTimeout(() => {
                                 activitiesModal.style.display = 'none';
-                            }, 10);
+                                console.log('[Activity Button] Delayed hide attempted');
+                            }, 50);
+                            
+                            // Force layout recalculation
+                            void activitiesModal.offsetHeight;
                         }
                     }
                 });
@@ -850,9 +889,12 @@ function renderActivities(categories, container = document.getElementById('activ
                 activityButton.addEventListener('pointerup', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-    
+                    console.log('[Activity Button] pointerup triggered');
+
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
+                    console.log('[Activity Button] Mode:', isMultipleChoice ? 'multiple-choice' : 'single-choice');
+
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
     
                     // Check if this is the "other not listed" button
@@ -928,12 +970,23 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                        // Close the activities modal explicitly after a short delay
+                        console.log('[Activity Button] Attempting immediate close');
+                        
+                        // Try both approaches
                         const activitiesModal = document.getElementById('activitiesModal');
                         if (activitiesModal) {
+                            // Immediate hide
+                            activitiesModal.style.display = 'none';
+                            console.log('[Activity Button] Immediate hide attempted');
+                            
+                            // Backup delayed hide
                             setTimeout(() => {
                                 activitiesModal.style.display = 'none';
-                            }, 10);
+                                console.log('[Activity Button] Delayed hide attempted');
+                            }, 50);
+                            
+                            // Force layout recalculation
+                            void activitiesModal.offsetHeight;
                         }
                     }
                 });
@@ -962,3 +1015,20 @@ export {
     handleResize,
     renderActivities
 };
+
+function logTouchEvent(e, source) {
+    console.log(`[Touch Debug] ${source}:`, {
+        type: e.type,
+        target: e.target.tagName,
+        targetClass: e.target.className,
+        touches: e.touches?.length || 0,
+        defaultPrevented: e.defaultPrevented
+    });
+}
+
+activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
+activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
+activitiesModal.addEventListener('touchstart', (e) => logTouchEvent(e, 'Modal Overlay'));
+activitiesModal.addEventListener('touchend', (e) => logTouchEvent(e, 'Modal Overlay'));
+activityButton.addEventListener('touchstart', (e) => logTouchEvent(e, 'Activity Button'));
+activityButton.addEventListener('touchend', (e) => logTouchEvent(e, 'Activity Button'));
