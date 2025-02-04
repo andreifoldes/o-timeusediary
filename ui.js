@@ -71,6 +71,11 @@ function createModal() {
     const activitiesModal = document.createElement('div');
     activitiesModal.className = 'modal-overlay';
     activitiesModal.id = 'activitiesModal';
+    activitiesModal.style.cssText = `
+        transition: opacity 0.2s ease-out;
+        opacity: 1;
+        visibility: visible;
+    `;
     activitiesModal.innerHTML = `
         <div class="modal">
             <div class="modal-header">
@@ -86,48 +91,129 @@ function createModal() {
                     z-index: 1000;
                     cursor: pointer;
                     touch-action: manipulation;
+                    -webkit-tap-highlight-color: transparent;
                 ">&times;</button>
             </div>
             <div id="modalActivitiesContainer"></div>
         </div>
     `;
 
+    // Add these styles to the activitiesModal when creating it
+    activitiesModal.style.cssText += `
+        .modal-overlay {
+            transition: opacity 0.2s ease-out;
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-overlay.hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .modal-overlay .modal,
+        .modal-overlay #modalActivitiesContainer,
+        .modal-overlay .activities-accordion {
+            transition: opacity 0.2s ease-out;
+        }
+        
+        .modal-close {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+    `;
+
+    // Helper function to properly hide modal
+    const hideModal = (modal) => {
+        console.log('[Modal] Hiding modal with transition');
+        // Hide the modal overlay and all its children
+        const modalContent = modal.querySelector('.modal');
+        const modalContainer = modal.querySelector('#modalActivitiesContainer');
+        
+        // Apply hiding styles to all relevant elements
+        [modal, modalContent, modalContainer].forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+            }
+        });
+        
+        // Use multiple techniques to ensure hiding
+        setTimeout(() => {
+            // Hide all modal-related elements
+            [modal, modalContent, modalContainer].forEach(el => {
+                if (el) {
+                    el.style.visibility = 'hidden';
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Also ensure the accordion is hidden if it exists
+            const accordion = modal.querySelector('.activities-accordion');
+            if (accordion) {
+                accordion.style.visibility = 'hidden';
+                accordion.style.display = 'none';
+            }
+            console.log('[Modal] Modal hidden completely');
+        }, 200); // Match transition duration
+    };
+
+    // Helper function to show modal
+    const showModal = (modal) => {
+        // Show the modal overlay and all its children
+        const modalContent = modal.querySelector('.modal');
+        const modalContainer = modal.querySelector('#modalActivitiesContainer');
+        const accordion = modal.querySelector('.activities-accordion');
+        
+        // Show all modal-related elements
+        [modal, modalContent, modalContainer, accordion].forEach(el => {
+            if (el) {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                el.style.pointerEvents = 'auto';
+            }
+        });
+        
+        // Force reflow
+        void modal.offsetHeight;
+        
+        // Fade in all elements
+        [modal, modalContent, modalContainer, accordion].forEach(el => {
+            if (el) {
+                el.style.opacity = '1';
+            }
+        });
+    };
+
     const activitiesCloseBtn = activitiesModal.querySelector('.modal-close');
     
-    // Add touch event listeners for the close button
-    activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
-    activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
-    activitiesCloseBtn.addEventListener('pointerup', (e) => {
-        e.preventDefault();
-        console.log('[Modal X] pointerup triggered on close button');
-        activitiesModal.style.display = 'none';
-        console.log('[Modal X] activities modal display set to:', activitiesModal.style.display);
+    // Update close button handlers
+    activitiesCloseBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent double-firing
+        logTouchEvent(e, 'Close Button');
     });
-    activitiesCloseBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log('[Modal X] click triggered on close button');
-        activitiesModal.style.display = 'none';
-        console.log('[Modal X] activities modal display set to:', activitiesModal.style.display);
+    
+    activitiesCloseBtn.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent double-firing
+        logTouchEvent(e, 'Close Button');
+        hideModal(activitiesModal);
     });
 
-    activitiesModal.addEventListener('pointerup', (e) => {
+    // Update modal overlay handlers
+    activitiesModal.addEventListener('touchstart', (e) => {
         if (e.target === activitiesModal) {
-            console.log('[Modal Overlay] pointerup triggered on overlay');
-            activitiesModal.style.display = 'none';
-            console.log('[Modal Overlay] activities modal display set to:', activitiesModal.style.display);
-        }
-    });
-    activitiesModal.addEventListener('click', (e) => {
-        if (e.target === activitiesModal) {
-            console.log('[Modal Overlay] click triggered on overlay');
-            activitiesModal.style.display = 'none';
-            console.log('[Modal Overlay] activities modal display set to:', activitiesModal.style.display);
+            e.preventDefault();
+            logTouchEvent(e, 'Modal Overlay');
         }
     });
 
-    // Add touch event listeners for the modal overlay
-    activitiesModal.addEventListener('touchstart', (e) => logTouchEvent(e, 'Modal Overlay'));
-    activitiesModal.addEventListener('touchend', (e) => logTouchEvent(e, 'Modal Overlay'));
+    activitiesModal.addEventListener('touchend', (e) => {
+        if (e.target === activitiesModal) {
+            e.preventDefault();
+            logTouchEvent(e, 'Modal Overlay');
+            hideModal(activitiesModal);
+        }
+    });
 
     // Create confirmation modal
     const confirmationModal = document.createElement('div');
@@ -836,23 +922,11 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                        console.log('[Activity Button] Attempting immediate close');
+                        console.log('[Activity Button] Attempting to close modal');
                         
-                        // Try both approaches
                         const activitiesModal = document.getElementById('activitiesModal');
                         if (activitiesModal) {
-                            // Immediate hide
-                            activitiesModal.style.display = 'none';
-                            console.log('[Activity Button] Immediate hide attempted');
-                            
-                            // Backup delayed hide
-                            setTimeout(() => {
-                                activitiesModal.style.display = 'none';
-                                console.log('[Activity Button] Delayed hide attempted');
-                            }, 50);
-                            
-                            // Force layout recalculation
-                            void activitiesModal.offsetHeight;
+                            hideModal(activitiesModal);
                         }
                     }
                 });
@@ -991,23 +1065,11 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                        console.log('[Activity Button] Attempting immediate close');
+                        console.log('[Activity Button] Attempting to close modal');
                         
-                        // Try both approaches
                         const activitiesModal = document.getElementById('activitiesModal');
                         if (activitiesModal) {
-                            // Immediate hide
-                            activitiesModal.style.display = 'none';
-                            console.log('[Activity Button] Immediate hide attempted');
-                            
-                            // Backup delayed hide
-                            setTimeout(() => {
-                                activitiesModal.style.display = 'none';
-                                console.log('[Activity Button] Delayed hide attempted');
-                            }, 50);
-                            
-                            // Force layout recalculation
-                            void activitiesModal.offsetHeight;
+                            hideModal(activitiesModal);
                         }
                     }
                 });
