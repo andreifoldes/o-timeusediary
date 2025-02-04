@@ -18,7 +18,8 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
 *   JavaScript
 
 ## Demo
-[Live Demo](https://taupe-sprite-bfbfdb.netlify.app/)
+[Live Demo main](https://taupe-sprite-bfbfdb.netlify.app/)
+[Live Demo Thomas-dev](https://timediary-thomas-dev.netlify.app/)
 
 ## Usage
 
