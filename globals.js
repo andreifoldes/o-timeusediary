@@ -1,5 +1,6 @@
 // Global state
 let isMobile = window.innerWidth < 1440;
+let lastBreakpointState = isMobile;
 
 // Get current mobile state
 export function getIsMobile() {
@@ -10,8 +11,11 @@ window.getIsMobile = getIsMobile;
 
 // Update function
 export function updateIsMobile() {
-    isMobile = window.innerWidth < 1440;  // Changed from 1440 to 1440
-    return isMobile;
+    const newIsMobile = window.innerWidth < 1440;
+    const breakpointChanged = newIsMobile !== lastBreakpointState;
+    isMobile = newIsMobile;
+    lastBreakpointState = newIsMobile;
+    return breakpointChanged;  // Return true only if breakpoint actually changed
 }
 
 // Initialize immediately

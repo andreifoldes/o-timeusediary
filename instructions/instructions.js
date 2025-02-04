@@ -57,6 +57,13 @@ updateLayout();
 
 // Update on resize by listening to global mobile state changes
 window.addEventListener('resize', () => {
-    updateIsMobile();
+    const breakpointChanged = updateIsMobile();
+    if (breakpointChanged) {
+        updateLayout();
+    }
+});
+
+// Listen for layout change events from other components
+window.addEventListener('layoutChange', (e) => {
     updateLayout();
 });

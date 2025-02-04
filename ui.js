@@ -487,9 +487,19 @@ function preventPullToRefresh() {
 }
 
 function handleResize() {
-    updateIsMobile();
-    updateFloatingButtonPosition();
-    updateGradientBarLayout();
+    const breakpointChanged = updateIsMobile();
+    if (breakpointChanged) {
+        // Only update layout-dependent elements if breakpoint changed
+        updateGradientBarLayout();
+        updateFloatingButtonPosition();
+        // Trigger any other necessary layout updates
+        window.dispatchEvent(new CustomEvent('layoutChange', { 
+            detail: { isMobile: getIsMobile() } 
+        }));
+    } else {
+        // Always update floating button position as it depends on actual window size
+        updateFloatingButtonPosition();
+    }
 }
 
 // Initialize UI components
@@ -506,5 +516,5 @@ export {
     updateTimelineCountVariable,
     initDebugOverlay,
     handleResize,
-    preventPullToRefresh  // Export the new function
+    preventPullToRefresh
 };
