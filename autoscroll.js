@@ -2,12 +2,12 @@
 
 import { getIsMobile } from './globals.js';
 
-// Module to handle auto-scrolling during bottom-edge resizing of activity blocks in vertical layout.
+// Module to handle auto-scrolling during both top and bottom edge resizing of activity blocks in vertical layout.
 const autoScrollModule = (() => {
   // Configuration options
   let isEnabled = true; // Auto-scroll feature is enabled by default
   const config = {
-    threshold: 100,    // Threshold in pixels from bottom of viewport
+    threshold: 100,    // Threshold in pixels from top/bottom of viewport
     scrollSpeed: 8,    // Pixels to scroll per tick
     interval: 16       // How often to check for scrolling (16ms ≈ 60fps)
   };
@@ -24,13 +24,18 @@ const autoScrollModule = (() => {
     const resizingElement = document.querySelector('.activity-block.resizing');
     if (!resizingElement) return;
 
-    // Get viewport height and calculate distance from bottom
+    // Get viewport height and calculate distances
     const viewportHeight = window.innerHeight;
     const distanceToBottom = viewportHeight - lastPointerY;
+    const distanceToTop = lastPointerY;
 
     // Get scroll info
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollHeight = document.documentElement.scrollHeight;
+
+    // Get the header height to prevent scrolling above it
+    const headerSection = document.querySelector('.header-section');
+    const headerHeight = headerSection ? headerSection.offsetHeight : 0;
 
     // Retrieve footer element to prevent scrolling past it
     const footer = document.querySelector("#instructionsFooter");
@@ -40,10 +45,19 @@ const autoScrollModule = (() => {
       footerLimit = footer.getBoundingClientRect().top + scrollTop;
     }
 
-    // Only scroll if we're not at the bottom of the page and not past the footer
-    if (distanceToBottom < config.threshold && scrollTop < scrollHeight - viewportHeight && (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit) {
+    // Scroll Down Condition:
+    if (distanceToBottom < config.threshold && 
+        scrollTop < scrollHeight - viewportHeight && 
+        (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit) {
       window.scrollBy({
         top: config.scrollSpeed,
+        behavior: 'auto'
+      });
+    }
+    // Scroll Up Condition:
+    else if (distanceToTop < config.threshold && scrollTop > headerHeight) {
+      window.scrollBy({
+        top: -config.scrollSpeed,
         behavior: 'auto'
       });
     }

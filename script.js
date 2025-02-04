@@ -23,7 +23,8 @@ import {
     scrollToActiveTimeline,
     updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize
+    handleResize,
+    preventPullToRefresh
 } from './ui.js';
 import { 
     DEBUG_MODE,
@@ -1555,6 +1556,9 @@ function initTimelineInteraction(timeline) {
 
 async function init() {
     try {
+        // Prevent pull-to-refresh on mobile
+        preventPullToRefresh();
+        
         // Load initial timeline data
         const response = await fetch('settings/activities.json');
         if (!response.ok) {

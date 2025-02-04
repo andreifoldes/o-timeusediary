@@ -55,8 +55,9 @@ function updateLayout() {
 // Initial layout
 updateLayout();
 
-// Update on resize by listening to global mobile state changes
+// Update on resize - updateIsMobile will handle the reload at breakpoint
 window.addEventListener('resize', () => {
     updateIsMobile();
-    updateLayout();
 });
+
+// No longer need layoutChange event listener since we're doing full page reloads

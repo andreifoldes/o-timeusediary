@@ -464,17 +464,41 @@ function updateTimelineCountVariable() {
     pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
 }
 
-function handleResize() {
-    // Instead of reinitializing components, reload the entire DOM on resize
-    location.reload();
+// Prevent pull-to-refresh on mobile devices
+function preventPullToRefresh() {
+    // Only prevent overscroll on iOS Safari and Chrome
+    document.body.style.overscrollBehavior = 'none';
+    
+    // For iOS Safari - only prevent default when at the top of the page and pulling down
+    document.addEventListener('touchstart', function(e) {
+        // Store the initial touch position
+        window.touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+        const touchY = e.touches[0].clientY;
+        const touchYDelta = touchY - window.touchStartY;
+        
+        // Only prevent default if we're at the top and trying to pull down
+        if (window.pageYOffset === 0 && touchYDelta > 0) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
 
-// Export the functions
-export {
-    createModal,
-    createFloatingAddButton,
-    updateFloatingButtonPosition,
-    updateButtonStates,
+function handleResize() {
+    // updateIsMobile will now handle the reload at breakpoint
+    updateIsMobile();
+    // Only update floating button position since other updates will happen after reload
+    updateFloatingButtonPosition();
+}
+
+// Initialize UI components
+export { 
+    createModal, 
+    createFloatingAddButton, 
+    updateFloatingButtonPosition, 
+    updateButtonStates, 
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,
@@ -482,5 +506,6 @@ export {
     scrollToActiveTimeline,
     updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize
+    handleResize,
+    preventPullToRefresh
 };
