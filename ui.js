@@ -14,6 +14,17 @@ import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, initTimelineInteraction } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
+// Add logTouchEvent function at the top level
+function logTouchEvent(e, source) {
+    console.log(`[Touch Debug] ${source}:`, {
+        type: e.type,
+        target: e.target.tagName,
+        targetClass: e.target.className,
+        touches: e.touches?.length || 0,
+        defaultPrevented: e.defaultPrevented
+    });
+}
+
 // Modal management
 function createModal() {
     // Create custom activity input modal
@@ -82,6 +93,10 @@ function createModal() {
     `;
 
     const activitiesCloseBtn = activitiesModal.querySelector('.modal-close');
+    
+    // Add touch event listeners for the close button
+    activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
+    activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
     activitiesCloseBtn.addEventListener('pointerup', (e) => {
         e.preventDefault();
         console.log('[Modal X] pointerup triggered on close button');
@@ -94,9 +109,6 @@ function createModal() {
         activitiesModal.style.display = 'none';
         console.log('[Modal X] activities modal display set to:', activitiesModal.style.display);
     });
-
-    activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
-    activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
 
     activitiesModal.addEventListener('pointerup', (e) => {
         if (e.target === activitiesModal) {
@@ -113,6 +125,7 @@ function createModal() {
         }
     });
 
+    // Add touch event listeners for the modal overlay
     activitiesModal.addEventListener('touchstart', (e) => logTouchEvent(e, 'Modal Overlay'));
     activitiesModal.addEventListener('touchend', (e) => logTouchEvent(e, 'Modal Overlay'));
 
@@ -730,6 +743,10 @@ function renderActivities(categories, container = document.getElementById('activ
                 textSpan.className = 'activity-text';
                 textSpan.textContent = activity.name;
                 activityButton.appendChild(textSpan);
+
+                // Add touch event listeners for the activity button
+                activityButton.addEventListener('touchstart', (e) => logTouchEvent(e, 'Activity Button'));
+                activityButton.addEventListener('touchend', (e) => logTouchEvent(e, 'Activity Button'));
                 activityButton.addEventListener('pointerup', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -886,6 +903,10 @@ function renderActivities(categories, container = document.getElementById('activ
                 textSpan.className = 'activity-text';
                 textSpan.textContent = activity.name;
                 activityButton.appendChild(textSpan);
+
+                // Add touch event listeners for the activity button
+                activityButton.addEventListener('touchstart', (e) => logTouchEvent(e, 'Activity Button'));
+                activityButton.addEventListener('touchend', (e) => logTouchEvent(e, 'Activity Button'));
                 activityButton.addEventListener('pointerup', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1015,20 +1036,3 @@ export {
     handleResize,
     renderActivities
 };
-
-function logTouchEvent(e, source) {
-    console.log(`[Touch Debug] ${source}:`, {
-        type: e.type,
-        target: e.target.tagName,
-        targetClass: e.target.className,
-        touches: e.touches?.length || 0,
-        defaultPrevented: e.defaultPrevented
-    });
-}
-
-activitiesCloseBtn.addEventListener('touchstart', (e) => logTouchEvent(e, 'Close Button'));
-activitiesCloseBtn.addEventListener('touchend', (e) => logTouchEvent(e, 'Close Button'));
-activitiesModal.addEventListener('touchstart', (e) => logTouchEvent(e, 'Modal Overlay'));
-activitiesModal.addEventListener('touchend', (e) => logTouchEvent(e, 'Modal Overlay'));
-activityButton.addEventListener('touchstart', (e) => logTouchEvent(e, 'Activity Button'));
-activityButton.addEventListener('touchend', (e) => logTouchEvent(e, 'Activity Button'));
