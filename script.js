@@ -464,7 +464,22 @@ function renderActivities(categories, container = document.getElementById('activ
                     if (!isMultipleChoice) {
                         const modal = document.querySelector('.modal-overlay');
                         if (modal) {
-                            modal.style.display = 'none';
+                            if (getIsMobile()) {
+                                // Force close both modals with a slight delay on mobile
+                                setTimeout(() => {
+                                    const activitiesModal = document.getElementById('activitiesModal');
+                                    const customActivityModal = document.getElementById('customActivityModal');
+                                    if (activitiesModal) {
+                                        activitiesModal.style.display = 'none';
+                                    }
+                                    if (customActivityModal) {
+                                        customActivityModal.style.display = 'none';
+                                    }
+                                }, 50);
+                            } else {
+                                // Immediate close on desktop
+                                modal.style.display = 'none';
+                            }
                         }
                     }
                 });
@@ -601,6 +616,28 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
+                    }
+                    // Only close modal in single-choice mode
+                    if (!isMultipleChoice) {
+                        const modal = document.querySelector('.modal-overlay');
+                        if (modal) {
+                            if (getIsMobile()) {
+                                // Force close both modals with a slight delay on mobile
+                                setTimeout(() => {
+                                    const activitiesModal = document.getElementById('activitiesModal');
+                                    const customActivityModal = document.getElementById('customActivityModal');
+                                    if (activitiesModal) {
+                                        activitiesModal.style.display = 'none';
+                                    }
+                                    if (customActivityModal) {
+                                        customActivityModal.style.display = 'none';
+                                    }
+                                }, 50);
+                            } else {
+                                // Immediate close on desktop
+                                modal.style.display = 'none';
+                            }
+                        }
                     }
                 });
                 activityButtonsDiv.appendChild(activityButton);
