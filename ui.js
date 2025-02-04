@@ -464,17 +464,30 @@ function updateTimelineCountVariable() {
     pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
 }
 
-function handleResize() {
-    // Instead of reinitializing components, reload the entire DOM on resize
-    location.reload();
+// Prevent pull-to-refresh on mobile devices
+function preventPullToRefresh() {
+    document.body.style.overscrollBehavior = 'none'; // Modern browsers
+    
+    // For iOS Safari
+    document.addEventListener('touchmove', function(e) {
+        if (window.pageYOffset === 0) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
 
-// Export the functions
-export {
-    createModal,
-    createFloatingAddButton,
-    updateFloatingButtonPosition,
-    updateButtonStates,
+function handleResize() {
+    updateIsMobile();
+    updateFloatingButtonPosition();
+    updateGradientBarLayout();
+}
+
+// Initialize UI components
+export { 
+    createModal, 
+    createFloatingAddButton, 
+    updateFloatingButtonPosition, 
+    updateButtonStates, 
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,
@@ -482,5 +495,6 @@ export {
     scrollToActiveTimeline,
     updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize
+    handleResize,
+    preventPullToRefresh  // Export the new function
 };
