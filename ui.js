@@ -7,10 +7,11 @@ import {
     generateUniqueId,
     createTimeLabel,
     updateTimeLabel,
-    positionToMinutes
+    positionToMinutes,
+    minutesToPercentage
 } from './utils.js';
 import { getIsMobile, updateIsMobile } from './globals.js';
-import { addNextTimeline } from './script.js';
+import { addNextTimeline, initTimelineInteraction } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
 // Modal management
@@ -128,25 +129,31 @@ function createFloatingAddButton() {
     return button;
 }
 
+// Adjust the floating add button's visibility and position based on the current layout.
 function updateFloatingButtonPosition() {
-    if (!getIsMobile()) return;
-
     const floatingButton = document.querySelector('.floating-add-button');
-    const lastTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
-    
-    if (!floatingButton || !lastTimelineWrapper) return;
+    if (!floatingButton) return;
 
-    const wrapperRect = lastTimelineWrapper.getBoundingClientRect();
-    const buttonWidth = floatingButton.offsetWidth;
-    
-    // Position the button 10px to the right of the wrapper
-    const leftPosition = wrapperRect.right + 10;
-    
-    // Ensure button doesn't go off screen
-    const maxLeft = window.innerWidth - buttonWidth - 10;
-    const finalLeft = Math.min(leftPosition, maxLeft);
-    
-    floatingButton.style.left = `${finalLeft}px`;
+    if (getIsMobile()) {
+        // In mobile (vertical) layout, ensure the button is visible and correctly positioned.
+        floatingButton.style.display = 'flex';
+        const lastTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+        if (!lastTimelineWrapper) return;
+
+        const wrapperRect = lastTimelineWrapper.getBoundingClientRect();
+        const buttonWidth = floatingButton.offsetWidth;
+
+        // Position the button 10px to the right of the timeline wrapper.
+        const leftPosition = wrapperRect.right + 10;
+        // Ensure the button doesn't go off screen.
+        const maxLeft = window.innerWidth - buttonWidth - 10;
+        const finalLeft = Math.min(leftPosition, maxLeft);
+
+        floatingButton.style.left = `${finalLeft}px`;
+    } else {
+        // In horizontal (desktop) layout, hide the floating add button.
+        floatingButton.style.display = 'none';
+    }
 }
 
 function updateButtonStates() {
@@ -464,32 +471,160 @@ function updateTimelineCountVariable() {
     pastTimelinesWrapper.style.setProperty('--timeline-count', timelineCount);
 }
 
-function handleResize() {
-    // Debounce the resize handling to avoid excessive processing on rapid resize events
-    clearTimeout(window.handleResizeDebounce);
-    
-    window.handleResizeDebounce = setTimeout(() => {
-        // Update the mobile/desktop state (vertical vs. horizontal layout)
-        updateIsMobile();
-        
-        // Update the gradient bar layout depending on the new mode
-        updateGradientBarLayout();
-        
-        // If in mobile mode (vertical layout), adjust the floating add button's position
-        if (getIsMobile()) {
-            updateFloatingButtonPosition();
+// Updates the width of each timeline container based on the current layout.
+function updateTimelineDimensions() {
+    const timelineContainers = document.querySelectorAll('.timeline-container');
+    const isMobile = getIsMobile();
+    timelineContainers.forEach(container => {
+        if (isMobile) {
+            // In vertical/mobile layout, retain the fixed width (adjust as needed)
+            container.style.width = '180px';
+        } else {
+            // In horizontal/desktop layout, allow the timeline to use full available width
+            container.style.width = '100%';
         }
+    });
+}
+
+// Helper function to update the styling of all activity blocks based on the current layout.
+function updateActivityBlocksLayout() {
+    const activeTimeline = window.timelineManager.activeTimeline;
+    if (!activeTimeline) return;
+    
+    // Determine if we are in mobile (vertical) or desktop (horizontal) layout.
+    const isMobile = getIsMobile();
+    const blocks = activeTimeline.querySelectorAll('.activity-block');
+    
+    blocks.forEach(block => {
+        // Get the block's start minutes and its duration (data-length in minutes)
+        const startMinutes = parseInt(block.getAttribute('data-start-minutes'));
+        const blockLength = parseFloat(block.getAttribute('data-length')) || 10; // default to 10 minutes if not defined
+        const blockSize = (blockLength / 1440) * 100; // percentage representation
+
+        if (isMobile) {
+            // Vertical layout: duration is represented by the block's height.
+            block.style.height = `${blockSize}%`;
+            block.style.top = `${minutesToPercentage(startMinutes)}%`;
+            block.style.width = '75%';
+            block.style.left = '25%';
+
+            // Update stored original values for possible later recalculations.
+            block.dataset.originalHeight = `${blockSize}%`;
+            block.dataset.originalTop = `${minutesToPercentage(startMinutes)}%`;
+            block.dataset.originalWidth = '75%';
+            block.dataset.originalLeft = '25%';
+
+            // Set text styling for vertical mode.
+            const textEl = block.querySelector('.activity-block-text-vertical, .activity-block-text-narrow');
+            if (textEl) {
+                textEl.className = 'activity-block-text-narrow';
+            }
+        } else {
+            // Horizontal layout: duration is now reflected by the block's width.
+            block.style.width = `${blockSize}%`;
+            block.style.left = `${minutesToPercentage(startMinutes)}%`;
+            block.style.height = '75%';
+            block.style.top = '25%';
+
+            // Update stored original values.
+            block.dataset.originalWidth = `${blockSize}%`;
+            block.dataset.originalLeft = `${minutesToPercentage(startMinutes)}%`;
+            block.dataset.originalHeight = '75%';
+            block.dataset.originalTop = '25%';
+
+            // Set text styling for horizontal mode.
+            const textEl = block.querySelector('.activity-block-text-vertical, .activity-block-text-narrow');
+            if (textEl) {
+                textEl.className = 'activity-block-text-vertical';
+            }
+        }
+    });
+}
+
+// Helper function to update the styling of the time-label elements on activity blocks.
+function updateActivityTimeLabelsLayout() {
+    const activeTimeline = window.timelineManager.activeTimeline;
+    if (!activeTimeline) return;
+    
+    const isMobile = getIsMobile();
+    const blocks = activeTimeline.querySelectorAll('.activity-block');
+    
+    blocks.forEach(block => {
+        const timeLabel = block.querySelector('.time-label');
+        if (!timeLabel) return;
         
-        // Update the timeline count variable used by CSS
+        // On first pass, store the original display setting if it hasn't been stored yet.
+        if (!timeLabel.hasAttribute('data-original-display')) {
+            // Prefer an existing inline style if provided, else fall back to computed style.
+            const computedDisplay = window.getComputedStyle(timeLabel).display;
+            timeLabel.setAttribute('data-original-display', timeLabel.style.display || computedDisplay);
+        }
+        const origDisplay = timeLabel.getAttribute('data-original-display');
+
+        if (isMobile) {
+            // In vertical layout, clear out any horizontal-specific inline styles.
+            timeLabel.style.position = '';
+            timeLabel.style.left = '';
+            timeLabel.style.transform = '';
+            timeLabel.style.backgroundColor = '';
+            timeLabel.style.color = '';
+            timeLabel.style.padding = '';
+            timeLabel.style.borderRadius = '';
+            timeLabel.style.fontSize = '';
+            timeLabel.style.whiteSpace = '';
+            timeLabel.style.pointerEvents = '';
+            timeLabel.style.zIndex = '';
+            timeLabel.style.bottom = '';
+            timeLabel.style.top = '';
+            timeLabel.style.width = ''; // Remove any fixed width from horizontal mode.
+            // Restore the original display value.
+            timeLabel.style.display = origDisplay;
+        } else {
+            // In horizontal layout, reapply the horizontal styling...
+            timeLabel.style.position = 'absolute';
+            timeLabel.style.left = '50%';
+            timeLabel.style.transform = 'translateX(-50%)';
+            timeLabel.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            timeLabel.style.color = 'rgb(255, 255, 255)';
+            timeLabel.style.padding = '2px 4px';
+            timeLabel.style.borderRadius = '4px';
+            timeLabel.style.fontSize = '10px';
+            timeLabel.style.whiteSpace = 'nowrap';
+            timeLabel.style.pointerEvents = 'none';
+            timeLabel.style.zIndex = '10';
+            timeLabel.style.bottom = '-20px';
+            timeLabel.style.top = 'auto';
+            // Instead of forcing visibility, set display using the originally stored value.
+            timeLabel.style.display = origDisplay;
+        }
+    });
+}
+
+// Updated handleResize function that reinitializes components dynamically during viewport changes.
+function handleResize() {
+    clearTimeout(window.handleResizeDebounce);
+
+    window.handleResizeDebounce = setTimeout(() => {
+        // Update the mobile/desktop state.
+        updateIsMobile();
+
+        // Update various UI components.
+        updateGradientBarLayout();
+        updateFloatingButtonPosition();
         updateTimelineCountVariable();
-        
-        // Re-adjust the view to center or correctly display the active timeline
+        updateTimelineDimensions();
         scrollToActiveTimeline();
-        
-        // Update button states (undo, clean, next) based on the current timeline data
         updateButtonStates();
-        
-        // Optionally, re-render other UI components if needed
+
+        // Reinitialize interact.js settings on activity blocks.
+        interact('.activity-block').unset();
+        initTimelineInteraction(window.timelineManager.activeTimeline);
+
+        // Update the layout of each activity block according to the current mode.
+        updateActivityBlocksLayout();
+        // Reinitialize the time-labels to clear any leftover horizontal settings when switching layouts.
+        updateActivityTimeLabelsLayout();
+
         console.log('Components reinitialized after resize');
     }, 100); // 100ms debounce interval
 }
@@ -548,19 +683,24 @@ function renderActivities(categories, container = document.getElementById('activ
                 textSpan.className = 'activity-text';
                 textSpan.textContent = activity.name;
                 activityButton.appendChild(textSpan);
-                activityButton.addEventListener('click', () => {
+                activityButton.addEventListener('pointerup', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+    
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
-                    
+    
                     // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                    if (
+                        activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')
+                    ) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
                         customActivityInput.value = ''; // Clear previous input
                         customActivityModal.style.display = 'block';
-                        
+    
                         // Handle custom activity submission
                         const handleCustomActivity = () => {
                             const customText = customActivityInput.value.trim();
@@ -570,7 +710,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     window.selectedActivity = {
                                         selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            name: btn.querySelector('.activity-text').textContent,
                                             color: btn.style.getPropertyValue('--color')
                                         })),
                                         category: category.name
@@ -579,7 +719,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
                                     window.selectedActivity = {
                                         name: customText,
-                                        color: activityButton.style.getPropertyValue('--color'),
+                                        color: activity.color,
                                         category: category.name
                                     };
                                     activityButton.classList.add('selected');
@@ -588,37 +728,31 @@ function renderActivities(categories, container = document.getElementById('activ
                                 document.getElementById('activitiesModal').style.display = 'none';
                             }
                         };
-
-                        // Set up event listeners for custom activity modal
+    
+                        // Reset and set up the confirm handler using pointerup
                         const confirmBtn = document.getElementById('confirmCustomActivity');
-                        const inputField = document.getElementById('customActivityInput');
-                        
-                        // Remove any existing listeners
                         const newConfirmBtn = confirmBtn.cloneNode(true);
                         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-                        
-                        // Add new listeners
-                        newConfirmBtn.addEventListener('click', handleCustomActivity);
-                        inputField.addEventListener('keypress', (e) => {
+                        newConfirmBtn.addEventListener('pointerup', (e) => {
+                            e.preventDefault();
+                            handleCustomActivity();
+                        });
+                        customActivityInput.addEventListener('keypress', (e) => {
                             if (e.key === 'Enter') {
                                 handleCustomActivity();
                             }
                         });
-                        
                         return;
                     }
-                    
+    
                     if (isMultipleChoice) {
                         // Toggle selection for this button
                         activityButton.classList.toggle('selected');
-            
-                        // Get all selected activities in this category
                         const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-            
                         if (selectedButtons.length > 0) {
                             window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
-                                    name: btn.textContent,
+                                    name: btn.querySelector('.activity-text').textContent,
                                     color: btn.style.getPropertyValue('--color')
                                 })),
                                 category: category.name
@@ -635,12 +769,12 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
-                    }
-                    // Only close modal in single-choice mode
-                    if (!isMultipleChoice) {
-                        const modal = document.querySelector('.modal-overlay');
-                        if (modal) {
-                            modal.style.display = 'none';
+                        // Close the activities modal explicitly after a short delay
+                        const activitiesModal = document.getElementById('activitiesModal');
+                        if (activitiesModal) {
+                            setTimeout(() => {
+                                activitiesModal.style.display = 'none';
+                            }, 10);
                         }
                     }
                 });
@@ -691,21 +825,22 @@ function renderActivities(categories, container = document.getElementById('activ
                 textSpan.className = 'activity-text';
                 textSpan.textContent = activity.name;
                 activityButton.appendChild(textSpan);
-                activityButton.addEventListener('click', () => {
+                activityButton.addEventListener('pointerup', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+    
                     const activitiesContainer = document.getElementById('activitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
-                    
+    
                     // Check if this is the "other not listed" button
                     if (activity.name.includes('other not listed (enter)')) {
-                        // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
                         customActivityInput.value = ''; // Clear previous input
                         customActivityModal.style.display = 'block';
                         customActivityInput.focus(); // Focus the input field
-                        
-                        // Handle custom activity submission
+    
                         const handleCustomActivity = () => {
                             const customText = customActivityInput.value.trim();
                             if (customText) {
@@ -714,7 +849,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     window.selectedActivity = {
                                         selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                            name: btn.querySelector('.activity-text').textContent,
                                             color: btn.style.getPropertyValue('--color')
                                         })),
                                         category: category.name
@@ -732,33 +867,26 @@ function renderActivities(categories, container = document.getElementById('activ
                                 document.getElementById('activitiesModal').style.display = 'none';
                             }
                         };
-
-                        // Set up event listeners for custom activity modal
+    
+                        // Setup confirm button handler using pointerup
                         const confirmBtn = document.getElementById('confirmCustomActivity');
-                        const inputField = document.getElementById('customActivityInput');
-                        
-                        // Remove any existing listeners
                         const newConfirmBtn = confirmBtn.cloneNode(true);
                         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-                        
-                        // Add new listeners
-                        newConfirmBtn.addEventListener('click', handleCustomActivity);
-                        inputField.addEventListener('keypress', (e) => {
+                        newConfirmBtn.addEventListener('pointerup', (e) => {
+                            e.preventDefault();
+                            handleCustomActivity();
+                        });
+                        customActivityInput.addEventListener('keypress', (e) => {
                             if (e.key === 'Enter') {
                                 handleCustomActivity();
                             }
                         });
-                        
                         return;
                     }
-                    
+    
                     if (isMultipleChoice) {
-                        // Toggle selection for this button
                         activityButton.classList.toggle('selected');
-            
-                        // Get all selected activities in this category
                         const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-            
                         if (selectedButtons.length > 0) {
                             window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
@@ -771,7 +899,6 @@ function renderActivities(categories, container = document.getElementById('activ
                             window.selectedActivity = null;
                         }
                     } else {
-                        // Single choice mode
                         categoryButtons.forEach(b => b.classList.remove('selected'));
                         window.selectedActivity = {
                             name: activity.name,
@@ -779,6 +906,13 @@ function renderActivities(categories, container = document.getElementById('activ
                             category: category.name
                         };
                         activityButton.classList.add('selected');
+                        // Close the activities modal explicitly after a short delay
+                        const activitiesModal = document.getElementById('activitiesModal');
+                        if (activitiesModal) {
+                            setTimeout(() => {
+                                activitiesModal.style.display = 'none';
+                            }, 10);
+                        }
                     }
                 });
                 activityButtonsDiv.appendChild(activityButton);
