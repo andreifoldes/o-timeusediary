@@ -14,18 +14,19 @@ import { updateIsMobile, getIsMobile } from './globals.js';
 import { 
     createModal, 
     createFloatingAddButton, 
-    updateFloatingButtonPosition, 
     updateButtonStates, 
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,
+    scrollToActiveTimeline
+} from './ui.js';
+import { 
+    updateFloatingButtonPosition,
     updateGradientBarLayout,
-    scrollToActiveTimeline,
     updateTimelineCountVariable,
-    initDebugOverlay,
     handleResize,
     preventPullToRefresh
-} from './ui.js';
+} from './ui/resizeHandler.js';
 import { 
     DEBUG_MODE,
     MINUTES_PER_DAY,
@@ -1673,9 +1674,6 @@ async function init() {
                 updateFloatingButtonPosition();
             }
         });
-
-        // Initialize debug overlay
-        initDebugOverlay();
 
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);

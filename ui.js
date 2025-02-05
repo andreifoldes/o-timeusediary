@@ -486,26 +486,15 @@ function preventPullToRefresh() {
     }, { passive: false });
 }
 
-function handleResize() {
-    // updateIsMobile will now handle the reload at breakpoint
-    updateIsMobile();
-    // Only update floating button position since other updates will happen after reload
-    updateFloatingButtonPosition();
-}
-
-// Initialize UI components
-export { 
-    createModal, 
-    createFloatingAddButton, 
-    updateFloatingButtonPosition, 
-    updateButtonStates, 
+// Updated exports:
+export {
+    createModal,
+    createFloatingAddButton,
+    updateButtonStates,
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,
-    updateGradientBarLayout,
     scrollToActiveTimeline,
-    updateTimelineCountVariable,
     initDebugOverlay,
-    handleResize,
     preventPullToRefresh
 };
