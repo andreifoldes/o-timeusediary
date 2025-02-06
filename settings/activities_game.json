@@ -1,0 +1,79 @@
+{
+    "general": {
+      "app_name": "O-ELIDDI",
+      "version": "1.0.0",
+      "author": "John Doe",
+      "instructions": true,
+      "redirect_url": ""
+    },
+    "timeline": {
+      "primary": {
+        "name": "Activity Timeline",
+        "description": "",
+        "mode": "single-choice",
+        "min_coverage": "10",
+        "categories": [
+          {
+            "name": "Activities",
+            "activities": [
+              {
+                "name": "Sleep",
+                "examples": "",
+                "color": "#FFB3B3"
+              },
+              {
+                "name": "Video Gaming",
+                "examples": "",
+                "color": "#B3FFB3"
+              },
+              {
+                "name": "Digital Media Use",
+                "examples": "(incl. TV, Internet, Social Media, Smartphone, etc.)",
+                "color": "#B3B3FF"
+              },
+              {
+                "name": "Personal Care",
+                "examples": "(incl. Eating, Washing, Resting, Religious Activities, etc.)",
+                "color": "#FFE6B3"
+              },
+              {
+                "name": "Household and Family Care",
+                "examples": "(incl. Domestic Work, Shopping, DIY, etc.)",
+                "color": "#B3FFE6"
+              },
+              {
+                "name": "Work and Employment",
+                "examples": "",
+                "color": "#FFB3E6"
+              },
+              {
+                "name": "Education",
+                "examples": "",
+                "color": "#E6FFB3"
+              },
+              {
+                "name": "Exercise and Sports",
+                "examples": "",
+                "color": "#B3E6FF"
+              },
+              {
+                "name": "Offline Leisure & Social Life",
+                "examples": "(incl. Social and Cultural Activities, Hobbies, Recreation, etc.)",
+                "color": "#E6B3FF"
+              },
+              {
+                "name": "Travel and Transportation",
+                "examples": "",
+                "color": "#FFE6E6"
+              },
+              {
+                "name": "Other not listed (enter)",
+                "examples": "",
+                "color": "#E6E6FF"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  } 

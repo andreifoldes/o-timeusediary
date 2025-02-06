@@ -261,7 +261,7 @@ function logDebugInfo() {
 
 async function fetchActivities(key) {
     try {
-        const response = await fetch('settings/activities.json');
+        const response = await fetch('settings/activities_game.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -312,7 +312,7 @@ async function fetchActivities(key) {
         
         if (DEBUG_MODE) {
             console.log(`Loaded timeline metadata for ${key}:`, window.timelineManager.metadata[key]);
-            console.log('All available timelines in activities.json:', Object.keys(data));
+            console.log('All available timelines in activities_game.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
         }
@@ -1588,7 +1588,7 @@ async function init() {
         preventPullToRefresh();
         
         // Load initial timeline data
-        const response = await fetch('settings/activities.json');
+        const response = await fetch('settings/activities_game.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

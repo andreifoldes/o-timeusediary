@@ -518,7 +518,7 @@ export function sendData() {
     console.log('Data exported as CSV:', timelineData);
 
     // Check if redirect URL is specified in settings
-    fetch('settings/activities.json')
+    fetch('settings/activities_game.json')
         .then(response => response.json())
         .then(data => {
             const redirectUrl = data.general?.redirect_url;
