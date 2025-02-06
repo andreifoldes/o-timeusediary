@@ -1,6 +1,11 @@
 .aider*
 .env
+.env.local
 .cursor
 .gitignore
 .cursorrules
 misc/
+config.js
+config.env
+# Local Netlify folder
+.netlify

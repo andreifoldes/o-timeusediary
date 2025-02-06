@@ -19,42 +19,42 @@
               {
                 "name": "Sleep",
                 "examples": "",
-                "color": "#FF9393"
+                "color": "#9393FF"
               },
               {
                 "name": "Video Gaming",
                 "examples": "",
-                "color": "#93FF93"
+                "color": "#93FFC6"
               },
               {
                 "name": "Other Digital Media Use",
                 "examples": "(incl. TV, Internet, Social Media, Smartphone, etc.)",
-                "color": "#9393FF"
+                "color": "#93C6FF"
               },
               {
                 "name": "Personal Care",
                 "examples": "(incl. Eating, Washing, Resting, Religious Activities, etc.)",
-                "color": "#FFC693"
+                "color": "#FF93C6"
               },
               {
                 "name": "Household and Family Care",
                 "examples": "(incl. Domestic Work, Shopping, DIY, etc.)",
-                "color": "#93FFC6"
+                "color": "#FFC693"
               },
               {
                 "name": "Work and Employment",
                 "examples": "",
-                "color": "#FF93C6"
+                "color": "#C6FF93"
               },
               {
                 "name": "Education",
                 "examples": "",
-                "color": "#C6FF93"
+                "color": "#93FF93"
               },
               {
                 "name": "Exercise and Sports",
                 "examples": "",
-                "color": "#93C6FF"
+                "color": "#FF9393"
               },
               {
                 "name": "Offline Leisure & Social Life",
