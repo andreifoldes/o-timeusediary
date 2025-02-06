@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar" style="width: 100%"></div>
+    </div>
+    
     <div class="content">
         <h1>How to Use the Diary</h1>
 
@@ -23,14 +27,14 @@
                 <h2>Select an Activity</h2>
                 <div class="layout-specific horizontal-layout">
                     <p>Choose an activity from the menu at the bottom of the screen.</p>
-                    <div class="gif-container">
-                        <img src="assets/select-activity-desktop.gif" alt="Selecting an activity from the bottom menu" />
+                    <div class="gif-container loading" data-src="assets/select-activity-desktop.gif">
+                        <img src="assets/select-activity-desktop.gif" alt="Selecting an activity from the bottom menu" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                     </div>
                 </div>
                 <div class="layout-specific vertical-layout">
                     <p>Tap the (+) button in the bottom right corner to open the activity menu.</p>
-                    <div class="gif-container">
-                        <img src="assets/select-activity-mobile.gif" alt="Selecting an activity using the plus button" />
+                    <div class="gif-container loading" data-src="assets/select-activity-mobile.gif">
+                        <img src="assets/select-activity-mobile.gif" alt="Selecting an activity using the plus button" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                     </div>
                 </div>
             </div>
@@ -42,14 +46,14 @@
                 <h2>Place and Adjust Activity</h2>
                 <div class="layout-specific horizontal-layout">
                     <p>Click where you want to place the activity, then drag the edges horizontally to set the duration.</p>
-                    <div class="gif-container">
-                        <img src="assets/adjust-activity-desktop.gif" alt="Placing and adjusting activity duration horizontally" />
+                    <div class="gif-container loading" data-src="assets/adjust-activity-desktop.gif">
+                        <img src="assets/adjust-activity-desktop.gif" alt="Placing and adjusting activity duration horizontally" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                     </div>
                 </div>
                 <div class="layout-specific vertical-layout">
                     <p>Tap where you want to place the activity, then drag the edges vertically to set the duration.</p>
-                    <div class="gif-container">
-                        <img src="assets/adjust-activity-mobile.gif" alt="Placing and adjusting activity duration vertically" />
+                    <div class="gif-container loading" data-src="assets/adjust-activity-mobile.gif">
+                        <img src="assets/adjust-activity-mobile.gif" alt="Placing and adjusting activity duration vertically" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                     </div>
                 </div>
             </div>
@@ -60,8 +64,8 @@
             <div class="step-content">
                 <h2>Submit Your Diary</h2>
                 <p>Once you've recorded all your activities for the day, click the Submit button to complete your diary.</p>
-                <div class="gif-container">
-                    <img src="assets/submit-diary.gif" alt="Submitting the completed diary" />
+                <div class="gif-container loading" data-src="assets/submit-diary.gif">
+                    <img src="assets/submit-diary.gif" alt="Submitting the completed diary" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                 </div>
             </div>
         </div>
@@ -70,23 +74,23 @@
             <h2>Helpful tools</h2>
             <div class="controls features-grid">
                 <div class="feature-item">
-                    <button class="btn undo-btn" data-is-active="false" disabled>
-                        <i class="fas fa-undo"></i>
+                    <button class="btn undo-btn" data-is-active="false" disabled aria-label="Undo last action">
+                        <i class="fas fa-undo" aria-hidden="true"></i>
                         Undo
                     </button>
                     <p>Did you make a mistake? Reverse your last action</p>
                 </div>
 
                 <div class="feature-item">
-                    <button class="btn clean-row-btn" data-is-active="false" disabled>
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="btn clean-row-btn" data-is-active="false" disabled aria-label="Clean current row">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
                         Clean Row
                     </button>
                     <p>Want to start over? Clean the row</p>
                 </div>
 
                 <div class="feature-item">
-                    <button class="activity-button" style="--color: #C6C6FF;">
+                    <button class="activity-button" style="--color: #C6C6FF;" aria-label="Add custom activity">
                         <span class="activity-text">
                             <span class="activity-name">Other not listed (enter)</span>
                         </span>
@@ -97,16 +101,16 @@
         </div>
     </div>
 
-    <div class="navigation">
-        <button id="backBtn">
-            <i class="fas fa-chevron-left"></i>
+    <nav class="navigation">
+        <button id="backBtn" aria-label="Go back to previous page">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
             Back
         </button>
-        <button id="continueBtn">
+        <button id="continueBtn" aria-label="Start using the diary">
             Start
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
         </button>
-    </div>
+    </nav>
     <script type="module" src="instructions.js"></script>
 </body>
 </html>

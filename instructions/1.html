@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar" style="width: 50%"></div>
+    </div>
+    
     <div class="content">
         <h1>Welcome to the Time Use Diary</h1>
         <p>Thank you for participating in this research study. This diary will help us collect valuable information about how you spend your time throughout the day.</p>
@@ -24,8 +28,8 @@
                 <h2>How the Diary Works</h2>
                 <p>The diary shows a full day from 4am to 4am the next day, divided into 10-minute intervals.</p>
                 
-                <div class="gif-container">
-                    <img src="assets/timeline-overview.gif" alt="Timeline overview showing the full day" />
+                <div class="gif-container loading" data-src="assets/timeline-overview.gif">
+                    <img src="assets/timeline-overview.gif" alt="Timeline overview showing the full day" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
                 </div>
 
                 <div class="layout-specific horizontal-layout">
@@ -52,13 +56,13 @@
         </div>
     </div>
 
-    <div class="navigation">
+    <nav class="navigation">
         <div></div>
-        <button id="continueBtn">
+        <button id="continueBtn" aria-label="Continue to next page">
             Continue
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
         </button>
-    </div>
+    </nav>
     <script type="module" src="instructions.js"></script>
 </body>
 </html>
