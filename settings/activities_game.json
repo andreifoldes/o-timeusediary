@@ -19,57 +19,57 @@
               {
                 "name": "Sleep",
                 "examples": "",
-                "color": "#FFB3B3"
+                "color": "#FF9393"
               },
               {
                 "name": "Video Gaming",
                 "examples": "",
-                "color": "#B3FFB3"
+                "color": "#93FF93"
               },
               {
-                "name": "Digital Media Use",
+                "name": "Other Digital Media Use",
                 "examples": "(incl. TV, Internet, Social Media, Smartphone, etc.)",
-                "color": "#B3B3FF"
+                "color": "#9393FF"
               },
               {
                 "name": "Personal Care",
                 "examples": "(incl. Eating, Washing, Resting, Religious Activities, etc.)",
-                "color": "#FFE6B3"
+                "color": "#FFC693"
               },
               {
                 "name": "Household and Family Care",
                 "examples": "(incl. Domestic Work, Shopping, DIY, etc.)",
-                "color": "#B3FFE6"
+                "color": "#93FFC6"
               },
               {
                 "name": "Work and Employment",
                 "examples": "",
-                "color": "#FFB3E6"
+                "color": "#FF93C6"
               },
               {
                 "name": "Education",
                 "examples": "",
-                "color": "#E6FFB3"
+                "color": "#C6FF93"
               },
               {
                 "name": "Exercise and Sports",
                 "examples": "",
-                "color": "#B3E6FF"
+                "color": "#93C6FF"
               },
               {
                 "name": "Offline Leisure & Social Life",
                 "examples": "(incl. Social and Cultural Activities, Hobbies, Recreation, etc.)",
-                "color": "#E6B3FF"
+                "color": "#C693FF"
               },
               {
                 "name": "Travel and Transportation",
                 "examples": "",
-                "color": "#FFE6E6"
+                "color": "#FFC6C6"
               },
               {
                 "name": "Other not listed (enter)",
                 "examples": "",
-                "color": "#E6E6FF"
+                "color": "#C6C6FF"
               }
             ]
           }
