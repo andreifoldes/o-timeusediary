@@ -19,19 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // On first page, disable back button
         backBtn.disabled = true;
     } else if (window.location.pathname.includes('2.html')) {
-        // On second page, always go back to first page
+        // On second page, go back to first page
         backBtn.onclick = () => window.location.href = createUrlWithParams('1.html');
-    } else if (window.location.pathname.includes('3.html')) {
-        // On third page, always go back to second page
-        backBtn.onclick = () => window.location.href = createUrlWithParams('2.html');
     }
     
     // Handle continue button navigation
     if (window.location.pathname.includes('1.html')) {
         continueBtn.onclick = () => window.location.href = createUrlWithParams('2.html');
     } else if (window.location.pathname.includes('2.html')) {
-        continueBtn.onclick = () => window.location.href = createUrlWithParams('3.html');
-    } else if (window.location.pathname.includes('3.html')) {
         // On last page, add instructions=completed parameter when going to index
         continueBtn.textContent = 'Start';
         continueBtn.onclick = () => {
