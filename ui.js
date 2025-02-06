@@ -68,6 +68,24 @@ function createModal() {
         }
     });
 
+    // NEW: Add event delegation for handling "Other not listed (enter)" clicks
+    const modalActivitiesContainer = activitiesModal.querySelector('#modalActivitiesContainer');
+    modalActivitiesContainer.addEventListener('click', (e) => {
+        if (
+            e.target.classList.contains('activity-name') &&
+            e.target.textContent.trim() === 'Other not listed (enter)'
+        ) {
+            // Hide the activities modal
+            activitiesModal.style.cssText = 'display: none !important';
+            // Show the custom activity input modal
+            const customActivityModal = document.getElementById('customActivityModal');
+            if (customActivityModal) {
+                customActivityModal.style.display = 'block';
+            }
+            e.stopPropagation();
+        }
+    });
+
     // Create confirmation modal
     const confirmationModal = document.createElement('div');
     confirmationModal.className = 'modal-overlay';

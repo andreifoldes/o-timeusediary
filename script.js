@@ -45,7 +45,8 @@ window.timelineManager = {
     activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
     keys: [], // Available timeline keys
     currentIndex: 0, // Current timeline index
-    study: {} // Store URL parameters
+    study: {}, // Store URL parameters
+    general: {} // Store general configuration
 };
 
 // Only create and populate study parameters if URL parameters exist
@@ -393,7 +394,7 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                    if (activityButton.querySelector('.activity-text').textContent.toLowerCase().includes('other not listed (enter)')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
@@ -408,11 +409,8 @@ function renderActivities(categories, container = document.getElementById('activ
                                     activityButton.classList.add('selected');
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     selectedActivity = {
-                                        selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
-                                            color: btn.style.getPropertyValue('--color')
-                                        })),
-                                        category: category.name
+                                        name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                        color: btn.style.getPropertyValue('--color')
                                     };
                                 } else {
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
@@ -567,7 +565,7 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activity.name.includes('other not listed (enter)')) {
+                    if (activity.name.toLowerCase().includes('other not listed (enter)')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
@@ -1594,6 +1592,9 @@ async function init() {
         }
         const data = await response.json();
         
+        // NEW: Save global general configuration (e.g., redirect_url, instructions)
+        window.timelineManager.general = data.general;
+        
         // New instructions redirect logic
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
             // Only redirect if not already on an instructions page and no instructions param
@@ -1609,7 +1610,6 @@ async function init() {
             }
         } else if (window.location.pathname.includes('/instructions/')) {
             // Redirect to index if instructions are disabled but user is on instructions
-            // Preserve current URL parameters
             const currentParams = new URLSearchParams(window.location.search);
             const redirectUrl = new URL('index.html', window.location.href);
             currentParams.forEach((value, key) => {
@@ -1619,7 +1619,7 @@ async function init() {
             return;
         }
         
-        // Initialize timeline management structure with only timeline keys
+        // Initialize timeline management structure with timeline keys
         window.timelineManager.keys = Object.keys(data.timeline);
         window.timelineManager.keys.forEach(timelineKey => {
             window.timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
