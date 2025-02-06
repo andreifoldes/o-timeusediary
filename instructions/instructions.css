@@ -24,9 +24,13 @@
     --radius-lg: 16px;
     
     /* Spacing */
+    --space-xs: 8px;
     --space-xs: clamp(4px, 1vw, 8px);
+    --space-sm: 16px;
     --space-sm: clamp(8px, 2vw, 16px);
+    --space-md: 24px;
     --space-md: clamp(16px, 3vw, 24px);
+    --space-lg: 32px;
     --space-lg: clamp(24px, 4vw, 32px);
     
     /* Typography */
@@ -74,6 +78,7 @@ body {
 }
 
 h1 {
+    font-size: 28px;
     font-size: clamp(24px, 6vw, 32px);
     margin-bottom: 0.8em;
     color: var(--primary-color);
@@ -83,6 +88,7 @@ h1 {
 }
 
 h2 {
+    font-size: 22px;
     font-size: clamp(20px, 5vw, 24px);
     margin-bottom: 0.6em;
     color: var(--text-color);
@@ -91,6 +97,7 @@ h2 {
 }
 
 h3 {
+    font-size: 20px;
     font-size: clamp(18px, 3vw, 22px);
     margin-bottom: 0.6em;
     color: var(--secondary-color);
@@ -98,6 +105,7 @@ h3 {
 }
 
 p, li {
+    font-size: 15px;
     font-size: clamp(15px, 2vw, 16px);
     margin-bottom: 1em;
     color: var(--text-color);
@@ -204,7 +212,12 @@ li {
     right: 0;
     width: 100%;
     padding: var(--space-md);
-    background: white;
+    padding-bottom: max(var(--space-md), env(safe-area-inset-bottom, var(--space-md)));
+    padding-left: max(var(--space-md), env(safe-area-inset-left, var(--space-md)));
+    padding-right: max(var(--space-md), env(safe-area-inset-right, var(--space-md)));
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -214,9 +227,12 @@ li {
     border-top-left-radius: var(--radius-md);
     border-top-right-radius: var(--radius-md);
     transition: all 0.3s ease;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background: rgba(255, 255, 255, 0.95);
+}
+
+@supports not (backdrop-filter: blur(8px)) {
+    .navigation {
+        background: rgba(255, 255, 255, 0.98);
+    }
 }
 
 .navigation button {
@@ -227,10 +243,14 @@ li {
     align-items: center;
     gap: 10px;
     font-weight: var(--font-weight-medium);
-    min-width: clamp(120px, 25vw, 140px);
+    min-width: clamp(100px, 20vw, 140px);
+    max-width: 200px;
     font-family: inherit;
     touch-action: manipulation;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .navigation button:first-child {

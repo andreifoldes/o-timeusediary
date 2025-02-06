@@ -15,30 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
         return redirectUrl.toString();
     }
     
-    // Update progress bar animation
+    // Update progress bar animation with requestAnimationFrame for better performance
     if (progressBar) {
-        requestAnimationFrame(() => {
+        let animationFrame;
+        const updateProgress = () => {
             progressBar.style.transition = 'width 0.6s ease';
             if (window.location.pathname.includes('1.html')) {
                 progressBar.style.width = '50%';
             } else if (window.location.pathname.includes('2.html')) {
                 progressBar.style.width = '100%';
             }
-        });
+        };
+        animationFrame = requestAnimationFrame(updateProgress);
     }
 
-    // Detect layout orientation
+    // Detect layout orientation with debouncing
+    let orientationTimeout;
     function updateLayoutClass() {
-        const isHorizontal = window.innerWidth > window.innerHeight;
-        document.body.classList.toggle('is-horizontal', isHorizontal);
-        document.body.classList.toggle('is-vertical', !isHorizontal);
+        clearTimeout(orientationTimeout);
+        orientationTimeout = setTimeout(() => {
+            const isHorizontal = window.innerWidth > window.innerHeight;
+            document.body.classList.toggle('is-horizontal', isHorizontal);
+            document.body.classList.toggle('is-vertical', !isHorizontal);
+        }, 100);
     }
 
-    // Update layout class on load and resize
+    // Update layout class on load and resize with passive event listener
     updateLayoutClass();
-    window.addEventListener('resize', updateLayoutClass);
+    window.addEventListener('resize', updateLayoutClass, { passive: true });
 
-    // Lazy load images
+    // Lazy load images with IntersectionObserver
+    const lazyImageObservers = new Map();
     const lazyImages = document.querySelectorAll('.gif-container[data-src]');
     lazyImages.forEach(container => {
         const img = container.querySelector('img');
@@ -49,16 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (entry.isIntersecting) {
                             img.src = container.dataset.src;
                             observer.unobserve(entry.target);
+                            lazyImageObservers.delete(container);
                         }
                     });
                 },
-                { rootMargin: '50px' }
+                { rootMargin: '50px', threshold: 0.1 }
             );
             observer.observe(container);
+            lazyImageObservers.set(container, observer);
         }
     });
 
-    // Handle back button state and navigation (only on page 2)
+    // Handle navigation with transition animations
     if (window.location.pathname.includes('2.html') && backBtn) {
         backBtn.addEventListener('click', () => {
             progressBar.style.width = '0%';
@@ -68,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Handle continue button navigation
     if (window.location.pathname.includes('1.html')) {
         continueBtn.addEventListener('click', () => {
             progressBar.style.width = '100%';
@@ -77,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
         });
     } else if (window.location.pathname.includes('2.html') && continueBtn) {
-        // On last page, add instructions=completed parameter when going to index
         continueBtn.textContent = 'Start';
         continueBtn.addEventListener('click', () => {
             const redirectUrl = new URL('../index.html', window.location.href);
@@ -85,20 +92,29 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = redirectUrl.toString();
         });
     }
-});
 
-function updateLayout() {
-    const isHorizontal = !getIsMobile();
-    document.body.classList.toggle('is-horizontal', isHorizontal);
-    document.body.classList.toggle('is-vertical', !isHorizontal);
-}
+    // Cleanup function
+    function cleanup() {
+        if (orientationTimeout) clearTimeout(orientationTimeout);
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        lazyImageObservers.forEach(observer => observer.disconnect());
+        lazyImageObservers.clear();
+        window.removeEventListener('resize', updateLayoutClass);
+    }
+
+    // Clean up when page is unloaded
+    window.addEventListener('unload', cleanup);
+});
 
 // Initial layout
 updateLayout();
 
-// Update on resize - updateIsMobile will handle the reload at breakpoint
+// Update on resize with debouncing
+let resizeTimeout;
 window.addEventListener('resize', () => {
-    updateIsMobile();
-});
-
-// No longer need layoutChange event listener since we're doing full page reloads
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        updateIsMobile();
+        updateLayout();
+    }, 100);
+}, { passive: true });
