@@ -180,11 +180,11 @@ function updateButtonStates() {
         if (isLastTimeline) {
             // On last timeline, enable Next only if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            nextButton.innerHTML = 'Submit <i class="fas fa-arrow-right"></i>';
+            nextButton.innerHTML = '<i class="fas fa-check"></i> Submit';
         } else {
             // For other timelines, enable Next if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            nextButton.innerHTML = meetsMinCoverage ? 'Next <i class="fas fa-arrow-right"></i>' : 'Submit <i class="fas fa-arrow-right"></i>';
+            nextButton.innerHTML = meetsMinCoverage ? 'Next <i class="fas fa-arrow-right"></i>' : '<i class="fas fa-check"></i> Submit';
         }
     }
 }

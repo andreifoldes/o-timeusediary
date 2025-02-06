@@ -928,8 +928,18 @@ body {
 .next-btn {
     background-color: var(--primary-color);
 }
+
 .next-btn:hover:not(:disabled) {
     background-color: #1d4ed8;
+}
+
+/* When next button shows Submit text, use success color */
+.next-btn:has(i.fa-check) {
+    background-color: var(--success-color);
+}
+
+.next-btn:has(i.fa-check):hover:not(:disabled) {
+    background-color: #047857;
 }
 
 /* Floating add button for mobile */

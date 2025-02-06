@@ -24,17 +24,17 @@
         <div class="instruction-step">
             <div class="step-number">1</div>
             <div class="step-content">
-                <h2>Select an Activity</h2>
+                <h2>Select and Place an Activity</h2>
                 <div class="layout-specific horizontal-layout">
-                    <p>Choose an activity from the menu at the bottom of the screen.</p>
-                    <div class="gif-container loading" data-src="assets/select-activity-desktop.gif">
-                        <img src="assets/select-activity-desktop.gif" alt="Selecting an activity from the bottom menu" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    <p>Choose an activity from the menu at the bottom of the screen, then place it on the timeline.</p>
+                    <div class="gif-container loading" data-src="../assets/select_horizontal.gif">
+                        <img src="../assets/select_horizontal.gif" alt="Selecting an activity from the bottom menu" loading="lazy" onload="this.parentElement.classList.remove('loading')" autoplay loop="infinite" />
                     </div>
                 </div>
                 <div class="layout-specific vertical-layout">
-                    <p>Tap the (+) button in the bottom right corner to open the activity menu.</p>
-                    <div class="gif-container loading" data-src="assets/select-activity-mobile.gif">
-                        <img src="assets/select-activity-mobile.gif" alt="Selecting an activity using the plus button" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    <p>Tap the (+) button in the bottom right corner to open the activity menu, then select an activity and tap where you want to place it on the timeline.</p>
+                    <div class="gif-container loading" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <p style="color: #666;">Loading...</p>
                     </div>
                 </div>
             </div>
@@ -43,17 +43,17 @@
         <div class="instruction-step">
             <div class="step-number">2</div>
             <div class="step-content">
-                <h2>Place and Adjust Activity</h2>
+                <h2>Adjust Activity Duration</h2>
                 <div class="layout-specific horizontal-layout">
-                    <p>Click where you want to place the activity, then drag the edges horizontally to set the duration.</p>
-                    <div class="gif-container loading" data-src="assets/adjust-activity-desktop.gif">
-                        <img src="assets/adjust-activity-desktop.gif" alt="Placing and adjusting activity duration horizontally" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    <p>Click and drag the edges horizontally to set the duration.</p>
+                    <div class="gif-container loading" data-src="../assets/adjust_horizontal.gif">
+                        <img src="../assets/adjust_horizontal.gif" alt="Placing and adjusting activity duration horizontally" loading="lazy" onload="this.parentElement.classList.remove('loading')" autoplay loop="infinite" />
                     </div>
                 </div>
                 <div class="layout-specific vertical-layout">
-                    <p>Tap where you want to place the activity, then drag the edges vertically to set the duration.</p>
-                    <div class="gif-container loading" data-src="assets/adjust-activity-mobile.gif">
-                        <img src="assets/adjust-activity-mobile.gif" alt="Placing and adjusting activity duration vertically" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    <p>Drag the edges vertically to set the duration.</p>
+                    <div class="gif-container loading" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <p style="color: #666;">Loading...</p>
                     </div>
                 </div>
             </div>
@@ -64,8 +64,12 @@
             <div class="step-content">
                 <h2>Submit Your Diary</h2>
                 <p>Once you've recorded all your activities for the day, click the Submit button to complete your diary.</p>
-                <div class="gif-container loading" data-src="assets/submit-diary.gif">
-                    <img src="assets/submit-diary.gif" alt="Submitting the completed diary" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                <div class="feature-item">
+                    <button class="btn save-btn" aria-label="Submit diary">
+                        <i class="fas fa-check" aria-hidden="true"></i>
+                        Submit
+                    </button>
+                    <p>Click to submit your completed diary</p>
                 </div>
             </div>
         </div>
