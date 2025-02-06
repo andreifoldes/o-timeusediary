@@ -1,4 +1,5 @@
 import { DEBUG_MODE, MINUTES_PER_DAY } from './constants.js';
+import { getSupabase } from './supabaseClient.js';
 
 // Timeline state management functions
 export function getCurrentTimelineKey() {
@@ -468,81 +469,121 @@ export function createTimelineDataFrame() {
     return dataFrame;
 }
 
-export function sendData() {
-    // Get flattened timeline data
+/**
+ * Sends timeline and participant data to Supabase.
+ *
+ * This function performs the following steps:
+ * 1. Prepare the timeline data and ensure each record contains the unique identifier (pid).
+ * 2. Insert the timeline records into the "timeline" table.
+ * 3. Prepare the participant data by collecting viewport sizes, layout preference,
+ *    browser information, and any extra study-related information.
+ * 4. Insert the participant data into the "participant" table.
+ *
+ * Make sure your timeline data rows contain keys that match your "timeline" table columns:
+ * timelineKey, activity, category, startTime, endTime.
+ */
+export async function sendDataToSupabase() {
+  try {
+    // Wait for Supabase client to be initialized
+    const supabase = await getSupabase();
+    if (!supabase) {
+      throw new Error('Failed to initialize Supabase client');
+    }
+
+    // --- Prepare Timeline Data ---
     const timelineData = createTimelineDataFrame();
-    
-    // Get all unique headers from study parameters
-    const studyHeaders = Object.keys(window.timelineManager.study || {});
-    
-    // Combine standard headers with study parameter headers
-    const headers = ['timelineKey', 'activity', 'category', 'startTime', 'endTime', ...studyHeaders];
-    
-    // Process timeline data to ensure activity and category are properly set
-    const processedData = timelineData.map(row => {
-        // Find the activity block element by ID to get the actual activity data
-        const activityBlock = document.querySelector(`.activity-block[data-id="${row.id}"]`);
-        if (activityBlock) {
-            return {
-                ...row,
-                activity: activityBlock.querySelector('div').textContent || row.activity,
-                category: activityBlock.dataset.category || row.category
-            };
-        }
-        return row;
-    });
 
-    const csvContent = [
-        headers.join(','),
-        ...processedData.map(row => 
-            headers.map(header => 
-                // Wrap values in quotes and escape existing quotes
-                `"${String(row[header] || '').replace(/"/g, '""')}"`
-            ).join(',')
-        )
-    ].join('\n');
-
-    // Create blob and download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    const today = new Date();
-    const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
-    link.download = `${dateStr}_timeline_activities.csv`;
+    // Get study data if available
+    let studyData = window.timelineManager?.study || {};
+    let pid;
     
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (!('pid' in studyData) && !('PID' in studyData)) {
+      pid = ('0000000000000000' + Math.floor(Math.random() * 1e16)).slice(-16);
+      studyData.pid = pid;
+    } else {
+      pid = studyData.pid || studyData.PID;
+    }
+
+    // Process timeline data - only include relevant columns
+    const processedTimelineData = timelineData.map(row => ({
+      timelineKey: row.timelineKey,
+      activity: row.activity,
+      category: row.category,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      pid: pid
+    }));
+
+    // Insert timeline data
+    const { data: timelineInsertData, error: timelineError } = await supabase
+      .from('timeline')
+      .insert(processedTimelineData);
+
+    if (timelineError) {
+      throw new Error(`Timeline data insertion failed: ${timelineError.message}`);
+    }
+
+    // --- Prepare Participant Data ---
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const layoutHorizontal = viewportWidth >= 1440;
+
+    // Get browser info if available
+    let browserInfo = { name: 'unknown', version: 'unknown' };
+    if (window.bowser) {
+      const browserParser = window.bowser.getParser(window.navigator.userAgent);
+      browserInfo = {
+        name: browserParser.getBrowserName(),
+        version: browserParser.getBrowserVersion()
+      };
+    }
+
+    const participantData = {
+      pid,
+      viewportWidth,
+      viewportHeight,
+      layoutHorizontal,
+      browserName: browserInfo.name,
+      browserVersion: browserInfo.version,
+      instructions: studyData.instructions === 'completed',
+      PROLIFIC_PID: studyData.PROLIFIC_PID || null,
+      STUDY_ID: studyData.STUDY_ID || null,
+      SESSION_ID: studyData.SESSION_ID || null
+    };
+
+    // Insert participant data
+    const { data: participantInsertData, error: participantError } = await supabase
+      .from('participant')
+      .insert(participantData);
+
+    if (participantError) {
+      throw new Error(`Participant data insertion failed: ${participantError.message}`);
+    }
+
+    console.log('Data inserted successfully');
+
+    // Handle redirect if configured
+    const redirectUrl = window.timelineManager?.general?.redirect_url;
+    if (redirectUrl) {
+      const currentParams = window.location.search;
+      const separator = redirectUrl.includes('?') ? '&' : '?';
+      const newRedirectUrl = redirectUrl + (currentParams ? separator + currentParams.substring(1) : '');
+      window.location.href = newRedirectUrl;
+    }
+
+    return { success: true };
+
+  } catch (error) {
+    console.error('Error in sendDataToSupabase:', error);
     
-    console.log('Data exported as CSV:', timelineData);
-
-    // Check if redirect URL is specified in settings
-    fetch('settings/activities_game.json')
-        .then(response => response.json())
-        .then(data => {
-            const redirectUrl = data.general?.redirect_url;
-            if (redirectUrl) {
-                // Get current URL parameters
-                const currentParams = new URLSearchParams(window.location.search);
-                
-                // Create URL object from redirect URL to handle both URLs with and without existing parameters
-                const finalUrl = new URL(redirectUrl);
-                
-                // Append all current parameters to the redirect URL
-                currentParams.forEach((value, key) => {
-                    finalUrl.searchParams.append(key, value);
-                });
-
-                // Small delay to ensure file download starts before redirect
-                setTimeout(() => {
-                    window.location.href = finalUrl.toString();
-                }, 1000);
-            }
-        })
-        .catch(error => {
-            console.error('Error checking redirect URL:', error);
-        });
+    // If we're in CSV fallback mode, try that instead
+    if (window.timelineManager?.general?.fallbackToCSV) {
+      console.log('Falling back to CSV download...');
+      return sendData({ mode: 'csv' });
+    }
+    
+    throw error;
+  }
 }
 
 export function validateMinCoverage(coverage) {
@@ -824,4 +865,63 @@ export function validateTimeMarkers(startTime, endTime) {
         throw new Error("Invalid time markers: if startTime includes '(+1)', then endTime must also include '(+1)'.");
     }
     return true;
+}
+
+// Helper function to convert an array of objects into a CSV string
+function convertArrayToCSV(array) {
+    if (array.length === 0) {
+        return "";
+    }
+    const keys = Object.keys(array[0]);
+    const csvRows = [];
+    // header row
+    csvRows.push(keys.join(','));
+    // data rows
+    array.forEach(row => {
+        const values = keys.map(key => {
+            let value = row[key] || "";
+            // escape quotes by doubling, and enclose in quotes if needed
+            value = String(value).replace(/"/g, '""');
+            if (value.search(/("|,|\n)/g) >= 0) {
+                value = `"${value}"`;
+            }
+            return value;
+        });
+        csvRows.push(values.join(','));
+    });
+    return csvRows.join('\n');
+}
+
+// Helper function to trigger a CSV download in the browser
+function downloadCSV(csvString, filename) {
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/**
+ * sendData function to either send data via Supabase or download as CSV locally.
+ * 
+ * @param {Object} options - Options to control the sending behavior.
+ *   Use { mode: 'supabase' } (default) to upload via Supabase,
+ *   or { mode: 'csv' } to trigger a CSV file download.
+ */
+export async function sendData(options = { mode: 'supabase' }) {
+    if (options.mode === 'supabase') {
+        // Call the existing function that sends data to Supabase
+        return await sendDataToSupabase();
+    } else if (options.mode === 'csv') {
+        // Create timeline data frame and convert to CSV for download
+        const dataFrame = createTimelineDataFrame();
+        const csv = convertArrayToCSV(dataFrame);
+        downloadCSV(csv, 'timeline_data.csv');
+    } else {
+        throw new Error(`Unsupported send mode: ${options.mode}`);
+    }
 }

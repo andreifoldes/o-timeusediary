@@ -64,6 +64,12 @@
     <!-- Debug overlay element -->
     <div id="debugOverlay" class="debugOverlay"></div>
 
+    <!-- Load environment variables first -->
+    <script src="env-loader.js"></script>
+    
+    <!-- Load Bowser and other scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="timeline_marker.js" type="module"></script>
     <script src="timeline.js" type="module"></script>

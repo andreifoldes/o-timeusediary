@@ -45,7 +45,8 @@ window.timelineManager = {
     activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
     keys: [], // Available timeline keys
     currentIndex: 0, // Current timeline index
-    study: {} // Store URL parameters
+    study: {}, // Store URL parameters
+    general: {} // Store general configuration
 };
 
 // Only create and populate study parameters if URL parameters exist
@@ -1591,6 +1592,9 @@ async function init() {
         }
         const data = await response.json();
         
+        // NEW: Save global general configuration (e.g., redirect_url, instructions)
+        window.timelineManager.general = data.general;
+        
         // New instructions redirect logic
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
             // Only redirect if not already on an instructions page and no instructions param
@@ -1606,7 +1610,6 @@ async function init() {
             }
         } else if (window.location.pathname.includes('/instructions/')) {
             // Redirect to index if instructions are disabled but user is on instructions
-            // Preserve current URL parameters
             const currentParams = new URLSearchParams(window.location.search);
             const redirectUrl = new URL('index.html', window.location.href);
             currentParams.forEach((value, key) => {
@@ -1616,7 +1619,7 @@ async function init() {
             return;
         }
         
-        // Initialize timeline management structure with only timeline keys
+        // Initialize timeline management structure with timeline keys
         window.timelineManager.keys = Object.keys(data.timeline);
         window.timelineManager.keys.forEach(timelineKey => {
             window.timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
