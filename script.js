@@ -393,7 +393,7 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.includes('other not listed (enter)')) {
+                    if (activityButton.querySelector('.activity-text').textContent.toLowerCase().includes('other not listed (enter)')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
@@ -408,11 +408,8 @@ function renderActivities(categories, container = document.getElementById('activ
                                     activityButton.classList.add('selected');
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
                                     selectedActivity = {
-                                        selections: selectedButtons.map(btn => ({
-                                            name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
-                                            color: btn.style.getPropertyValue('--color')
-                                        })),
-                                        category: category.name
+                                        name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
+                                        color: btn.style.getPropertyValue('--color')
                                     };
                                 } else {
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
@@ -567,7 +564,7 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activity.name.includes('other not listed (enter)')) {
+                    if (activity.name.toLowerCase().includes('other not listed (enter)')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
