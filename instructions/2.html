@@ -1,45 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Instructions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Instructions | Time Use Diary</title>
     <link rel="stylesheet" href="instructions.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="content">
-        <h2>How to Use the Diary:</h2>
-        <ol>
-            <div class="layout-specific horizontal-layout">
-                <li>SELECT an activity from the bottom of the page.</li>
-            </div>
-            <div class="layout-specific vertical-layout">
-                <li>SELECT an activity from the activity menu button (+) in the bottom right of the page.</li>
-            </div>
-            <div class="layout-specific horizontal-layout">
-                <li>PLACE the activity onto the timeline.</li>
-            </div>
-            <div class="layout-specific vertical-layout">
-                <li>PLACE the activity onto the timeline.</li>
-            </div>
-            <div class="layout-specific horizontal-layout">
-                <li>DRAG the edge of the activity horizontally to set duration.</li>
-            </div>
-            <div class="layout-specific vertical-layout">
-                <li>DRAG the edge of the activity vertically to set duration.</li>
-            </div>
-            <li>Click SUBMIT once you are happy with the completed diary.</li>
-        </ol>
+        <h1>How to Use the Diary</h1>
 
-        <h2>Additional features</h2>
-        <ul>
-            <li>Undo button</li>
-            <li>clear the entire row</li>
-            <li>If you can't find an exact match, use "other" and type in your activity</li>
-        </ul>
+        <div class="instruction-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h2>Select an Activity</h2>
+                <div class="layout-specific horizontal-layout">
+                    <p>Choose an activity from the menu at the bottom of the screen.</p>
+                    <div class="gif-container">
+                        <img src="assets/select-activity-desktop.gif" alt="Selecting an activity from the bottom menu" />
+                    </div>
+                </div>
+                <div class="layout-specific vertical-layout">
+                    <p>Tap the (+) button in the bottom right corner to open the activity menu.</p>
+                    <div class="gif-container">
+                        <img src="assets/select-activity-mobile.gif" alt="Selecting an activity using the plus button" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instruction-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h2>Place and Adjust Activity</h2>
+                <div class="layout-specific horizontal-layout">
+                    <p>Click where you want to place the activity, then drag the edges horizontally to set the duration.</p>
+                    <div class="gif-container">
+                        <img src="assets/adjust-activity-desktop.gif" alt="Placing and adjusting activity duration horizontally" />
+                    </div>
+                </div>
+                <div class="layout-specific vertical-layout">
+                    <p>Tap where you want to place the activity, then drag the edges vertically to set the duration.</p>
+                    <div class="gif-container">
+                        <img src="assets/adjust-activity-mobile.gif" alt="Placing and adjusting activity duration vertically" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instruction-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h2>Submit Your Diary</h2>
+                <p>Once you've recorded all your activities for the day, click the Submit button to complete your diary.</p>
+                <div class="gif-container">
+                    <img src="assets/submit-diary.gif" alt="Submitting the completed diary" />
+                </div>
+            </div>
+        </div>
+
+        <div class="helpful-tools">
+            <h2>Helpful tools</h2>
+            <div class="controls features-grid">
+                <div class="feature-item">
+                    <button class="btn undo-btn" data-is-active="false" disabled>
+                        <i class="fas fa-undo"></i>
+                        Undo
+                    </button>
+                    <p>Did you make a mistake? Reverse your last action</p>
+                </div>
+
+                <div class="feature-item">
+                    <button class="btn clean-row-btn" data-is-active="false" disabled>
+                        <i class="fas fa-trash-alt"></i>
+                        Clean Row
+                    </button>
+                    <p>Want to start over? Clean the row</p>
+                </div>
+
+                <div class="feature-item">
+                    <button class="activity-button" style="--color: #C6C6FF;">
+                        <span class="activity-text">
+                            <span class="activity-name">Other not listed (enter)</span>
+                        </span>
+                    </button>
+                    <p>Activity not listed? Add a custom activity</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="navigation">
-        <button id="backBtn">Back</button>
-        <button id="continueBtn">Start</button>
+        <button id="backBtn">
+            <i class="fas fa-chevron-left"></i>
+            Back
+        </button>
+        <button id="continueBtn">
+            Start
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
     <script type="module" src="instructions.js"></script>
 </body>

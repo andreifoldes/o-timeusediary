@@ -1,35 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Instructions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Instructions | Time Use Diary</title>
     <link rel="stylesheet" href="instructions.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="content">
         <h1>Welcome to the Time Use Diary</h1>
-        <p>The purpose of this exercise is to collect information on the activities you do.</p>
-        <p>This diary will involve you completing a short task in which you record the activities undertaken the previous day.</p>
+        <p>Thank you for participating in this research study. This diary will help us collect valuable information about how you spend your time throughout the day.</p>
 
-        <h2>How the Diary Works</h2>
-        <p>A full day will be shown hourly with 10 minutes intervals from 4am - 4am.</p>
-        
-        <div class="layout-specific horizontal-layout">
-            <p>On your computer/laptop screen, the timeline appears horizontally, allowing you to scroll left and right through the day.</p>
-        </div>
-        <div class="layout-specific vertical-layout">
-            <p>On your smartphone screen, the timeline appears vertically, allowing you to scroll up and down through the day.</p>
+        <div class="instruction-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h2>How the Diary Works</h2>
+                <p>The diary shows a full day from 4am to 4am the next day, divided into 10-minute intervals.</p>
+                
+                <div class="gif-container">
+                    <img src="assets/timeline-overview.gif" alt="Timeline overview showing the full day" />
+                </div>
+
+                <div class="layout-specific horizontal-layout">
+                    <p>On your computer screen, the timeline appears horizontally - scroll left and right to move through the day.</p>
+                </div>
+                <div class="layout-specific vertical-layout">
+                    <p>On your phone screen, the timeline appears vertically - scroll up and down to move through the day.</p>
+                </div>
+            </div>
         </div>
 
-        <h2>Tips for Accurate Recording</h2>
-        <ul>
-            <li>Account for all your time - even short activities</li>
-            <li>If you did multiple things at once, record the main activity</li>
-            <li>Be as specific as possible when choosing activities</li>
-        </ul>
+        <div class="instruction-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h2>Tips for Accurate Recording</h2>
+                <div class="tip-card">
+                    <ul>
+                        <li>Account for all your time - even short activities matter</li>
+                        <li>If you did multiple things at once, record the main activity</li>
+                        <li>Be as specific as possible when choosing activities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="navigation">
-        <button id="backBtn" disabled>Back</button>
-        <button id="continueBtn">Continue</button>
+        <div></div>
+        <button id="continueBtn">
+            Continue
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
     <script type="module" src="instructions.js"></script>
 </body>

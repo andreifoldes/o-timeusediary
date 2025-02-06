@@ -1,20 +1,33 @@
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #475569;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --border-color: #e2e8f0;
+    --success-color: #059669;
+    --danger-color: #dc2626;
+}
+
 html {
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     touch-action: pan-y pinch-zoom;
+    height: 100%;
 }
 
 body {
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
-    touch-action: pan-y pinch-zoom;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
     -webkit-overflow-scrolling: auto;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    touch-action: pan-y pinch-zoom;
 }
 
 .header-section {
@@ -22,10 +35,10 @@ body {
     top: 0;
     background: white;
     z-index: 1000;
-    padding: 8px 6px;
+    padding: clamp(8px, 2vw, 16px) clamp(6px, 2vw, 12px);
     width: 100%;
     box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .timeline-canvas {
@@ -167,18 +180,20 @@ body {
 
 .timeline-header {
     text-align: center;
-    margin: 4px 0;
+    margin: clamp(4px, 1.5vw, 8px) 0;
 }
 
 .timeline-title {
     margin: 4px 0;
-    font-size: 18px;
-    color: #333;
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: var(--text-color);
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .timeline-description {
-    color: #666;
-    font-size: 14px;
+    color: var(--secondary-color);
+    font-size: clamp(14px, 1.8vw, 16px);
     margin: 0;
     font-style: italic;
 }
@@ -683,49 +698,56 @@ body {
 }
 
 .btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    font-size: 14px;
-    color: white; /* Add white text color */
-}
-
-.btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-}
-
-.btn:disabled {
-    opacity: 0.3;
-    pointer-events: none;
+    gap: 8px;
+    padding: clamp(8px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 500;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease, transform 0.2s ease;
+    min-width: 120px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .btn i {
-    font-size: 16px;
+    font-size: clamp(14px, 1.8vw, 16px);
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .clean-row-btn {
-    background-color: #dc3545;
+    background-color: var(--danger-color);
 }
 
 .clean-row-btn:hover:not(:disabled) {
-    background-color: #c82333;
+    background-color: #b91c1c;
 }
 
 .undo-btn {
-    background-color: #6c757d;
+    background-color: var(--secondary-color);
 }
 
 .undo-btn:hover:not(:disabled) {
-    background-color: #5a6268;
+    background-color: #334155;
 }
 
 .save-btn {
-    background-color: #28a745;
+    background-color: var(--success-color);
 }
 
 .save-btn:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #047857;
 }
 
 .activity-block {
@@ -904,10 +926,10 @@ body {
 }
 
 .next-btn {
-    background-color: #007bff;
+    background-color: var(--primary-color);
 }
 .next-btn:hover:not(:disabled) {
-    background-color: #0069d9;
+    background-color: #1d4ed8;
 }
 
 /* Floating add button for mobile */
@@ -1355,4 +1377,44 @@ body {
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+/* Navigation button style from instructions */
+.navigation-btn {
+    font-size: clamp(14px, 1.8vw, 16px);
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2vw, 20px);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    min-width: clamp(100px, 20vw, 120px);
+    background-color: transparent;
+    border: 2px solid var(--primary-color, #2563eb);
+    color: var(--primary-color, #2563eb);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.navigation-btn i {
+    font-size: clamp(12px, 1.5vw, 14px);
+}
+
+.navigation-btn:hover {
+    background-color: var(--primary-color, #2563eb);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .navigation-btn {
+        font-size: 13px;
+        padding: 8px 16px;
+        min-width: auto;
+        gap: 6px;
+    }
+    
+    .navigation-btn i {
+        font-size: 12px;
+    }
 }

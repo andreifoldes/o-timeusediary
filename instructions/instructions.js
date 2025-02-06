@@ -14,12 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return redirectUrl.toString();
     }
     
-    // Handle back button state and navigation
-    if (window.location.pathname.includes('1.html')) {
-        // On first page, disable back button
-        backBtn.disabled = true;
-    } else if (window.location.pathname.includes('2.html')) {
-        // On second page, go back to first page
+    // Handle back button state and navigation (only on page 2)
+    if (window.location.pathname.includes('2.html') && backBtn) {
         backBtn.onclick = () => window.location.href = createUrlWithParams('1.html');
     }
     
