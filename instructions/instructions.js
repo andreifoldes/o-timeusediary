@@ -9,9 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function createUrlWithParams(targetPath) {
         const currentUrl = new URL(window.location.href);
         const redirectUrl = new URL(targetPath, currentUrl.origin + currentUrl.pathname.replace(/[^/]*$/, ''));
+        
+        // Preserve all existing URL parameters
         currentUrl.searchParams.forEach((value, key) => {
+            // Don't override 'instructions' param if it's the target destination
+            if (targetPath === '../index.html' && key === 'instructions') {
+                return;
+            }
             redirectUrl.searchParams.set(key, value);
         });
+        
+        // Add instructions=completed for final redirect
+        if (targetPath === '../index.html') {
+            redirectUrl.searchParams.set('instructions', 'completed');
+        }
+        
         return redirectUrl.toString();
     }
     
@@ -87,9 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (window.location.pathname.includes('2.html') && continueBtn) {
         continueBtn.textContent = 'Start';
         continueBtn.addEventListener('click', () => {
-            const redirectUrl = new URL('../index.html', window.location.href);
-            redirectUrl.searchParams.set('instructions', 'completed');
-            window.location.href = redirectUrl.toString();
+            window.location.href = createUrlWithParams('../index.html');
         });
     }
 
