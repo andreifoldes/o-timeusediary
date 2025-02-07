@@ -1428,3 +1428,7 @@ body {
         font-size: 12px;
     }
 }
+
+.last-initialized-timeline-wrapper .timeline-container .title {
+    display: none;
+}
