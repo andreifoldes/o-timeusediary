@@ -1,5 +1,17 @@
 import { getIsMobile, updateIsMobile } from '../globals.js';
 
+// Add the missing updateLayout function
+function updateLayout() {
+    const isMobile = getIsMobile();
+    document.body.classList.toggle('mobile-layout', isMobile);
+    document.body.classList.toggle('desktop-layout', !isMobile);
+    
+    // Update orientation classes
+    const isHorizontal = window.innerWidth > window.innerHeight;
+    document.body.classList.toggle('is-horizontal', isHorizontal);
+    document.body.classList.toggle('is-vertical', !isHorizontal);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('backBtn');
     const continueBtn = document.getElementById('continueBtn');
