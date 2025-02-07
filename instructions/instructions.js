@@ -14,6 +14,7 @@ function updateLayout() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const continueBtn = document.getElementById('continueBtn');
+    const progressBar = document.getElementById('progressBar');
     
     // Function to create URL with preserved parameters
     function createUrlWithParams(targetPath) {
@@ -37,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return redirectUrl.toString();
     }
     
+    // Update progress bar
+    if (progressBar) {
+        progressBar.style.transition = 'width 0.6s ease';
+        progressBar.style.width = '100%';
+    }
+
     // Handle orientation changes
     let orientationTimeout;
     function updateLayoutClass() {
