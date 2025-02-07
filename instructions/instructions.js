@@ -13,9 +13,7 @@ function updateLayout() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const backBtn = document.getElementById('backBtn');
     const continueBtn = document.getElementById('continueBtn');
-    const progressBar = document.getElementById('progressBar');
     
     // Function to create URL with preserved parameters
     function createUrlWithParams(targetPath) {
@@ -39,21 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return redirectUrl.toString();
     }
     
-    // Update progress bar animation with requestAnimationFrame for better performance
-    if (progressBar) {
-        let animationFrame;
-        const updateProgress = () => {
-            progressBar.style.transition = 'width 0.6s ease';
-            if (window.location.pathname.includes('1.html')) {
-                progressBar.style.width = '50%';
-            } else if (window.location.pathname.includes('2.html')) {
-                progressBar.style.width = '100%';
-            }
-        };
-        animationFrame = requestAnimationFrame(updateProgress);
-    }
-
-    // Detect layout orientation with debouncing
+    // Handle orientation changes
     let orientationTimeout;
     function updateLayoutClass() {
         clearTimeout(orientationTimeout);
@@ -91,24 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle navigation with transition animations
-    if (window.location.pathname.includes('2.html') && backBtn) {
-        backBtn.addEventListener('click', () => {
-            progressBar.style.width = '0%';
-            setTimeout(() => {
-                window.location.href = createUrlWithParams('1.html');
-            }, 300);
-        });
-    }
-    
-    if (window.location.pathname.includes('1.html')) {
-        continueBtn.addEventListener('click', () => {
-            progressBar.style.width = '100%';
-            setTimeout(() => {
-                window.location.href = createUrlWithParams('2.html');
-            }, 300);
-        });
-    } else if (window.location.pathname.includes('2.html') && continueBtn) {
+    // Handle start button click
+    if (continueBtn) {
         continueBtn.textContent = 'Start';
         continueBtn.addEventListener('click', () => {
             window.location.href = createUrlWithParams('../index.html');
@@ -118,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cleanup function
     function cleanup() {
         if (orientationTimeout) clearTimeout(orientationTimeout);
-        if (animationFrame) cancelAnimationFrame(animationFrame);
         lazyImageObservers.forEach(observer => observer.disconnect());
         lazyImageObservers.clear();
         window.removeEventListener('resize', updateLayoutClass);

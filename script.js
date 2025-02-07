@@ -1597,11 +1597,11 @@ async function init() {
         
         // New instructions redirect logic
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
-            // Only redirect if not already on an instructions page and no instructions param
+            // Only redirect if not already on instructions page and no instructions param
             if (!window.location.pathname.includes('/instructions/')) {
                 // Preserve current URL parameters
                 const currentParams = new URLSearchParams(window.location.search);
-                const redirectUrl = new URL('instructions/1.html', window.location.href);
+                const redirectUrl = new URL('instructions/instructions.html', window.location.href);
                 currentParams.forEach((value, key) => {
                     redirectUrl.searchParams.append(key, value);
                 });
