@@ -673,3 +673,16 @@ li {
         transform: translateX(100%);
     }
 }
+
+.main-instruction {
+    font-size: 1.2em;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text-color);
+    margin: 2rem auto;
+    max-width: 600px;
+    text-align: center;
+    padding: 1.5rem;
+    background-color: var(--primary-color-light);
+    border-radius: var(--radius-md);
+}
