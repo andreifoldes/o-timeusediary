@@ -883,7 +883,8 @@ function initTimelineInteraction(timeline) {
                                 position: positionPercent.toFixed(2) + '%',
                                 time: formatTimeHHMM(startMinutes),
                                 startMinutes,
-                                endMinutes
+                                endMinutes,
+                                coverage: window.getTimelineCoverage()
                             });
                         }
 
@@ -961,7 +962,8 @@ function initTimelineInteraction(timeline) {
                                 position: positionPercent.toFixed(2) + '%',
                                 time: formatTimeHHMM(endMinutes),
                                 startMinutes: startMinutes,
-                                endMinutes: endMinutes
+                                endMinutes: endMinutes,
+                                coverage: window.getTimelineCoverage()
                             });
                         }
 
@@ -1015,7 +1017,8 @@ function initTimelineInteraction(timeline) {
                                 newLeft: newLeft.toFixed(2) + '%',
                                 time: formatTimelineStart(startMinutes),
                                 startMinutes,
-                                endMinutes
+                                endMinutes,
+                                coverage: window.getTimelineCoverage()
                             });
                         }
 
@@ -1105,7 +1108,8 @@ function initTimelineInteraction(timeline) {
                                 newRight: newRight.toFixed(2) + '%',
                                 time: formatTimelineEnd(endMinutes),
                                 startMinutes,
-                                endMinutes
+                                endMinutes,
+                                coverage: window.getTimelineCoverage()
                             });
                         }
 

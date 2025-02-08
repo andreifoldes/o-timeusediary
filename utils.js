@@ -608,63 +608,17 @@ export function validateMinCoverage(coverage) {
     return numCoverage;
 }
 
+/**
+ * Calculates the total time coverage of the current timeline by summing up
+ * the blockLength of all activities.
+ * 
+ * @returns {number} Total minutes covered by all activities in the current timeline
+ */
 export function getTimelineCoverage() {
-    const activeTimeline = document.querySelector('.timeline[data-active="true"]');
-    if (!activeTimeline) return 0;
-
-    const activityBlocks = activeTimeline.querySelectorAll('.activity-block');
-    if (!activityBlocks.length) return 0;
-
-    // Calculate total minutes covered using data-length attributes
-    let coveredMinutes = 0;
-    const sortedBlocks = [...activityBlocks].sort((a, b) => 
-        timeToMinutes(a.dataset.start) - timeToMinutes(b.dataset.start)
-    );
-
-    // Track the latest end time seen
-    let latestEndTime = 0;
-
-    sortedBlocks.forEach(block => {
-        const startMinutes = timeToMinutes(block.dataset.start);
-        const endMinutes = timeToMinutes(block.dataset.end);
-        let blockLength;
-        // Special case: If activity is from 4:00 to 4:00, it's a full day
-        if (startMinutes === 240 && endMinutes === 240) { // 240 minutes = 4:00
-            blockLength = 1440; // Full day in minutes
-        } else if (startMinutes === 240 && endMinutes === 0) {
-            // Special case: 04:00 to 00:00 = 20 hours = 1200 minutes
-            blockLength = 1200;
-        } else {
-            // Calculate length using absolute difference
-            blockLength = Math.abs(endMinutes - startMinutes);
-            if (blockLength === 0) {
-                // If start and end times are the same (but not 4:00-4:00)
-                blockLength = 0;
-            } else if (endMinutes < startMinutes) {
-                // If end time is before start time, it spans across midnight
-                blockLength = 1440 - blockLength;
-            }
-        }
-        
-        // Validate that block length is positive
-        if (blockLength < 0) {
-            throw new Error(`Invalid negative block length: ${blockLength} minutes. Start: ${startMinutes}, End: ${endMinutes}`);
-        }
-        
-        // Only count non-overlapping portions
-        if (startMinutes > latestEndTime) {
-            coveredMinutes += blockLength;
-        } else if (endMinutes > latestEndTime) {
-            coveredMinutes += endMinutes - latestEndTime;
-        }
-        
-        latestEndTime = Math.max(latestEndTime, endMinutes);
-    });
-
-    // if (DEBUG_MODE) {
-    //     console.log(`Timeline coverage: ${coveredMinutes} minutes covered`);
-    // }
-    return coveredMinutes;
+    const currentKey = getCurrentTimelineKey();
+    const activities = window.timelineManager.activities[currentKey] || [];
+    
+    return activities.reduce((total, activity) => total + activity.blockLength, 0);
 }
 
 function validateActivityBlockTransformation(startMinutes, endMinutes, target) {
