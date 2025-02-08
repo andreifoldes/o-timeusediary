@@ -880,7 +880,7 @@ export async function sendData(options = { mode: 'supabase' }) {
     }
 }
 
-function checkAndRequestPID() {
+export function checkAndRequestPID() {
   const urlParams = new URLSearchParams(window.location.search);
   const pid = urlParams.get('pid');
   

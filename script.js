@@ -34,6 +34,7 @@ import {
     TIMELINE_START_HOUR,
     TIMELINE_HOURS
 } from './constants.js';
+import { checkAndRequestPID } from './utils.js';
 
 let selectedActivity = null;
 
@@ -1598,7 +1599,7 @@ async function init() {
             general: {}
         };
 
-        // Add PID check here
+        // Now this will work
         checkAndRequestPID();
 
         // Prevent pull-to-refresh on mobile
