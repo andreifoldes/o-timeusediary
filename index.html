@@ -102,10 +102,16 @@
     <script src="attributeTracker.js"></script>
 
     <div id="instructionsFooter" style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
-        <button onclick="window.location.href='./instructions/instructions.html'" class="navigation-btn">
-            <i class="fas fa-chevron-left"></i>
-            Back to Instructions
-        </button>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button onclick="window.location.href='./instructions/instructions.html'" class="navigation-btn">
+                <i class="fas fa-chevron-left"></i>
+                Back to Instructions
+            </button>
+            <button id="navSubmitBtn" class="nav-submit-btn">
+                <i class="fas fa-check"></i>
+                Submit
+            </button>
+        </div>
     </div>
 </body>
 </html>

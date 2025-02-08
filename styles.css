@@ -951,7 +951,7 @@ body {
     .floating-add-button {
         display: flex;
         position: fixed;
-        bottom: 20px;
+        bottom: max(80px, calc(var(--footer-height, 80px) + 20px));
         width: 60px;
         height: 60px;
         max-width: 65px;
@@ -963,19 +963,43 @@ body {
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         font-size: 24px;
         cursor: pointer;
-        z-index: 9999;
+        z-index: 999;
         transition: transform 0.2s, background-color 0.2s;
         align-items: center;
         justify-content: center;
         touch-action: none;
         will-change: transform;
         transform: none !important;
+        right: 20px;
     }
 
     /* Only allow hover effect */
     .floating-add-button:hover {
         transform: scale(1.1) !important;
         background-color: #0056b3;
+    }
+
+    /* Set a minimum space between the button and footer */
+    #instructionsFooter {
+        position: relative;
+        z-index: 1000;
+    }
+
+    /* Update the footer height on load and resize */
+    :root {
+        --footer-height: 80px;
+    }
+}
+
+/* Mobile adjustments for smaller screens */
+@media (max-width: 480px) {
+    .floating-add-button {
+        width: 50px;
+        height: 50px;
+        max-width: 55px;
+        max-height: 55px;
+        font-size: 20px;
+        bottom: max(70px, calc(var(--footer-height, 70px) + 15px));
     }
 }
 
@@ -1373,8 +1397,32 @@ body {
         max-width: clamp(50px, 15vw, 65px);
         max-height: clamp(50px, 15vw, 65px);
         font-size: clamp(20px, 6vw, 24px);
-        bottom: clamp(10px, 3vh, 20px);
+        position: fixed;
+        bottom: max(80px, calc(var(--footer-height, 80px) + 20px)); /* Adjust based on footer height */
         right: clamp(10px, 3vw, 20px);
+    }
+
+    /* Set a minimum space between the button and footer */
+    #instructionsFooter {
+        position: relative;
+        z-index: 1000; /* Ensure footer stays above other content */
+    }
+
+    /* Update the footer height on load and resize */
+    :root {
+        --footer-height: 80px; /* Default height */
+    }
+}
+
+/* Additional adjustment for smaller screens */
+@media (max-width: 480px) {
+    .floating-add-button {
+        width: clamp(45px, 12vw, 50px);
+        height: clamp(45px, 12vw, 50px);
+        max-width: clamp(45px, 12vw, 50px);
+        max-height: clamp(45px, 12vw, 50px);
+        font-size: clamp(18px, 5vw, 20px);
+        bottom: max(70px, calc(var(--footer-height, 70px) + 15px));
     }
 }
 
@@ -1431,4 +1479,51 @@ body {
 
 .last-initialized-timeline-wrapper .timeline-container .title {
     display: none;
+}
+
+/* Submit button styles */
+.nav-submit-btn {
+    padding: 12px 24px;
+    background-color: var(--success-color);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background-color: #047857;
+}
+
+.nav-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.nav-submit-btn i {
+    font-size: 16px;
+}
+
+/* Mobile adjustments for the footer */
+@media (max-width: 480px) {
+    #instructionsFooter {
+        padding: 15px !important;
+    }
+
+    .nav-submit-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .nav-submit-btn i {
+        font-size: 14px;
+    }
 }

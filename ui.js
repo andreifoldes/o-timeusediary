@@ -143,6 +143,19 @@ function createFloatingAddButton() {
     });
 
     document.body.appendChild(button);
+    
+    // Initialize the footer height
+    updateFooterHeight();
+    
+    // Add resize observer to update footer height when it changes
+    const footer = document.getElementById('instructionsFooter');
+    if (footer) {
+        const resizeObserver = new ResizeObserver(() => {
+            updateFooterHeight();
+        });
+        resizeObserver.observe(footer);
+    }
+
     return button;
 }
 
@@ -209,6 +222,34 @@ function updateButtonStates() {
 
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
+    const navSubmitBtn = document.getElementById('navSubmitBtn');
+
+    // Initialize the navigation submit button
+    if (navSubmitBtn) {
+        navSubmitBtn.addEventListener('click', () => {
+            const nextBtn = document.getElementById('nextBtn');
+            if (nextBtn && !nextBtn.disabled) {
+                nextBtn.click();
+            }
+        });
+
+        // Update the nav submit button state when the next button state changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
+                    navSubmitBtn.disabled = nextBtn.disabled;
+                }
+            });
+        });
+
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            observer.observe(nextBtn, { attributes: true });
+            // Set initial state
+            navSubmitBtn.disabled = nextBtn.disabled;
+        }
+    }
+
     cleanRowBtn.addEventListener('click', () => {
         const currentKey = getCurrentTimelineKey();
         const currentData = getCurrentTimelineData();
@@ -503,11 +544,20 @@ function preventPullToRefresh() {
     }, { passive: false });
 }
 
+function updateFooterHeight() {
+    const footer = document.getElementById('instructionsFooter');
+    if (footer) {
+        const footerHeight = footer.offsetHeight;
+        document.documentElement.style.setProperty('--footer-height', `${footerHeight}px`);
+    }
+}
+
 function handleResize() {
     // updateIsMobile will now handle the reload at breakpoint
     updateIsMobile();
-    // Only update floating button position since other updates will happen after reload
+    // Update floating button position and footer height
     updateFloatingButtonPosition();
+    updateFooterHeight();
 }
 
 // Initialize UI components
@@ -524,5 +574,6 @@ export {
     updateTimelineCountVariable,
     initDebugOverlay,
     handleResize,
-    preventPullToRefresh
+    preventPullToRefresh,
+    updateFooterHeight
 };
