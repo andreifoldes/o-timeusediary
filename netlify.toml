@@ -6,6 +6,7 @@
   from = "/*"
   to = "/index.html"
   status = 200
+  query = {path = ":path"}
 
 [build.environment]
   NODE_VERSION = "18"

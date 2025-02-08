@@ -1586,6 +1586,21 @@ function initTimelineInteraction(timeline) {
 
 async function init() {
     try {
+        // Initialize timeline manager
+        window.timelineManager = {
+            metadata: {},
+            activities: {},
+            initialized: new Set(),
+            activeTimeline: document.getElementById('primary'),
+            keys: [],
+            currentIndex: 0,
+            study: {},
+            general: {}
+        };
+
+        // Add PID check here
+        checkAndRequestPID();
+
         // Prevent pull-to-refresh on mobile
         preventPullToRefresh();
         

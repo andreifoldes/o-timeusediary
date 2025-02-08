@@ -1527,3 +1527,85 @@ body {
         font-size: 14px;
     }
 }
+
+/* PID Modal specific styles - add after existing modal styles */
+.pid-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(15px, 3vw, 20px);
+}
+
+.pid-modal .modal-content h3 {
+    color: var(--text-color);
+    font-size: clamp(18px, 4vw, 24px);
+    margin: 0;
+    font-weight: 600;
+}
+
+.pid-modal .modal-content p {
+    color: var(--secondary-color);
+    font-size: clamp(14px, 3.5vw, 16px);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.pid-modal .modal-content input[type="text"] {
+    width: 100%;
+    padding: clamp(8px, 2vw, 12px);
+    font-size: clamp(14px, 3.5vw, 16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.pid-modal .modal-content input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.pid-modal .modal-content input[type="text"].error {
+    border-color: var(--danger-color);
+    background-color: #fef2f2;
+}
+
+.pid-modal .button-container {
+    margin-top: clamp(20px, 4vw, 30px);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .pid-modal .modal-content {
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .pid-modal .modal-content input[type="text"] {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .pid-modal .button-container {
+        margin-top: 15px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .pid-modal .modal-content {
+        gap: 10px;
+    }
+
+    .pid-modal .modal-content h3 {
+        font-size: 18px;
+    }
+
+    .pid-modal .modal-content p {
+        font-size: 14px;
+    }
+
+    .pid-modal .button-container {
+        margin-top: 12px;
+    }
+}

@@ -879,3 +879,69 @@ export async function sendData(options = { mode: 'supabase' }) {
         throw new Error(`Unsupported send mode: ${options.mode}`);
     }
 }
+
+function checkAndRequestPID() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const pid = urlParams.get('pid');
+  
+  if (!pid) {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'modal-overlay';
+    modalOverlay.style.display = 'flex';
+    
+    modalOverlay.innerHTML = `
+      <div class="modal pid-modal">
+        <div class="modal-content">
+          <h3>Participant ID Required</h3>
+          <p>Please enter your Prolific ID to continue:</p>
+          <input 
+            type="text" 
+            id="pidInput" 
+            placeholder="Enter Prolific ID" 
+            maxlength="24"
+          >
+          <div class="button-container">
+            <button id="confirmPID" class="btn save-btn">
+              <i class="fas fa-check"></i>
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalOverlay);
+
+    const confirmButton = document.getElementById('confirmPID');
+    const pidInput = document.getElementById('pidInput');
+
+    confirmButton.addEventListener('click', () => {
+      const inputPID = pidInput.value.trim();
+      if (inputPID) {
+        urlParams.set('pid', inputPID);
+        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+        
+        if (!window.timelineManager.study) {
+          window.timelineManager.study = {};
+        }
+        window.timelineManager.study.pid = inputPID;
+        
+        modalOverlay.remove();
+      } else {
+        pidInput.classList.add('error');
+      }
+    });
+
+    pidInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        confirmButton.click();
+      }
+    });
+
+    pidInput.addEventListener('input', () => {
+      pidInput.classList.remove('error');
+    });
+  }
+}
