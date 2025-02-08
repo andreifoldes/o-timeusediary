@@ -46,6 +46,41 @@ We welcome contributions to O-ELIDDI!
 *   **Pull Requests:**  Feel free to submit pull requests for bug fixes, feature enhancements, or documentation improvements.
 *   **Issue Reporting:**  For major changes or to report issues, please open an issue first to discuss the proposed changes.
 
+## Browser Compatibility
+
+### Minimum Browser Requirements (2020+)
+- **Chrome:** Version 80 or later (early 2020) 
+- **Firefox:** Version 75 or later (early 2020) 
+- **Safari:** Version 13 or later (late 2019) 
+- **Edge:** Version 80 or later (early 2020)
+- **Brave:** Version 1.34 or later
+- **Opera:** Version 67 or later (early 2020)
+
+- **iOS Safari:** Version 13.4 or later (early 2020)
+- **Chrome for Android:** Version 8 or later (late 2017)
+
+### Technical Requirements
+The application utilizes several modern web features:
+
+#### JavaScript (ES6+)
+- ES2017+ features (async/await)
+- Native JavaScript modules (import/export)
+- Optional chaining operator (`?.`) - ES2020
+- Modern Web APIs (IntersectionObserver)
+
+#### CSS (CSS3)
+- Modern layout features (Flexbox with `gap`, Grid)
+- CSS `clamp()` function
+- `env(safe-area-inset-*)` for iOS safe areas
+- `backdrop-filter` with `@supports` fallbacks
+
+### Known Issues
+- Internet Explorer: Not supported (any version)
+- Legacy Edge (pre-Chromium): Not supported
+- Firefox: Limited support for `env(safe-area-inset-*)` features
+- Browsers from before mid-2021: May experience layout issues due to Flexbox `gap` support
+- Mobile browsers older than 2021: May experience significant issues
+
 ## License
 
 This project is open-source and available under the MIT License (see LICENSE file).
