@@ -4,7 +4,7 @@
       "version": "1.0.0",
       "author": "John Doe",
       "instructions": true,
-      "redirect_url": "https://app.prolific.com/submissions/complete?cc=C1JMR11Y",
+      "redirect_url": "https://app.prolific.com/submissions/complete?cc=CKQ9SACZ",
       "fallbackToCSV": true
     },
     "timeline": {
@@ -19,7 +19,7 @@
             "activities": [
               {
                 "name": "Sleep",
-                "examples": "",
+                "examples": "(from the moment you fall asleep to when you wake up)",
                 "color": "#9393FF"
               },
               {
