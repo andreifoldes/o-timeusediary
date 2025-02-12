@@ -19,7 +19,7 @@
             "activities": [
               {
                 "name": "Sleep",
-                "examples": "(from the moment you fall asleep to when you wake up)",
+                "examples": "(moment you fall asleep to when you wake up)",
                 "color": "#9393FF"
               },
               {
