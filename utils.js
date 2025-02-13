@@ -511,7 +511,8 @@ export async function sendDataToSupabase() {
       category: row.category,
       startTime: row.startTime,
       endTime: row.endTime,
-      pid: pid
+      pid: pid,
+      diaryWave: studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : null
     }));
 
     // Insert timeline data
@@ -867,6 +868,9 @@ function downloadCSV(csvString, filename) {
  *   or { mode: 'csv' } to trigger a CSV file download.
  */
 export async function sendData(options = { mode: 'supabase' }) {
+    // Sync URL parameters before sending data
+    syncURLParamsToStudy();
+    
     if (options.mode === 'supabase') {
         // Call the existing function that sends data to Supabase
         return await sendDataToSupabase();
@@ -944,4 +948,16 @@ export function checkAndRequestPID() {
       pidInput.classList.remove('error');
     });
   }
+}
+
+export function syncURLParamsToStudy() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!window.timelineManager.study) {
+        window.timelineManager.study = {};
+    }
+    
+    // Sync all URL parameters to study object
+    for (const [key, value] of urlParams) {
+        window.timelineManager.study[key] = value;
+    }
 }

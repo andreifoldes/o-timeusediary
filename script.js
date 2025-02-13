@@ -8,7 +8,8 @@ import {
     sendData,
     validateMinCoverage,
     getTimelineCoverage,
-    calculateTimeDifference
+    calculateTimeDifference,
+    syncURLParamsToStudy
 } from './utils.js';
 import { updateIsMobile, getIsMobile } from './globals.js';
 import { 
@@ -49,14 +50,6 @@ window.timelineManager = {
     study: {}, // Store URL parameters
     general: {} // Store general configuration
 };
-
-// Only create and populate study parameters if URL parameters exist
-const urlParams = new URLSearchParams(window.location.search);
-if(urlParams.toString()) {
-    for (const [key, value] of urlParams) {
-        window.timelineManager.study[key] = value;
-    }
-}
 
 // Function to calculate timeline coverage in minutes
 window.getTimelineCoverage = getTimelineCoverage;
@@ -1587,7 +1580,7 @@ function initTimelineInteraction(timeline) {
 
 async function init() {
     try {
-        // Initialize timeline manager
+        // Reinitialize timelineManager with an empty study object
         window.timelineManager = {
             metadata: {},
             activities: {},
@@ -1599,27 +1592,26 @@ async function init() {
             general: {}
         };
 
-        // Now this will work
-        checkAndRequestPID();
+        // Now sync URL parameters so they are stored in timelineManager.study
+        syncURLParamsToStudy();
 
-        // Prevent pull-to-refresh on mobile
+        // (Rest of your initialization code...)
+        checkAndRequestPID();
         preventPullToRefresh();
-        
-        // Load initial timeline data
+
+        // Load initial timeline data and do the rest of the setup.
         const response = await fetch('settings/activities_game.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        
-        // NEW: Save global general configuration (e.g., redirect_url, instructions)
+
+        // Save global configuration
         window.timelineManager.general = data.general;
-        
-        // New instructions redirect logic
+
+        // Handle instructions or redirection if needed.
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
-            // Only redirect if not already on instructions page and no instructions param
             if (!window.location.pathname.includes('/instructions/')) {
-                // Preserve current URL parameters
                 const currentParams = new URLSearchParams(window.location.search);
                 const redirectUrl = new URL('instructions/instructions.html', window.location.href);
                 currentParams.forEach((value, key) => {
@@ -1629,7 +1621,6 @@ async function init() {
                 return;
             }
         } else if (window.location.pathname.includes('/instructions/')) {
-            // Redirect to index if instructions are disabled but user is on instructions
             const currentParams = new URLSearchParams(window.location.search);
             const redirectUrl = new URL('index.html', window.location.href);
             currentParams.forEach((value, key) => {
@@ -1638,7 +1629,7 @@ async function init() {
             window.location.href = redirectUrl.toString();
             return;
         }
-        
+
         // Initialize timeline management structure with timeline keys
         window.timelineManager.keys = Object.keys(data.timeline);
         window.timelineManager.keys.forEach(timelineKey => {
