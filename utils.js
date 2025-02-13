@@ -956,7 +956,7 @@ export function syncURLParamsToStudy() {
         window.timelineManager.study = {};
     }
     
-    // Sync all URL parameters to study object
+    // Sync all URL parameters into the study object
     for (const [key, value] of urlParams) {
         window.timelineManager.study[key] = value;
     }
