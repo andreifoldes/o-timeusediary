@@ -4,7 +4,7 @@
       "version": "1.0.0",
       "author": "John Doe",
       "instructions": true,
-      "redirect_url": "https://app.prolific.com/submissions/complete?cc=CKQ9SACZ",
+      "redirect_url": "https://app.prolific.com/submissions/complete",
       "fallbackToCSV": true
     },
     "timeline": {

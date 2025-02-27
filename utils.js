@@ -563,27 +563,50 @@ export async function sendDataToSupabase() {
 
     console.log('Data inserted successfully');
 
-    // Handle redirect if configured
-    const redirectUrl = window.timelineManager?.general?.redirect_url;
-    if (redirectUrl) {
-      const currentParams = window.location.search;
-      const separator = redirectUrl.includes('?') ? '&' : '?';
-      const newRedirectUrl = redirectUrl + (currentParams ? separator + currentParams.substring(1) : '');
-      window.location.href = newRedirectUrl;
+    // Handle redirect with dynamic completion code based on DIARY_WAVE
+    const redirectBaseUrl = window.timelineManager?.general?.redirect_url;
+    if (redirectBaseUrl) {
+      // Array of completion codes
+      const completionCodes = [
+        'CKQ9SACZ', '7OUP8GG8', 'BYRCC57H', 'KVISTMSQ', 'G3D1QRKY',
+        '5VLOWSC8', 'DVBOMH46', 'F90T9VY7', '5CI0KZXR', 'PJKNGCJQ',
+        'MMU9YF9E', 'OZD23I9Z', 'JTLF2JBY', 'R3EJZ783', '1OQUHGX8',
+        'IRBNWQB0', 'ZBJIRJ0X', '8IGG5BM0', 'BGIK438O', '8AXJ3AC8',
+        '77P8WHRU', 'JAWNXG4O', 'XO46HSKW', 'JJI3D8AX', 'ZYQWCXAE',
+        'QBX3DEHB', '4H8LK4OG', 'H29BLXCO', 'DL8UUX2E', 'DY84N1VY'
+      ];
+
+      // Get DIARY_WAVE from study data, default to 1 if missing
+      const diaryWave = studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : 1;
+      
+      // Calculate index safely (ensure it's within array bounds)
+      const index = Math.max(0, Math.min(diaryWave - 1, completionCodes.length - 1));
+      
+      // Get the appropriate completion code
+      const completionCode = completionCodes[index];
+
+      // Extract base URL without the cc parameter
+      let baseRedirectUrl = redirectBaseUrl;
+      if (baseRedirectUrl.includes('?cc=')) {
+        baseRedirectUrl = baseRedirectUrl.split('?cc=')[0];
+      }
+
+      // Construct the new redirect URL with the dynamic completion code
+      const newRedirectUrl = `${baseRedirectUrl}?cc=${completionCode}`;
+
+      // Add any existing URL parameters
+      const currentParams = new URLSearchParams(window.location.search);
+      const separator = newRedirectUrl.includes('?') ? '&' : '?';
+      const finalRedirectUrl = newRedirectUrl + 
+        (currentParams.toString() ? separator + currentParams.toString() : '');
+
+      window.location.href = finalRedirectUrl;
     }
 
     return { success: true };
-
   } catch (error) {
-    console.error('Error in sendDataToSupabase:', error);
-    
-    // If we're in CSV fallback mode, try that instead
-    if (window.timelineManager?.general?.fallbackToCSV) {
-      console.log('Falling back to CSV download...');
-      return sendData({ mode: 'csv' });
-    }
-    
-    throw error;
+    console.error('Error sending data:', error);
+    return { success: false, error: error.message };
   }
 }
 
