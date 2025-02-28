@@ -573,14 +573,14 @@ export async function sendDataToSupabase() {
         'MMU9YF9E', 'OZD23I9Z', 'JTLF2JBY', 'R3EJZ783', '1OQUHGX8',
         'IRBNWQB0', 'ZBJIRJ0X', '8IGG5BM0', 'BGIK438O', '8AXJ3AC8',
         '77P8WHRU', 'JAWNXG4O', 'XO46HSKW', 'JJI3D8AX', 'ZYQWCXAE',
-        'QBX3DEHB', '4H8LK4OG', 'H29BLXCO', 'DL8UUX2E', 'DY84N1VY'
+        'QBX3DEHB', '4H8LK4OG', 'H29BLXCO', 'DL8UUX2E', 'DY84N1VY', 'CKQ9SAXX'
       ];
 
       // Get DIARY_WAVE from study data, default to 1 if missing
       const diaryWave = studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : 1;
       
       // Calculate index safely (ensure it's within array bounds)
-      const index = Math.max(0, Math.min(diaryWave - 1, completionCodes.length - 1));
+      const index = Math.max(0, Math.min(diaryWave, completionCodes.length - 1));
       
       // Get the appropriate completion code
       const completionCode = completionCodes[index];
