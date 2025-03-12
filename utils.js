@@ -497,10 +497,19 @@ export async function sendDataToSupabase() {
     let studyData = window.timelineManager?.study || {};
     let pid;
     
-    if (!('pid' in studyData) && !('PID' in studyData)) {
+    // Check if ppid exists and is not empty
+    const hasPpid = (studyData.ppid !== undefined && studyData.ppid !== null && studyData.ppid !== '') || 
+                   (studyData.PPID !== undefined && studyData.PPID !== null && studyData.PPID !== '');
+    
+    if (hasPpid) {
+      // Use ppid as pid when ppid is not empty
+      pid = studyData.ppid || studyData.PPID;
+    } else if (!('pid' in studyData) && !('PID' in studyData)) {
+      // Generate random pid if neither pid nor ppid exists
       pid = ('0000000000000000' + Math.floor(Math.random() * 1e16)).slice(-16);
       studyData.pid = pid;
     } else {
+      // Use existing pid if ppid doesn't exist but pid does
       pid = studyData.pid || studyData.PID;
     }
 
@@ -539,6 +548,11 @@ export async function sendDataToSupabase() {
       };
     }
 
+    // Determine session_id based on whether ppid exists
+    const session_id = hasPpid && (studyData.survey || studyData.SURVEY) 
+      ? (studyData.survey || studyData.SURVEY) 
+      : (studyData.SESSION_ID || null);
+
     const participantData = {
       pid,
       viewportWidth,
@@ -549,7 +563,7 @@ export async function sendDataToSupabase() {
       instructions: studyData.instructions === 'completed',
       PROLIFIC_PID: studyData.PROLIFIC_PID || null,
       STUDY_ID: studyData.STUDY_ID || null,
-      SESSION_ID: studyData.SESSION_ID || null
+      SESSION_ID: session_id
     };
 
     // Insert participant data
@@ -564,7 +578,11 @@ export async function sendDataToSupabase() {
     console.log('Data inserted successfully');
 
     // Handle redirect with dynamic completion code based on DIARY_WAVE
-    const redirectBaseUrl = window.timelineManager?.general?.redirect_url;
+    // Use the hasPpid variable that was already defined above
+    const redirectBaseUrl = hasPpid 
+      ? window.timelineManager?.general?.secondary_redirect_url 
+      : window.timelineManager?.general?.primary_redirect_url;
+      
     if (redirectBaseUrl) {
       // Array of completion codes
       const completionCodes = [
@@ -912,64 +930,21 @@ export function checkAndRequestPID() {
   const pid = urlParams.get('pid');
   
   if (!pid) {
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = 'modal-overlay';
-    modalOverlay.style.display = 'flex';
+    // Temporarily disabled modal - instead generate a random PID
+    const randomPid = ('0000000000000000' + Math.floor(Math.random() * 1e16)).slice(-16);
     
-    modalOverlay.innerHTML = `
-      <div class="modal pid-modal">
-        <div class="modal-content">
-          <h3>Participant ID Required</h3>
-          <p>Please enter your Prolific ID to continue:</p>
-          <input 
-            type="text" 
-            id="pidInput" 
-            placeholder="Enter Prolific ID" 
-            maxlength="24"
-          >
-          <div class="button-container">
-            <button id="confirmPID" class="btn save-btn">
-              <i class="fas fa-check"></i>
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(modalOverlay);
-
-    const confirmButton = document.getElementById('confirmPID');
-    const pidInput = document.getElementById('pidInput');
-
-    confirmButton.addEventListener('click', () => {
-      const inputPID = pidInput.value.trim();
-      if (inputPID) {
-        urlParams.set('pid', inputPID);
-        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-        window.history.replaceState({}, '', newUrl);
-        
-        if (!window.timelineManager.study) {
-          window.timelineManager.study = {};
-        }
-        window.timelineManager.study.pid = inputPID;
-        
-        modalOverlay.remove();
-      } else {
-        pidInput.classList.add('error');
-      }
-    });
-
-    pidInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        confirmButton.click();
-      }
-    });
-
-    pidInput.addEventListener('input', () => {
-      pidInput.classList.remove('error');
-    });
+    // Update URL with the random PID
+    urlParams.set('pid', randomPid);
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.history.replaceState({}, '', newUrl);
+    
+    // Update timelineManager.study with the random PID
+    if (!window.timelineManager.study) {
+      window.timelineManager.study = {};
+    }
+    window.timelineManager.study.pid = randomPid;
+    
+    console.log('PID modal disabled - generated random PID:', randomPid);
   }
 }
 
