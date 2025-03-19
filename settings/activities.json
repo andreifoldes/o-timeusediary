@@ -1,10 +1,12 @@
 {
   "general": {
     "app_name": "O-ELIDDI",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "author": "John Doe",
     "instructions": true,
-    "redirect_url": ""
+    "primary_redirect_url": "https://app.prolific.com/submissions/complete",
+    "secondary_redirect_url": "http://direct.pureprofile.com/s3/807605",
+    "fallbackToCSV": true
   },
   "timeline": {
     "primary": {
@@ -19,7 +21,17 @@
             {
               "name": "sleeping",
               "examples": "(incl. naps, cat naps, power naps, etc.)",
-              "color": "#a8eaf0"
+              "color": "#a8eaf0",
+              "childItems": [
+                {
+                  "name": "Nighttime sleep",
+                  "color": "#a8eaf0"
+                },
+                {
+                  "name": "Nap/Rest",
+                  "color": "#8de0e8"
+                }
+              ]
             },
             {
               "name": "resting",
@@ -29,12 +41,40 @@
             {
               "name": "washing, dressing",
               "examples": "",
-              "color": "#a8e3f0"
+              "color": "#a8e3f0",
+              "childItems": [
+                {
+                  "name": "Washing and dressing",
+                  "color": "#a8e3f0"
+                },
+                {
+                  "name": "Other personal care",
+                  "color": "#a8d3f0"
+                }
+              ]
             },
             {
               "name": "eating, drinking, meal, at home or work",
               "examples": "",
-              "color": "#f0a8ef"
+              "color": "#f0a8ef",
+              "childItems": [
+                {
+                  "name": "Breakfast",
+                  "color": "#f0a8ef"
+                },
+                {
+                  "name": "Lunch",
+                  "color": "#e99ae7"
+                },
+                {
+                  "name": "Dinner",
+                  "color": "#e28fdf"
+                },
+                {
+                  "name": "Snack",
+                  "color": "#d985d8"
+                }
+              ]
             },
             {
               "name": "preparing food, cooking, washing up",

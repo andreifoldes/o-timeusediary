@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Items Feature Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 14px;
+        }
+        .example {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Child Items Feature Implementation</h1>
+    
+    <p>This document provides a summary of the child items feature implementation for the timeline activity diary app.</p>
+    
+    <h2>JSON Schema Updates</h2>
+    
+    <p>The JSON schema has been updated to support child items for activities:</p>
+    
+    <pre><code>{
+  "name": "washing, dressing",
+  "examples": "",
+  "color": "#a8e3f0",
+  "childItems": [
+    {
+      "name": "Washing and dressing",
+      "color": "#a8e3f0"
+    },
+    {
+      "name": "Other personal care",
+      "color": "#a8d3f0"
+    }
+  ]
+}</code></pre>
+
+    <div class="example">
+        <h3>Example Activities with Child Items</h3>
+        <ul>
+            <li><strong>sleeping</strong> - Nighttime sleep, Nap/Rest</li>
+            <li><strong>washing, dressing</strong> - Washing and dressing, Other personal care</li>
+            <li><strong>eating, drinking</strong> - Breakfast, Lunch, Dinner, Snack</li>
+        </ul>
+    </div>
+    
+    <h2>Feature Implementation</h2>
+    
+    <p>The following updates were made to implement the child items feature:</p>
+    
+    <ol>
+        <li><strong>JSON Schema Update</strong>: Added <code>childItems</code> array to activity objects</li>
+        <li><strong>Visual Indicator</strong>: Activities with child items show a dropdown icon</li>
+        <li><strong>Child Items Modal</strong>: Modal displays when parent activity is selected</li>
+        <li><strong>Data Storage</strong>: Child items store reference to parent activity</li>
+    </ol>
+    
+    <div class="note">
+        <p><strong>Note:</strong> When a child item is selected, the parent activity name is stored in the <code>parentName</code> property in the activity data, making it easy to identify child activities and their parent activities when processing the data.</p>
+    </div>
+    
+    <h2>How It Works</h2>
+    
+    <ol>
+        <li>User clicks on an activity with child items (indicated by dropdown icon)</li>
+        <li>A modal appears showing all child items</li>
+        <li>User selects a specific child item</li>
+        <li>The selected child item is placed on the timeline</li>
+        <li>Both the child item name and parent name are stored in the activity data</li>
+    </ol>
+    
+    <h2>CSS Styling</h2>
+    
+    <p>Custom CSS was added to style the child items modal and to visually indicate activities with child items:</p>
+    
+    <pre><code>.activity-button.has-child-items::after {
+    content: '\25BC'; /* Downward-pointing triangle */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+}</code></pre>
+
+    <p>Return to the main app to see the feature in action.</p>
+</body>
+</html> 

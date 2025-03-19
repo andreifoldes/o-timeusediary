@@ -256,7 +256,7 @@ function logDebugInfo() {
 
 async function fetchActivities(key) {
     try {
-        const response = await fetch('settings/activities_game.json');
+        const response = await fetch('settings/activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -319,6 +319,110 @@ async function fetchActivities(key) {
     }
 }
 
+// Create a child items modal for activity selection
+function createChildItemsModal() {
+    // Check if modal already exists
+    if (document.getElementById('childItemsModal')) {
+        return document.getElementById('childItemsModal');
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'childItemsModal';
+    modal.className = 'modal';
+    modal.style.display = 'none';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'modal-header';
+    
+    const closeButton = document.createElement('span');
+    closeButton.className = 'close';
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+    
+    const title = document.createElement('h3');
+    title.id = 'childItemsModalTitle';
+    title.textContent = 'Select an option';
+    
+    modalHeader.appendChild(title);
+    modalHeader.appendChild(closeButton);
+    
+    const modalBody = document.createElement('div');
+    modalBody.className = 'modal-body';
+    modalBody.id = 'childItemsContainer';
+    
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modal.appendChild(modalContent);
+    
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    return modal;
+}
+
+// Function to render child items in the modal
+function renderChildItems(activity, categoryName) {
+    const modal = createChildItemsModal();
+    const container = document.getElementById('childItemsContainer');
+    const title = document.getElementById('childItemsModalTitle');
+    
+    // Set the title to the parent activity name
+    title.textContent = `Select an option for "${activity.name}"`;
+    
+    // Clear previous content
+    container.innerHTML = '';
+    
+    // Create buttons for each child item
+    if (activity.childItems && activity.childItems.length > 0) {
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'child-item-buttons';
+        
+        activity.childItems.forEach(childItem => {
+            const button = document.createElement('button');
+            button.className = 'child-item-button';
+            button.textContent = childItem.name;
+            button.style.backgroundColor = childItem.color || activity.color;
+            
+            button.addEventListener('click', () => {
+                // Use parent activity properties but with child item name
+                selectedActivity = {
+                    name: childItem.name,
+                    parentName: activity.name,
+                    color: childItem.color || activity.color,
+                    category: categoryName
+                };
+                
+                // Close the modal
+                modal.style.display = 'none';
+                
+                // Also close activities modal if open
+                const activitiesModal = document.getElementById('activitiesModal');
+                if (activitiesModal) {
+                    activitiesModal.style.display = 'none';
+                }
+            });
+            
+            buttonsContainer.appendChild(button);
+        });
+        
+        container.appendChild(buttonsContainer);
+    }
+    
+    // Show the modal
+    modal.style.display = 'block';
+}
+
 function renderActivities(categories, container = document.getElementById('activitiesContainer')) {
     container.innerHTML = '';
     
@@ -356,6 +460,11 @@ function renderActivities(categories, container = document.getElementById('activ
                 const activityButton = document.createElement('button');
                 const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
                 activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
+                // Add indicator class if activity has child items
+                if (activity.childItems && activity.childItems.length > 0) {
+                    activityButton.classList.add('has-child-items');
+                }
+                
                 activityButton.style.setProperty('--color', activity.color);
                 
                 if (isMultipleChoice) {
@@ -436,6 +545,16 @@ function renderActivities(categories, container = document.getElementById('activ
                             }
                         });
                         
+                        return;
+                    }
+                    
+                    // Check if activity has child items
+                    if (activity.childItems && activity.childItems.length > 0) {
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        activityButton.classList.add('selected');
+                        
+                        // Show child items modal
+                        renderChildItems(activity, category.name);
                         return;
                     }
                     
@@ -527,6 +646,11 @@ function renderActivities(categories, container = document.getElementById('activ
                 const activityButton = document.createElement('button');
                 const isMultipleChoice = container.getAttribute('data-mode') === 'multiple-choice';
                 activityButton.className = `activity-button ${isMultipleChoice ? 'checkbox-style' : ''}`;
+                // Add indicator class if activity has child items
+                if (activity.childItems && activity.childItems.length > 0) {
+                    activityButton.classList.add('has-child-items');
+                }
+                
                 activityButton.style.setProperty('--color', activity.color);
                 
                 if (isMultipleChoice) {
@@ -611,6 +735,16 @@ function renderActivities(categories, container = document.getElementById('activ
                             }
                         });
                         
+                        return;
+                    }
+                    
+                    // Check if activity has child items
+                    if (activity.childItems && activity.childItems.length > 0) {
+                        categoryButtons.forEach(b => b.classList.remove('selected'));
+                        activityButton.classList.add('selected');
+                        
+                        // Show child items modal
+                        renderChildItems(activity, category.name);
                         return;
                     }
                     
@@ -1395,6 +1529,11 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
 
+        // Store parent name if this is a child activity
+        if (selectedActivity.parentName) {
+            currentBlock.dataset.parentName = selectedActivity.parentName;
+        }
+
         // Add raw minutes data attributes
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
@@ -1530,7 +1669,7 @@ function initTimelineInteraction(timeline) {
         const activityText = textDiv.textContent;
         const activityCategory = currentBlock.dataset.category;
             
-        // Create activity data after all variables are defined
+        // Create activity data with parent name if it exists
         const activityData = {
             id: generateUniqueId(),
             activity: combinedActivityText,
@@ -1541,6 +1680,12 @@ function initTimelineInteraction(timeline) {
             color: selectedActivity?.color || '#808080',
             count: parseInt(currentBlock.dataset.count) || 1
         };
+
+        // Add parent name if this is a child activity
+        if (currentBlock.dataset.parentName) {
+            activityData.parentName = currentBlock.dataset.parentName;
+        }
+
         getCurrentTimelineData().push(activityData);
         currentBlock.dataset.id = activityData.id;
 
