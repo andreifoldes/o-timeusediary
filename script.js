@@ -307,7 +307,7 @@ async function fetchActivities(key) {
         
         if (DEBUG_MODE) {
             console.log(`Loaded timeline metadata for ${key}:`, window.timelineManager.metadata[key]);
-            console.log('All available timelines in activities_game.json:', Object.keys(data));
+            console.log('All available timelines in activities.json:', Object.keys(data));
             console.log('Full timeline data:', data);
             console.log('Initialized timelines:', Array.from(window.timelineManager.initialized));
         }
@@ -392,7 +392,7 @@ function renderChildItems(activity, categoryName) {
             const button = document.createElement('button');
             button.className = 'child-item-button';
             button.textContent = childItem.name;
-            button.style.backgroundColor = childItem.color || activity.color;
+            button.style.setProperty('--color', childItem.color || activity.color);
             
             button.addEventListener('click', () => {
                 // Use parent activity properties but with child item name
@@ -400,7 +400,8 @@ function renderChildItems(activity, categoryName) {
                     name: childItem.name,
                     parentName: activity.name,
                     color: childItem.color || activity.color,
-                    category: categoryName
+                    category: categoryName,
+                    selected: childItem.name  // Store the selected child item
                 };
                 
                 // Close the modal
@@ -1572,8 +1573,14 @@ function initTimelineInteraction(timeline) {
             // But join with vertical separator for storing in timelineManager 
             combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
-            textDiv.textContent = selectedActivity.name;
-            combinedActivityText = selectedActivity.name;
+            // If this is a child item, display the parent name instead, but store both
+            if (selectedActivity.parentName) {
+                textDiv.textContent = selectedActivity.parentName;
+                combinedActivityText = selectedActivity.name;
+            } else {
+                textDiv.textContent = selectedActivity.name;
+                combinedActivityText = selectedActivity.name;
+            }
         }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
@@ -1587,6 +1594,11 @@ function initTimelineInteraction(timeline) {
             ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
             : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
         currentBlock.appendChild(textDiv);
+        
+        // Add tooltip to show the selected child item when hovering
+        if (selectedActivity.parentName) {
+            currentBlock.setAttribute('title', `${selectedActivity.parentName}: ${selectedActivity.name}`);
+        }
         
         // Convert minutes to percentage for positioning
         const startPositionPercent = minutesToPercentage(startMinutes);
@@ -1681,9 +1693,14 @@ function initTimelineInteraction(timeline) {
             count: parseInt(currentBlock.dataset.count) || 1
         };
 
-        // Add parent name if this is a child activity
+        // Add parent and selected attributes
         if (currentBlock.dataset.parentName) {
             activityData.parentName = currentBlock.dataset.parentName;
+            activityData.selected = combinedActivityText;
+        } else {
+            // For items without child items, parent and selected are the same
+            activityData.parentName = combinedActivityText;
+            activityData.selected = combinedActivityText;
         }
 
         getCurrentTimelineData().push(activityData);
@@ -1721,6 +1738,38 @@ function initTimelineInteraction(timeline) {
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     });
+
+    // Update existing blocks to include parent/selected attributes if they don't have them
+    interact('.activity-block').on('resizeend', function(event) {
+        const target = event.target;
+        
+        // If this is an existing block and needs parent/selected attributes
+        if (target.dataset.id && !target.hasAttribute('data-selected')) {
+            const activityId = target.dataset.id;
+            const currentData = getCurrentTimelineData();
+            const activityData = currentData.find(a => a.id === activityId);
+            
+            if (activityData) {
+                // If block has parentName but no selected attribute
+                if (target.dataset.parentName && !activityData.selected) {
+                    // Activity name is stored in dataset or inner text
+                    const textDiv = target.querySelector('div[class^="activity-block-text"]');
+                    const activityName = textDiv ? textDiv.textContent.trim() : activityData.activity;
+                    
+                    // Update the data structure
+                    activityData.selected = activityData.activity;
+                    activityData.parentName = activityName;
+                    
+                    // Update the block
+                    target.setAttribute('title', `${activityName}: ${activityData.activity}`);
+                } else if (!activityData.parentName) {
+                    // For items without parent, both are the same
+                    activityData.parentName = activityData.activity;
+                    activityData.selected = activityData.activity;
+                }
+            }
+        }
+    });
 }
 
 async function init() {
@@ -1745,7 +1794,7 @@ async function init() {
         preventPullToRefresh();
 
         // Load initial timeline data and do the rest of the setup.
-        const response = await fetch('settings/activities_game.json');
+        const response = await fetch('settings/activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

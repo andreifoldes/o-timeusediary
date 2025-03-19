@@ -909,6 +909,27 @@ body {
     text-overflow: clip !important; /* Disable ellipsis */
 }
 
+/* Style for activity blocks displaying parent name for a child selection */
+.activity-block[data-parent-name] .activity-block-text-narrow::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1439.98px) {
+    .activity-block[data-parent-name] .activity-block-text-narrow::after {
+        bottom: 2px;
+        right: 2px;
+    }
+}
+
 .gradient-bar {
     width: 100%;
     height: 10px;
@@ -1710,20 +1731,33 @@ body {
 }
 
 #childItemsModal .child-item-button {
-    padding: 12px 20px;
+    padding: 12px 20px 12px 24px;  /* Added left padding for the indicator */
     text-align: left;
-    background-color: #f8f8f8;
+    background-color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;  /* Added for absolute positioning of the indicator */
+}
+
+#childItemsModal .child-item-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background-color: var(--color);
+    border-radius: 6px 0 0 6px;
 }
 
 #childItemsModal .child-item-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
 }
 
 /* Mobile styles for child items modal */
