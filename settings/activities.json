@@ -7,531 +7,2352 @@
     "primary_redirect_url": "https://app.prolific.com/submissions/complete",
     "secondary_redirect_url": "http://direct.pureprofile.com/s3/807605",
     "fallbackToCSV": true
-  },
+  }, 
   "timeline": {
     "primary": {
-      "name": "Primary Timeline",
-      "description": "",
-      "mode": "single-choice",
-      "min_coverage": "10",
-      "categories": [
-        {
-          "name": "Personal",
-          "activities": [
-            {
-              "name": "sleeping",
-              "color": "#a8eaf0",
-              "childItems": [
-                {
-                  "name": "Nighttime sleep",
-                  "color": "#a8eaf0"
+        "name": "Primary Timeline",
+        "description": "",
+        "mode": "single-choice",
+        "min_coverage": "10",
+        "categories": [
+          {
+            "name": "Personal",
+            "activities": [
+              {
+                "name": "Sleeping",
+                "code": 101,
+                "label": "sleeping",
+                "short": "sleep",
+                "vshort": "slp",
+                "color": "#a2b4ee",
+                "childItems": []
+              },
+              {
+                "name": "Resting",
+                "code": 102,
+                "label": "resting",
+                "short": "rest",
+                "vshort": "rst",
+                "color": "#a2e0da",
+                "childItems": [
+                  {
+                    "name": "Resting - Time out"
+                  },
+                  {
+                    "name": "Sick in bed"
+                  }
+                ]
+              },
+              {
+                "name": "Washing, Dressing",
+                "code": 103,
+                "label": "washing, dressing",
+                "short": "wash/dress",
+                "vshort": "wsh",
+                "color": "#b3d6c0",
+                "childItems": [
+                  {
+                    "name": "Washing and dressing",
+                    "code": 103,
+                    "label": "washing, dressing",
+                    "short": "wash/dress",
+                    "vshort": "wsh",
+                    "color": "#b3d6c0"
+                  },
+                  {
+                    "name": "Other personal care"
+                  }
+                ]
+              },
+              {
+                "name": "Eating, Drinking, Meal (At Home or Work)",
+                "code": 104,
+                "label": "eating, drinking, meal, at home or work",
+                "short": "eat in",
+                "vshort": "eat",
+                "color": "#e0e7cd",
+                "childItems": []
+              },
+              {
+                "name": "Preparing Food, Cooking, Washing Up",
+                "code": 105,
+                "label": "preparing food, cooking, washing up",
+                "short": "prp food",
+                "vshort": "prep",
+                "color": "#f1daf5",
+                "childItems": [
+                  {
+                    "name": "Food preparation and baking",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  },
+                  {
+                    "name": "Dish washing",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  },
+                  {
+                    "name": "Storing, arranging, preserving food stocks",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  }
+                ]
+              },
+              {
+                "name": "Services (e.g., Doctor, Dentist, Hairdresser)",
+                "code": 109,
+                "label": "services eg. doctor/dentist/hairdresser",
+                "short": "personal services",
+                "vshort": "serv",
+                "color": "#f5b9ac",
+                "childItems": []
+              },
+              {
+                "name": "Church, Temple, Mosque, Synagogue, Prayer",
+                "code": 110,
+                "label": "church, temple, mosque, synagogue, prayer",
+                "short": "religion",
+                "vshort": "rel",
+                "color": "#c0c5df",
+                "childItems": [
+                  {
+                    "name": "Religious activities",
+                    "code": 110,
+                    "label": "church, temple, mosque, synagogue, prayer",
+                    "short": "religion",
+                    "vshort": "rel",
+                    "color": "#c0c5df"
+                  },
+                  {
+                    "name": "Visits to cemetery and grave care",
+                    "code": 110,
+                    "label": "church, temple, mosque, synagogue, prayer",
+                    "short": "religion",
+                    "vshort": "rel",
+                    "color": "#c0c5df"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Unpaid Work",
+            "activities": [
+              {
+                "name": "Cleaning, Tidying House",
+                "code": 106,
+                "label": "cleaning tidying house",
+                "short": "tidy",
+                "vshort": "tdy",
+                "color": "#d8bcf0",
+                "childItems": [
+                  {
+                    "name": "Cleaning dwelling",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Cleaning garden",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Arranging household goods and materials",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Recycling and disposal of waste",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Other household upkeep",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  }
+                ]
+              },
+              {
+                "name": "Clothes Washing, Mending, Sewing",
+                "code": 107,
+                "label": "clothes washing, mending, sewing",
+                "short": "wash/cloth",
+                "vshort": "clth",
+                "color": "#96b3f8",
+                "childItems": [
+                  {
+                    "name": "Laundry",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  },
+                  {
+                    "name": "Ironing",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  },
+                  {
+                    "name": "Other textile care (e.g. mending)",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  }
+                ]
+              },
+              {
+                "name": "Maintenance of House, DIY, Gardening, Pet Care",
+                "code": 108,
+                "label": "maintenance of house, DIY, gardening",
+                "short": "DIY",
+                "vshort": "DIY",
+                "color": "#f6eef3",
+                "childItems": [
+                  {
+                    "name": "Gardening",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Tending domestic animals",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Caring for pets",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Heating dwelling and water",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "House construction and renovation",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Repairs to dwelling",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Making, repairing, and maintaining equipment",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Vehicle maintenance",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Other construction and repairs",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  }
+                ]
+              },
+              {
+                "name": "Shopping, Bank, etc. (Including Internet)",
+                "code": 126,
+                "label": "shopping, bank etc including internet",
+                "short": "shop",
+                "vshort": "shp",
+                "color": "#cae3a6",
+                "childItems": [
+                  {
+                    "name": "Shopping (including online/e-shopping)",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Commercial and administrative services",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Household management",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Other shopping and services",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Caring",
+            "activities": [
+              {
+                "name": "Caring for Own Children",
+                "code": 121,
+                "label": "caring for own children",
+                "short": "care own chld",
+                "vshort": "c/ch",
+                "color": "#cacfdf",
+                "childItems": [
+                  {
+                    "name": "Physical care and supervision of child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Teaching the child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Reading, playing, and talking with child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Accompanying child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Other childcare",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Care of own children living in another household",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  }
+                ]
+              },
+              {
+                "name": "Caring for Other Children",
+                "code": 122,
+                "label": "caring for other children",
+                "short": "care othr chld",
+                "vshort": "c/oth",
+                "color": "#d8dfdb",
+                "childItems": []
+              },
+              {
+                "name": "Help, Caring for Adult Household Members",
+                "code": 123,
+                "label": "help, caring for coresident adults",
+                "short": "care ads",
+                "vshort": "c/ad",
+                "color": "#c1d5e2",
+                "childItems": [
+                  {
+                    "name": "Physical care of an adult household member",
+                    "code": 123,
+                    "label": "help, caring for coresident adults",
+                    "short": "care ads",
+                    "vshort": "c/ad",
+                    "color": "#c1d5e2"
+                  },
+                  {
+                    "name": "Other support to an adult household member",
+                    "code": 123,
+                    "label": "help, caring for coresident adults",
+                    "short": "care ads",
+                    "vshort": "c/ad",
+                    "color": "#c1d5e2"
+                  }
+                ]
+              },
+              {
+                "name": "Unpaid Help, Caring for Adults Not in Your Household",
+                "code": 124,
+                "label": "help, caring for noncores adults unpaid",
+                "short": "care othr ads",
+                "vshort": "c/oa",
+                "color": "#ddf7ad",
+                "childItems": [
+                  {
+                    "name": "Help to an adult person of another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Childcare as help to another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Construction and repairs as help",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Help in employment and farming",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Other informal help to another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Work / Study",
+            "activities": [
+              {
+                "name": "Paid Work (Including at Home)",
+                "code": 117,
+                "label": "paid work (including at home)",
+                "short": "work",
+                "vshort": "wrk",
+                "color": "#f1dabc",
+                "childItems": [
+                  {
+                    "name": "Paid job (including short breaks, travel at or for work)",
+                    "code": 117,
+                    "label": "paid work (including at home)",
+                    "short": "work",
+                    "vshort": "wrk",
+                    "color": "#f1dabc"
+                  },
+                  {
+                    "name": "Other activities related to employment",
+                    "code": 117,
+                    "label": "paid work (including at home)",
+                    "short": "work",
+                    "vshort": "wrk",
+                    "color": "#f1dabc"
+                  }
+                ]
+              },
+              {
+                "name": "Formal Education",
+                "code": 118,
+                "label": "formal education",
+                "short": "education",
+                "vshort": "edu",
+                "color": "#d0c79c",
+                "childItems": [
+                  {
+                    "name": "Classes and lectures",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  },
+                  {
+                    "name": "Homework",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  },
+                  {
+                    "name": "Internship",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  }
+                ]
+              },
+              {
+                "name": "Recreational Courses, Study",
+                "code": 119,
+                "label": "recreational courses, study",
+                "short": "rec study",
+                "vshort": "stud",
+                "color": "#a6c7f0",
+                "childItems": [
+                  {
+                    "name": "Extracurricular classes",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  },
+                  {
+                    "name": "Free time study",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  },
+                  {
+                    "name": "Other activities related to study",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  }
+                ]
+              },
+              {
+                "name": "Voluntary Work for Club, Organisation",
+                "code": 120,
+                "label": "voluntary work for club, organisation",
+                "short": "vol work",
+                "vshort": "vol",
+                "color": "#f2afd2",
+                "childItems": [
+                  {
+                    "name": "Organisational work (work for or through an organisation)",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  },
+                  {
+                    "name": "Meetings",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  },
+                  {
+                    "name": "Other participatory activities",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  }
+                ]
+              },
+              {
+                "name": "Work/Study Break",
+                "code": 125,
+                "label": "work/study break",
+                "short": "w/s break",
+                "vshort": "brk",
+                "color": "#d8dfdb",
+                "childItems": [
+                  {
+                    "name": "Lunch break in main and second jobs",
+                    "code": 125,
+                    "label": "work/study break",
+                    "short": "w/s break",
+                    "vshort": "brk",
+                    "color": "#d8dfdb"
+                  },
+                  {
+                    "name": "Breaks at school/university",
+                    "code": 125,
+                    "label": "work/study break",
+                    "short": "w/s break",
+                    "vshort": "brk",
+                    "color": "#d8dfdb"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Travel",
+            "activities": [
+              {
+                "name": "Travelling: walking/jogging",
+                "code": 111,
+                "label": "travelling: walking/jogging",
+                "short": "walk",
+                "vshort": "wlk",
+                "color": "#b8a096",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: cycle",
+                "code": 112,
+                "label": "travelling: cycle",
+                "short": "cycle",
+                "vshort": "cyc",
+                "color": "#d4c9a5",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: motorbike, moped",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: in own car",
+                "code": 113,
+                "label": "travelling: in own car",
+                "short": "car",
+                "vshort": "car",
+                "color": "#9dc6a6",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: taxi/uber/lift",
+                "code": 138,
+                "label": "travelling: taxi/uber/lift",
+                "short": "taxi/uber/lift",
+                "vshort": "taxi",
+                "color": "#98bd62",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: public transport",
+                "code": 115,
+                "label": "travelling: public transport",
+                "short": "travel / public",
+                "vshort": "bus+",
+                "color": "#c0bbb4",
+                "subselection": {
+                  "questions": [
+                    [
+                      "crowdingPrimary"
+                    ]
+                  ]
                 },
-                {
-                  "name": "Nap/Rest",
-                  "color": "#8de0e8"
-                }
-              ]
-            },
-            {
-              "name": "resting",
-              "examples": "",
-              "color": "#f0e6a8"
-            },
-            {
-              "name": "washing, dressing",
-              "examples": "",
-              "color": "#a8e3f0",
-              "childItems": [
-                {
-                  "name": "Washing and dressing",
-                  "color": "#a8e3f0"
-                },
-                {
-                  "name": "Other personal care",
-                  "color": "#a8d3f0"
-                }
-              ]
-            },
-            {
-              "name": "eating, drinking, meal, at home or work",
-              "examples": "",
-              "color": "#f0a8ef",
-              "childItems": [
-                {
-                  "name": "Breakfast",
-                  "color": "#f0a8ef"
-                },
-                {
-                  "name": "Lunch",
-                  "color": "#e99ae7"
-                },
-                {
-                  "name": "Dinner",
-                  "color": "#e28fdf"
-                },
-                {
-                  "name": "Snack",
-                  "color": "#d985d8"
-                }
-              ]
-            },
-            {
-              "name": "preparing food, cooking, washing up",
-              "examples": "",
-              "color": "#a8ccf0"
-            },
-            {
-              "name": "services eg. doctor/ dentist/ hairdresser",
-              "examples": "",
-              "color": "#c0f0a8"
-            },
-            {
-              "name": "church, temple, mosque, synagogue, prayer",
-              "examples": "",
-              "color": "#a8d6f0"
-            }
-          ]
-        },
-        {
-          "name": "Unpaid work",
-          "activities": [
-            {
-              "name": "cleaning tidying house",
-              "examples": "",
-              "color": "#a8c2f0"
-            },
-            {
-              "name": "clothes washing, mending, sewing",
-              "examples": "",
-              "color": "#aea8f0"
-            },
-            {
-              "name": "maintenance of house, DIY, gardening, pet care",
-              "examples": "",
-              "color": "#a8f0b2"
-            },
-            {
-              "name": "shopping, bank etc including internet",
-              "examples": "",
-              "color": "#a8f0d1"
-            }
-          ]
-        },
-        {
-          "name": "Caring",
-          "activities": [
-            {
-              "name": "caring for own children",
-              "examples": "",
-              "color": "#f0d4a8"
-            },
-            {
-              "name": "caring for other children",
-              "examples": "",
-              "color": "#e7a8f0"
-            },
-            {
-              "name": "help, caring for adult household members",
-              "examples": "",
-              "color": "#dba8f0"
-            },
-            {
-              "name": "unpaid help, caring for adults not in your household",
-              "examples": "",
-              "color": "#f0dea8"
-            }
-          ]
-        },
-        {
-          "name": "Work/ Study",
-          "activities": [
-            {
-              "name": "paid work (including at home)",
-              "examples": "",
-              "color": "#a8f0b4"
-            },
-            {
-              "name": "formal education",
-              "examples": "",
-              "color": "#f0a8b7"
-            },
-            {
-              "name": "recreational courses, study",
-              "examples": "",
-              "color": "#a8f0d2"
-            },
-            {
-              "name": "voluntary work for club, organisation",
-              "examples": "",
-              "color": "#f0cba8"
-            },
-            {
-              "name": "work/study break",
-              "examples": "",
-              "color": "#f0a8ec"
-            }
-          ]
-        },
-        {
-          "name": "Travel",
-          "activities": [
-            {
-              "name": "travelling: walking/jogging",
-              "examples": "",
-              "color": "#e0a8f0"
-            },
-            {
-              "name": "travelling: cycle",
-              "examples": "",
-              "color": "#a8d1f0"
-            },
-            {
-              "name": "travelling: motorbike, moped",
-              "examples": "",
-              "color": "#f0e1a8"
-            },
-            {
-              "name": "travelling: in own car",
-              "examples": "",
-              "color": "#f0a9a8"
-            },
-            {
-              "name": "travelling: taxi/uber/lift",
-              "examples": "",
-              "color": "#d9a8f0"
-            },
-            {
-              "name": "travelling: public transport",
-              "examples": "",
-              "color": "#aef0a8"
-            },
-            {
-              "name": "travelling: other",
-              "examples": "",
-              "color": "#a8a9f0"
-            }
-          ]
-        },
-        {
-          "name": "Recreation",
-          "activities": [
-            {
-              "name": "Watching TV/DVD, listening to music",
-              "examples": "",
-              "color": "#b4f0a8"
-            },
-            {
-              "name": "Talking on phone, texting, email, social media, read/write letters",
-              "examples": "",
-              "color": "#f0bea8"
-            },
-            {
-              "name": "reading including e-books",
-              "examples": "",
-              "color": "#f0a8db"
-            },
-            {
-              "name": "using computer",
-              "examples": "",
-              "color": "#c7a8f0"
-            },
-            {
-              "name": "playing computer games",
-              "examples": "",
-              "color": "#caf0a8"
-            },
-            {
-              "name": "spending time with friends, family",
-              "examples": "",
-              "color": "#f0a8d4"
-            },
-            {
-              "name": "hobbies",
-              "examples": "",
-              "color": "#cbf0a8"
-            },
-            {
-              "name": "walking/dog walking",
-              "examples": "",
-              "color": "#a8f0c5"
-            },
-            {
-              "name": "playing sports, exercise",
-              "examples": "",
-              "color": "#c2f0a8"
-            },
-            {
-              "name": "going out to eat, drink eg pub, restaurant",
-              "examples": "",
-              "color": "#a8dbf0"
-            },
-            {
-              "name": "cinema, theatre, sports, cultural event",
-              "examples": "",
-              "color": "#a8f0b5"
-            }
-          ]
-        },
-        {
-          "name": "Other",
-          "activities": [
-            {
-              "name": "Filling in the time use diary",
-              "examples": "",
-              "color": "#baa8f0"
-            },
-            {
-              "name": "other not listed (enter)",
-              "examples": "",
-              "color": "#e9a8f0"
-            }
-          ]
-        }
-      ]
-    },
+                "childItems": []
+              },
+              {
+                "name": "Travelling: other",
+                "code": 116,
+                "label": "travelling: other",
+                "short": "other travel",
+                "vshort": "trav",
+                "color": "#e1e7bb",
+                "childItems": []
+              }
+            ]
+          },
+          {
+            "name": "Recreation",
+            "activities": [
+              {
+                "name": "Watching TV/DVD, Listening to Music",
+                "code": 127,
+                "label": "watching TV/video, dvd, radio, other music",
+                "short": "media",
+                "vshort": "mda",
+                "color": "#afe2da",
+                "childItems": [
+                  {
+                    "name": "Watching TV, video, or DVD",
+                    "code": 127,
+                    "label": "watching TV/video, dvd, radio, other music",
+                    "short": "media",
+                    "vshort": "mda",
+                    "color": "#afe2da"
+                  },
+                  {
+                    "name": "Listening to radio or recordings",
+                    "code": 127,
+                    "label": "watching TV/video, dvd, radio, other music",
+                    "short": "media",
+                    "vshort": "mda",
+                    "color": "#afe2da"
+                  }
+                ]
+              },
+              {
+                "name": "Communication",
+                "code": 134,
+                "label": "telephone,text,email, social networking, read/write letters",
+                "short": "communicate",
+                "vshort": "com",
+                "color": "#dbe9e0",
+                "childItems": [
+                  {
+                    "name": "Talking on phone, texting, email, social media, reading/writing letters",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  },
+                  {
+                    "name": "Communication by text (SMS, instant messages, email, etc.)",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  },
+                  {
+                    "name": "Other time spent on social media",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  }
+                ]
+              },
+              {
+                "name": "Reading (Including E-books)",
+                "code": 128,
+                "label": "reading including e-books",
+                "short": "read",
+                "vshort": "rea",
+                "color": "#dfd4fd",
+                "childItems": [
+                  {
+                    "name": "Reading periodicals",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  },
+                  {
+                    "name": "Reading books",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  },
+                  {
+                    "name": "Other reading",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  }
+                ]
+              },
+              {
+                "name": "Using Computer",
+                "childItems": [
+                  {
+                    "name": "Computer programming, learning software",
+                    "childItems": []
+                  },
+                  {
+                    "name": "Information search using internet",
+                    "childItems": []
+                  },
+                  {
+                    "name": "Other computing",
+                    "childItems": []
+                  }
+                ]
+              },
+              {
+                "name": "Playing Computer Games",
+                "code": 132,
+                "label": "playing computer games",
+                "short": "playing comp games",
+                "vshort": "pla",
+                "color": "#f5b9ac",
+                "childItems": [
+                  {
+                    "name": "Computer games",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Console games (on home console)",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Mobile games (on handheld device/smartphone)",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Solo games and play, gambling",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Other computer games",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  }
+                ]
+              },
+              {
+                "name": "Spending Time with Friends, Family",
+                "code": 133,
+                "label": "spending time with friends, family",
+                "short": "socialise",
+                "vshort": "soc",
+                "color": "#b6cff1",
+                "childItems": [
+                  {
+                    "name": "Socialising with family",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Visiting and receiving visitors",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Celebrations",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Parlour games and play",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Audio and video conversation",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Other social life",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  }
+                ]
+              },
+              {
+                "name": "Hobbies",
+                "code": 136,
+                "label": "hobbies",
+                "short": "hobby",
+                "vshort": "hob",
+                "color": "#f2d8cb",
+                "childItems": [
+                  {
+                    "name": "Arts (visual, performing, literary)",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Collecting",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Making handicraft products",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Other hobbies",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  }
+                ]
+              },
+              {
+                "name": "Walking/Dog Walking",
+                "code": 131,
+                "label": "walking/dog walking",
+                "short": "walking",
+                "vshort": "wlk",
+                "color": "#f5b9ac",
+                "childItems": []
+              },
+              {
+                "name": "Playing Sports, Exercise",
+                "code": 129,
+                "label": "playing sports, exercise",
+                "short": "exercise",
+                "vshort": "ex",
+                "color": "#b9ead3",
+                "childItems": [
+                  {
+                    "name": "Walking and hiking",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Jogging and running",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Cycling, skiing, and skating",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Ball games",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Gymnastics and fitness",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Water sports",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Productive exercise (e.g., hunt, fish, pick berries, mushrooms, herbs)",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Sports-related activities",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Other sports or outdoor activities",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  }
+                ]
+              },
+              {
+                "name": "Going Out to Eat/Drink (e.g. Pub, Restaurant)",
+                "code": 130,
+                "label": "going out to eat, drink eg pub, restaurant",
+                "short": "eat out",
+                "vshort": "eat",
+                "color": "#de9ff3",
+                "childItems": []
+              },
+              {
+                "name": "Cinema, Theatre, Sports, Cultural Event",
+                "code": 135,
+                "label": "cinema, theatre, sports, cultural event",
+                "short": "event",
+                "vshort": "eve",
+                "color": "#dcd3f9",
+                "childItems": [
+                  {
+                    "name": "Cinema",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Theatre and concerts",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Art exhibitions and museums",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Library",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Attending live sports events",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Zoos, botanical gardens, natural reserves, etc.",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Other entertainment and culture",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Other",
+            "activities": [
+              {
+                "name": "Filling in the time use diary",
+                "childItems": []
+              },
+              {
+                "name": "Other time use (please specify)",
+                "childItems": []
+              }
+            ]
+          }
+        ]
+      },
     "secondary": {
-      "name": "Secondary Timeline",
-      "description": "",
-      "mode": "single-choice",
-      "min_coverage": "10",
-      "categories": [
-        {
-          "name": "Personal",
-          "activities": [
-            {
-              "name": "sleeping",
-              "examples": "",
-              "color": "#f0a8dd"
-            },
-            {
-              "name": "resting",
-              "examples": "",
-              "color": "#f0c1a8"
-            },
-            {
-              "name": "washing, dressing",
-              "examples": "",
-              "color": "#c5f0a8"
-            },
-            {
-              "name": "eating, drinking, meal, at home or work",
-              "examples": "",
-              "color": "#b5f0a8"
-            },
-            {
-              "name": "preparing food, cooking, washing up",
-              "examples": "",
-              "color": "#f0c2a8"
-            },
-            {
-              "name": "services eg. doctor/dentist/hairdresser",
-              "examples": "",
-              "color": "#a8f0be"
-            },
-            {
-              "name": "church, temple, mosque, synagogue, prayer",
-              "examples": "",
-              "color": "#a8daf0"
-            }
-          ]
-        },
-        {
-          "name": "Unpaid work",
-          "activities": [
-            {
-              "name": "cleaning tidying house",
-              "examples": "",
-              "color": "#c0a8f0"
-            },
-            {
-              "name": "clothes washing, mending, sewing",
-              "examples": "",
-              "color": "#e3f0a8"
-            },
-            {
-              "name": "maintenance of house, DIY, gardening, pet care",
-              "examples": "",
-              "color": "#cef0a8"
-            },
-            {
-              "name": "shopping, bank etc including internet",
-              "examples": "",
-              "color": "#f0d6a8"
-            }
-          ]
-        },
-        {
-          "name": "Caring",
-          "activities": [
-            {
-              "name": "caring for own children",
-              "examples": "",
-              "color": "#cea8f0"
-            },
-            {
-              "name": "caring for other children",
-              "examples": "",
-              "color": "#f0a8ad"
-            },
-            {
-              "name": "help, caring for adult household members",
-              "examples": "",
-              "color": "#f0b4a8"
-            },
-            {
-              "name": "unpaid help, caring for adults not in your household",
-              "examples": "",
-              "color": "#adf0a8"
-            }
-          ]
-        },
-        {
-          "name": "Work/ Study",
-          "activities": [
-            {
-              "name": "paid work (including at home)",
-              "examples": "",
-              "color": "#c5a8f0"
-            },
-            {
-              "name": "formal education",
-              "examples": "",
-              "color": "#f0a8df"
-            },
-            {
-              "name": "recreational courses, study",
-              "examples": "",
-              "color": "#f0a8c7"
-            },
-            {
-              "name": "voluntary work for club, organisation",
-              "examples": "",
-              "color": "#f0dba8"
-            },
-            {
-              "name": "work/study break",
-              "examples": "",
-              "color": "#f0e7a8"
-            }
-          ]
-        },
-        {
-          "name": "Travel",
-          "activities": [
-            {
-              "name": "travelling: walking/jogging",
-              "examples": "",
-              "color": "#a8f0c4"
-            },
-            {
-              "name": "travelling: cycle",
-              "examples": "",
-              "color": "#ebf0a8"
-            },
-            {
-              "name": "travelling: motorbike, moped",
-              "examples": "",
-              "color": "#f0caa8"
-            },
-            {
-              "name": "travelling: in own car",
-              "examples": "",
-              "color": "#a8f0a9"
-            },
-            {
-              "name": "travelling: taxi/uber/lift",
-              "examples": "",
-              "color": "#eda8f0"
-            },
-            {
-              "name": "travelling: public transport",
-              "examples": "",
-              "color": "#a8f0af"
-            },
-            {
-              "name": "travelling: other",
-              "examples": "",
-              "color": "#b7a8f0"
-            }
-          ]
-        },
-        {
-          "name": "Recreation",
-          "activities": [
-            {
-              "name": "Watching TV/DVD, listening to music",
-              "examples": "",
-              "color": "#f0a8e1"
-            },
-            {
-              "name": "Talking on phone, texting, email, social media, read/write letters",
-              "examples": "",
-              "color": "#f0d1a8"
-            },
-            {
-              "name": "reading including e-books",
-              "examples": "",
-              "color": "#a8f0b9"
-            },
-            {
-              "name": "using computer",
-              "examples": "",
-              "color": "#f0a8c2"
-            },
-            {
-              "name": "playing computer games",
-              "examples": "",
-              "color": "#a8f0e7"
-            },
-            {
-              "name": "spending time with friends, family",
-              "examples": "",
-              "color": "#a8f0c2"
-            },
-            {
-              "name": "hobbies",
-              "examples": "",
-              "color": "#d6a8f0"
-            },
-            {
-              "name": "walking/dog walking",
-              "examples": "",
-              "color": "#a8f0c6"
-            },
-            {
-              "name": "playing sports, exercise",
-              "examples": "",
-              "color": "#a8b1f0"
-            },
-            {
-              "name": "going out to eat, drink eg pub, restaurant",
-              "examples": "",
-              "color": "#a8f0d4"
-            },
-            {
-              "name": "cinema, theatre, sports, cultural event",
-              "examples": "",
-              "color": "#f0a8eb"
-            }
-          ]
-        },
-        {
-          "name": "Other",
-          "activities": [
-            {
-              "name": "Filling in the time use diary",
-              "examples": "",
-              "color": "#abf0a8"
-            },
-            {
-              "name": "other not listed (enter)",
-              "examples": "",
-              "color": "#a8f0d9"
-            }
-          ]
-        }
-      ]
-    },
+        "name": "Primary Timeline",
+        "description": "",
+        "mode": "single-choice",
+        "min_coverage": "10",
+        "categories": [
+          {
+            "name": "Personal",
+            "activities": [
+              {
+                "name": "Sleeping",
+                "code": 101,
+                "label": "sleeping",
+                "short": "sleep",
+                "vshort": "slp",
+                "color": "#a2b4ee",
+                "childItems": []
+              },
+              {
+                "name": "Resting",
+                "code": 102,
+                "label": "resting",
+                "short": "rest",
+                "vshort": "rst",
+                "color": "#a2e0da",
+                "childItems": [
+                  {
+                    "name": "Resting - Time out"
+                  },
+                  {
+                    "name": "Sick in bed"
+                  }
+                ]
+              },
+              {
+                "name": "Washing, Dressing",
+                "code": 103,
+                "label": "washing, dressing",
+                "short": "wash/dress",
+                "vshort": "wsh",
+                "color": "#b3d6c0",
+                "childItems": [
+                  {
+                    "name": "Washing and dressing",
+                    "code": 103,
+                    "label": "washing, dressing",
+                    "short": "wash/dress",
+                    "vshort": "wsh",
+                    "color": "#b3d6c0"
+                  },
+                  {
+                    "name": "Other personal care"
+                  }
+                ]
+              },
+              {
+                "name": "Eating, Drinking, Meal (At Home or Work)",
+                "code": 104,
+                "label": "eating, drinking, meal, at home or work",
+                "short": "eat in",
+                "vshort": "eat",
+                "color": "#e0e7cd",
+                "childItems": []
+              },
+              {
+                "name": "Preparing Food, Cooking, Washing Up",
+                "code": 105,
+                "label": "preparing food, cooking, washing up",
+                "short": "prp food",
+                "vshort": "prep",
+                "color": "#f1daf5",
+                "childItems": [
+                  {
+                    "name": "Food preparation and baking",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  },
+                  {
+                    "name": "Dish washing",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  },
+                  {
+                    "name": "Storing, arranging, preserving food stocks",
+                    "code": 105,
+                    "label": "preparing food, cooking, washing up",
+                    "short": "prp food",
+                    "vshort": "prep",
+                    "color": "#f1daf5"
+                  }
+                ]
+              },
+              {
+                "name": "Services (e.g., Doctor, Dentist, Hairdresser)",
+                "code": 109,
+                "label": "services eg. doctor/dentist/hairdresser",
+                "short": "personal services",
+                "vshort": "serv",
+                "color": "#f5b9ac",
+                "childItems": []
+              },
+              {
+                "name": "Church, Temple, Mosque, Synagogue, Prayer",
+                "code": 110,
+                "label": "church, temple, mosque, synagogue, prayer",
+                "short": "religion",
+                "vshort": "rel",
+                "color": "#c0c5df",
+                "childItems": [
+                  {
+                    "name": "Religious activities",
+                    "code": 110,
+                    "label": "church, temple, mosque, synagogue, prayer",
+                    "short": "religion",
+                    "vshort": "rel",
+                    "color": "#c0c5df"
+                  },
+                  {
+                    "name": "Visits to cemetery and grave care",
+                    "code": 110,
+                    "label": "church, temple, mosque, synagogue, prayer",
+                    "short": "religion",
+                    "vshort": "rel",
+                    "color": "#c0c5df"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Unpaid Work",
+            "activities": [
+              {
+                "name": "Cleaning, Tidying House",
+                "code": 106,
+                "label": "cleaning tidying house",
+                "short": "tidy",
+                "vshort": "tdy",
+                "color": "#d8bcf0",
+                "childItems": [
+                  {
+                    "name": "Cleaning dwelling",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Cleaning garden",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Arranging household goods and materials",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Recycling and disposal of waste",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  },
+                  {
+                    "name": "Other household upkeep",
+                    "code": 106,
+                    "label": "cleaning tidying house",
+                    "short": "tidy",
+                    "vshort": "tdy",
+                    "color": "#d8bcf0"
+                  }
+                ]
+              },
+              {
+                "name": "Clothes Washing, Mending, Sewing",
+                "code": 107,
+                "label": "clothes washing, mending, sewing",
+                "short": "wash/cloth",
+                "vshort": "clth",
+                "color": "#96b3f8",
+                "childItems": [
+                  {
+                    "name": "Laundry",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  },
+                  {
+                    "name": "Ironing",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  },
+                  {
+                    "name": "Other textile care (e.g. mending)",
+                    "code": 107,
+                    "label": "clothes washing, mending, sewing",
+                    "short": "wash/cloth",
+                    "vshort": "clth",
+                    "color": "#96b3f8"
+                  }
+                ]
+              },
+              {
+                "name": "Maintenance of House, DIY, Gardening, Pet Care",
+                "code": 108,
+                "label": "maintenance of house, DIY, gardening",
+                "short": "DIY",
+                "vshort": "DIY",
+                "color": "#f6eef3",
+                "childItems": [
+                  {
+                    "name": "Gardening",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Tending domestic animals",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Caring for pets",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Heating dwelling and water",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "House construction and renovation",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Repairs to dwelling",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Making, repairing, and maintaining equipment",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Vehicle maintenance",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  },
+                  {
+                    "name": "Other construction and repairs",
+                    "code": 108,
+                    "label": "maintenance of house, DIY, gardening",
+                    "short": "DIY",
+                    "vshort": "DIY",
+                    "color": "#f6eef3"
+                  }
+                ]
+              },
+              {
+                "name": "Shopping, Bank, etc. (Including Internet)",
+                "code": 126,
+                "label": "shopping, bank etc including internet",
+                "short": "shop",
+                "vshort": "shp",
+                "color": "#cae3a6",
+                "childItems": [
+                  {
+                    "name": "Shopping (including online/e-shopping)",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Commercial and administrative services",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Household management",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  },
+                  {
+                    "name": "Other shopping and services",
+                    "code": 126,
+                    "label": "shopping, bank etc including internet",
+                    "short": "shop",
+                    "vshort": "shp",
+                    "color": "#cae3a6"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Caring",
+            "activities": [
+              {
+                "name": "Caring for Own Children",
+                "code": 121,
+                "label": "caring for own children",
+                "short": "care own chld",
+                "vshort": "c/ch",
+                "color": "#cacfdf",
+                "childItems": [
+                  {
+                    "name": "Physical care and supervision of child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Teaching the child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Reading, playing, and talking with child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Accompanying child",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Other childcare",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  },
+                  {
+                    "name": "Care of own children living in another household",
+                    "code": 121,
+                    "label": "caring for own children",
+                    "short": "care own chld",
+                    "vshort": "c/ch",
+                    "color": "#cacfdf"
+                  }
+                ]
+              },
+              {
+                "name": "Caring for Other Children",
+                "code": 122,
+                "label": "caring for other children",
+                "short": "care othr chld",
+                "vshort": "c/oth",
+                "color": "#d8dfdb",
+                "childItems": []
+              },
+              {
+                "name": "Help, Caring for Adult Household Members",
+                "code": 123,
+                "label": "help, caring for coresident adults",
+                "short": "care ads",
+                "vshort": "c/ad",
+                "color": "#c1d5e2",
+                "childItems": [
+                  {
+                    "name": "Physical care of an adult household member",
+                    "code": 123,
+                    "label": "help, caring for coresident adults",
+                    "short": "care ads",
+                    "vshort": "c/ad",
+                    "color": "#c1d5e2"
+                  },
+                  {
+                    "name": "Other support to an adult household member",
+                    "code": 123,
+                    "label": "help, caring for coresident adults",
+                    "short": "care ads",
+                    "vshort": "c/ad",
+                    "color": "#c1d5e2"
+                  }
+                ]
+              },
+              {
+                "name": "Unpaid Help, Caring for Adults Not in Your Household",
+                "code": 124,
+                "label": "help, caring for noncores adults unpaid",
+                "short": "care othr ads",
+                "vshort": "c/oa",
+                "color": "#ddf7ad",
+                "childItems": [
+                  {
+                    "name": "Help to an adult person of another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Childcare as help to another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Construction and repairs as help",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Help in employment and farming",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  },
+                  {
+                    "name": "Other informal help to another household",
+                    "code": 124,
+                    "label": "help, caring for noncores adults unpaid",
+                    "short": "care othr ads",
+                    "vshort": "c/oa",
+                    "color": "#ddf7ad"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Work / Study",
+            "activities": [
+              {
+                "name": "Paid Work (Including at Home)",
+                "code": 117,
+                "label": "paid work (including at home)",
+                "short": "work",
+                "vshort": "wrk",
+                "color": "#f1dabc",
+                "childItems": [
+                  {
+                    "name": "Paid job (including short breaks, travel at or for work)",
+                    "code": 117,
+                    "label": "paid work (including at home)",
+                    "short": "work",
+                    "vshort": "wrk",
+                    "color": "#f1dabc"
+                  },
+                  {
+                    "name": "Other activities related to employment",
+                    "code": 117,
+                    "label": "paid work (including at home)",
+                    "short": "work",
+                    "vshort": "wrk",
+                    "color": "#f1dabc"
+                  }
+                ]
+              },
+              {
+                "name": "Formal Education",
+                "code": 118,
+                "label": "formal education",
+                "short": "education",
+                "vshort": "edu",
+                "color": "#d0c79c",
+                "childItems": [
+                  {
+                    "name": "Classes and lectures",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  },
+                  {
+                    "name": "Homework",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  },
+                  {
+                    "name": "Internship",
+                    "code": 118,
+                    "label": "formal education",
+                    "short": "education",
+                    "vshort": "edu",
+                    "color": "#d0c79c"
+                  }
+                ]
+              },
+              {
+                "name": "Recreational Courses, Study",
+                "code": 119,
+                "label": "recreational courses, study",
+                "short": "rec study",
+                "vshort": "stud",
+                "color": "#a6c7f0",
+                "childItems": [
+                  {
+                    "name": "Extracurricular classes",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  },
+                  {
+                    "name": "Free time study",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  },
+                  {
+                    "name": "Other activities related to study",
+                    "code": 119,
+                    "label": "recreational courses, study",
+                    "short": "rec study",
+                    "vshort": "stud",
+                    "color": "#a6c7f0"
+                  }
+                ]
+              },
+              {
+                "name": "Voluntary Work for Club, Organisation",
+                "code": 120,
+                "label": "voluntary work for club, organisation",
+                "short": "vol work",
+                "vshort": "vol",
+                "color": "#f2afd2",
+                "childItems": [
+                  {
+                    "name": "Organisational work (work for or through an organisation)",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  },
+                  {
+                    "name": "Meetings",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  },
+                  {
+                    "name": "Other participatory activities",
+                    "code": 120,
+                    "label": "voluntary work for club, organisation",
+                    "short": "vol work",
+                    "vshort": "vol",
+                    "color": "#f2afd2"
+                  }
+                ]
+              },
+              {
+                "name": "Work/Study Break",
+                "code": 125,
+                "label": "work/study break",
+                "short": "w/s break",
+                "vshort": "brk",
+                "color": "#d8dfdb",
+                "childItems": [
+                  {
+                    "name": "Lunch break in main and second jobs",
+                    "code": 125,
+                    "label": "work/study break",
+                    "short": "w/s break",
+                    "vshort": "brk",
+                    "color": "#d8dfdb"
+                  },
+                  {
+                    "name": "Breaks at school/university",
+                    "code": 125,
+                    "label": "work/study break",
+                    "short": "w/s break",
+                    "vshort": "brk",
+                    "color": "#d8dfdb"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Travel",
+            "activities": [
+              {
+                "name": "Travelling: walking/jogging",
+                "code": 111,
+                "label": "travelling: walking/jogging",
+                "short": "walk",
+                "vshort": "wlk",
+                "color": "#b8a096",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: cycle",
+                "code": 112,
+                "label": "travelling: cycle",
+                "short": "cycle",
+                "vshort": "cyc",
+                "color": "#d4c9a5",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: motorbike, moped",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: in own car",
+                "code": 113,
+                "label": "travelling: in own car",
+                "short": "car",
+                "vshort": "car",
+                "color": "#9dc6a6",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: taxi/uber/lift",
+                "code": 138,
+                "label": "travelling: taxi/uber/lift",
+                "short": "taxi/uber/lift",
+                "vshort": "taxi",
+                "color": "#98bd62",
+                "childItems": []
+              },
+              {
+                "name": "Travelling: public transport",
+                "code": 115,
+                "label": "travelling: public transport",
+                "short": "travel / public",
+                "vshort": "bus+",
+                "color": "#c0bbb4",
+                "subselection": {
+                  "questions": [
+                    [
+                      "crowdingPrimary"
+                    ]
+                  ]
+                },
+                "childItems": []
+              },
+              {
+                "name": "Travelling: other",
+                "code": 116,
+                "label": "travelling: other",
+                "short": "other travel",
+                "vshort": "trav",
+                "color": "#e1e7bb",
+                "childItems": []
+              }
+            ]
+          },
+          {
+            "name": "Recreation",
+            "activities": [
+              {
+                "name": "Watching TV/DVD, Listening to Music",
+                "code": 127,
+                "label": "watching TV/video, dvd, radio, other music",
+                "short": "media",
+                "vshort": "mda",
+                "color": "#afe2da",
+                "childItems": [
+                  {
+                    "name": "Watching TV, video, or DVD",
+                    "code": 127,
+                    "label": "watching TV/video, dvd, radio, other music",
+                    "short": "media",
+                    "vshort": "mda",
+                    "color": "#afe2da"
+                  },
+                  {
+                    "name": "Listening to radio or recordings",
+                    "code": 127,
+                    "label": "watching TV/video, dvd, radio, other music",
+                    "short": "media",
+                    "vshort": "mda",
+                    "color": "#afe2da"
+                  }
+                ]
+              },
+              {
+                "name": "Communication",
+                "code": 134,
+                "label": "telephone,text,email, social networking, read/write letters",
+                "short": "communicate",
+                "vshort": "com",
+                "color": "#dbe9e0",
+                "childItems": [
+                  {
+                    "name": "Talking on phone, texting, email, social media, reading/writing letters",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  },
+                  {
+                    "name": "Communication by text (SMS, instant messages, email, etc.)",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  },
+                  {
+                    "name": "Other time spent on social media",
+                    "code": 134,
+                    "label": "telephone,text,email, social networking, read/write letters",
+                    "short": "communicate",
+                    "vshort": "com",
+                    "color": "#dbe9e0"
+                  }
+                ]
+              },
+              {
+                "name": "Reading (Including E-books)",
+                "code": 128,
+                "label": "reading including e-books",
+                "short": "read",
+                "vshort": "rea",
+                "color": "#dfd4fd",
+                "childItems": [
+                  {
+                    "name": "Reading periodicals",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  },
+                  {
+                    "name": "Reading books",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  },
+                  {
+                    "name": "Other reading",
+                    "code": 128,
+                    "label": "reading including e-books",
+                    "short": "read",
+                    "vshort": "rea",
+                    "color": "#dfd4fd"
+                  }
+                ]
+              },
+              {
+                "name": "Using Computer",
+                "childItems": [
+                  {
+                    "name": "Computer programming, learning software",
+                    "childItems": []
+                  },
+                  {
+                    "name": "Information search using internet",
+                    "childItems": []
+                  },
+                  {
+                    "name": "Other computing",
+                    "childItems": []
+                  }
+                ]
+              },
+              {
+                "name": "Playing Computer Games",
+                "code": 132,
+                "label": "playing computer games",
+                "short": "playing comp games",
+                "vshort": "pla",
+                "color": "#f5b9ac",
+                "childItems": [
+                  {
+                    "name": "Computer games",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Console games (on home console)",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Mobile games (on handheld device/smartphone)",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Solo games and play, gambling",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  },
+                  {
+                    "name": "Other computer games",
+                    "code": 132,
+                    "label": "playing computer games",
+                    "short": "playing comp games",
+                    "vshort": "pla",
+                    "color": "#f5b9ac"
+                  }
+                ]
+              },
+              {
+                "name": "Spending Time with Friends, Family",
+                "code": 133,
+                "label": "spending time with friends, family",
+                "short": "socialise",
+                "vshort": "soc",
+                "color": "#b6cff1",
+                "childItems": [
+                  {
+                    "name": "Socialising with family",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Visiting and receiving visitors",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Celebrations",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Parlour games and play",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Audio and video conversation",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  },
+                  {
+                    "name": "Other social life",
+                    "code": 133,
+                    "label": "spending time with friends, family",
+                    "short": "socialise",
+                    "vshort": "soc",
+                    "color": "#b6cff1"
+                  }
+                ]
+              },
+              {
+                "name": "Hobbies",
+                "code": 136,
+                "label": "hobbies",
+                "short": "hobby",
+                "vshort": "hob",
+                "color": "#f2d8cb",
+                "childItems": [
+                  {
+                    "name": "Arts (visual, performing, literary)",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Collecting",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Making handicraft products",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  },
+                  {
+                    "name": "Other hobbies",
+                    "code": 136,
+                    "label": "hobbies",
+                    "short": "hobby",
+                    "vshort": "hob",
+                    "color": "#f2d8cb"
+                  }
+                ]
+              },
+              {
+                "name": "Walking/Dog Walking",
+                "code": 131,
+                "label": "walking/dog walking",
+                "short": "walking",
+                "vshort": "wlk",
+                "color": "#f5b9ac",
+                "childItems": []
+              },
+              {
+                "name": "Playing Sports, Exercise",
+                "code": 129,
+                "label": "playing sports, exercise",
+                "short": "exercise",
+                "vshort": "ex",
+                "color": "#b9ead3",
+                "childItems": [
+                  {
+                    "name": "Walking and hiking",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Jogging and running",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Cycling, skiing, and skating",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Ball games",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Gymnastics and fitness",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Water sports",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Productive exercise (e.g., hunt, fish, pick berries, mushrooms, herbs)",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Sports-related activities",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  },
+                  {
+                    "name": "Other sports or outdoor activities",
+                    "code": 129,
+                    "label": "playing sports, exercise",
+                    "short": "exercise",
+                    "vshort": "ex",
+                    "color": "#b9ead3"
+                  }
+                ]
+              },
+              {
+                "name": "Going Out to Eat/Drink (e.g. Pub, Restaurant)",
+                "code": 130,
+                "label": "going out to eat, drink eg pub, restaurant",
+                "short": "eat out",
+                "vshort": "eat",
+                "color": "#de9ff3",
+                "childItems": []
+              },
+              {
+                "name": "Cinema, Theatre, Sports, Cultural Event",
+                "code": 135,
+                "label": "cinema, theatre, sports, cultural event",
+                "short": "event",
+                "vshort": "eve",
+                "color": "#dcd3f9",
+                "childItems": [
+                  {
+                    "name": "Cinema",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Theatre and concerts",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Art exhibitions and museums",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Library",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Attending live sports events",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Zoos, botanical gardens, natural reserves, etc.",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  },
+                  {
+                    "name": "Other entertainment and culture",
+                    "code": 135,
+                    "label": "cinema, theatre, sports, cultural event",
+                    "short": "event",
+                    "vshort": "eve",
+                    "color": "#dcd3f9"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Other",
+            "activities": [
+              {
+                "name": "Filling in the time use diary",
+                "childItems": []
+              },
+              {
+                "name": "Other time use (please specify)",
+                "childItems": []
+              }
+            ]
+          }
+        ]
+      },
     "location": {
       "name": "Location",
       "description": "Where were you?",
