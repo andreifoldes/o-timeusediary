@@ -238,6 +238,26 @@ body {
         width: 100%;
         height: 120px;
     }
+    
+    /* Improve text wrapping for desktop view */
+    .activity-block-text-narrow.wide.resized {
+        white-space: normal !important; /* Override any inline styles */
+        overflow: visible !important;
+        text-overflow: clip !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.6em 0.3em;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        -webkit-hyphens: auto !important;
+        hyphens: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+    }
 }
 
 /* Mobile vertical layout */
@@ -884,6 +904,9 @@ body {
     hyphens: auto !important;
     max-height: none !important;
     min-height: auto !important;
+    white-space: normal !important; /* Ensure text wraps */
+    overflow: visible !important; /* Override hidden */
+    text-overflow: clip !important; /* Disable ellipsis */
 }
 
 .gradient-bar {
