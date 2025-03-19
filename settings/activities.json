@@ -20,7 +20,6 @@
           "activities": [
             {
               "name": "sleeping",
-              "examples": "(incl. naps, cat naps, power naps, etc.)",
               "color": "#a8eaf0",
               "childItems": [
                 {
@@ -35,7 +34,7 @@
             },
             {
               "name": "resting",
-              "examples": "(incl. lying down)",
+              "examples": "",
               "color": "#f0e6a8"
             },
             {
@@ -545,37 +544,107 @@
             {
               "name": "Home",
               "examples": "",
-              "color": "#a8f0de"
+              "color": "#a8f0de",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#88e0ce"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#c8ffee"
+                }
+              ]
             },
             {
               "name": "Work",
               "examples": "",
-              "color": "#f0a8ac"
+              "color": "#f0a8ac",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#e098a0"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#ffb8bc"
+                }
+              ]
             },
             {
               "name": "School/College",
               "examples": "",
-              "color": "#c1f0a8"
+              "color": "#c1f0a8",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#b1e098"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#d1ffb8"
+                }
+              ]
             },
             {
               "name": "Other people's home",
               "examples": "",
-              "color": "#a8f0ba"
+              "color": "#a8f0ba",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#98e0aa"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#b8ffca"
+                }
+              ]
             },
             {
               "name": "Restaurant, cafe or pub",
               "examples": "",
-              "color": "#a8b5f0"
+              "color": "#a8b5f0",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#98a5e0"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#b8c5ff"
+                }
+              ]
             },
             {
               "name": "Shops, shopping centres, malls, markets",
               "examples": "",
-              "color": "#f0c6a8"
+              "color": "#f0c6a8",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#e0b698"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#ffd6b8"
+                }
+              ]
             },
             {
               "name": "Other",
               "examples": "",
-              "color": "#a8f0b1"
+              "color": "#a8f0b1",
+              "childItems": [
+                {
+                  "name": "Indoor",
+                  "color": "#98e0a1"
+                },
+                {
+                  "name": "Outdoor",
+                  "color": "#b8ffc1"
+                }
+              ]
             }
           ]
         }
