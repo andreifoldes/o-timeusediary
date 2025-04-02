@@ -1,4 +1,4 @@
-# O-ELIDDI - Daily Activity Collection Tool
+# O-TUD - Daily Activity Collection Tool
 
 A web-based tool for collecting and visualizing daily activities in a timeline format. Designed for research studies and time-use surveys.
 
