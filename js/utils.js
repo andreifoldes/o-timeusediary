@@ -1,5 +1,4 @@
 import { DEBUG_MODE, MINUTES_PER_DAY } from './constants.js';
-import { getSupabase } from './supabaseClient.js';
 
 // Timeline state management functions
 export function getCurrentTimelineKey() {
@@ -470,26 +469,15 @@ export function createTimelineDataFrame() {
 }
 
 /**
- * Sends timeline and participant data to Supabase.
+ * Sends timeline and participant data to DataPipe API.
  *
  * This function performs the following steps:
  * 1. Prepare the timeline data and ensure each record contains the unique identifier (pid).
- * 2. Insert the timeline records into the "timeline" table.
- * 3. Prepare the participant data by collecting viewport sizes, layout preference,
- *    browser information, and any extra study-related information.
- * 4. Insert the participant data into the "participant" table.
- *
- * Make sure your timeline data rows contain keys that match your "timeline" table columns:
- * timelineKey, activity, category, startTime, endTime.
+ * 2. Send the data to DataPipe API endpoint.
+ * 3. Handle redirect to thank you page.
  */
-export async function sendDataToSupabase() {
+export async function sendDataToDataPipe() {
   try {
-    // Wait for Supabase client to be initialized
-    const supabase = await getSupabase();
-    if (!supabase) {
-      throw new Error('Failed to initialize Supabase client');
-    }
-
     // --- Prepare Timeline Data ---
     const timelineData = createTimelineDataFrame();
 
@@ -513,26 +501,6 @@ export async function sendDataToSupabase() {
       pid = studyData.pid || studyData.PID;
     }
 
-    // Process timeline data - only include relevant columns
-    const processedTimelineData = timelineData.map(row => ({
-      timelineKey: row.timelineKey,
-      activity: row.activity,
-      category: row.category,
-      startTime: row.startTime,
-      endTime: row.endTime,
-      pid: pid,
-      diaryWave: studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : null
-    }));
-
-    // Insert timeline data
-    const { data: timelineInsertData, error: timelineError } = await supabase
-      .from('timeline')
-      .insert(processedTimelineData);
-
-    if (timelineError) {
-      throw new Error(`Timeline data insertion failed: ${timelineError.message}`);
-    }
-
     // --- Prepare Participant Data ---
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -553,8 +521,15 @@ export async function sendDataToSupabase() {
       ? (studyData.survey || studyData.SURVEY) 
       : (studyData.SESSION_ID || null);
 
-    const participantData = {
-      pid,
+    // Combine timeline and participant data
+    const combinedData = timelineData.map(row => ({
+      timelineKey: row.timelineKey,
+      activity: row.activity,
+      category: row.category,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      pid: pid,
+      diaryWave: studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : null,
       viewportWidth,
       viewportHeight,
       layoutHorizontal,
@@ -564,18 +539,34 @@ export async function sendDataToSupabase() {
       PROLIFIC_PID: studyData.PROLIFIC_PID || null,
       STUDY_ID: studyData.STUDY_ID || null,
       SESSION_ID: session_id
-    };
+    }));
 
-    // Insert participant data
-    const { data: participantInsertData, error: participantError } = await supabase
-      .from('participant')
-      .insert(participantData);
+    // Convert to CSV format
+    const csvData = convertArrayToCSV(combinedData);
+    
+    // Generate unique filename with timestamp
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `timeline_${pid}_${timestamp}.csv`;
 
-    if (participantError) {
-      throw new Error(`Participant data insertion failed: ${participantError.message}`);
+    // Send to DataPipe API
+    const response = await fetch("https://pipe.jspsych.org/api/data/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+      },
+      body: JSON.stringify({
+        experimentID: "eR8ENvJPgQth",
+        filename: filename,
+        data: csvData,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`DataPipe API request failed: ${response.status} ${response.statusText}`);
     }
 
-    console.log('Data inserted successfully');
+    console.log('Data sent to DataPipe successfully');
 
     // Handle redirect to thank you page
     const redirectUrl = window.timelineManager?.general?.primary_redirect_url;
@@ -598,7 +589,7 @@ export async function sendDataToSupabase() {
 
     return { success: true };
   } catch (error) {
-    console.error('Error sending data:', error);
+    console.error('Error sending data to DataPipe:', error);
     return { success: false, error: error.message };
   }
 }
@@ -877,20 +868,20 @@ function downloadCSV(csvString, filename) {
 }
 
 /**
- * sendData function to either send data via Supabase or download as CSV locally.
+ * sendData function to either send data via DataPipe or download as CSV locally.
  * 
  * @param {Object} options - Options to control the sending behavior.
- *   Use { mode: 'supabase' } to upload via Supabase,
+ *   Use { mode: 'datapipe' } to upload via DataPipe API,
  *   or { mode: 'csv' } to trigger a CSV file download.
- *   During development, the default is 'csv' mode.
+ *   During development, the default is 'datapipe' mode.
  */
-export async function sendData(options = { mode: 'csv' }) {
+export async function sendData(options = { mode: 'datapipe' }) {
     // Sync URL parameters before sending data
     syncURLParamsToStudy();
     
-    if (options.mode === 'supabase') {
-        // Call the existing function that sends data to Supabase
-        return await sendDataToSupabase();
+    if (options.mode === 'datapipe') {
+        // Call the function that sends data to DataPipe
+        return await sendDataToDataPipe();
     } else if (options.mode === 'csv') {
         // Create timeline data frame and convert to CSV for download
         const dataFrame = createTimelineDataFrame();
