@@ -905,10 +905,11 @@ function downloadCSV(csvString, filename) {
  * sendData function to either send data via Supabase or download as CSV locally.
  * 
  * @param {Object} options - Options to control the sending behavior.
- *   Use { mode: 'supabase' } (default) to upload via Supabase,
+ *   Use { mode: 'supabase' } to upload via Supabase,
  *   or { mode: 'csv' } to trigger a CSV file download.
+ *   During development, the default is 'csv' mode.
  */
-export async function sendData(options = { mode: 'supabase' }) {
+export async function sendData(options = { mode: 'csv' }) {
     // Sync URL parameters before sending data
     syncURLParamsToStudy();
     

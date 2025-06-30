@@ -72,8 +72,10 @@ function createModal() {
     const modalActivitiesContainer = activitiesModal.querySelector('#modalActivitiesContainer');
     modalActivitiesContainer.addEventListener('click', (e) => {
         if (
-            e.target.classList.contains('activity-name') &&
-            e.target.textContent.trim() === 'Other not listed (enter)'
+            e.target.classList.contains('activity-name') && 
+            (e.target.textContent.trim() === 'Other not listed (enter)' || 
+             e.target.textContent.trim().includes('Other activities not listed') ||
+             e.target.textContent.trim().includes('other time use (please specify)'))
         ) {
             // Hide the activities modal
             activitiesModal.style.cssText = 'display: none !important';
@@ -81,6 +83,11 @@ function createModal() {
             const customActivityModal = document.getElementById('customActivityModal');
             if (customActivityModal) {
                 customActivityModal.style.display = 'block';
+                // Focus the input field for better user experience
+                const customActivityInput = document.getElementById('customActivityInput');
+                if (customActivityInput) {
+                    customActivityInput.focus();
+                }
             }
             e.stopPropagation();
         }

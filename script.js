@@ -256,7 +256,7 @@ function logDebugInfo() {
 
 async function fetchActivities(key) {
     try {
-        const response = await fetch('settings/activities.json');
+        const response = await fetch('settings/activities_usoc.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -498,12 +498,15 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activityButton.querySelector('.activity-text').textContent.toLowerCase().includes('other not listed (enter)')) {
+                    if (activity.name.toLowerCase().includes('other not listed (enter)') || 
+                        activity.name.toLowerCase().includes('other time use (please specify)') ||
+                        activity.name.toLowerCase().includes('other activities not listed')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');
                         customActivityInput.value = ''; // Clear previous input
                         customActivityModal.style.display = 'block';
+                        customActivityInput.focus(); // Focus the input field
                         
                         // Handle custom activity submission
                         const handleCustomActivity = () => {
@@ -684,7 +687,9 @@ function renderActivities(categories, container = document.getElementById('activ
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
                     // Check if this is the "other not listed" button
-                    if (activity.name.toLowerCase().includes('other not listed (enter)')) {
+                    if (activity.name.toLowerCase().includes('other not listed (enter)') || 
+                        activity.name.toLowerCase().includes('other time use (please specify)') ||
+                        activity.name.toLowerCase().includes('other activities not listed')) {
                         // Show custom activity modal
                         const customActivityModal = document.getElementById('customActivityModal');
                         const customActivityInput = document.getElementById('customActivityInput');

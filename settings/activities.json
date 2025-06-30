@@ -1168,13 +1168,16 @@
           },
           {
             "name": "Other",
+            "color": "#808080",
             "activities": [
               {
                 "name": "Filling in the time use diary",
+                "color": "#808080",
                 "childItems": []
               },
               {
                 "name": "Other time use (please specify)",
+                "color": "#808080",
                 "childItems": []
               }
             ]
@@ -1182,7 +1185,7 @@
         ]
       },
     "secondary": {
-        "name": "Primary Timeline",
+        "name": "Secondary Timeline",
         "description": "",
         "mode": "single-choice",
         "min_coverage": "10",
@@ -2340,13 +2343,16 @@
           },
           {
             "name": "Other",
+            "color": "#808080",
             "activities": [
               {
                 "name": "Filling in the time use diary",
+                "color": "#808080",
                 "childItems": []
               },
               {
                 "name": "Other time use (please specify)",
+                "color": "#808080",
                 "childItems": []
               }
             ]
