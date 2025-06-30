@@ -1826,7 +1826,7 @@ async function init() {
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
             if (!window.location.pathname.includes('/instructions/')) {
                 const currentParams = new URLSearchParams(window.location.search);
-                const redirectUrl = new URL('instructions/instructions.html', window.location.href);
+                const redirectUrl = new URL('pages/instructions.html', window.location.href);
                 currentParams.forEach((value, key) => {
                     redirectUrl.searchParams.append(key, value);
                 });
