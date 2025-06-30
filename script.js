@@ -256,7 +256,7 @@ function logDebugInfo() {
 
 async function fetchActivities(key) {
     try {
-        const response = await fetch('settings/activities_usoc.json');
+        const response = await fetch('settings/activities.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
