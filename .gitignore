@@ -9,4 +9,7 @@ config.js
 config.env
 # Local Netlify folder
 .netlify
+.claude
 CLAUDE.md
+settings.json
+node_modules/

@@ -1,0 +1,76 @@
+{
+  "instructions": {
+    "title": "Instructions",
+    "mainInstruction": "Pensez aux activités que vous avez faites <span class=\"emphasis\">hier</span>. Ensuite, remplissez la chronologie complète avec les activités que vous avez réalisées.",
+    "step1": {
+      "title": "Sélectionner et Placer une Activité",
+      "horizontal": "Choisissez une activité dans le menu en bas de l'écran, puis placez-la sur la chronologie.",
+      "vertical": "Appuyez sur le bouton (+) dans le coin inférieur droit pour ouvrir le menu des activités, puis sélectionnez une activité et appuyez où vous voulez la placer sur la chronologie."
+    },
+    "step2": {
+      "title": "Ajuster la Durée de l'Activité",
+      "horizontal": "Cliquez et faites glisser les bords horizontalement pour définir la durée.",
+      "vertical": "Faites glisser les bords verticalement pour définir la durée."
+    },
+    "step3": {
+      "title": "Soumettre votre Journal",
+      "description": "Une fois que vous avez enregistré toutes vos activités de la journée, cliquez sur le bouton Soumettre pour terminer votre journal.",
+      "submitHelp": "Cliquez pour soumettre votre journal terminé"
+    },
+    "helpfulTools": "Outils utiles",
+    "undoHelp": "Avez-vous fait une erreur ? Annulez votre dernière action",
+    "cleanRowHelp": "Vous voulez recommencer ? Nettoyez la ligne",
+    "customActivityHelp": "Activité non listée ? Ajoutez une activité personnalisée"
+  },
+  "buttons": {
+    "submit": "Soumettre",
+    "start": "Commencer",
+    "undo": "Annuler",
+    "cleanRow": "Nettoyer la Ligne",
+    "next": "Suivant",
+    "backToInstructions": "Retour aux Instructions",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "modals": {
+    "customActivity": {
+      "title": "Entrer une Activité Personnalisée",
+      "placeholder": "Entrez votre activité (max 30 caractères)"
+    },
+    "addActivity": {
+      "title": "Ajouter une Activité"
+    },
+    "childItems": {
+      "title": "Sélectionnez une option",
+      "titleFor": "Sélectionnez une option pour \"{activityName}\""
+    },
+    "confirmSubmit": {
+      "title": "Êtes-vous sûr?",
+      "message": "Vous ne pourrez pas changer vos réponses."
+    }
+  },
+  "messages": {
+    "loading": "Chargement...",
+    "saving": "Sauvegarde...",
+    "saved": "Sauvegardé avec succès",
+    "error": "Une erreur s'est produite",
+    "noActivities": "Aucune activité trouvée",
+    "fillRequired": "Veuillez remplir toutes les activités requises",
+    "submitSuccess": "Journal soumis avec succès",
+    "submitError": "Erreur lors de la soumission du journal"
+  },
+  "activities": {
+    "otherNotListed": "Autre non listé (entrer)"
+  },
+  "thankYou": {
+    "title": "Merci - O-ELIDDI",
+    "heading": "Merci !",
+    "subtitle": "Votre soumission a été complétée avec succès.",
+    "message": "Merci de participer à notre étude <span class=\"app-name\">O-ELIDDI</span>. Vos réponses ont été enregistrées et contribueront à des recherches précieuses."
+  }
+}

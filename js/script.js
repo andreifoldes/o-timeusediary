@@ -1,6 +1,7 @@
 import { TimelineMarker } from './timeline_marker.js';
 import { Timeline } from './timeline.js';
 import { TimelineContainer } from './timeline_container.js';
+import i18n from './i18n.js';
 import { 
     getCurrentTimelineData, 
     getCurrentTimelineKey, 
@@ -346,7 +347,8 @@ function createChildItemsModal() {
     
     const title = document.createElement('h3');
     title.id = 'childItemsModalTitle';
-    title.textContent = 'Select an option';
+    title.setAttribute('data-i18n', 'modals.childItems.title');
+    title.textContent = window.i18n ? window.i18n.t('modals.childItems.title') : 'Select an option';
     
     modalHeader.appendChild(title);
     modalHeader.appendChild(closeButton);
@@ -378,7 +380,12 @@ function renderChildItems(activity, categoryName) {
     const title = document.getElementById('childItemsModalTitle');
     
     // Set the title to the parent activity name
-    title.textContent = `Select an option for "${activity.name}"`;
+    if (window.i18n && window.i18n.isReady()) {
+        const template = window.i18n.t('modals.childItems.titleFor');
+        title.textContent = template.replace(/\{activityName\}/g, activity.name);
+    } else {
+        title.textContent = `Select an option for "${activity.name}"`;
+    }
     
     // Clear previous content
     container.innerHTML = '';
@@ -1807,6 +1814,13 @@ async function init() {
 
         // Save global configuration
         window.timelineManager.general = data.general;
+
+        // Initialize i18n (internationalization) system
+        const language = data.general.language || 'en';
+        await i18n.init(language);
+        
+        // Apply translations to existing elements
+        i18n.applyTranslations();
 
         // Handle instructions or redirection if needed.
         if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="thankYou.title">Thank You - O-ELIDDI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #475569;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+        }
+
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-color) 0%, #e2e8f0 100%);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thank-you-container {
+            max-width: 600px;
+            margin: 20px;
+            padding: 48px 32px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0 0 16px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--secondary-color);
+            margin: 0 0 32px;
+            line-height: 1.5;
+        }
+
+        .message {
+            font-size: 16px;
+            color: var(--secondary-color);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .app-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 480px) {
+            .thank-you-container {
+                margin: 10px;
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .success-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .success-icon i {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="thank-you-container">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h1 data-i18n="thankYou.heading">Thank You!</h1>
+        
+        <p class="subtitle" data-i18n="thankYou.subtitle">Your submission has been completed successfully.</p>
+        
+        <p class="message" data-i18n-html="thankYou.message">
+            Thank you for participating in our <span class="app-name">O-ELIDDI</span> study. 
+            Your responses have been recorded and will contribute to valuable research.
+        </p>
+    </div>
+
+    <script src="../i18n.js"></script>
+    <script>
+        // Initialize i18n when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get language from URL parameters or default to 'en'
+            const urlParams = new URLSearchParams(window.location.search);
+            const language = urlParams.get('lang') || 'en';
+            
+            // Initialize i18n
+            await window.i18n.init(language);
+            
+            // Apply translations to the page
+            window.i18n.applyTranslations();
+        });
+    </script>
+</body>
+</html> 

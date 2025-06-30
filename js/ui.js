@@ -22,13 +22,13 @@ function createModal() {
     customActivityModal.innerHTML = `
         <div class="modal">
             <div class="modal-header">
-                <h3>Enter Custom Activity</h3>
+                <h3 data-i18n="modals.customActivity.title">Enter Custom Activity</h3>
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-content">
-                <input type="text" id="customActivityInput" maxlength="30" placeholder="Enter your activity (max 30 chars)">
+                <input type="text" id="customActivityInput" maxlength="30" data-i18n-placeholder="modals.customActivity.placeholder" placeholder="Enter your activity (max 30 chars)">
                 <div class="button-container">
-                    <button id="confirmCustomActivity" class="btn save-btn">OK</button>
+                    <button id="confirmCustomActivity" class="btn save-btn" data-i18n="buttons.ok">OK</button>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@ function createModal() {
     activitiesModal.innerHTML = `
         <div class="modal">
             <div class="modal-header">
-                <h3>Add Activity</h3>
+                <h3 data-i18n="modals.addActivity.title">Add Activity</h3>
                 <button class="modal-close">&times;</button>
             </div>
             <div id="modalActivitiesContainer"></div>
@@ -100,11 +100,11 @@ function createModal() {
     confirmationModal.innerHTML = `
         <div class="modal">
             <div class="modal-content">
-                <h3>Are you sure?</h3>
-                <p>You will not be able to change your responses.</p>
+                <h3 data-i18n="modals.confirmSubmit.title">Are you sure?</h3>
+                <p data-i18n="modals.confirmSubmit.message">You will not be able to change your responses.</p>
                 <div class="button-container">
-                    <button id="confirmCancel" class="btn btn-secondary">Cancel</button>
-                    <button id="confirmOk" class="btn save-btn">OK</button>
+                    <button id="confirmCancel" class="btn btn-secondary" data-i18n="buttons.cancel">Cancel</button>
+                    <button id="confirmOk" class="btn save-btn" data-i18n="buttons.ok">OK</button>
                 </div>
             </div>
         </div>
@@ -123,6 +123,12 @@ function createModal() {
     document.body.appendChild(activitiesModal);
     document.body.appendChild(confirmationModal);
     document.body.appendChild(customActivityModal);
+    
+    // Apply translations to the newly created modal elements
+    if (window.i18n && window.i18n.isReady()) {
+        window.i18n.applyTranslations();
+    }
+    
     return activitiesModal;
 }
 
@@ -218,11 +224,14 @@ function updateButtonStates() {
         if (isLastTimeline) {
             // On last timeline, enable Next only if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            nextButton.innerHTML = '<i class="fas fa-check"></i> Submit';
+            const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
+            nextButton.innerHTML = `<i class="fas fa-check"></i> ${submitText}`;
         } else {
             // For other timelines, enable Next if coverage requirement is met
             nextButton.disabled = !meetsMinCoverage;
-            nextButton.innerHTML = meetsMinCoverage ? 'Next <i class="fas fa-arrow-right"></i>' : '<i class="fas fa-check"></i> Submit';
+            const nextText = window.i18n ? window.i18n.t('buttons.next') : 'Next';
+            const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
+            nextButton.innerHTML = meetsMinCoverage ? `${nextText} <i class="fas fa-arrow-right"></i>` : `<i class="fas fa-check"></i> ${submitText}`;
         }
     }
 }

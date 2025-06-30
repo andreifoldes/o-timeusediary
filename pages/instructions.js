@@ -1,4 +1,5 @@
-import { getIsMobile, updateIsMobile } from '../globals.js';
+import { getIsMobile, updateIsMobile } from '../js/globals.js';
+import i18n from '../js/i18n.js';
 
 // Add the missing updateLayout function
 function updateLayout() {
@@ -11,6 +12,31 @@ function updateLayout() {
     document.body.classList.toggle('is-horizontal', isHorizontal);
     document.body.classList.toggle('is-vertical', !isHorizontal);
 }
+
+// Initialize i18n when the module loads
+(async () => {
+    try {
+        // Load activities.json to get language setting
+        const response = await fetch('../settings/activities.json');
+        if (response.ok) {
+            const data = await response.json();
+            const language = data.general?.language || 'en';
+            console.log('Loading language:', language);
+            await i18n.init(language);
+            i18n.applyTranslations();
+            console.log('i18n initialized successfully');
+        } else {
+            console.warn('Could not load activities.json, defaulting to English');
+            await i18n.init('en');
+            i18n.applyTranslations();
+        }
+    } catch (error) {
+        console.error('Error initializing i18n:', error);
+        // Fallback to English if there's any error
+        await i18n.init('en');
+        i18n.applyTranslations();
+    }
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
     const continueBtn = document.getElementById('continueBtn');
@@ -84,10 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle start button click
     if (continueBtn) {
-        continueBtn.textContent = 'Start';
-        continueBtn.addEventListener('click', () => {
-            window.location.href = createUrlWithParams('../index.html');
+        console.log('Continue button found, adding click handler');
+        continueBtn.addEventListener('click', (e) => {
+            console.log('Continue button clicked');
+            const targetUrl = createUrlWithParams('../index.html');
+            console.log('Redirecting to:', targetUrl);
+            window.location.href = targetUrl;
         });
+    } else {
+        console.error('Continue button not found!');
     }
 
     // Cleanup function

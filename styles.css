@@ -1787,3 +1787,71 @@ body {
         overflow-y: auto;
     }
 }
+
+/* Base styling for vertical text in activity blocks */
+.activity-block-text-vertical-mobile {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: unset !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+}
+
+/* Style for the inner span element that will have the vertical text */
+.activity-block-text-vertical-mobile span {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    height: 90%;
+    max-height: 95%;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: 500;
+    overflow: hidden;
+    padding: 5px 0;
+}
+
+/* Adjust font size based on block length */
+.activity-block[data-length="180"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="190"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="200"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="210"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="220"] .activity-block-text-vertical-mobile span {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+/* For even longer blocks, reduce font size and letter spacing */
+.activity-block[data-length^="3"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="4"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="5"] .activity-block-text-vertical-mobile span {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+}
+
+/* For very long blocks, further adjust sizing */
+.activity-block[data-length^="6"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="7"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="8"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="9"] .activity-block-text-vertical-mobile span {
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+/* For blocks approaching full day length */
+.activity-block[data-length^="10"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="11"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="12"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="13"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="14"] .activity-block-text-vertical-mobile span {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+

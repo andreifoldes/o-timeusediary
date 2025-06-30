@@ -4,8 +4,7 @@
       "version": "1.0.0",
       "author": "John Doe",
       "instructions": true,
-      "primary_redirect_url": "https://app.prolific.com/submissions/complete",
-      "secondary_redirect_url": "http://direct.pureprofile.com/s3/807605",
+      "primary_redirect_url": "thank-you.html",
       "fallbackToCSV": true
     },
     "timeline": {

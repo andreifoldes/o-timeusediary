@@ -4,8 +4,7 @@
     "version": "1.0.0",
     "author": "John Doe",
     "instructions": true,
-    "primary_redirect_url": "",
-    "secondary_redirect_url": "",
+    "primary_redirect_url": "thank-you.html",
     "fallbackToCSV": true
   }, 
   "timeline": {

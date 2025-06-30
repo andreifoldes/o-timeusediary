@@ -577,48 +577,23 @@ export async function sendDataToSupabase() {
 
     console.log('Data inserted successfully');
 
-    // Handle redirect with dynamic completion code based on DIARY_WAVE
-    // Use the hasPpid variable that was already defined above
-    const redirectBaseUrl = hasPpid 
-      ? window.timelineManager?.general?.secondary_redirect_url 
-      : window.timelineManager?.general?.primary_redirect_url;
+    // Handle redirect to thank you page
+    const redirectUrl = window.timelineManager?.general?.primary_redirect_url;
       
-    if (redirectBaseUrl) {
-      // Array of completion codes
-      const completionCodes = [
-        'CKQ9SACZ', '7OUP8GG8', 'BYRCC57H', 'KVISTMSQ', 'G3D1QRKY',
-        '5VLOWSC8', 'DVBOMH46', 'F90T9VY7', '5CI0KZXR', 'PJKNGCJQ',
-        'MMU9YF9E', 'OZD23I9Z', 'JTLF2JBY', 'R3EJZ783', '1OQUHGX8',
-        'IRBNWQB0', 'ZBJIRJ0X', '8IGG5BM0', 'BGIK438O', '8AXJ3AC8',
-        '77P8WHRU', 'JAWNXG4O', 'XO46HSKW', 'JJI3D8AX', 'ZYQWCXAE',
-        'QBX3DEHB', '4H8LK4OG', 'H29BLXCO', 'DL8UUX2E', 'DY84N1VY'
-      ];
-
-      // Get DIARY_WAVE from study data, default to 1 if missing
-      const diaryWave = studyData.DIARY_WAVE ? parseInt(studyData.DIARY_WAVE) : 1;
-      
-      // Calculate index safely (ensure it's within array bounds)
-      const index = Math.max(0, Math.min(diaryWave-1, completionCodes.length - 1));
-      
-      // Get the appropriate completion code
-      const completionCode = completionCodes[index];
-
-      // Extract base URL without the cc parameter
-      let baseRedirectUrl = redirectBaseUrl;
-      if (baseRedirectUrl.includes('?cc=')) {
-        baseRedirectUrl = baseRedirectUrl.split('?cc=')[0];
+    if (redirectUrl) {
+      // Check if it's a relative URL (like our thank-you.html page)
+      if (!redirectUrl.startsWith('http')) {
+        // For relative URLs, just redirect directly
+        window.location.href = redirectUrl;
+      } else {
+        // For external URLs, preserve existing URL parameters
+        const currentParams = new URLSearchParams(window.location.search);
+        const separator = redirectUrl.includes('?') ? '&' : '?';
+        const finalRedirectUrl = redirectUrl + 
+          (currentParams.toString() ? separator + currentParams.toString() : '');
+        
+        window.location.href = finalRedirectUrl;
       }
-
-      // Construct the new redirect URL with the dynamic completion code
-      const newRedirectUrl = `${baseRedirectUrl}?cc=${completionCode}`;
-
-      // Add any existing URL parameters
-      const currentParams = new URLSearchParams(window.location.search);
-      const separator = newRedirectUrl.includes('?') ? '&' : '?';
-      const finalRedirectUrl = newRedirectUrl + 
-        (currentParams.toString() ? separator + currentParams.toString() : '');
-
-      window.location.href = finalRedirectUrl;
     }
 
     return { success: true };
