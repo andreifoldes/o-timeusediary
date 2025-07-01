@@ -1529,7 +1529,7 @@ body {
 /* Submit button styles */
 .nav-submit-btn {
     padding: 12px 24px;
-    background-color: var(--success-color);
+    background-color: var(--primary-color);
     border: none;
     border-radius: 8px;
     color: #fff;
@@ -1545,6 +1545,15 @@ body {
 
 .nav-submit-btn:hover:not(:disabled) {
     transform: translateY(-2px);
+    background-color: #1d4ed8;
+}
+
+/* When nav submit button shows Submit text, use success color */
+.nav-submit-btn.submit-mode {
+    background-color: var(--success-color);
+}
+
+.nav-submit-btn.submit-mode:hover:not(:disabled) {
     background-color: #047857;
 }
 

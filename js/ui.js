@@ -214,6 +214,7 @@ function updateButtonStates() {
     const cleanRowButton = document.getElementById('cleanRowBtn');
     const nextButton = document.getElementById('nextBtn');
     const backButton = document.getElementById('backBtn');
+    const navSubmitBtn = document.getElementById('navSubmitBtn');
     
     const currentData = getCurrentTimelineData();
     const isEmpty = currentData.length === 0;
@@ -242,18 +243,41 @@ function updateButtonStates() {
     // Check if we're on the last timeline
     const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
     
+    // Get text values for buttons
+    const nextText = window.i18n ? window.i18n.t('buttons.next') : 'Next';
+    const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
+    
     if (nextButton) {
+        nextButton.disabled = !meetsMinCoverage;
+        
         if (isLastTimeline) {
-            // On last timeline, enable Next only if coverage requirement is met
-            nextButton.disabled = !meetsMinCoverage;
-            const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
+            // On last timeline, show Submit
             nextButton.innerHTML = `<i class="fas fa-check"></i> ${submitText}`;
         } else {
-            // For other timelines, enable Next if coverage requirement is met
-            nextButton.disabled = !meetsMinCoverage;
-            const nextText = window.i18n ? window.i18n.t('buttons.next') : 'Next';
-            const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
-            nextButton.innerHTML = meetsMinCoverage ? `${nextText} <i class="fas fa-arrow-right"></i>` : `<i class="fas fa-check"></i> ${submitText}`;
+            // For other timelines, show Next
+            nextButton.innerHTML = `${nextText} <i class="fas fa-arrow-right"></i>`;
+        }
+    }
+    
+    // Update navSubmitBtn to mirror nextButton exactly
+    if (navSubmitBtn) {
+        navSubmitBtn.disabled = !meetsMinCoverage;
+        
+        // Find the span element inside navSubmitBtn
+        const navSubmitSpan = navSubmitBtn.querySelector('span');
+        
+        if (isLastTimeline) {
+            // On last timeline, show Submit with green color
+            if (navSubmitSpan) {
+                navSubmitSpan.textContent = submitText;
+            }
+            navSubmitBtn.classList.add('submit-mode');
+        } else {
+            // For other timelines, show Next with blue color
+            if (navSubmitSpan) {
+                navSubmitSpan.textContent = nextText;
+            }
+            navSubmitBtn.classList.remove('submit-mode');
         }
     }
 }
@@ -313,22 +337,6 @@ function initButtons() {
                 handleNextButtonAction();
             }
         });
-
-        // Update the nav submit button state when the next button state changes
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
-                    navSubmitBtn.disabled = nextBtn.disabled;
-                }
-            });
-        });
-
-        const nextBtn = document.getElementById('nextBtn');
-        if (nextBtn) {
-            observer.observe(nextBtn, { attributes: true });
-            // Set initial state
-            navSubmitBtn.disabled = nextBtn.disabled;
-        }
     }
 
     cleanRowBtn.addEventListener('click', () => {
