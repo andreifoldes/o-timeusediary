@@ -1,4 +1,5 @@
 import { DEBUG_MODE, MINUTES_PER_DAY } from './constants.js';
+import { hideLoadingModal } from './ui.js';
 
 // Timeline state management functions
 export function getCurrentTimelineKey() {
@@ -568,6 +569,9 @@ export async function sendDataToDataPipe() {
 
     console.log('Data sent to DataPipe successfully');
 
+    // Hide loading modal before redirect
+    hideLoadingModal();
+
     // Handle redirect to thank you page
     const redirectUrl = window.timelineManager?.general?.primary_redirect_url;
       
@@ -590,6 +594,10 @@ export async function sendDataToDataPipe() {
     return { success: true };
   } catch (error) {
     console.error('Error sending data to DataPipe:', error);
+    
+    // Hide loading modal on error
+    hideLoadingModal();
+    
     return { success: false, error: error.message };
   }
 }
@@ -887,6 +895,9 @@ export async function sendData(options = { mode: 'datapipe' }) {
         const dataFrame = createTimelineDataFrame();
         const csv = convertArrayToCSV(dataFrame);
         downloadCSV(csv, 'timeline_data.csv');
+        
+        // Hide loading modal after CSV download
+        hideLoadingModal();
     } else {
         throw new Error(`Unsupported send mode: ${options.mode}`);
     }

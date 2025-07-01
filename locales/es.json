@@ -53,6 +53,10 @@
     "confirmSubmit": {
       "title": "¿Estás seguro?",
       "message": "No podrás cambiar tus respuestas."
+    },
+    "loading": {
+      "title": "Enviando tu diario...",
+      "message": "Por favor espera mientras guardamos tus respuestas."
     }
   },
   "messages": {

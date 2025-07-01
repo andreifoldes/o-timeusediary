@@ -52,6 +52,10 @@
     "confirmSubmit": {
       "title": "Êtes-vous sûr?",
       "message": "Vous ne pourrez pas changer vos réponses."
+    },
+    "loading": {
+      "title": "Soumission de votre journal...",
+      "message": "Veuillez patienter pendant que nous sauvegardons vos réponses."
     }
   },
   "messages": {

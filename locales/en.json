@@ -52,6 +52,10 @@
     "confirmSubmit": {
       "title": "Are you sure?",
       "message": "You will not be able to change your responses."
+    },
+    "loading": {
+      "title": "Submitting your diary...",
+      "message": "Please wait while we save your responses."
     }
   },
   "messages": {

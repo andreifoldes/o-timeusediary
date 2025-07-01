@@ -116,12 +116,28 @@ function createModal() {
 
     confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
         confirmationModal.style.cssText = 'display: none !important';
+        showLoadingModal();
         sendData();
         document.getElementById('nextBtn').disabled = true;
     });
 
+    // Create loading modal
+    const loadingModal = document.createElement('div');
+    loadingModal.className = 'modal-overlay';
+    loadingModal.id = 'loadingModal';
+    loadingModal.innerHTML = `
+        <div class="modal loading-modal">
+            <div class="modal-content">
+                <div class="loading-spinner"></div>
+                <h3 data-i18n="modals.loading.title">Submitting your diary...</h3>
+                <p data-i18n="modals.loading.message">Please wait while we save your responses.</p>
+            </div>
+        </div>
+    `;
+
     document.body.appendChild(activitiesModal);
     document.body.appendChild(confirmationModal);
+    document.body.appendChild(loadingModal);
     document.body.appendChild(customActivityModal);
     
     // Apply translations to the newly created modal elements
@@ -581,6 +597,21 @@ function handleResize() {
     updateFooterHeight();
 }
 
+// Loading modal functions
+function showLoadingModal() {
+    const loadingModal = document.getElementById('loadingModal');
+    if (loadingModal) {
+        loadingModal.style.display = 'block';
+    }
+}
+
+function hideLoadingModal() {
+    const loadingModal = document.getElementById('loadingModal');
+    if (loadingModal) {
+        loadingModal.style.cssText = 'display: none !important';
+    }
+}
+
 // Initialize UI components
 export { 
     createModal, 
@@ -596,5 +627,7 @@ export {
     initDebugOverlay,
     handleResize,
     preventPullToRefresh,
-    updateFooterHeight
+    updateFooterHeight,
+    showLoadingModal,
+    hideLoadingModal
 };

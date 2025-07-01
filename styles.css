@@ -1788,6 +1788,78 @@ body {
     }
 }
 
+/* Loading Modal Styles */
+.loading-modal {
+    text-align: center;
+}
+
+.loading-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(15px, 4vw, 25px);
+    padding: clamp(25px, 6vw, 40px);
+}
+
+.loading-modal h3 {
+    margin: 0;
+    font-size: clamp(18px, 4vw, 24px);
+    color: #333;
+    font-weight: 600;
+}
+
+.loading-modal p {
+    margin: 0;
+    font-size: clamp(14px, 3.5vw, 16px);
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Loading Spinner Animation */
+.loading-spinner {
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobile adjustments for loading modal */
+@media (max-width: 480px) {
+    .loading-modal .modal-content {
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 2px;
+    }
+}
+
+/* Landscape adjustments for loading modal */
+@media (orientation: landscape) and (max-height: 600px) {
+    .loading-modal .modal-content {
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .loading-modal h3 {
+        font-size: 18px;
+    }
+
+    .loading-modal p {
+        font-size: 14px;
+    }
+}
+
 /* Base styling for vertical text in activity blocks */
 .activity-block-text-vertical-mobile {
     position: absolute;
