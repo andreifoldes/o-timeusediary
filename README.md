@@ -1,6 +1,11 @@
-# O-TUD - Daily Activity Collection Tool
+# O-ELIDDI - Daily Activity Collection Tool
 
 A web-based tool for collecting and visualizing daily activities in a timeline format. Designed for research studies and time-use surveys.
+
+## 🚀 Quick Start
+
+- **[Live Demo](https://andreifoldes.github.io/timediary/index.html)** - Try the application
+- **[Documentation](docs/)** - Complete setup and configuration guides
 
 
 ## Features
@@ -18,8 +23,7 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
 *   JavaScript
 
 ## Demo
-*   [Live Demo main](https://taupe-sprite-bfbfdb.netlify.app/)
-*   [Live Demo Thomas-dev](https://timediary-thomas-dev.netlify.app/)
+*   [Live Demo](https://andreifoldes.github.io/timediary/index.html) - GitHub Pages deployment
 
 ## Usage
 

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages Deployment - O-ELIDDI Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .nav-back {
+            margin-bottom: 1rem;
+        }
+        .nav-back a {
+            color: #667eea;
+            text-decoration: none;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            color: #667eea;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .step-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        .command-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 1rem 0;
+        }
+        .url-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 1rem 0;
+        }
+        .checklist {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 0.25rem 0;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-back">
+        <a href="index.html">← Back to Documentation Home</a>
+    </div>
+
+    <div class="header">
+        <h1>GitHub Pages Deployment</h1>
+        <p>Complete guide to deploying O-ELIDDI on GitHub Pages</p>
+    </div>
+
+    <div class="section">
+        <h2>Overview</h2>
+        <p>GitHub Pages provides free static website hosting, making it ideal for deploying O-ELIDDI studies. This guide covers forking the repository, configuring your study, and setting up automatic deployment.</p>
+        
+        <div class="highlight">
+            <strong>Benefits of GitHub Pages:</strong>
+            <ul>
+                <li>Free hosting for public repositories</li>
+                <li>Automatic deployment from Git repository</li>
+                <li>Custom domain support</li>
+                <li>HTTPS enabled by default</li>
+                <li>Version control for your study configuration</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Prerequisites</h2>
+        <div class="checklist">
+            <strong>Before you begin, ensure you have:</strong>
+            <ul>
+                <li>A GitHub account (free at github.com)</li>
+                <li>Basic familiarity with Git and GitHub</li>
+                <li>A JSPsych DataPipe account and experiment ID (see OSF Setup guide)</li>
+                <li>Your study activities configured (see Activities Configuration guide)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Step-by-Step Deployment</h2>
+
+        <div class="step-box">
+            <h3><span class="step-number">1</span>Fork the Repository</h3>
+            <p>Create your own copy of the O-ELIDDI repository:</p>
+            <ol>
+                <li>Visit the original O-ELIDDI repository on GitHub</li>
+                <li>Click the <strong>"Fork"</strong> button in the top-right corner</li>
+                <li>Choose your GitHub account as the destination</li>
+                <li>Optionally rename the repository (e.g., "my-timeuse-study")</li>
+            </ol>
+            <div class="warning">
+                <strong>Repository Visibility:</strong> GitHub Pages is free for public repositories. For private repositories, you need a paid GitHub account.
+            </div>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">2</span>Clone Your Fork Locally</h3>
+            <p>Download your fork to make configuration changes:</p>
+            <div class="command-box">
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+            </div>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">3</span>Configure Your Study</h3>
+            <p>Customize the application for your research study:</p>
+            
+            <h4>A. Update activities.json</h4>
+            <p>Edit <code>settings/activities.json</code> with your study configuration:</p>
+            <pre><code>{
+  "general": {
+    "experimentID": "YOUR_DATAPIPE_EXPERIMENT_ID",
+    "app_name": "Your Study Name",
+    "version": "1.0.0",
+    "author": "Your Name",
+    "language": "en",
+    "instructions": true,
+    "primary_redirect_url": "pages/thank-you.html",
+    "fallbackToCSV": true
+  },
+  "timeline": {
+    // Your timeline configuration
+  }
+}</code></pre>
+
+            <h4>B. Customize Thank You Page</h4>
+            <p>Edit <code>pages/thank-you.html</code> to match your study completion message.</p>
+
+            <h4>C. Update Instructions (Optional)</h4>
+            <p>Modify <code>pages/instructions.html</code> and <code>pages/instructions.js</code> to customize participant instructions.</p>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">4</span>Test Locally</h3>
+            <p>Before deploying, test your configuration locally:</p>
+            <div class="command-box">
+# Install dependencies (if needed)
+npm install
+
+# Start local development server
+npm start
+
+# Open browser to http://localhost:8080
+            </div>
+            <p>Verify that:</p>
+            <ul>
+                <li>Activities load correctly</li>
+                <li>Timeline interactions work properly</li>
+                <li>Instructions display as expected</li>
+                <li>Data export functions (test in browser console)</li>
+            </ul>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">5</span>Commit and Push Changes</h3>
+            <p>Save your configuration to GitHub:</p>
+            <div class="command-box">
+git add .
+git commit -m "Configure study settings and activities"
+git push origin main
+            </div>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">6</span>Enable GitHub Pages</h3>
+            <p>Configure GitHub to serve your repository as a website:</p>
+            <ol>
+                <li>Go to your repository on GitHub</li>
+                <li>Click <strong>Settings</strong> tab</li>
+                <li>Scroll down to <strong>Pages</strong> section</li>
+                <li>Under <strong>Source</strong>, select <strong>"Deploy from a branch"</strong></li>
+                <li>Select <strong>main</strong> branch and <strong>/ (root)</strong> folder</li>
+                <li>Click <strong>Save</strong></li>
+            </ol>
+        </div>
+
+        <div class="step-box">
+            <h3><span class="step-number">7</span>Access Your Study</h3>
+            <p>GitHub will provide a URL for your deployed study:</p>
+            <div class="url-example">
+https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/
+            </div>
+            <p>This process may take a few minutes. Check the Pages section in your repository settings for the exact URL and deployment status.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Custom Domain Setup (Optional)</h2>
+        <p>You can use a custom domain instead of the default github.io URL:</p>
+
+        <h3>Requirements</h3>
+        <ul>
+            <li>A domain name you own</li>
+            <li>Access to your domain's DNS settings</li>
+        </ul>
+
+        <h3>Configuration Steps</h3>
+        <ol>
+            <li>In your repository's Pages settings, add your custom domain</li>
+            <li>Create a <code>CNAME</code> file in your repository root with your domain name</li>
+            <li>Configure your domain's DNS to point to GitHub Pages</li>
+            <li>Enable "Enforce HTTPS" once DNS propagation is complete</li>
+        </ol>
+
+        <div class="warning">
+            <strong>DNS Configuration:</strong> Add these DNS records at your domain provider:
+            <ul>
+                <li>A record pointing to 185.199.108.153</li>
+                <li>A record pointing to 185.199.109.153</li>
+                <li>A record pointing to 185.199.110.153</li>
+                <li>A record pointing to 185.199.111.153</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Automatic Deployment Workflow</h2>
+        <p>GitHub Pages automatically rebuilds your site when you push changes to the main branch. However, you can create a custom GitHub Actions workflow for more control:</p>
+
+        <h3>Create .github/workflows/deploy.yml</h3>
+        <pre><code>name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Run tests (if available)
+      run: npm test --if-present
+      
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>URL Parameters for Participant Links</h2>
+        <p>Once deployed, you can create participant-specific links by adding URL parameters:</p>
+
+        <h3>Basic Participant Link</h3>
+        <div class="url-example">
+https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/?pid=P001&STUDY_ID=MyStudy&DIARY_WAVE=1
+        </div>
+
+        <h3>Prolific Integration</h3>
+        <div class="url-example">
+https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/?PROLIFIC_PID={{%PROLIFIC_PID%}}&STUDY_ID={{%STUDY_ID%}}&SESSION_ID={{%SESSION_ID%}}
+        </div>
+
+        <p>See the <a href="url-parameters.html">URL Parameters guide</a> for complete details on parameter configuration.</p>
+    </div>
+
+    <div class="section">
+        <h2>Managing Study Updates</h2>
+
+        <h3>Making Changes</h3>
+        <ol>
+            <li>Edit files locally or directly on GitHub</li>
+            <li>Test changes locally if significant</li>
+            <li>Commit and push to main branch</li>
+            <li>GitHub Pages automatically deploys updates</li>
+        </ol>
+
+        <h3>Version Control Best Practices</h3>
+        <ul>
+            <li><strong>Branch for major changes:</strong> Create feature branches for significant modifications</li>
+            <li><strong>Tag releases:</strong> Use Git tags to mark stable study versions</li>
+            <li><strong>Document changes:</strong> Update commit messages with clear descriptions</li>
+            <li><strong>Backup configurations:</strong> Keep copies of activities.json for different study phases</li>
+        </ul>
+
+        <div class="command-box">
+# Create a new branch for changes
+git checkout -b study-modifications
+
+# Make your changes, then:
+git add .
+git commit -m "Update activities for phase 2"
+git push origin study-modifications
+
+# Create pull request on GitHub to review changes
+# Merge to main when ready to deploy
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Monitoring and Analytics</h2>
+
+        <h3>GitHub Insights</h3>
+        <p>Monitor your study deployment through GitHub's built-in analytics:</p>
+        <ul>
+            <li><strong>Traffic:</strong> View visitor statistics in repository Insights</li>
+            <li><strong>Actions:</strong> Monitor deployment status in Actions tab</li>
+            <li><strong>Issues:</strong> Track technical problems reported by participants</li>
+        </ul>
+
+        <h3>Additional Monitoring (Optional)</h3>
+        <p>For more detailed analytics, consider integrating:</p>
+        <ul>
+            <li>Google Analytics for detailed visitor tracking</li>
+            <li>Hotjar or similar tools for user behavior analysis</li>
+            <li>Uptime monitoring services to ensure site availability</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Troubleshooting Common Issues</h2>
+
+        <h3>Site Not Loading</h3>
+        <div class="warning">
+            <strong>Common Solutions:</strong>
+            <ul>
+                <li>Check that GitHub Pages is enabled in repository settings</li>
+                <li>Verify the correct branch (main) is selected</li>
+                <li>Wait up to 10 minutes for initial deployment</li>
+                <li>Check for any error messages in the Actions tab</li>
+            </ul>
+        </div>
+
+        <h3>Activities Not Loading</h3>
+        <ul>
+            <li>Validate activities.json syntax using a JSON validator</li>
+            <li>Check browser console for JavaScript errors</li>
+            <li>Verify file paths are correct (case-sensitive on GitHub Pages)</li>
+        </ul>
+
+        <h3>DataPipe Export Failing</h3>
+        <ul>
+            <li>Confirm experimentID is correct in activities.json</li>
+            <li>Test with fallbackToCSV enabled to isolate the issue</li>
+            <li>Check OSF DataPipe dashboard for error messages</li>
+        </ul>
+
+        <h3>HTTPS Issues</h3>
+        <div class="success">
+            <strong>GitHub Pages automatically provides HTTPS.</strong> If you encounter mixed content warnings:
+            <ul>
+                <li>Ensure all external resources use HTTPS URLs</li>
+                <li>Update any hardcoded HTTP links to HTTPS</li>
+                <li>Check that DataPipe endpoint uses HTTPS (it does by default)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Security and Privacy Considerations</h2>
+
+        <h3>Data Protection</h3>
+        <ul>
+            <li><strong>No sensitive data in repository:</strong> Never commit participant data or API keys</li>
+            <li><strong>Use environment variables:</strong> For any sensitive configuration (though O-ELIDDI uses public DataPipe IDs)</li>
+            <li><strong>Review commit history:</strong> Ensure no accidentally committed sensitive information</li>
+        </ul>
+
+        <h3>Participant Privacy</h3>
+        <ul>
+            <li><strong>HTTPS encryption:</strong> All data transmission is encrypted</li>
+            <li><strong>No server-side storage:</strong> Data goes directly to OSF via DataPipe</li>
+            <li><strong>Minimal logging:</strong> GitHub Pages has minimal access logging</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Performance Optimization</h2>
+
+        <h3>Loading Speed</h3>
+        <ul>
+            <li><strong>Minimize file sizes:</strong> Compress images and remove unused assets</li>
+            <li><strong>Optimize activities.json:</strong> Remove unnecessary fields for large activity sets</li>
+            <li><strong>Use CDN resources:</strong> Link to external libraries via CDN when possible</li>
+        </ul>
+
+        <h3>Mobile Optimization</h3>
+        <p>O-ELIDDI is mobile-responsive by default, but consider:</p>
+        <ul>
+            <li>Testing on various device sizes</li>
+            <li>Optimizing activity names for small screens</li>
+            <li>Verifying touch interactions work smoothly</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Deployment Checklist</h2>
+        <div class="checklist">
+            <strong>Before launching your study:</strong>
+            <ul>
+                <li>Test complete diary workflow on your deployed site</li>
+                <li>Verify data export to OSF DataPipe</li>
+                <li>Check participant links with URL parameters</li>
+                <li>Test on mobile devices</li>
+                <li>Validate instructions and thank you pages</li>
+                <li>Confirm redirect URLs work correctly</li>
+                <li>Test with different browsers</li>
+                <li>Review activities.json for accuracy</li>
+                <li>Set up monitoring/analytics if desired</li>
+                <li>Document your deployment for future reference</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
