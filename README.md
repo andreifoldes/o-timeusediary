@@ -13,7 +13,6 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
 *   **Interactive Timeline Interface:**  Engage with your data through a dynamic timeline. Users can easily navigate and explore their activities with zoom and pan functionalities.
 *   **Drag and Drop Activity Placement:**  Intuitively add and reposition activities directly on the timeline. This feature simplifies data entry and adjustments, making it user-friendly for participants.
 *   **Mobile and Desktop Responsive Layouts:**  Access and use the tool seamlessly across various devices. Whether on a desktop for detailed analysis or a mobile device for on-the-go recording, the layout adapts to provide an optimal experience.
-*   **Offline Capability:**  Record activities even without an internet connection. The tool stores data locally and synchronizes it once online, ensuring no data loss and continuous usability.
 *   **Data Export Functionality:**  Export your collected data in common formats like CSV and JSON. This allows for easy integration with other analysis tools and research workflows.
 
 ## Technology Stack
@@ -22,8 +21,6 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
 *   CSS
 *   JavaScript
 
-## Demo
-*   [Live Demo](https://andreifoldes.github.io/timediary/index.html) - GitHub Pages deployment
 
 ## Usage
 
