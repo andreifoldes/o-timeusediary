@@ -11,7 +11,7 @@
   }, 
   "timeline": {
     "primary": {
-        "name": "Primary Timeline",
+        "name": "Primary activity",
         "description": "",
         "mode": "single-choice",
         "min_coverage": "10",
@@ -1186,7 +1186,7 @@
         ]
       },
     "secondary": {
-        "name": "Secondary Timeline",
+        "name": "Secondary activity",
         "description": "",
         "mode": "single-choice",
         "min_coverage": "10",
