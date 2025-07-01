@@ -10,7 +10,7 @@ import {
     positionToMinutes
 } from './utils.js';
 import { getIsMobile, updateIsMobile } from './globals.js';
-import { addNextTimeline, renderActivities } from './script.js';
+import { addNextTimeline, goToPreviousTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
 // Modal management
@@ -213,6 +213,7 @@ function updateButtonStates() {
     const undoButton = document.getElementById('undoBtn');
     const cleanRowButton = document.getElementById('cleanRowBtn');
     const nextButton = document.getElementById('nextBtn');
+    const backButton = document.getElementById('backBtn');
     
     const currentData = getCurrentTimelineData();
     const isEmpty = currentData.length === 0;
@@ -223,6 +224,11 @@ function updateButtonStates() {
     
     if (undoButton) undoButton.disabled = isEmpty;
     if (cleanRowButton) cleanRowButton.disabled = !hasActivities;
+    
+    // Update Back button state - enable if not on first timeline
+    if (backButton) {
+        backButton.disabled = window.timelineManager.currentIndex <= 0;
+    }
     
     // Get current timeline coverage
     const currentKey = getCurrentTimelineKey();
@@ -256,6 +262,10 @@ function updateButtonStates() {
 let nextButtonLastClick = 0;
 const NEXT_BUTTON_COOLDOWN = 2500; // 2.5 second cooldown
 
+// Debounce variables for Back button
+let backButtonLastClick = 0;
+const BACK_BUTTON_COOLDOWN = 1500; // 1.5 second cooldown (shorter than Next)
+
 // Shared function to handle Next button logic with debounce
 const handleNextButtonAction = () => {
     const currentTime = Date.now();
@@ -273,6 +283,20 @@ const handleNextButtonAction = () => {
     } else {
         // For other timelines, proceed to next timeline
         addNextTimeline();
+    }
+};
+
+// Shared function to handle Back button logic with debounce
+const handleBackButtonAction = () => {
+    const currentTime = Date.now();
+    if (currentTime - backButtonLastClick < BACK_BUTTON_COOLDOWN) {
+        console.log('Back button on cooldown');
+        return;
+    }
+    backButtonLastClick = currentTime;
+
+    if (window.timelineManager.currentIndex > 0) {
+        goToPreviousTimeline();
     }
 };
 
@@ -398,6 +422,9 @@ function initButtons() {
 
     // Add click handler for Next button using shared debounced function
     document.getElementById('nextBtn').addEventListener('click', handleNextButtonAction);
+
+    // Add click handler for Back button using shared debounced function
+    document.getElementById('backBtn').addEventListener('click', handleBackButtonAction);
 
     // Disable back button initially
     const backButton = document.getElementById('backBtn');

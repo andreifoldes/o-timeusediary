@@ -834,6 +834,7 @@
               },
               {
                 "name": "Using Computer",
+                "color": "#f5b9ac", 
                 "childItems": [
                   {
                     "name": "Computer programming, learning software",
@@ -1863,6 +1864,7 @@
               },
               {
                 "name": "Travelling: motorbike, moped",
+                "color": "#FFC0CB", 
                 "childItems": []
               },
               {

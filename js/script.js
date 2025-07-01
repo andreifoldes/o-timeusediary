@@ -88,6 +88,109 @@ function formatTimelineEnd(minutes) {
     return formatTimeHHMM(modMinutes, addNextDayMarker);
 }
 
+// Function to restore an existing timeline from past-initialized-timelines-wrapper
+async function restoreNextTimeline(nextTimelineIndex, nextTimelineKey) {
+    // Increment the current index
+    window.timelineManager.currentIndex = nextTimelineIndex;
+    
+    try {
+        // Load timeline data (for categories/activities)
+        const categories = await fetchActivities(nextTimelineKey);
+        
+        // Update UI for next timeline with animation
+        const nextTimeline = window.timelineManager.metadata[nextTimelineKey];
+        const timelineHeader = document.querySelector('.timeline-header');
+        const timelineTitle = document.querySelector('.timeline-title');
+        const timelineDescription = document.querySelector('.timeline-description');
+        
+        // Animation setup
+        timelineHeader.classList.remove('flip-animation');
+        void timelineHeader.offsetWidth;
+        timelineHeader.classList.add('flip-animation');
+        
+        // Update content
+        timelineTitle.textContent = nextTimeline.name;
+        timelineDescription.textContent = nextTimeline.description;
+        
+        void timelineHeader.offsetWidth;
+        timelineHeader.classList.add('flip-animation');
+        
+        timelineHeader.addEventListener('animationend', () => {
+            timelineHeader.classList.remove('flip-animation');
+        }, {once: true});
+
+        const activeTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+        const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+        
+        // Move current timeline to past wrapper
+        const currentTimeline = window.timelineManager.activeTimeline;
+        if (currentTimeline && currentTimeline.parentElement) {
+            currentTimeline.setAttribute('data-active', 'false');
+            currentTimeline.parentElement.setAttribute('data-active', 'false');
+            pastTimelinesWrapper.appendChild(currentTimeline.parentElement);
+            updateTimelineCountVariable();
+        }
+        
+        // Clear active wrapper
+        activeTimelineWrapper.innerHTML = '';
+        
+        // Move the next timeline from past wrapper to active wrapper
+        const nextTimelineElement = document.getElementById(nextTimelineKey);
+        if (nextTimelineElement && nextTimelineElement.parentElement) {
+            nextTimelineElement.setAttribute('data-active', 'true');
+            nextTimelineElement.parentElement.setAttribute('data-active', 'true');
+            activeTimelineWrapper.appendChild(nextTimelineElement.parentElement);
+            
+            // Set active timeline reference
+            window.timelineManager.activeTimeline = nextTimelineElement;
+            
+            // Re-initialize timeline interaction
+            initTimelineInteraction(window.timelineManager.activeTimeline);
+        }
+
+        // Render activities for restored timeline
+        renderActivities(categories);
+        
+        // Scroll to active timeline in mobile view
+        if (getIsMobile()) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Reset button states
+        updateButtonStates();
+
+        // Scroll to the active timeline
+        scrollToActiveTimeline();
+
+        if (DEBUG_MODE) {
+            console.log(`Restored ${nextTimelineKey} timeline from past wrapper`);
+            console.log('Timeline data structure:', window.timelineManager.activities);
+        }
+
+        // Update Back button state
+        const backButton = document.getElementById('backBtn');
+        if (backButton) {
+            backButton.disabled = false;
+        }
+
+        // Update activities container data-mode
+        const activitiesContainerElement = document.querySelector("#activitiesContainer");
+        if (activitiesContainerElement) {
+            activitiesContainerElement.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
+        }
+
+        // Update floating button position after timeline changes
+        updateFloatingButtonPosition();
+
+    } catch (error) {
+        console.error(`Error restoring ${nextTimelineKey} timeline:`, error);
+        throw new Error(`Failed to restore ${nextTimelineKey} timeline: ${error.message}`);
+    }
+}
+
 // Function to add next timeline
 async function addNextTimeline() {
     if (DEBUG_MODE) {
@@ -106,8 +209,21 @@ async function addNextTimeline() {
     const nextTimelineIndex = window.timelineManager.currentIndex + 1;
     const nextTimelineKey = window.timelineManager.keys[nextTimelineIndex];
     
-    // Prevent duplicate timeline creation
-    if (document.getElementById(nextTimelineKey) || window.timelineManager.initialized.has(nextTimelineKey)) {
+    // Check if the next timeline already exists in past-initialized-timelines-wrapper
+    const pastTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+    const existingNextTimeline = document.getElementById(nextTimelineKey);
+    
+    if (existingNextTimeline && pastTimelinesWrapper.contains(existingNextTimeline.parentElement)) {
+        // Timeline exists in past wrapper, restore it instead of creating new one
+        if (DEBUG_MODE) {
+            console.log(`Restoring existing timeline "${nextTimelineKey}" from past wrapper`);
+        }
+        await restoreNextTimeline(nextTimelineIndex, nextTimelineKey);
+        return;
+    }
+    
+    // If timeline doesn't exist in past wrapper but exists elsewhere, skip creation
+    if (existingNextTimeline || window.timelineManager.initialized.has(nextTimelineKey)) {
         console.warn(`Timeline with key "${nextTimelineKey}" already exists or is initialized, skipping creation`);
         return;
     }
@@ -254,6 +370,182 @@ async function addNextTimeline() {
     } catch (error) {
         console.error(`Error switching to ${nextTimelineKey} timeline:`, error);
         throw new Error(`Failed to switch to ${nextTimelineKey} timeline: ${error.message}`);
+    }
+}
+
+// Function to go back to previous timeline
+async function goToPreviousTimeline() {
+    if (DEBUG_MODE) {
+        console.log(`Going back from timeline ${window.timelineManager.currentIndex}`);
+    }
+
+    // Check if we can go back
+    if (window.timelineManager.currentIndex <= 0) {
+        if (DEBUG_MODE) {
+            console.log('Already at first timeline, cannot go back');
+        }
+        return;
+    }
+
+    // Get the previous timeline key
+    const previousTimelineIndex = window.timelineManager.currentIndex - 1;
+    const previousTimelineKey = window.timelineManager.keys[previousTimelineIndex];
+    
+    // Decrement the index
+    window.timelineManager.currentIndex = previousTimelineIndex;
+
+    try {
+        // Load previous timeline data
+        const categories = await fetchActivities(previousTimelineKey);
+        
+        // Update UI for previous timeline with animation
+        const previousTimeline = window.timelineManager.metadata[previousTimelineKey];
+        const timelineHeader = document.querySelector('.timeline-header');
+        const timelineTitle = document.querySelector('.timeline-title');
+        const timelineDescription = document.querySelector('.timeline-description');
+        
+        // First remove any existing animation
+        timelineHeader.classList.remove('flip-animation');
+        
+        // Force a reflow before starting new animation
+        void timelineHeader.offsetWidth;
+        
+        // Add animation class before content change
+        timelineHeader.classList.add('flip-animation');
+        
+        // Update content immediately
+        timelineTitle.textContent = previousTimeline.name;
+        timelineDescription.textContent = previousTimeline.description;
+        
+        // Trigger reflow to ensure animation plays
+        void timelineHeader.offsetWidth;
+        
+        // Add animation class
+        timelineHeader.classList.add('flip-animation');
+        
+        // Remove animation class after it finishes
+        timelineHeader.addEventListener('animationend', () => {
+            timelineHeader.classList.remove('flip-animation');
+        }, {once: true});
+
+        const activeTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+        const inactiveTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+        
+        // Move all future timelines to past wrapper (so they can be restored later)
+        const currentTimelineIndex = window.timelineManager.currentIndex + 1; // +1 because we already decremented
+        for (let i = currentTimelineIndex; i < window.timelineManager.keys.length; i++) {
+            const futureTimelineKey = window.timelineManager.keys[i];
+            const futureTimelineElement = document.getElementById(futureTimelineKey);
+            if (futureTimelineElement && futureTimelineElement.parentElement) {
+                // Move to past wrapper instead of removing
+                futureTimelineElement.setAttribute('data-active', 'false');
+                futureTimelineElement.parentElement.setAttribute('data-active', 'false');
+                inactiveTimelinesWrapper.appendChild(futureTimelineElement.parentElement);
+            }
+        }
+        
+        // Move current timeline to inactive wrapper
+        const currentTimeline = window.timelineManager.activeTimeline;
+        if (currentTimeline && currentTimeline.parentElement) {
+            currentTimeline.setAttribute('data-active', 'false');
+            currentTimeline.parentElement.setAttribute('data-active', 'false');
+            
+            // Move the current timeline to the inactive wrapper
+            inactiveTimelinesWrapper.appendChild(currentTimeline.parentElement);
+            
+            // Update timeline count variable
+            updateTimelineCountVariable();
+        }
+        
+        // Clear active wrapper
+        activeTimelineWrapper.innerHTML = '';
+        
+        // Find the previous timeline in inactive wrapper and move it back to active
+        const previousTimelineElement = document.getElementById(previousTimelineKey);
+        if (previousTimelineElement && previousTimelineElement.parentElement) {
+            // Move previous timeline back to active wrapper
+            previousTimelineElement.setAttribute('data-active', 'true');
+            previousTimelineElement.parentElement.setAttribute('data-active', 'true');
+            activeTimelineWrapper.appendChild(previousTimelineElement.parentElement);
+            
+            // Set active timeline reference
+            window.timelineManager.activeTimeline = previousTimelineElement;
+            
+            // IMPORTANT: Re-initialize timeline interaction for the reactivated timeline
+            // This ensures that click events and activity placement still work
+            initTimelineInteraction(window.timelineManager.activeTimeline);
+        } else {
+            // If timeline doesn't exist in inactive wrapper, recreate it
+            const newTimelineContainer = document.createElement('div');
+            newTimelineContainer.className = 'timeline-container';
+            
+            // Add title element
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'title';
+            titleDiv.textContent = window.timelineManager.metadata[previousTimelineKey].name;
+            newTimelineContainer.appendChild(titleDiv);
+            
+            const newTimeline = document.createElement('div');
+            newTimeline.className = 'timeline';
+            newTimelineContainer.appendChild(newTimeline);
+            
+            // Add timeline to active wrapper
+            activeTimelineWrapper.appendChild(newTimelineContainer);
+            
+            // Initialize timeline and container with proper IDs and mode
+            newTimeline.id = previousTimelineKey;
+            newTimeline.setAttribute('data-timeline-type', previousTimelineKey);
+            newTimeline.setAttribute('data-active', 'true');
+            newTimeline.setAttribute('data-mode', window.timelineManager.metadata[previousTimelineKey].mode);
+            newTimelineContainer.setAttribute('data-active', 'true');
+            
+            // Set active timeline reference
+            window.timelineManager.activeTimeline = newTimeline;
+            
+            // Initialize timeline with markers and containers
+            initTimeline(window.timelineManager.activeTimeline);
+            
+            // Initialize interaction for the timeline
+            initTimelineInteraction(window.timelineManager.activeTimeline);
+        }
+
+        // Activities will be restored automatically when the timeline is re-initialized
+        // The activity data is already stored in window.timelineManager.activities[previousTimelineKey]
+
+        // Render activities categories for previous timeline
+        renderActivities(categories);
+
+        // Scroll to active timeline in mobile view
+        if (getIsMobile()) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Reset button states
+        updateButtonStates();
+
+        // Scroll to the active timeline
+        scrollToActiveTimeline();
+
+        if (DEBUG_MODE) {
+            console.log(`Switched back to ${previousTimelineKey} timeline`);
+            console.log('Timeline data structure:', window.timelineManager.activities);
+        }
+
+        // Update activities container data-mode
+        const activitiesContainerElement = document.querySelector("#activitiesContainer");
+        if (activitiesContainerElement) {
+            activitiesContainerElement.setAttribute('data-mode', window.timelineManager.metadata[previousTimelineKey].mode);
+        }
+
+        // Update floating button position after timeline changes
+        updateFloatingButtonPosition();
+
+    } catch (error) {
+        console.error(`Error switching back to ${previousTimelineKey} timeline:`, error);
+        throw new Error(`Failed to switch back to ${previousTimelineKey} timeline: ${error.message}`);
     }
 }
 
@@ -1913,5 +2205,5 @@ init().catch(error => {
         '<p style="color: red;">Error loading activities. Please refresh the page to try again. Error: ' + error.message + '</p>';
 });
 
-// Export addNextTimeline and renderActivities for ui.js
-export { addNextTimeline, renderActivities };
+// Export addNextTimeline, goToPreviousTimeline and renderActivities for ui.js
+export { addNextTimeline, goToPreviousTimeline, renderActivities };

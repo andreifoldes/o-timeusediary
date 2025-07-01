@@ -962,9 +962,12 @@ body {
 }
 
 /* Navigation buttons */
-/* TODO: Re-implement back button functionality before re-enabling */
 .back-btn {
-    display: none !important;
+    background-color: var(--secondary-color);
+}
+
+.back-btn:hover:not(:disabled) {
+    background-color: #334155;
 }
 
 .next-btn {
