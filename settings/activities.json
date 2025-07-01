@@ -688,6 +688,11 @@
               },
               {
                 "name": "Travelling: motorbike, moped",
+                "code": 114,
+                "label": "travelling: motorbike, moped",
+                "short": "motorbike",
+                "vshort": "bike",
+                "color": "#FFC0CB",
                 "childItems": []
               },
               {
@@ -834,7 +839,11 @@
               },
               {
                 "name": "Using Computer",
-                "color": "#f5b9ac", 
+                "code": 132,
+                "label": "using computer",
+                "short": "using comp",
+                "vshort": "comp",
+                "color": "#f8d7da",
                 "childItems": [
                   {
                     "name": "Computer programming, learning software",
@@ -1864,7 +1873,11 @@
               },
               {
                 "name": "Travelling: motorbike, moped",
-                "color": "#FFC0CB", 
+                "code": 114,
+                "label": "travelling: motorbike, moped",
+                "short": "motorbike",
+                "vshort": "bike",
+                "color": "#FFC0CB",
                 "childItems": []
               },
               {
@@ -2011,6 +2024,11 @@
               },
               {
                 "name": "Using Computer",
+                "code": 132,
+                "label": "using computer",
+                "short": "using comp",
+                "vshort": "comp",
+                "color": "#f8d7da",
                 "childItems": [
                   {
                     "name": "Computer programming, learning software",
