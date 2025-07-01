@@ -556,7 +556,7 @@ export async function sendDataToDataPipe() {
         Accept: "*/*",
       },
       body: JSON.stringify({
-        experimentID: "eR8ENvJPgQth",
+        experimentID: window.timelineManager?.general?.experimentID || "eR8ENvJPgQth",
         filename: filename,
         data: csvData,
       }),

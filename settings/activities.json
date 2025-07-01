@@ -1,11 +1,12 @@
 {
   "general": {
+    "experimentID": "eR8ENvJPgQth",
     "app_name": "O-ELIDDI",
     "version": "1.0.0",
     "author": "John Doe",
     "language": "en",
     "instructions": true,
-    "primary_redirect_url": "thank-you.html",
+    "primary_redirect_url": "pages/thank-you.html",
     "fallbackToCSV": true
   }, 
   "timeline": {

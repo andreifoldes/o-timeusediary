@@ -236,16 +236,41 @@ function updateButtonStates() {
     }
 }
 
+// Shared debounce variables for both Next button and navigation submit button
+let nextButtonLastClick = 0;
+const NEXT_BUTTON_COOLDOWN = 2500; // 2.5 second cooldown
+
+// Shared function to handle Next button logic with debounce
+const handleNextButtonAction = () => {
+    const currentTime = Date.now();
+    if (currentTime - nextButtonLastClick < NEXT_BUTTON_COOLDOWN) {
+        console.log('Next button on cooldown');
+        return;
+    }
+    nextButtonLastClick = currentTime;
+
+    const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
+    
+    if (isLastTimeline) {
+        // On last timeline, show confirmation modal
+        document.getElementById('confirmationModal').style.display = 'block';
+    } else {
+        // For other timelines, proceed to next timeline
+        addNextTimeline();
+    }
+};
+
 function initButtons() {
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     const navSubmitBtn = document.getElementById('navSubmitBtn');
 
-    // Initialize the navigation submit button
+    // Initialize the navigation submit button with proper debounce
     if (navSubmitBtn) {
         navSubmitBtn.addEventListener('click', () => {
             const nextBtn = document.getElementById('nextBtn');
             if (nextBtn && !nextBtn.disabled) {
-                nextBtn.click();
+                // Use the shared debounced function instead of programmatic click
+                handleNextButtonAction();
             }
         });
 
@@ -355,28 +380,8 @@ function initButtons() {
         }
     });
 
-    // Add click handler for Next button with debounce
-    let nextButtonLastClick = 0;
-    const NEXT_BUTTON_COOLDOWN = 2500; // 2.5 second cooldown
-    
-    document.getElementById('nextBtn').addEventListener('click', () => {
-        const currentTime = Date.now();
-        if (currentTime - nextButtonLastClick < NEXT_BUTTON_COOLDOWN) {
-            console.log('Next button on cooldown');
-            return;
-        }
-        nextButtonLastClick = currentTime;
-
-        const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
-        
-        if (isLastTimeline) {
-            // On last timeline, show confirmation modal
-            document.getElementById('confirmationModal').style.display = 'block';
-        } else {
-            // For other timelines, proceed to next timeline
-            addNextTimeline();
-        }
-    });
+    // Add click handler for Next button using shared debounced function
+    document.getElementById('nextBtn').addEventListener('click', handleNextButtonAction);
 
     // Disable back button initially
     const backButton = document.getElementById('backBtn');

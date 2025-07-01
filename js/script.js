@@ -45,7 +45,7 @@ window.timelineManager = {
     metadata: {}, // Timeline metadata (former timelines object)
     activities: {}, // Timeline activities (former timelineData object)
     initialized: new Set(), // Tracks initialized timelines
-    activeTimeline: document.getElementById('primary'), // Initialize with primary timeline
+    activeTimeline: null, // Will be set when first timeline is created
     keys: [], // Available timeline keys
     currentIndex: 0, // Current timeline index
     study: {}, // Store URL parameters
@@ -94,14 +94,26 @@ async function addNextTimeline() {
         console.log(`Current timeline data saved:`, window.timelineManager.activities);
     }
 
-    // Increment timeline index
-    window.timelineManager.currentIndex++;
-    if (window.timelineManager.currentIndex >= window.timelineManager.keys.length && DEBUG_MODE) {
-        console.log('All timelines initialized');
+    // Check if we're at the end of timelines before incrementing
+    if (window.timelineManager.currentIndex + 1 >= window.timelineManager.keys.length) {
+        if (DEBUG_MODE) {
+            console.log('All timelines initialized');
+        }
         return;
     }
 
-    const nextTimelineKey = window.timelineManager.keys[window.timelineManager.currentIndex];
+    // Get the next timeline key before incrementing
+    const nextTimelineIndex = window.timelineManager.currentIndex + 1;
+    const nextTimelineKey = window.timelineManager.keys[nextTimelineIndex];
+    
+    // Prevent duplicate timeline creation
+    if (document.getElementById(nextTimelineKey) || window.timelineManager.initialized.has(nextTimelineKey)) {
+        console.warn(`Timeline with key "${nextTimelineKey}" already exists or is initialized, skipping creation`);
+        return;
+    }
+
+    // Only increment the index after validation passes
+    window.timelineManager.currentIndex = nextTimelineIndex;
 
     try {
         // Load next timeline data
@@ -139,6 +151,33 @@ async function addNextTimeline() {
             timelineHeader.classList.remove('flip-animation');
         }, {once: true});
 
+        // Clear any existing timeline containers to prevent duplicates
+        const activeTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
+        const inactiveTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
+        
+        // For the first timeline, clear everything to ensure a clean start
+        if (window.timelineManager.currentIndex === 0) {
+            activeTimelineWrapper.innerHTML = '';
+            inactiveTimelinesWrapper.innerHTML = '';
+            console.log('Cleared all timeline wrappers for first timeline initialization');
+        } else {
+            // Move previous timeline to inactive wrapper BEFORE adding new one
+            const previousTimeline = window.timelineManager.activeTimeline;
+            if (previousTimeline && previousTimeline.parentElement) {
+                previousTimeline.setAttribute('data-active', 'false');
+                previousTimeline.parentElement.setAttribute('data-active', 'false');
+                
+                // Move the previous timeline to the inactive wrapper
+                inactiveTimelinesWrapper.appendChild(previousTimeline.parentElement);
+                
+                // Update timeline count variable
+                updateTimelineCountVariable();
+            }
+            
+            // Clear any existing containers in the active wrapper to prevent duplicates
+            activeTimelineWrapper.innerHTML = '';
+        }
+        
         // Desktop mode - create new timeline container
         const newTimelineContainer = document.createElement('div');
         newTimelineContainer.className = 'timeline-container';
@@ -154,24 +193,7 @@ async function addNextTimeline() {
         newTimelineContainer.appendChild(newTimeline);
         
         // Add new timeline to active wrapper
-        const activeTimelineWrapper = document.querySelector('.last-initialized-timeline-wrapper');
         activeTimelineWrapper.appendChild(newTimelineContainer);
-        
-        // Only update previous timeline state if we have at least 2 initialized timelines
-        if (window.timelineManager.initialized.size >= 2) {
-            const previousTimeline = window.timelineManager.activeTimeline;
-            if (previousTimeline) {
-                previousTimeline.setAttribute('data-active', 'false');
-                previousTimeline.parentElement.setAttribute('data-active', 'false');
-                
-                // Move the previous timeline to the inactive wrapper
-                const inactiveTimelinesWrapper = document.querySelector('.past-initialized-timelines-wrapper');
-                inactiveTimelinesWrapper.appendChild(previousTimeline.parentElement);
-                
-                // Update timeline count variable
-                updateTimelineCountVariable();
-            }
-        }
         
         // Initialize new timeline and container with proper IDs and mode
         newTimeline.id = nextTimelineKey;
@@ -180,22 +202,8 @@ async function addNextTimeline() {
         newTimeline.setAttribute('data-mode', window.timelineManager.metadata[nextTimelineKey].mode);
         newTimelineContainer.setAttribute('data-active', 'true');
         
-        // Create and initialize timeline container with markers
-        const timelineContainer = new TimelineContainer(newTimeline);
-        timelineContainer.initialize(isMobile).createMarkers(isMobile);
-        newTimeline.containerInstance = timelineContainer;
-        
         // Set active timeline reference
         window.timelineManager.activeTimeline = newTimeline;
-
-        // Create activities container if it doesn't exist
-        let activitiesContainer = window.timelineManager.activeTimeline.querySelector('.activities');
-        if (!activitiesContainer) {
-            activitiesContainer = document.createElement('div');
-            activitiesContainer.className = 'activities';
-            window.timelineManager.activeTimeline.appendChild(activitiesContainer);
-        }
-
 
         // Initialize activities array if not exists
         window.timelineManager.activities[nextTimelineKey] = window.timelineManager.activities[nextTimelineKey] || [];
@@ -208,7 +216,7 @@ async function addNextTimeline() {
             });
         }
 
-        // Initialize markers for the new timeline
+        // Initialize timeline with markers and containers
         initTimeline(window.timelineManager.activeTimeline);
 
         // Render activities for next timeline
@@ -283,20 +291,8 @@ async function fetchActivities(key) {
             }
         }
 
-        // Initialize timeline management structure if not already initialized
-        if (Object.keys(timelineManager.metadata).length === 0) {
-            // Only use timeline keys, excluding 'general'
-            timelineManager.keys = Object.keys(data.timeline);
-            timelineManager.keys.forEach(timelineKey => {
-                if (data.timeline[timelineKey]) {
-                    timelineManager.metadata[timelineKey] = new Timeline(timelineKey, data.timeline[timelineKey]);
-                    timelineManager.activities[timelineKey] = [];
-                }
-            });
-            if (DEBUG_MODE) {
-                console.log('Initialized timeline structure:', timelineManager);
-            }
-        }
+        // Timeline management structure should already be initialized in init()
+        // This function only loads categories for the specific timeline
 
         const timeline = data.timeline[key];
         if (!timeline || !timeline.categories) {
@@ -1791,7 +1787,7 @@ async function init() {
             metadata: {},
             activities: {},
             initialized: new Set(),
-            activeTimeline: document.getElementById('primary'),
+            activeTimeline: null, // Will be set when first timeline is created
             keys: [],
             currentIndex: 0,
             study: {},
