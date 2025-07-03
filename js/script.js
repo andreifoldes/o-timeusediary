@@ -39,7 +39,7 @@ import {
 import { checkAndRequestPID } from './utils.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
-window.window.selectedActivity = null;
+window.selectedActivity = null;
 
 // Single timeline management object
 window.timelineManager = {
