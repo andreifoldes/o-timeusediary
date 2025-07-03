@@ -38,7 +38,8 @@ import {
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
 
-let selectedActivity = null;
+// Make window.selectedActivity a global property that persists across DOM changes
+window.window.selectedActivity = null;
 
 // Single timeline management object
 window.timelineManager = {
@@ -691,7 +692,7 @@ function renderChildItems(activity, categoryName) {
             
             button.addEventListener('click', () => {
                 // Use parent activity properties but with child item name
-                selectedActivity = {
+                window.selectedActivity = {
                     name: childItem.name,
                     parentName: activity.name,
                     color: childItem.color || activity.color,
@@ -788,7 +789,7 @@ function renderActivities(categories, container = document.getElementById('activ
                 
                 activityButton.appendChild(textSpan);
                 activityButton.addEventListener('click', () => {
-                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const activitiesContainer = activityButton.closest('#activitiesContainer, #modalActivitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
@@ -810,13 +811,13 @@ function renderActivities(categories, container = document.getElementById('activ
                                 if (isMultipleChoice) {
                                     activityButton.classList.add('selected');
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-                                    selectedActivity = {
+                                    window.selectedActivity = {
                                         name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
                                         color: btn.style.getPropertyValue('--color')
                                     };
                                 } else {
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
-                                    selectedActivity = {
+                                    window.selectedActivity = {
                                         name: customText,
                                         color: activityButton.style.getPropertyValue('--color'),
                                         category: category.name
@@ -865,7 +866,7 @@ function renderActivities(categories, container = document.getElementById('activ
                         const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
             
                         if (selectedButtons.length > 0) {
-                            selectedActivity = {
+                            window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
                                     name: btn.textContent,
                                     color: btn.style.getPropertyValue('--color')
@@ -873,20 +874,32 @@ function renderActivities(categories, container = document.getElementById('activ
                                 category: category.name
                             };
                         } else {
-                            selectedActivity = null;
+                            // Only clear window.selectedActivity in multiple-choice mode if user actively deselected
+                            // Don't clear if we're in a modal that's about to close
+                            const isInModal = activityButton.closest('#modalActivitiesContainer');
+                            if (!isInModal) {
+                                console.log('[ACTIVITY] Clearing window.selectedActivity - not in modal');
+                                window.selectedActivity = null;
+                            } else {
+                                console.log('[ACTIVITY] NOT clearing window.selectedActivity - in modal');
+                            }
                         }
                     } else {
                         // Single choice mode
                         categoryButtons.forEach(b => b.classList.remove('selected'));
-                        selectedActivity = {
+                        window.selectedActivity = {
                             name: activity.name,
                             color: activity.color,
                             category: category.name
                         };
+                        console.log('[ACTIVITY] Selected activity:', window.selectedActivity);
                         activityButton.classList.add('selected');
                     }
                     // Only close modal in single-choice mode
                     if (!isMultipleChoice) {
+                        // Store the selected activity before closing modal to prevent it from being cleared
+                        const preservedActivity = window.selectedActivity;
+                        
                         // Force close modals with a slight delay on mobile
                         if (getIsMobile()) {
                             setTimeout(() => {
@@ -898,6 +911,13 @@ function renderActivities(categories, container = document.getElementById('activ
                                 if (customActivityModal) {
                                     customActivityModal.style.cssText = 'display: none !important';
                                 }
+                                // Restore window.selectedActivity after modal closes in case it was cleared
+                                if (preservedActivity && !window.selectedActivity) {
+                                    window.selectedActivity = preservedActivity;
+                                    console.log('[MODAL] Restored window.selectedActivity:', window.selectedActivity);
+                                } else {
+                                    console.log('[MODAL] window.selectedActivity after close:', window.selectedActivity);
+                                }
                             }, 50);
                         } else {
                             // Immediate close on desktop
@@ -908,6 +928,10 @@ function renderActivities(categories, container = document.getElementById('activ
                             }
                             if (customActivityModal) {
                                 customActivityModal.style.cssText = 'display: none !important';
+                            }
+                            // Restore window.selectedActivity after modal closes in case it was cleared
+                            if (preservedActivity && !window.selectedActivity) {
+                                window.selectedActivity = preservedActivity;
                             }
                         }
                     }
@@ -977,7 +1001,7 @@ function renderActivities(categories, container = document.getElementById('activ
                 
                 activityButton.appendChild(textSpan);
                 activityButton.addEventListener('click', () => {
-                    const activitiesContainer = document.getElementById('activitiesContainer');
+                    const activitiesContainer = activityButton.closest('#activitiesContainer, #modalActivitiesContainer');
                     const isMultipleChoice = activitiesContainer.getAttribute('data-mode') === 'multiple-choice';
                     const categoryButtons = activityButton.closest('.activity-category').querySelectorAll('.activity-button');
                     
@@ -999,7 +1023,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                 if (isMultipleChoice) {
                                     activityButton.classList.add('selected');
                                     const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
-                                    selectedActivity = {
+                                    window.selectedActivity = {
                                         selections: selectedButtons.map(btn => ({
                                             name: btn === activityButton ? customText : btn.querySelector('.activity-text').textContent,
                                             color: btn.style.getPropertyValue('--color')
@@ -1008,7 +1032,7 @@ function renderActivities(categories, container = document.getElementById('activ
                                     };
                                 } else {
                                     categoryButtons.forEach(b => b.classList.remove('selected'));
-                                    selectedActivity = {
+                                    window.selectedActivity = {
                                         name: customText,
                                         color: activity.color,
                                         category: category.name
@@ -1057,7 +1081,7 @@ function renderActivities(categories, container = document.getElementById('activ
                         const selectedButtons = Array.from(categoryButtons).filter(btn => btn.classList.contains('selected'));
             
                         if (selectedButtons.length > 0) {
-                            selectedActivity = {
+                            window.selectedActivity = {
                                 selections: selectedButtons.map(btn => ({
                                     name: btn.querySelector('.activity-text').textContent,
                                     color: btn.style.getPropertyValue('--color')
@@ -1065,20 +1089,32 @@ function renderActivities(categories, container = document.getElementById('activ
                                 category: category.name
                             };
                         } else {
-                            selectedActivity = null;
+                            // Only clear window.selectedActivity in multiple-choice mode if user actively deselected
+                            // Don't clear if we're in a modal that's about to close
+                            const isInModal = activityButton.closest('#modalActivitiesContainer');
+                            if (!isInModal) {
+                                console.log('[ACTIVITY] Clearing window.selectedActivity - not in modal');
+                                window.selectedActivity = null;
+                            } else {
+                                console.log('[ACTIVITY] NOT clearing window.selectedActivity - in modal');
+                            }
                         }
                     } else {
                         // Single choice mode
                         categoryButtons.forEach(b => b.classList.remove('selected'));
-                        selectedActivity = {
+                        window.selectedActivity = {
                             name: activity.name,
                             color: activity.color,
                             category: category.name
                         };
+                        console.log('[ACTIVITY] Selected activity:', window.selectedActivity);
                         activityButton.classList.add('selected');
                     }
                     // Only close modal in single-choice mode
                     if (!isMultipleChoice) {
+                        // Store the selected activity before closing modal to prevent it from being cleared
+                        const preservedActivity = window.selectedActivity;
+                        
                         // Force close modals with a slight delay on mobile
                         if (getIsMobile()) {
                             setTimeout(() => {
@@ -1090,6 +1126,13 @@ function renderActivities(categories, container = document.getElementById('activ
                                 if (customActivityModal) {
                                     customActivityModal.style.cssText = 'display: none !important';
                                 }
+                                // Restore window.selectedActivity after modal closes in case it was cleared
+                                if (preservedActivity && !window.selectedActivity) {
+                                    window.selectedActivity = preservedActivity;
+                                    console.log('[MODAL] Restored window.selectedActivity:', window.selectedActivity);
+                                } else {
+                                    console.log('[MODAL] window.selectedActivity after close:', window.selectedActivity);
+                                }
                             }, 50);
                         } else {
                             // Immediate close on desktop
@@ -1100,6 +1143,10 @@ function renderActivities(categories, container = document.getElementById('activ
                             }
                             if (customActivityModal) {
                                 customActivityModal.style.cssText = 'display: none !important';
+                            }
+                            // Restore window.selectedActivity after modal closes in case it was cleared
+                            if (preservedActivity && !window.selectedActivity) {
+                                window.selectedActivity = preservedActivity;
                             }
                         }
                     }
@@ -1717,20 +1764,32 @@ function initTimelineInteraction(timeline) {
         }
     });
     
-    // Add click handling with debounce
+    // Add click and touch handling with debounce
     let lastClickTime = 0;
     const CLICK_DELAY = 300; // milliseconds
 
-    targetTimeline.addEventListener('click', (e) => {
+    // Unified handler function for both click and touch events
+    const handleTimelineInteraction = (e) => {
+        console.log('[TIMELINE] Event triggered:', e.type, 'window.selectedActivity:', window.selectedActivity);
+        
         // Only process clicks on the active timeline
-        if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) return;
+        if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) {
+            console.log('[TIMELINE] Event ignored - not active timeline');
+            return;
+        }
         
         // Prevent double-clicks
         const currentTime = new Date().getTime();
-        if (currentTime - lastClickTime < CLICK_DELAY) return;
+        if (currentTime - lastClickTime < CLICK_DELAY) {
+            console.log('[TIMELINE] Event ignored - within click delay');
+            return;
+        }
         lastClickTime = currentTime;
 
-        if (!selectedActivity || e.target.closest('.activity-block')) return;
+        if (!window.selectedActivity || e.target.closest('.activity-block')) {
+            console.log('[TIMELINE] Event ignored - no window.selectedActivity or clicked on activity block');
+            return;
+        }
         
         const currentKey = getCurrentTimelineKey();
         // Check if timeline is full before proceeding
@@ -1748,12 +1807,16 @@ function initTimelineInteraction(timeline) {
         const isMobile = getIsMobile();
         let clickPositionPercent;
         
+        // Get coordinates from either mouse or touch event
+        const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0));
+        const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : 0));
+        
         if (isMobile) {
-            const y = e.clientY - rect.top;
+            const y = clientY - rect.top;
             const clampedY = Math.max(0, Math.min(y, rect.height));
             clickPositionPercent = (clampedY / rect.height) * 100;
         } else {
-            const x = e.clientX - rect.left;
+            const x = clientX - rect.left;
             const clampedX = Math.max(0, Math.min(x, rect.width));
             clickPositionPercent = (clampedX / rect.width) * 100;
         }
@@ -1782,14 +1845,14 @@ function initTimelineInteraction(timeline) {
         // Check if activity can be placed at this position
         if (!canPlaceActivity(startMinutes, endMinutes, null)) {
             console.warn('Invalid activity placement attempt:', {
-                activity: selectedActivity.name,
+                activity: window.selectedActivity.name,
                 startMinutes,
                 endMinutes,
                 reason: 'Activity cannot be placed at this position due to overlap or timeline bounds'
             });
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = selectedActivity.color;
+            block.style.backgroundColor = window.selectedActivity.color;
             
             // Calculate position percentages
             const startPositionPercent = minutesToPercentage(startMinutes);
@@ -1824,23 +1887,23 @@ function initTimelineInteraction(timeline) {
         currentBlock.dataset.start = formattedStartTime;
         currentBlock.dataset.end = formattedEndTime;
         currentBlock.dataset.length = endMinutes - startMinutes;
-        currentBlock.dataset.category = selectedActivity.category;
-        currentBlock.dataset.mode = selectedActivity.selections ? 'multiple-choice' : 'single-choice';
-        currentBlock.dataset.count = selectedActivity.selections ? selectedActivity.selections.length : 1;
+        currentBlock.dataset.category = window.selectedActivity.category;
+        currentBlock.dataset.mode = window.selectedActivity.selections ? 'multiple-choice' : 'single-choice';
+        currentBlock.dataset.count = window.selectedActivity.selections ? window.selectedActivity.selections.length : 1;
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
 
         // Store parent name if this is a child activity
-        if (selectedActivity.parentName) {
-            currentBlock.dataset.parentName = selectedActivity.parentName;
+        if (window.selectedActivity.parentName) {
+            currentBlock.dataset.parentName = window.selectedActivity.parentName;
         }
 
         // Add raw minutes data attributes
         currentBlock.dataset.startMinutes = startMinutes;
         currentBlock.dataset.endMinutes = endMinutes;
-        if (selectedActivity.selections) {
+        if (window.selectedActivity.selections) {
             // Multiple selections - create split background
-            const colors = selectedActivity.selections.map(s => s.color);
+            const colors = window.selectedActivity.selections.map(s => s.color);
             const isMobile = getIsMobile();
             const numSelections = colors.length;
             const percentage = 100 / numSelections;
@@ -1859,27 +1922,27 @@ function initTimelineInteraction(timeline) {
                 currentBlock.style.background = `linear-gradient(to bottom, ${stops})`;
             }
         } else {
-            currentBlock.style.backgroundColor = selectedActivity.color;
+            currentBlock.style.backgroundColor = window.selectedActivity.color;
         }
         const textDiv = document.createElement('div');
         let combinedActivityText;
 
-        if (selectedActivity.selections) {
+        if (window.selectedActivity.selections) {
             if (DEBUG_MODE) {
-                console.log('Multiple selections:', selectedActivity.selections);
+                console.log('Multiple selections:', window.selectedActivity.selections);
             }
             // For multiple selections, join names with line break in the text div
-            textDiv.innerHTML = selectedActivity.selections.map(s => s.name).join('<br>');
+            textDiv.innerHTML = window.selectedActivity.selections.map(s => s.name).join('<br>');
             // But join with vertical separator for storing in timelineManager 
-            combinedActivityText = selectedActivity.selections.map(s => s.name).join(' | ');
+            combinedActivityText = window.selectedActivity.selections.map(s => s.name).join(' | ');
         } else {
             // If this is a child item, display the parent name instead, but store both
-            if (selectedActivity.parentName) {
-                textDiv.textContent = selectedActivity.parentName;
-                combinedActivityText = selectedActivity.name;
+            if (window.selectedActivity.parentName) {
+                textDiv.textContent = window.selectedActivity.parentName;
+                combinedActivityText = window.selectedActivity.name;
             } else {
-                textDiv.textContent = selectedActivity.name;
-                combinedActivityText = selectedActivity.name;
+                textDiv.textContent = window.selectedActivity.name;
+                combinedActivityText = window.selectedActivity.name;
             }
         }
         textDiv.style.maxWidth = '90%';
@@ -1896,8 +1959,8 @@ function initTimelineInteraction(timeline) {
         currentBlock.appendChild(textDiv);
         
         // Add tooltip to show the selected child item when hovering
-        if (selectedActivity.parentName) {
-            currentBlock.setAttribute('title', `${selectedActivity.parentName}: ${selectedActivity.name}`);
+        if (window.selectedActivity.parentName) {
+            currentBlock.setAttribute('title', `${window.selectedActivity.parentName}: ${window.selectedActivity.name}`);
         }
         
         // Convert minutes to percentage for positioning
@@ -1969,7 +2032,8 @@ function initTimelineInteraction(timeline) {
 
         // Deselect the activity button after successful placement
         document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('selected'));
-        selectedActivity = null;
+        console.log('[ACTIVITY] Clearing window.selectedActivity after successful placement');
+        window.selectedActivity = null;
 
         const startTime = currentBlock.dataset.start;
         const endTime = currentBlock.dataset.end;
@@ -1989,7 +2053,7 @@ function initTimelineInteraction(timeline) {
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: selectedActivity?.color || '#808080',
+            color: window.selectedActivity?.color || '#808080',
             count: parseInt(currentBlock.dataset.count) || 1
         };
 
@@ -2023,7 +2087,7 @@ function initTimelineInteraction(timeline) {
             currentBlock.remove();
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = selectedActivity.color;
+            block.style.backgroundColor = window.selectedActivity.color;
             block.style.width = currentBlock.style.width;
             block.style.height = currentBlock.style.height;
             block.style.top = currentBlock.style.top;
@@ -2037,7 +2101,19 @@ function initTimelineInteraction(timeline) {
 
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
-    });
+    };
+
+    // Add both click and touch event listeners for better mobile support
+    targetTimeline.addEventListener('click', handleTimelineInteraction);
+    
+    // Add touch events specifically for mobile devices
+    if (getIsMobile()) {
+        targetTimeline.addEventListener('touchend', (e) => {
+            // Prevent the click event from also firing
+            e.preventDefault();
+            handleTimelineInteraction(e);
+        }, { passive: false });
+    }
 
     // Update existing blocks to include parent/selected attributes if they don't have them
     interact('.activity-block').on('resizeend', function(event) {

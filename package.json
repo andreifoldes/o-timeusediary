@@ -6,10 +6,11 @@
     "start": "live-server --port=8080 --no-browser"
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
+    "@types/node": "^24.0.10",
     "live-server": "^1.2.2"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "netlify-cli": "^19.0.2"
+    "dotenv": "^16.4.7"
   }
 }

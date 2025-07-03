@@ -15,6 +15,12 @@ import { DEBUG_MODE } from './constants.js';
 
 // Modal management
 function createModal() {
+    // Check if modals already exist
+    const existingActivitiesModal = document.getElementById('activitiesModal');
+    if (existingActivitiesModal) {
+        return existingActivitiesModal;
+    }
+    
     // Create custom activity input modal
     const customActivityModal = document.createElement('div');
     customActivityModal.className = 'modal-overlay';
@@ -150,6 +156,12 @@ function createModal() {
 
 // Button management
 function createFloatingAddButton() {
+    // Check if floating button already exists
+    const existingButton = document.querySelector('.floating-add-button');
+    if (existingButton) {
+        return existingButton;
+    }
+    
     const button = document.createElement('button');
     button.className = 'floating-add-button';
     button.innerHTML = '+';
