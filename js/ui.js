@@ -218,17 +218,24 @@ function updateFloatingButtonPosition() {
     
     if (!floatingButton || !lastTimelineWrapper) return;
 
-    const wrapperRect = lastTimelineWrapper.getBoundingClientRect();
+    // Get the active timeline container within the wrapper
+    const activeTimelineContainer = lastTimelineWrapper.querySelector('.timeline-container');
+    if (!activeTimelineContainer) return;
+
+    const containerRect = activeTimelineContainer.getBoundingClientRect();
     const buttonWidth = floatingButton.offsetWidth;
     
-    // Position the button 10px to the right of the wrapper
-    const leftPosition = wrapperRect.right + 10;
+    // Position the button 15px to the right of the active timeline container
+    const leftPosition = containerRect.right + 15;
     
-    // Ensure button doesn't go off screen
+    // Ensure button doesn't go off screen (leave 10px margin from screen edge)
     const maxLeft = window.innerWidth - buttonWidth - 10;
     const finalLeft = Math.min(leftPosition, maxLeft);
     
-    floatingButton.style.left = `${finalLeft}px`;
+    // Only update if the calculated position is valid (not negative)
+    if (finalLeft >= 0) {
+        floatingButton.style.left = `${finalLeft}px`;
+    }
 }
 
 function updateButtonStates() {
