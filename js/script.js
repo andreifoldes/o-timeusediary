@@ -26,7 +26,9 @@ import {
     updateTimelineCountVariable,
     initDebugOverlay,
     handleResize,
-    preventPullToRefresh
+    preventPullToRefresh,
+    updateHeaderHeight,
+    updateFooterHeight
 } from './ui.js';
 import { 
     DEBUG_MODE,
@@ -2245,6 +2247,10 @@ async function init() {
         scrollToActiveTimeline();
         
         initButtons();
+        
+        // Initialize header and footer heights early
+        updateHeaderHeight();
+        updateFooterHeight();
         
         // Add resize event listener with debounce
         let resizeTimeout;

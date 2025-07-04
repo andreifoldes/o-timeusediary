@@ -54,13 +54,12 @@ body {
 @media (max-width: 1439.98px) {
     .timeline-canvas {
         flex-direction: row;
-        overflow-x: hidden;
+        overflow: hidden;
         padding: 0 2px;
         width: 100%;
-        min-height: 100vh;
+        height: calc(100vh - var(--header-height, 80px) - var(--footer-height, 80px));
         overscroll-behavior: none;
-        overscroll-behavior-y: none;
-        touch-action: pan-y pinch-zoom;
+        touch-action: pan-x pinch-zoom;
         -webkit-overflow-scrolling: auto;
     }
 
@@ -70,17 +69,18 @@ body {
         gap: 30px;
         padding: 0;
         overflow-x: auto;
+        overflow-y: auto; /* Allow vertical scrolling for timeline content */
         width: 100%;
         justify-content: flex-start;
         align-items: flex-start;
         scrollbar-width: thin;
-        -webkit-overflow-scrolling: auto;
+        -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
         -ms-overflow-style: -ms-autohiding-scrollbar;
-        min-height: 100vh;
+        height: calc(100vh - var(--header-height, 80px) - var(--footer-height, 80px));
         overscroll-behavior: none;
-        overscroll-behavior-y: none;
-        touch-action: pan-y pinch-zoom;
+        overscroll-behavior-x: none;
+        touch-action: pan-x pan-y pinch-zoom;
     }
 
     /* When past-initialized-timelines-wrapper is empty, center the last-initialized-timeline-wrapper */
@@ -94,9 +94,11 @@ body {
         gap: 0;
         margin-right: 0;
         overflow-x: visible;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
         flex: 0 0 auto;
         min-width: 180px;
-        height: 100%;
+        width: auto; /* Allow width to be determined by content */
+        height: 2500px; /* Match timeline content height for mobile */
         align-items: flex-start;
         justify-content: flex-start;
         position: relative;
@@ -119,7 +121,10 @@ body {
         margin: 0;
         flex: 0 0 auto;
         min-width: 180px;
-        height: 100%;
+        width: 180px; /* Fixed width for mobile */
+        height: 2500px; /* Match timeline content height for mobile */
+        align-items: flex-start;
+        justify-content: flex-start;
     }
     
     /* When both wrappers have timelines, adjust their spacing */
@@ -133,7 +138,12 @@ body {
         min-width: 180px;
         width: 180px;
         margin: 0;
-        height: 2500px;
+        height: 100%;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Reset desktop styles in mobile view */
@@ -150,14 +160,16 @@ body {
     .timeline-container {
         min-width: 180px;
         max-width: 180px;
-        height: 2500px;
+        height: 100%;
         margin: 0;
         padding: 0;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         position: relative;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
         overscroll-behavior: none;
+        overscroll-behavior-y: none;
         touch-action: pan-y pinch-zoom;
-        -webkit-overflow-scrolling: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
     .timeline-container[data-active="false"] {
@@ -267,22 +279,60 @@ body {
 
 /* Mobile vertical layout */
 @media (max-width: 1439.98px) {
-    .timeline-container {
-        min-width: 180px;
-        max-width: 180px;
-        height: 2500px;
-        margin: 0;
-        padding: 0;
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        position: relative;
-        overscroll-behavior: none;
-        touch-action: pan-y pinch-zoom;
-        -webkit-overflow-scrolling: auto;
+    .timeline {
+        height: 2500px; /* Set large height for timeline content to be scrollable */
     }
 
+    /* Structure timeline containers to use flexbox for proper title positioning */
+    .past-initialized-timelines-wrapper .timeline-container,
+    .last-initialized-timeline-wrapper .timeline-container {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding-top: 0; /* Remove padding since we're using flexbox */
+    }
+    
     /* Additional timeline container styles for past timelines */
     .past-initialized-timelines-wrapper .timeline-container {
-        margin: 20px 0 0 0; /* Add top margin to match last initialized timeline */
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px;
+        height: 100%;
+        overflow-y: visible;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        top: 2px; /* Align with last-initialized-timeline-wrapper */
+    }
+    
+    /* Align last initialized timeline with past timelines */
+    .last-initialized-timeline-wrapper .timeline-container {
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px;
+        margin: 0;
+        height: 100%;
+        overflow-y: visible;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+        padding-top: 2px; /* Small padding for last initialized timeline */
+    }
+    
+    /* Position timeline titles properly in mobile layout */
+    .timeline-container .title {
+        position: relative;
+        top: 0;
+        margin-bottom: 5px;
+        flex-shrink: 0;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        padding: 6px 6px 0 6px;
+        font-weight: bold;
     }
     
     .timeline-container[data-active="false"] {
@@ -1522,8 +1572,21 @@ body {
     }
 }
 
+/* Hide title for last-initialized-timeline-wrapper in desktop layout */
 .last-initialized-timeline-wrapper .timeline-container .title {
     display: none;
+}
+
+/* Show title for last-initialized-timeline-wrapper in mobile layout */
+@media (max-width: 1439.98px) {
+    .last-initialized-timeline-wrapper .timeline-container .title {
+        display: block;
+    }
+    
+    /* Add padding to account for visible title positioned at top: -25px */
+    .last-initialized-timeline-wrapper .timeline-container {
+        padding-top: 2px;
+    }
 }
 
 /* Submit button styles */

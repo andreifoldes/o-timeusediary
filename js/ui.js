@@ -185,8 +185,9 @@ function createFloatingAddButton() {
 
     document.body.appendChild(button);
     
-    // Initialize the footer height
+    // Initialize the footer and header heights
     updateFooterHeight();
+    updateHeaderHeight();
     
     // Add resize observer to update footer height when it changes
     const footer = document.getElementById('instructionsFooter');
@@ -195,6 +196,15 @@ function createFloatingAddButton() {
             updateFooterHeight();
         });
         resizeObserver.observe(footer);
+    }
+    
+    // Add resize observer to update header height when it changes
+    const header = document.querySelector('.header-section');
+    if (header) {
+        const resizeObserver = new ResizeObserver(() => {
+            updateHeaderHeight();
+        });
+        resizeObserver.observe(header);
     }
 
     return button;
@@ -636,11 +646,20 @@ function updateFooterHeight() {
     }
 }
 
+function updateHeaderHeight() {
+    const header = document.querySelector('.header-section');
+    if (header) {
+        const headerHeight = header.offsetHeight;
+        document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    }
+}
+
 function handleResize() {
     // updateIsMobile will now handle the reload at breakpoint
     updateIsMobile();
-    // Update floating button position and footer height
+    // Update floating button position, header height, and footer height
     updateFloatingButtonPosition();
+    updateHeaderHeight();
     updateFooterHeight();
 }
 
@@ -675,6 +694,7 @@ export {
     handleResize,
     preventPullToRefresh,
     updateFooterHeight,
+    updateHeaderHeight,
     showLoadingModal,
     hideLoadingModal
 };
