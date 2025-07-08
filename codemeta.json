@@ -1,0 +1,84 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "O-ELIDDI - Daily Activity Collection Tool",
+  "description": "A web-based tool for collecting and visualizing daily activities in a timeline format. Designed for research studies and time-use surveys.",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "codeRepository": "https://github.com/andreifoldes/timediary",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Thomas",
+      "familyName": "Hakman",
+      "email": "thomas.hakman@oii.ox.ac.uk",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Oxford"
+      },
+      "@id": "https://orcid.org/0009-0009-8292-2482"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Tamás Andrei",
+      "familyName": "Földes",
+      "email": "tamas.foldes@oii.ox.ac.uk",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Oxford"
+      },
+      "@id": "https://orcid.org/0000-0002-0623-9149"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Oriel",
+      "familyName": "Sullivan",
+      "email": "o.sullivan@ucl.ac.uk",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Centre for Time Use Research (CTUR), Social Research Institute, University College London"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Jonathan",
+      "familyName": "Gershuny",
+      "email": "j.gershuny@ucl.ac.uk",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Centre for Time Use Research (CTUR), Social Research Institute, University College London"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Juana",
+      "familyName": "Lamote de Grignon Perez",
+      "email": "juana.lamote@gmail.com",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Centre for Time Use Research (CTUR), Social Research Institute, University College London"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Elena",
+      "familyName": "Mylona",
+      "email": "e.mylona@ucl.ac.uk",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Centre for Time Use Research (CTUR), Social Research Institute, University College London"
+      }
+    }
+  ],
+  "programmingLanguage": [
+    "JavaScript",
+    "HTML",
+    "CSS"
+  ],
+  "keywords": [
+    "time-use survey",
+    "data collection",
+    "visualization",
+    "javascript",
+    "timeline"
+  ]
+} 
