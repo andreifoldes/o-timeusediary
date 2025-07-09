@@ -144,19 +144,21 @@ div.csl-indent {
 
 <section id="summary" class="level1">
 <h1>Summary</h1>
-<p>O-ELIDDI (Online Ecological Longitudinal Information on Daily-living Diary) is an open-source, web-based tool designed for the collection and visualization of daily activities through an interactive timeline interface. It is specifically tailored for time-use research studies and surveys, enabling participants to intuitively log their activities and researchers to gather structured, high-resolution data.</p>
-<p>The core feature of O-ELIDDI is its dynamic timeline, where users can drag and drop predefined activities, adjust their duration, and see their daily schedule laid out visually. The interface is designed to be responsive, ensuring accessibility and usability on both desktop and mobile devices. This flexibility is crucial for in-situ data collection, allowing participants to record their activities as they happen.</p>
-<p>For researchers, the tool provides a configurable setup for activity lists and study parameters. All collected data can be exported in common formats like CSV and JSON, facilitating seamless integration with standard data analysis software and workflows.</p>
+<p>O-ELIDDI (Online Ecological Longitudinal Information on Daily-living Diary) is an open-source, web-based tool for collecting time-use data through an interactive timeline interface. The software enables researchers to conduct digital diary studies by allowing participants to drag and drop activities onto a visual 24-hour timeline, providing an intuitive alternative to traditional paper diaries or survey-style questionnaires.</p>
+<p>The tool’s core functionality centers on a visual timeline where participants can easily add, resize, and reposition activity blocks representing their daily schedule. The interface is responsive and works on both desktop and mobile devices, enabling real-time data collection as activities occur. Researchers can fully customize activity lists, categories, and study parameters through configuration files, making the tool adaptable to various research contexts.</p>
+<p>O-ELIDDI supports multiple concurrent data streams (primary activities, locations, social context, device usage) with independent timing, enabling sophisticated analyses such as comprehensive childcare measurement, digital device usage patterns, and behavioral risk assessment. The software automatically validates data completeness and exports structured datasets in standard formats (CSV, JSON) for analysis.</p>
+<p>The tool integrates with GitHub Pages for free hosting and the Open Science Framework (OSF) for secure data storage, requiring no technical infrastructure from researchers. This combination provides a complete, zero-cost research platform that democratizes access to sophisticated time-use data collection methods while maintaining the methodological rigor of established diary designs.</p>
 </section>
 <section id="statement-of-need" class="level1">
 <h1>Statement of Need</h1>
-<p>The study of how individuals allocate their time is fundamental across various fields, including sociology, economics, psychology, and public health <span class="citation" data-cites="becker1965theory fajzel2023global">(<a href="#ref-becker1965theory" role="doc-biblioref">Becker 1965</a>; <a href="#ref-fajzel2023global" role="doc-biblioref">Fajzel et al. 2023</a>)</span>. Time-use data provides critical insights into quality of life, well-being, social and economic behavior, and the impact of policies. The systematic collection of time-use data began in the early 20th century, with pioneering studies relying on paper-and-pencil diaries to capture daily activities <span class="citation" data-cites="fisher2013time">(<a href="#ref-fisher2013time" role="doc-biblioref">Fisher and Gershuny 2013</a>)</span>. These methods, while foundational, often suffer from recall bias and low participant engagement.</p>
-<p>The landmark cross-national study by <span class="citation" data-cites="szalai1972use">Szalai (<a href="#ref-szalai1972use" role="doc-biblioref">1972</a>)</span> demonstrated the power of comparative time-use research and set a precedent for many subsequent studies. However, the methods for data collection have been slow to evolve. While digital tools have emerged to address the limitations of paper diaries, many are proprietary, costly, or lack the specific features required for nuanced time-use research. Existing open-source solutions may not be web-based, requiring installation, or may not focus on the intuitive, visual data entry that can improve data quality and participant compliance.</p>
-<p>O-ELIDDI fills this gap by providing an accessible, open-source, and user-friendly platform for time-use data collection. Its key differentiators are its browser-based delivery, which removes the need for installation, and its highly interactive, visual timeline interface. By simplifying the data logging process, O-ELIDDI aims to reduce participant burden, increase engagement, and improve the accuracy of the collected data. This tool is particularly beneficial for researchers conducting longitudinal studies who require a flexible, low-cost, and easy-to-deploy solution for gathering rich, high-frequency data on daily life, thus contributing to the long tradition of time-use research with modern technology.</p>
+<p>Time-use research provides essential data for understanding economic activity, social inequalities, well-being, public health, and environmental sustainability <span class="citation" data-cites="stiglitz2009report sullivan2021pnas cornwell2019social">(<a href="#ref-stiglitz2009report" role="doc-biblioref">Stiglitz, Sen, and Fitoussi 2009</a>; <a href="#ref-sullivan2021pnas" role="doc-biblioref">Sullivan et al. 2021</a>; <a href="#ref-cornwell2019social" role="doc-biblioref">Cornwell, Gershuny, and Sullivan 2019</a>)</span>. Current policy applications include quantifying unpaid care work for gender equality initiatives (UN SDG 5.4), measuring subjective well-being <span class="citation" data-cites="kahneman2004day">(<a href="#ref-kahneman2004day" role="doc-biblioref">Kahneman et al. 2004</a>)</span>, and assessing behavioral health risks during pandemics <span class="citation" data-cites="sullivan2021pnas">(<a href="#ref-sullivan2021pnas" role="doc-biblioref">Sullivan et al. 2021</a>)</span>.</p>
+<p>While digital data collection has become standard across social sciences, many online diary tools have compromised methodological quality to reduce perceived complexity. Survey-style approaches, which present repetitive questions for each activity, have been shown to increase respondent burden and reduce data quality <span class="citation" data-cites="tebraak2022methods chatzitheochari2018using">(<a href="#ref-tebraak2022methods" role="doc-biblioref">Te Braak 2022</a>; <a href="#ref-chatzitheochari2018using" role="doc-biblioref">Chatzitheochari et al. 2018</a>)</span>. These tools often abandon key principles from decades of time-use research, such as independent timing of multiple data fields, limiting their analytical potential.</p>
+<p>Existing solutions are typically proprietary, expensive, or lack the specific features required for rigorous time-use research. Open-source alternatives often require complex installation procedures or lack the visual interface that aids participant recall and engagement. This creates barriers for researchers, particularly those in lower-resourced institutions or developing countries where time-use research is increasingly important.</p>
+<p>O-ELIDDI addresses these limitations by implementing established time-use research principles <span class="citation" data-cites="eurostat2020hetus">(<a href="#ref-eurostat2020hetus" role="doc-biblioref">Eurostat 2020</a>)</span> in a modern, accessible web platform. The software’s visual approach reduces cognitive burden compared to survey-style tools <span class="citation" data-cites="chatzitheochari2018using">(<a href="#ref-chatzitheochari2018using" role="doc-biblioref">Chatzitheochari et al. 2018</a>)</span>, while its multiple independent data fields enable sophisticated analyses impossible with simplified designs. By providing free hosting and data storage through established platforms (GitHub Pages, OSF), the tool removes technical and financial barriers to conducting high-quality time-use research, supporting the growing international emphasis on this type of data collection across multiple continents and research contexts.</p>
 </section>
 <section id="acknowledgements" class="level1">
 <h1>Acknowledgements</h1>
-<p>We would like to acknowledge the contributions of the open-source community.</p>
+<p>We acknowledge the Centre for Time Use Research (CTUR) at University College London for their foundational work on time-use research methodology. We thank the JSPsych and Open Science Framework teams for providing the infrastructure that enables O-ELIDDI’s data collection capabilities, and the open-source community for their contributions to the underlying technologies.</p>
 </section>
 <section id="references" class="level1 unnumbered">
 
@@ -164,17 +166,26 @@ div.csl-indent {
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-becker1965theory" class="csl-entry" role="listitem">
-Becker, Gary S. 1965. <span>“A Theory of the Allocation of Time.”</span> <em>The Economic Journal</em> 75 (299): 493–517.
+<div id="ref-chatzitheochari2018using" class="csl-entry" role="listitem">
+Chatzitheochari, Stella, Kimberly Fisher, Emily Gilbert, Lisa Calderwood, Tom Huskinson, Andrew Cleary, and Jonathan Gershuny. 2018. <span>“Using New Technologies for Time Diary Data Collection: Instrument Design and Data Quality Findings from a Mixed-Mode Pilot Survey.”</span> <em>Social Indicators Research</em> 137 (1): 379–90.
 </div>
-<div id="ref-fajzel2023global" class="csl-entry" role="listitem">
-Fajzel, William, Eric D Galbraith, Christopher Barrington-Leigh, Jacques Charmes, Elena Frie, Ian Hatton, Priscilla Le Mézo, et al. 2023. <span>“The Global Human Day.”</span> <em>Proceedings of the National Academy of Sciences</em> 120 (25): e2219564120.
+<div id="ref-cornwell2019social" class="csl-entry" role="listitem">
+Cornwell, Benjamin, Jonathan Gershuny, and Oriel Sullivan. 2019. <span>“The Social Structure of Time: Emerging Trends and New Directions.”</span> <em>Annual Review of Sociology</em> 45: 301–20.
 </div>
-<div id="ref-fisher2013time" class="csl-entry" role="listitem">
-Fisher, Kimberly, and Jonathan Gershuny. 2013. <span>“Time Use and Time Diary Research.”</span> In <em>Oxford Bibliographies in Sociology</em>. Oxford University Press.
+<div id="ref-eurostat2020hetus" class="csl-entry" role="listitem">
+Eurostat. 2020. <em>Harmonised European Time Use Survey (HETUS) 2018 Guidelines</em>. Publications Office of the European Union. <a href="https://doi.org/10.2785/160444">https://doi.org/10.2785/160444</a>.
 </div>
-<div id="ref-szalai1972use" class="csl-entry" role="listitem">
-Szalai, Alexander. 1972. <em>The Use of Time: Daily Activities of Urban and Suburban Populations in Twelve Countries</em>. Mouton.
+<div id="ref-kahneman2004day" class="csl-entry" role="listitem">
+Kahneman, Daniel, Alan B Krueger, David A Schkade, Norbert Schwarz, and Arthur A Stone. 2004. <span>“A Survey Method for Characterizing Daily Life Experience: The Day Reconstruction Method.”</span> <em>Science</em> 306 (5702): 1776–80.
+</div>
+<div id="ref-stiglitz2009report" class="csl-entry" role="listitem">
+Stiglitz, Joseph E, Amartya Sen, and Jean-Paul Fitoussi. 2009. <span>“Report by the Commission on the Measurement of Economic Performance and Social Progress.”</span> Commission on the Measurement of Economic Performance; Social Progress.
+</div>
+<div id="ref-sullivan2021pnas" class="csl-entry" role="listitem">
+Sullivan, Oriel, Jonathan Gershuny, Almudena Sevilla, Francesca Foliano, Maria Vega Rapun, Juana Lamote de Grignon, Teresa Harms, and Pierre Walthery. 2021. <span>“Using Time Use Diaries to Track Changing Behavior Across Successive Stages of COVID-19 Social Restrictions.”</span> <em>Proceedings of the National Academy of Sciences</em> 118 (35).
+</div>
+<div id="ref-tebraak2022methods" class="csl-entry" role="listitem">
+Te Braak, Paulien. 2022. <span>“Methods, Modes, and Measurement Errors: Mapping the Validity of Self-Administered Online Time-Diaries.”</span> PhD thesis, Vrije Universiteit Brussel.
 </div>
 </div></section></div></main>
 <!-- /main column -->
