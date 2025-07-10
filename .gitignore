@@ -19,3 +19,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Paper files
+paper/example_paper.pdf
+paper/time_use_design.txt
