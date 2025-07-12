@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layouts - O-ELIDDI Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            color: #667eea;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+        .screenshot-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .screenshot-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .layout-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .layout-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .layout-card h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .responsive-table th, .responsive-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .responsive-table th {
+            background-color: #f8f9ff;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .responsive-table tr:hover {
+            background-color: #f8f9ff;
+        }
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .nav-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        .nav-link:hover {
+            background: #556cd6;
+        }
+        @media (max-width: 768px) {
+            .layout-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Responsive Layouts</h1>
+        <p>Mobile and Desktop Interface Design</p>
+    </div>
+
+    <a href="index.html" class="nav-link">← Back to Documentation</a>
+
+    <div class="section">
+        <h2>Overview</h2>
+        <p>O-ELIDDI features fully responsive layouts that adapt to different screen sizes and device types. The application automatically detects the user's device and optimizes the interface for the best user experience.</p>
+        
+        <div class="highlight">
+            <strong>Key Responsive Features:</strong>
+            <ul>
+                <li>Mobile-first responsive design</li>
+                <li>Touch-friendly interface elements</li>
+                <li>Adaptive timeline layout</li>
+                <li>Optimized button placement and sizing</li>
+                <li>Device-specific interaction patterns</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Desktop Layout</h2>
+        <p>The desktop version provides a comprehensive interface designed for precise mouse interactions and detailed data entry sessions.</p>
+        
+        <div class="screenshot-container">
+            <img src="images/desktop-layout.png" alt="Desktop Layout" />
+        </div>
+
+        <div class="layout-card">
+            <h3>Desktop Features</h3>
+            <ul class="feature-list">
+                <li>Full-width timeline display</li>
+                <li>Horizontal navigation controls</li>
+                <li>Precise mouse-based drag and drop</li>
+                <li>Larger clickable areas for detailed selection</li>
+                <li>Optimized for keyboard navigation</li>
+                <li>Multi-column button layout</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Mobile Layout</h2>
+        <p>The mobile version features a compact, touch-friendly interface optimized for smartphone usage and on-the-go data collection.</p>
+        
+        <div class="screenshot-container">
+            <img src="images/mobile-layout.png" alt="Mobile Layout" />
+        </div>
+
+        <div class="layout-card">
+            <h3>Mobile Features</h3>
+            <ul class="feature-list">
+                <li>Compact vertical layout</li>
+                <li>Touch-friendly controls</li>
+                <li>Finger-optimized drag and drop</li>
+                <li>Thumb-accessible navigation</li>
+                <li>Simplified button arrangement</li>
+                <li>Mobile-specific gestures support</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Layout Comparison</h2>
+        <div class="layout-comparison">
+            <div class="layout-card">
+                <h3>Desktop (1024px+)</h3>
+                <ul class="feature-list">
+                    <li>Horizontal timeline orientation</li>
+                    <li>Multi-column control layout</li>
+                    <li>Hover effects enabled</li>
+                    <li>Keyboard shortcuts available</li>
+                    <li>Detailed tooltips</li>
+                </ul>
+            </div>
+            <div class="layout-card">
+                <h3>Mobile (< 768px)</h3>
+                <ul class="feature-list">
+                    <li>Vertical timeline orientation</li>
+                    <li>Single-column control layout</li>
+                    <li>Touch gestures optimized</li>
+                    <li>Simplified interaction model</li>
+                    <li>Mobile-friendly spacing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Responsive Breakpoints</h2>
+        <p>The application uses the following breakpoints to determine the optimal layout:</p>
+        
+        <table class="responsive-table">
+            <thead>
+                <tr>
+                    <th>Device Type</th>
+                    <th>Screen Width</th>
+                    <th>Layout</th>
+                    <th>Features</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Desktop</td>
+                    <td>1024px and above</td>
+                    <td>Full Desktop</td>
+                    <td>All features, multi-column layout</td>
+                </tr>
+                <tr>
+                    <td>Tablet</td>
+                    <td>768px - 1023px</td>
+                    <td>Hybrid</td>
+                    <td>Touch-optimized with desktop features</td>
+                </tr>
+                <tr>
+                    <td>Mobile</td>
+                    <td>Below 768px</td>
+                    <td>Mobile</td>
+                    <td>Compact layout, touch-first design</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Technical Implementation</h2>
+        <p>The responsive design is implemented using:</p>
+        
+        <ul>
+            <li><strong>CSS Media Queries:</strong> Responsive breakpoints and layout adjustments</li>
+            <li><strong>Flexbox and Grid:</strong> Modern layout systems for adaptive containers</li>
+            <li><strong>JavaScript Detection:</strong> <code>getIsMobile()</code> function for device-specific behavior</li>
+            <li><strong>Touch Events:</strong> Native touch event handling for mobile interactions</li>
+            <li><strong>Viewport Meta Tag:</strong> Proper mobile viewport configuration</li>
+        </ul>
+        
+        <div class="highlight">
+            <strong>Key CSS Classes:</strong>
+            <ul>
+                <li><code>.mobile-only</code> - Elements visible only on mobile</li>
+                <li><code>.desktop-only</code> - Elements visible only on desktop</li>
+                <li><code>.touch-friendly</code> - Touch-optimized interactive elements</li>
+                <li><code>.responsive-layout</code> - Adaptive container layouts</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Usage Recommendations</h2>
+        
+        <h3>For Researchers</h3>
+        <ul>
+            <li>Use desktop layout for detailed study setup and data analysis</li>
+            <li>Test both layouts during pilot studies</li>
+            <li>Consider participant device preferences when deploying</li>
+        </ul>
+        
+        <h3>For Participants</h3>
+        <ul>
+            <li>Mobile layout is ideal for quick, on-the-go data entry</li>
+            <li>Desktop layout provides more detailed view for comprehensive logging</li>
+            <li>Both layouts support the same functionality</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center; padding: 2rem; color: #666; border-top: 1px solid #e9ecef; margin-top: 2rem;">
+        <p>O-ELIDDI Responsive Layouts Documentation - Designed for optimal user experience across all devices</p>
+    </div>
+</body>
+</html>
