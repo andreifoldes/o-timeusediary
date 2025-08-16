@@ -1,0 +1,77 @@
+site_name: O-ELIDDI Documentation
+site_description: Online Episodic Life Interview - Daily Diary and Interactive Tool
+site_author: O-ELIDDI Team
+site_url: https://andreifoldes.github.io/timediary/docs/
+
+repo_name: andreifoldes/timediary
+repo_url: https://github.com/andreifoldes/timediary
+
+use_directory_urls: false
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Deployment: deployment.md
+      - OSF Setup: osf-setup.md
+      - URL Parameters: url-parameters.md
+  - Configuration:
+      - Activities Configuration: activities-config.md
+      - Data Structure: data-structure.md
+  - Development:
+      - Translation Guide: translation-guide.md
+      - Responsive Layouts: responsive-layouts.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/tamasfoldes/timediary
+  generator: false
