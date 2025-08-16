@@ -1,0 +1,2057 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Online Episodic Life Interview - Daily Diary and Interactive Tool">
+      
+      
+        <meta name="author" content="O-ELIDDI Team">
+      
+      
+        <link rel="canonical" href="https://andreifoldes.github.io/timediary/docs/osf-setup.html">
+      
+      
+        <link rel="prev" href="deployment.html">
+      
+      
+        <link rel="next" href="url-parameters.html">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+    
+    
+      
+        <title>OSF Setup - O-ELIDDI Documentation</title>
+      
+    
+    
+  
+      <link rel="stylesheet" href="assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+  <link rel="stylesheet" href="assets/stylesheets/custom.css">
+
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#osf-backend-setup" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="O-ELIDDI Documentation" class="md-header__button md-logo" aria-label="O-ELIDDI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            O-ELIDDI Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OSF Setup
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/andreifoldes/timediary" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    andreifoldes/timediary
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="deployment.html" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="activities-config.html" class="md-tabs__link">
+          
+  
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="translation-guide.html" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="O-ELIDDI Documentation" class="md-nav__button md-logo" aria-label="O-ELIDDI Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    O-ELIDDI Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/andreifoldes/timediary" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    andreifoldes/timediary
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="deployment.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    OSF Setup
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="osf-setup.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    OSF Setup
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step-by-Step Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-create-osf-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Create OSF Account
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-a-new-osf-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create a New OSF Project
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-access-jspsych-datapipe" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Access JSPsych DataPipe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-datapipe-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create DataPipe Experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configure-o-eliddi" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configure O-ELIDDI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-test-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Test Data Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Test Data Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#successful-test-indicators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Successful Test Indicators
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-management-on-osf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Management on OSF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Management on OSF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-your-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing Your Data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing Your Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-osf-web-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via OSF Web Interface
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-api-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via API Access
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-backup-and-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Backup and Security
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy-and-ethics-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Privacy and Ethics Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privacy and Ethics Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-visibility-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Project Visibility Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ethical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ethical Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-anonymization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Anonymization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collaboration-and-team-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collaboration and Team Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collaboration and Team Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-team-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding Team Members
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datapipe-access-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataPipe Access Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring and Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring and Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datapipe-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataPipe Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-issues-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues and Solutions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-not-appearing-in-osf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Not Appearing in OSF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging Data Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging Data Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#browser-console-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Browser Console Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-analysis-preparation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Analysis Preparation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Analysis Preparation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#batch-data-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Data Download
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-aggregation-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Aggregation Scripts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Aggregation Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#python-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-control-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quality Control Checks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#osf-registrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      OSF Registrations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="url-parameters.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    URL Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Configuration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="activities-config.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Activities Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-structure.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Structure
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="translation-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Translation Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="responsive-layouts.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Responsive Layouts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step-by-Step Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-create-osf-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Create OSF Account
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-a-new-osf-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create a New OSF Project
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-access-jspsych-datapipe" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Access JSPsych DataPipe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-create-datapipe-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Create DataPipe Experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configure-o-eliddi" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configure O-ELIDDI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-test-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Test Data Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Test Data Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#successful-test-indicators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Successful Test Indicators
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-management-on-osf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Management on OSF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Management on OSF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-your-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing Your Data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing Your Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-osf-web-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via OSF Web Interface
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-api-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via API Access
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-backup-and-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Backup and Security
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privacy-and-ethics-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Privacy and Ethics Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privacy and Ethics Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-visibility-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Project Visibility Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ethical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ethical Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-anonymization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Anonymization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collaboration-and-team-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collaboration and Team Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collaboration and Team Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-team-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding Team Members
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datapipe-access-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataPipe Access Management
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Monitoring and Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring and Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datapipe-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataPipe Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-issues-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues and Solutions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-not-appearing-in-osf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Not Appearing in OSF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-data-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging Data Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging Data Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#browser-console-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Browser Console Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-analysis-preparation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Analysis Preparation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Analysis Preparation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#batch-data-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Data Download
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-aggregation-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Aggregation Scripts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Aggregation Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#python-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-control-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quality Control Checks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#osf-registrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      OSF Registrations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Other Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="osf-backend-setup">OSF Backend Setup<a class="headerlink" href="#osf-backend-setup" title="Permanent link">&para;</a></h1>
+<p>Setting up data collection with JSPsych DataPipe and Open Science Framework</p>
+<p><a href="index.html">← Back to Documentation Home</a></p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The Open Science Framework (OSF) provides a robust, free platform for research data management. Combined with JSPsych DataPipe, it offers secure, automated data collection for O-ELIDDI studies with built-in research best practices.</p>
+<h3 id="key-benefits">Key Benefits<a class="headerlink" href="#key-benefits" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th><strong>Free &amp; Open</strong></th>
+<th><strong>Secure</strong></th>
+<th><strong>Research-Ready</strong></th>
+<th><strong>Automatic</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Completely free for academic research with unlimited storage and no participant limits.</td>
+<td>Data encrypted in transit and at rest, with granular access controls and audit trails.</td>
+<td>Built-in version control, metadata management, and collaboration tools for research teams.</td>
+<td>No server setup required - data flows automatically from your study to OSF storage.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Before you begin, ensure you have:</p>
+<ul>
+<li>[ ] An OSF account (free at osf.io)</li>
+<li>[ ] A deployed O-ELIDDI study (see GitHub Pages Deployment guide)</li>
+<li>[ ] Basic understanding of your study's data collection needs</li>
+<li>[ ] Institutional ethics approval (if required)</li>
+</ul>
+<h2 id="step-by-step-setup">Step-by-Step Setup<a class="headerlink" href="#step-by-step-setup" title="Permanent link">&para;</a></h2>
+<h3 id="1-create-osf-account">1. Create OSF Account<a class="headerlink" href="#1-create-osf-account" title="Permanent link">&para;</a></h3>
+<p>If you don't already have an OSF account:</p>
+<ol>
+<li>Visit <a href="https://osf.io">osf.io</a></li>
+<li>Click <strong>"Sign Up"</strong></li>
+<li>Use your institutional email address if available</li>
+<li>Verify your email address</li>
+<li>Complete your profile with research information</li>
+</ol>
+<blockquote>
+<p><strong>Tip:</strong> Using an institutional email helps establish credibility and may provide access to additional OSF features.</p>
+</blockquote>
+<h3 id="2-create-a-new-osf-project">2. Create a New OSF Project<a class="headerlink" href="#2-create-a-new-osf-project" title="Permanent link">&para;</a></h3>
+<p>Set up a project to organize your study data:</p>
+<ol>
+<li>Log into OSF and click <strong>"Create new project"</strong></li>
+<li>Enter a descriptive project title (e.g., "Daily Activity Patterns Study 2024")</li>
+<li>Add a project description including:</li>
+<li>Study objectives and research questions</li>
+<li>Participant demographics and recruitment</li>
+<li>Data collection timeline</li>
+<li>Analysis plan overview</li>
+<li>Set appropriate access permissions:</li>
+<li><strong>Public:</strong> For open science projects</li>
+<li><strong>Private:</strong> For sensitive data (can be made public later)</li>
+<li>Add relevant tags and subjects for discoverability</li>
+</ol>
+<h3 id="3-access-jspsych-datapipe">3. Access JSPsych DataPipe<a class="headerlink" href="#3-access-jspsych-datapipe" title="Permanent link">&para;</a></h3>
+<p>Set up automated data collection through DataPipe:</p>
+<ol>
+<li>Visit <a href="https://pipe.jspsych.org">pipe.jspsych.org</a></li>
+<li>Click <strong>"Get Started"</strong></li>
+<li>Sign in with your OSF credentials</li>
+<li>Authorize DataPipe to access your OSF account</li>
+</ol>
+<blockquote>
+<p><strong>Authorization:</strong> DataPipe needs access to create files in your OSF projects. This is secure and only allows DataPipe to upload data files to projects you specify.</p>
+</blockquote>
+<h3 id="4-create-datapipe-experiment">4. Create DataPipe Experiment<a class="headerlink" href="#4-create-datapipe-experiment" title="Permanent link">&para;</a></h3>
+<p>Configure DataPipe for your O-ELIDDI study:</p>
+<ol>
+<li>In DataPipe dashboard, click <strong>"Create Experiment"</strong></li>
+<li>Enter experiment details:</li>
+<li><strong>Name:</strong> Match your OSF project name</li>
+<li><strong>Description:</strong> Brief description of data being collected</li>
+<li><strong>OSF Project:</strong> Select the project you created in Step 2</li>
+<li>Configure data settings:</li>
+<li><strong>Data format:</strong> CSV (default, recommended for O-ELIDDI)</li>
+<li><strong>File naming:</strong> Use default pattern</li>
+<li><strong>Storage location:</strong> Confirm correct OSF project</li>
+<li>Click <strong>"Create Experiment"</strong></li>
+<li><strong>Important:</strong> Copy the generated <strong>Experiment ID</strong> - you'll need this for O-ELIDDI configuration</li>
+</ol>
+<blockquote>
+<p><strong>Experiment ID Example:</strong> Your ID will look something like <code>eR8ENvJPgQth</code> - save this securely as it's required for data collection.</p>
+</blockquote>
+<h3 id="5-configure-o-eliddi">5. Configure O-ELIDDI<a class="headerlink" href="#5-configure-o-eliddi" title="Permanent link">&para;</a></h3>
+<p>Connect your study to DataPipe by updating the configuration:</p>
+<ol>
+<li>Open your O-ELIDDI repository (locally or on GitHub)</li>
+<li>Edit <code>settings/activities.json</code></li>
+<li>Update the <code>experimentID</code> field in the <code>general</code> section:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;general&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;experimentID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;YOUR_DATAPIPE_EXPERIMENT_ID&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;app_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Your Study Name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Your Name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;instructions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;primary_redirect_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pages/thank-you.html&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;fallbackToCSV&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="c1">// ... rest of configuration</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Important:</strong> Replace <code>YOUR_DATAPIPE_EXPERIMENT_ID</code> with the actual ID from Step 4. Keep <code>fallbackToCSV: true</code> for backup data collection.</p>
+</blockquote>
+<h3 id="6-test-data-collection">6. Test Data Collection<a class="headerlink" href="#6-test-data-collection" title="Permanent link">&para;</a></h3>
+<p>Verify that data flows correctly from your study to OSF:</p>
+<ol>
+<li>Deploy your updated O-ELIDDI configuration</li>
+<li>Complete a test timeline on your deployed study</li>
+<li>Submit the data and note any error messages</li>
+<li>Check your OSF project for the uploaded data file</li>
+<li>Download and examine the CSV to verify data format</li>
+</ol>
+<h4 id="successful-test-indicators">Successful Test Indicators<a class="headerlink" href="#successful-test-indicators" title="Permanent link">&para;</a></h4>
+<ul>
+<li>✅ No error messages during data submission</li>
+<li>✅ Automatic redirect to thank you page</li>
+<li>✅ CSV file appears in OSF project within minutes</li>
+<li>✅ File contains expected timeline data and metadata</li>
+</ul>
+<h2 id="data-management-on-osf">Data Management on OSF<a class="headerlink" href="#data-management-on-osf" title="Permanent link">&para;</a></h2>
+<h3 id="file-organization">File Organization<a class="headerlink" href="#file-organization" title="Permanent link">&para;</a></h3>
+<p>DataPipe automatically organizes your files in the OSF project:</p>
+<ul>
+<li><strong>Folder structure:</strong> Files are typically stored in the main project directory</li>
+<li><strong>File naming:</strong> <code>timeline_{participantID}_{timestamp}.csv</code></li>
+<li><strong>Automatic versioning:</strong> OSF tracks all file changes and versions</li>
+</ul>
+<h3 id="accessing-your-data">Accessing Your Data<a class="headerlink" href="#accessing-your-data" title="Permanent link">&para;</a></h3>
+<h4 id="via-osf-web-interface">Via OSF Web Interface<a class="headerlink" href="#via-osf-web-interface" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Log into OSF and navigate to your project</li>
+<li>Click <strong>"Files"</strong> tab</li>
+<li>Browse and download individual files or entire folders</li>
+<li>Use built-in preview for CSV files</li>
+</ol>
+<h4 id="via-api-access">Via API Access<a class="headerlink" href="#via-api-access" title="Permanent link">&para;</a></h4>
+<p>For automated data processing, use OSF's API:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Python example using requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Get project files</span>
+<span class="n">project_id</span> <span class="o">=</span> <span class="s2">&quot;YOUR_OSF_PROJECT_ID&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.osf.io/v2/nodes/</span><span class="si">{</span><span class="n">project_id</span><span class="si">}</span><span class="s2">/files/osfstorage/&quot;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="c1"># Download specific file</span>
+<span class="n">file_download_url</span> <span class="o">=</span> <span class="s2">&quot;DIRECT_FILE_URL_FROM_API&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file_download_url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+</code></pre></div>
+<h3 id="data-backup-and-security">Data Backup and Security<a class="headerlink" href="#data-backup-and-security" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Automatic backups:</strong> OSF maintains multiple copies of your data</li>
+<li><strong>Version history:</strong> All file versions are preserved</li>
+<li><strong>Access logs:</strong> Track who accessed what data when</li>
+<li><strong>Export options:</strong> Download entire projects as ZIP files</li>
+</ul>
+<h2 id="privacy-and-ethics-configuration">Privacy and Ethics Configuration<a class="headerlink" href="#privacy-and-ethics-configuration" title="Permanent link">&para;</a></h2>
+<h3 id="project-visibility-settings">Project Visibility Settings<a class="headerlink" href="#project-visibility-settings" title="Permanent link">&para;</a></h3>
+<p><strong>Visibility Options:</strong>
+- <strong>Private:</strong> Only you and collaborators can access (recommended for active data collection)
+- <strong>Public:</strong> Visible to everyone (consider for post-publication data sharing)
+- <strong>Embargoed:</strong> Public metadata, private data until a specified date</p>
+<h3 id="ethical-considerations">Ethical Considerations<a class="headerlink" href="#ethical-considerations" title="Permanent link">&para;</a></h3>
+<p>Before collecting data, ensure:</p>
+<ul>
+<li>[ ] Institutional ethics approval is obtained</li>
+<li>[ ] Participant consent procedures are documented</li>
+<li>[ ] Data anonymization protocols are in place</li>
+<li>[ ] Data retention policies are established</li>
+<li>[ ] Access permissions are properly configured</li>
+<li>[ ] Compliance with relevant regulations (GDPR, HIPAA, etc.)</li>
+</ul>
+<h3 id="data-anonymization">Data Anonymization<a class="headerlink" href="#data-anonymization" title="Permanent link">&para;</a></h3>
+<p>O-ELIDDI can collect anonymous data by design:</p>
+<ul>
+<li><strong>No personal information:</strong> Timeline data contains no inherently identifying information</li>
+<li><strong>Participant IDs:</strong> Use anonymous codes rather than names or email addresses</li>
+<li><strong>URL parameters:</strong> Avoid including sensitive information in participant links</li>
+<li><strong>IP addresses:</strong> Not collected by O-ELIDDI or stored in timeline data</li>
+</ul>
+<h2 id="collaboration-and-team-management">Collaboration and Team Management<a class="headerlink" href="#collaboration-and-team-management" title="Permanent link">&para;</a></h2>
+<h3 id="adding-team-members">Adding Team Members<a class="headerlink" href="#adding-team-members" title="Permanent link">&para;</a></h3>
+<ol>
+<li>In your OSF project, click <strong>"Contributors"</strong></li>
+<li>Click <strong>"Add"</strong> and enter collaborator email addresses</li>
+<li>Set appropriate permission levels:</li>
+<li><strong>Administrator:</strong> Full project control</li>
+<li><strong>Read + Write:</strong> Can view and upload data</li>
+<li><strong>Read:</strong> View-only access</li>
+<li>Send invitations and manage access as needed</li>
+</ol>
+<h3 id="datapipe-access-management">DataPipe Access Management<a class="headerlink" href="#datapipe-access-management" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>DataPipe Security:</strong> Only the OSF account holder who created the DataPipe experiment can modify its settings. Team members access data through OSF project permissions, not DataPipe directly.</p>
+</blockquote>
+<h2 id="monitoring-and-troubleshooting">Monitoring and Troubleshooting<a class="headerlink" href="#monitoring-and-troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="datapipe-dashboard">DataPipe Dashboard<a class="headerlink" href="#datapipe-dashboard" title="Permanent link">&para;</a></h3>
+<p>Monitor your data collection through the DataPipe interface:</p>
+<ul>
+<li><strong>Upload statistics:</strong> Number of successful uploads</li>
+<li><strong>Error logs:</strong> Details of any failed uploads</li>
+<li><strong>Recent activity:</strong> Timeline of data submissions</li>
+<li><strong>Storage usage:</strong> Amount of data collected</li>
+</ul>
+<h3 id="common-issues-and-solutions">Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Permanent link">&para;</a></h3>
+<h4 id="data-not-appearing-in-osf">Data Not Appearing in OSF<a class="headerlink" href="#data-not-appearing-in-osf" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Check experimentID is correct in activities.json</li>
+<li>Verify OSF project permissions</li>
+<li>Look for error messages in browser console</li>
+<li>Check DataPipe dashboard for upload errors</li>
+<li>Wait up to 5 minutes for processing delays</li>
+</ul>
+<h4 id="authentication-errors">Authentication Errors<a class="headerlink" href="#authentication-errors" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Reauthorize DataPipe in your OSF account settings</li>
+<li>Check that the OSF project still exists</li>
+<li>Verify you have write permissions to the project</li>
+<li>Try creating a test experiment with a new project</li>
+</ul>
+<h3 id="debugging-data-collection">Debugging Data Collection<a class="headerlink" href="#debugging-data-collection" title="Permanent link">&para;</a></h3>
+<h4 id="browser-console-testing">Browser Console Testing<a class="headerlink" href="#browser-console-testing" title="Permanent link">&para;</a></h4>
+<p>Test DataPipe connectivity directly in browser console:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Check if data would be sent successfully</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">timelineManager</span><span class="p">.</span><span class="nx">study</span><span class="p">);</span>
+
+<span class="c1">// Test DataPipe endpoint (replace with your experiment ID)</span>
+<span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;https://pipe.jspsych.org/api/data/&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;application/json&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<span class="w">        </span><span class="nx">experimentID</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;YOUR_EXPERIMENT_ID&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">filename</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;test.csv&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;test,data\n1,2&#39;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">response</span><span class="p">));</span>
+</code></pre></div>
+<h2 id="data-analysis-preparation">Data Analysis Preparation<a class="headerlink" href="#data-analysis-preparation" title="Permanent link">&para;</a></h2>
+<h3 id="batch-data-download">Batch Data Download<a class="headerlink" href="#batch-data-download" title="Permanent link">&para;</a></h3>
+<p>For analysis, download all participant data at once:</p>
+<ol>
+<li>In OSF project, go to <strong>Files</strong> tab</li>
+<li>Select all data files (Ctrl+click or Shift+click)</li>
+<li>Click <strong>Download</strong> to get a ZIP file</li>
+<li>Extract CSV files for analysis</li>
+</ol>
+<h3 id="data-aggregation-scripts">Data Aggregation Scripts<a class="headerlink" href="#data-aggregation-scripts" title="Permanent link">&para;</a></h3>
+<h4 id="python-example">Python Example<a class="headerlink" href="#python-example" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># Read all CSV files from download</span>
+<span class="n">csv_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;downloaded_data/*.csv&quot;</span><span class="p">)</span>
+<span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">csv_files</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">all_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Combine all participant data</span>
+<span class="n">combined_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Save master dataset</span>
+<span class="n">combined_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;master_timeline_data.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="quality-control-checks">Quality Control Checks<a class="headerlink" href="#quality-control-checks" title="Permanent link">&para;</a></h3>
+<p>Recommended data quality checks:</p>
+<ul>
+<li>[ ] Verify all expected participants have submitted data</li>
+<li>[ ] Check for duplicate submissions</li>
+<li>[ ] Validate timeline coverage completeness</li>
+<li>[ ] Review timestamp formatting and ranges</li>
+<li>[ ] Identify any unusual activity patterns</li>
+<li>[ ] Check URL parameter data for accuracy</li>
+</ul>
+<h2 id="advanced-features">Advanced Features<a class="headerlink" href="#advanced-features" title="Permanent link">&para;</a></h2>
+<h3 id="osf-registrations">OSF Registrations<a class="headerlink" href="#osf-registrations" title="Permanent link">&para;</a></h3>
+<p>For enhanced research credibility, consider creating an OSF registration:</p>
+<ul>
+<li><strong>Preregistration:</strong> Document study plan before data collection</li>
+<li><strong>Timestamps:</strong> Immutable record of research decisions</li>
+<li><strong>Templates:</strong> Structured formats for different study types</li>
+<li><strong>DOI assignment:</strong> Permanent identifiers for citations</li>
+</ul>
+<h3 id="integration-with-other-tools">Integration with Other Tools<a class="headerlink" href="#integration-with-other-tools" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th><strong>GitHub Integration</strong></th>
+<th><strong>ORCID Integration</strong></th>
+<th><strong>Institutional Storage</strong></th>
+<th><strong>Reference Managers</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Link your OSF project to your GitHub repository for complete reproducibility.</td>
+<td>Connect your ORCID profile for automatic publication tracking.</td>
+<td>Add institutional storage accounts for additional backup.</td>
+<td>Export citations directly to Zotero, Mendeley, and other tools.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="best-practices-summary">Best Practices Summary<a class="headerlink" href="#best-practices-summary" title="Permanent link">&para;</a></h2>
+<p><strong>For successful OSF + DataPipe deployment:</strong></p>
+<ul>
+<li>✅ <strong>Test thoroughly:</strong> Always verify data flow before launching</li>
+<li>✅ <strong>Document everything:</strong> Use OSF project descriptions and wiki features</li>
+<li>✅ <strong>Plan for scale:</strong> Consider data volume and analysis requirements</li>
+<li>✅ <strong>Backup strategy:</strong> Enable CSV fallback and monitor regularly</li>
+<li>✅ <strong>Team coordination:</strong> Set clear access permissions and roles</li>
+<li>✅ <strong>Ethical compliance:</strong> Ensure all necessary approvals before data collection</li>
+</ul>
+<blockquote>
+<p><strong>Remember:</strong> OSF and DataPipe provide powerful infrastructure for research data management. Take advantage of the built-in features for version control, collaboration, and reproducibility to enhance your study's impact and credibility.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/andreifoldes/timediary" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
