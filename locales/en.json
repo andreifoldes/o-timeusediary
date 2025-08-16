@@ -67,7 +67,8 @@
     "noActivities": "No activities found",
     "fillRequired": "Please fill in all required activities",
     "submitSuccess": "Diary submitted successfully",
-    "submitError": "Error submitting diary"
+    "submitError": "Error submitting diary",
+    "timelineMissing": "There is information missing from this timeline. Would you like to add anything?"
   },
   "activities": {
     "otherNotListed": "Other not listed (enter)"

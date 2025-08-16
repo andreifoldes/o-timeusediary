@@ -14,7 +14,7 @@
         "name": "Primary activity",
         "description": "",
         "mode": "single-choice",
-        "min_coverage": "0",
+        "min_coverage": "10",
         "categories": [
           {
             "name": "Personal",

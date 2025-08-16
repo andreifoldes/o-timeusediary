@@ -67,7 +67,8 @@
     "noActivities": "Aucune activité trouvée",
     "fillRequired": "Veuillez remplir toutes les activités requises",
     "submitSuccess": "Journal soumis avec succès",
-    "submitError": "Erreur lors de la soumission du journal"
+    "submitError": "Erreur lors de la soumission du journal",
+    "timelineMissing": "Il manque des informations dans cette chronologie. Souhaitez-vous ajouter quelque chose ?"
   },
   "activities": {
     "otherNotListed": "Autre non listé (entrer)"

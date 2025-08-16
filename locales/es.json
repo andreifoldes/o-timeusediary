@@ -68,7 +68,8 @@
     "noActivities": "No se encontraron actividades",
     "fillRequired": "Por favor completa todas las actividades requeridas",
     "submitSuccess": "Diario enviado exitosamente",
-    "submitError": "Error al enviar el diario"
+    "submitError": "Error al enviar el diario",
+    "timelineMissing": "Falta información en esta línea de tiempo. ¿Te gustaría añadir algo?"
   },
   "activities": {
     "otherNotListed": "Otro no listado (ingresar)"

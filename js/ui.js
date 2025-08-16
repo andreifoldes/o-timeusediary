@@ -13,6 +13,163 @@ import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, goToPreviousTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 
+// Toast notification system
+function showToast(message, type = 'info', duration = 3000) {
+    // Remove any existing toasts
+    const existingToasts = document.querySelectorAll('.toast');
+    existingToasts.forEach(toast => toast.remove());
+    
+    // Create new toast
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Trigger show animation
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Remove after duration
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// Make showToast globally available for debugging and accessibility
+window.showToast = showToast;
+
+// Create invisible overlays for disabled buttons to capture real mouse/touch events
+function createDisabledButtonOverlay(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+    
+    // Remove existing overlay if any
+    const existingOverlay = document.getElementById(`${buttonId}-overlay`);
+    if (existingOverlay) {
+        existingOverlay.remove();
+    }
+    
+    const overlay = document.createElement('div');
+    overlay.id = `${buttonId}-overlay`;
+    overlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        cursor: not-allowed;
+        z-index: 10;
+        display: none;
+    `;
+    
+    // Add click handler to overlay
+    overlay.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Disabled button overlay clicked:', buttonId);
+        
+        const message = window.i18n ? 
+            window.i18n.t('messages.timelineMissing') : 
+            'There is information missing from this timeline. Would you like to add anything?';
+        showToast(message, 'warning', 4000);
+    });
+    
+    // Add touch handler for mobile
+    overlay.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Disabled button overlay touched:', buttonId);
+        
+        const message = window.i18n ? 
+            window.i18n.t('messages.timelineMissing') : 
+            'There is information missing from this timeline. Would you like to add anything?';
+        showToast(message, 'warning', 4000);
+    });
+    
+    // Position overlay directly over the button
+    button.style.position = 'relative';
+    button.appendChild(overlay);
+    return overlay;
+}
+
+// Function to update overlay visibility based on button state
+function updateDisabledButtonOverlays() {
+    const nextBtn = document.getElementById('nextBtn');
+    const navBtn = document.getElementById('navSubmitBtn');
+    
+    [nextBtn, navBtn].forEach(button => {
+        if (button) {
+            const overlay = document.getElementById(`${button.id}-overlay`);
+            if (button.disabled && overlay) {
+                overlay.style.display = 'block';
+            } else if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+    });
+}
+
+// Initialize overlays immediately and with intervals
+function initializeOverlays() {
+    console.log('Initializing overlays...');
+    
+    // Create overlays for disabled buttons
+    createDisabledButtonOverlay('nextBtn');
+    createDisabledButtonOverlay('navSubmitBtn');
+    
+    // Update overlay visibility initially
+    updateDisabledButtonOverlays();
+    
+    // Watch for button state changes using MutationObserver
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
+                updateDisabledButtonOverlays();
+            }
+        });
+    });
+    
+    // Observe both buttons for disabled attribute changes
+    const nextBtn = document.getElementById('nextBtn');
+    const navBtn = document.getElementById('navSubmitBtn');
+    
+    if (nextBtn) {
+        observer.observe(nextBtn, { attributes: true, attributeFilter: ['disabled'] });
+    }
+    if (navBtn) {
+        observer.observe(navBtn, { attributes: true, attributeFilter: ['disabled'] });
+    }
+}
+
+// Try to initialize immediately
+setTimeout(initializeOverlays, 100);
+
+// Also try when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeOverlays);
+} else {
+    initializeOverlays();
+}
+
+// Also update overlays periodically as a fallback
+setInterval(() => {
+    updateDisabledButtonOverlays();
+    
+    // Re-create overlays if they don't exist
+    if (!document.getElementById('nextBtn-overlay')) {
+        createDisabledButtonOverlay('nextBtn');
+    }
+    if (!document.getElementById('navSubmitBtn-overlay')) {
+        createDisabledButtonOverlay('navSubmitBtn');
+    }
+}, 2000);
+
+// Make the update function globally available for manual calls
+window.updateDisabledButtonOverlays = updateDisabledButtonOverlays;
+
 // Modal management
 function createModal() {
     // Check if modals already exist
@@ -359,8 +516,22 @@ function initButtons() {
 
     // Initialize the navigation submit button with proper debounce
     if (navSubmitBtn) {
+        // Allow pointer events on disabled button to show toast
+        navSubmitBtn.style.pointerEvents = 'auto';
+        
         navSubmitBtn.addEventListener('click', () => {
             const nextBtn = document.getElementById('nextBtn');
+            
+            // Check if the Next button is disabled
+            if (nextBtn && nextBtn.disabled) {
+                // Show toast message when trying to click disabled nav button
+                const message = window.i18n ? 
+                    window.i18n.t('messages.timelineMissing') : 
+                    'There is information missing from this timeline. Would you like to add anything?';
+                showToast(message, 'warning', 4000);
+                return;
+            }
+            
             if (nextBtn && !nextBtn.disabled) {
                 // Use the shared debounced function instead of programmatic click
                 handleNextButtonAction();
@@ -457,8 +628,28 @@ function initButtons() {
         }
     });
 
-    // Add click handler for Next button using shared debounced function
-    document.getElementById('nextBtn').addEventListener('click', handleNextButtonAction);
+    // Add click handler for Next button
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Allow pointer events on disabled button to show toast
+    nextBtn.style.pointerEvents = 'auto';
+    
+    nextBtn.addEventListener('click', function(e) {
+        // Check if button is disabled
+        if (nextBtn.disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Show toast message when disabled button is clicked
+            const message = window.i18n ? 
+                window.i18n.t('messages.timelineMissing') : 
+                'There is information missing from this timeline. Would you like to add anything?';
+            showToast(message, 'warning', 4000);
+            return;
+        }
+        
+        // Otherwise proceed with normal action
+        handleNextButtonAction();
+    });
 
     // Add click handler for Back button using shared debounced function
     document.getElementById('backBtn').addEventListener('click', handleBackButtonAction);
@@ -687,6 +878,7 @@ function hideLoadingModal() {
 
 // Initialize UI components
 export { 
+    showToast,
     createModal, 
     createFloatingAddButton, 
     updateFloatingButtonPosition, 
