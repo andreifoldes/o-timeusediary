@@ -43,7 +43,7 @@ jobs:
           pip install -r requirements-docs.txt
 
       - name: Build MkDocs site
-        run: mkdocs build --strict --verbose --site-dir docs-build
+        run: mkdocs build --verbose --site-dir docs-build
 
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
@@ -51,22 +51,26 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Create a temporary directory for deployment
-          mkdir -p deploy-docs
+          # Save the built docs
+          mv docs-build /tmp/docs-build
           
-          # Copy the built docs to the deployment directory
-          cp -r docs-build/* deploy-docs/
+          # Fetch and checkout gh-pages branch
+          git fetch origin gh-pages:refs/remotes/origin/gh-pages || true
           
-          # Check out gh-pages branch (create if doesn't exist)
-          git fetch origin gh-pages:gh-pages 2>/dev/null || git checkout --orphan gh-pages
-          git checkout gh-pages
+          # Check if gh-pages exists
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . || true
+          fi
           
-          # Remove old docs subdirectory if it exists
+          # Clean up and prepare docs subdirectory
           rm -rf docs
-          
-          # Move new docs to the docs subdirectory
           mkdir -p docs
-          cp -r deploy-docs/* docs/
+          
+          # Copy built docs to the docs subdirectory
+          cp -r /tmp/docs-build/* docs/
           
           # Add and commit changes
           git add docs

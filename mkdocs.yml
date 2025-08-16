@@ -73,5 +73,5 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/tamasfoldes/timediary
+      link: https://github.com/andreifoldes/timediary
   generator: false
