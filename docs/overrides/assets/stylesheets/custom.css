@@ -78,11 +78,40 @@
 
 /* Custom header styling with gradient */
 .md-header {
-  background: linear-gradient(135deg, #e8e2f5 0%, #fce4ec 50%, #fff0f2 100%);
+  background: linear-gradient(135deg, #9b8ec1 0%, #b3a5d4 50%, #c5b9e3 100%);
 }
 
 [data-md-color-scheme="slate"] .md-header {
   background: linear-gradient(135deg, #3a3649 0%, #4a3649 50%, #3a2639 100%);
+}
+
+/* Ensure header text is visible */
+.md-header__title {
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.md-header__topic {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.md-header__button {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.md-header__button:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Make navigation links more visible */
+.md-tabs__link {
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.md-tabs__link--active {
+  font-weight: 600;
 }
 
 /* Soft rounded corners for code blocks */
