@@ -4,8 +4,8 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
 
 ## 🚀 Quick Start
 
-- **[Live Demo](https://andreifoldes.github.io/timediary/index.html)** - Try the application
-- **[Documentation](https://andreifoldes.github.io/timediary/docs/index.html)** - Complete setup and configuration guides
+- **[Live Demo](https://andreifoldes.github.io/o-timeusediary/index.html)** - Try the application
+- **[Documentation](https://andreifoldes.github.io/o-timeusediary/docs/index.html)** - Complete setup and configuration guides
 
 
 ## Features
