@@ -40,7 +40,7 @@ The mobile version features a compact, touch-friendly interface with vertical co
 
 ### For Researchers
 
-Researchers can utilize O-ELIDDI to:
+Researchers can utilize O-TUD to:
 
 *   **Design and deploy time-use studies:** Customize activity categories and study durations to fit specific research needs.
 *   **Collect rich activity data:** Gather detailed information about participant's daily routines in a structured timeline format.
@@ -48,7 +48,7 @@ Researchers can utilize O-ELIDDI to:
 
 ### For Participants
 
-Participants can use O-ELIDDI to:
+Participants can use O-TUD to:
 
 *   **Record daily activities:**  Log your daily activities in an intuitive timeline interface by simply dragging and dropping activities.
 *   **Visualize time use:**  Gain insights into how your time is spent each day, week, or study period through interactive visualizations.
@@ -56,7 +56,7 @@ Participants can use O-ELIDDI to:
 
 ## Contributing
 
-We welcome contributions to O-ELIDDI!
+We welcome contributions to O-TUD!
 
 *   **Pull Requests:**  Feel free to submit pull requests for bug fixes, feature enhancements, or documentation improvements.
 *   **Issue Reporting:**  For major changes or to report issues, please open an issue first to discuss the proposed changes.
