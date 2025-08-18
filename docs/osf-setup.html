@@ -1786,6 +1786,9 @@
 <li>✅ File contains expected timeline data and metadata</li>
 </ul>
 <h2 id="data-management-on-osf">Data Management on OSF<a class="headerlink" href="#data-management-on-osf" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>🔌 Alternative Backend Integration:</strong> While OSF provides excellent research data management, the application's <code>sendData()</code> function can be easily redirected to send the tabular CSV data to any relational database (PostgreSQL, MySQL, etc.) or custom backend. Simply modify the <code>sendData()</code> function in <code>js/utils.js</code> to POST the structured data to your preferred endpoint instead of DataPipe. The data is already formatted as clean, normalized tabular records ready for database insertion.</p>
+</blockquote>
 <h3 id="file-organization">File Organization<a class="headerlink" href="#file-organization" title="Permanent link">&para;</a></h3>
 <p>DataPipe automatically organizes your files in the OSF project:</p>
 <ul>

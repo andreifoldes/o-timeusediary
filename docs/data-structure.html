@@ -1539,6 +1539,9 @@
 <li><strong>Authentication:</strong> Via experimentID in activities.json</li>
 <li><strong>Redirect:</strong> Automatic redirect to thank you page after success</li>
 </ul>
+<blockquote>
+<p><strong>🔌 Database Integration:</strong> The <code>sendData()</code> function can be easily modified to send data directly to a relational database instead of OSF. The timeline data is already structured as clean, normalized tabular records perfect for PostgreSQL, MySQL, or other database systems. Simply update the endpoint and data handling in <code>js/utils.js:sendData()</code>.</p>
+</blockquote>
 <h3 id="method-2-local-csv-download">Method 2: Local CSV Download<a class="headerlink" href="#method-2-local-csv-download" title="Permanent link">&para;</a></h3>
 <p>Downloads CSV file directly to participant's computer. Used as fallback or when DataPipe is unavailable.</p>
 <ul>
