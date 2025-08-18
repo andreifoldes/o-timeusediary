@@ -113,7 +113,10 @@ function updateDisabledButtonOverlays() {
 }
 
 // Initialize overlays immediately and with intervals
+let overlaysInitialized = false;
 function initializeOverlays() {
+    if (overlaysInitialized) return;
+    overlaysInitialized = true;
     console.log('Initializing overlays...');
     
     // Create overlays for disabled buttons
@@ -476,6 +479,10 @@ const NEXT_BUTTON_COOLDOWN = 2500; // 2.5 second cooldown
 let backButtonLastClick = 0;
 const BACK_BUTTON_COOLDOWN = 1500; // 1.5 second cooldown (shorter than Next)
 
+// Debounce variables for Undo button
+let undoButtonLastClick = 0;
+const UNDO_BUTTON_COOLDOWN = 300; // 300ms cooldown
+
 // Shared function to handle Next button logic with debounce
 const handleNextButtonAction = () => {
     const currentTime = Date.now();
@@ -510,7 +517,77 @@ const handleBackButtonAction = () => {
     }
 };
 
+// Shared function to handle Undo button logic with debounce
+const handleUndoButtonAction = () => {
+    const currentTime = Date.now();
+    if (currentTime - undoButtonLastClick < UNDO_BUTTON_COOLDOWN) {
+        console.log('Undo button on cooldown');
+        return;
+    }
+    undoButtonLastClick = currentTime;
+
+    const currentKey = getCurrentTimelineKey();
+    const currentData = getCurrentTimelineData();
+    if (currentData.length > 0) {
+        if (DEBUG_MODE) {
+            console.log('Before undo - timelineData:', window.timelineManager.activities);
+        }
+
+        // Work with a copy to avoid modifying the original array until validation passes
+        const currentDataCopy = [...currentData];
+        const lastActivity = currentDataCopy.pop();
+        
+        // Update timeline manager activities and validate
+        window.timelineManager.activities[currentKey] = currentDataCopy;
+        try {
+            window.timelineManager.metadata[currentKey].validate();
+        } catch (error) {
+            console.error('Timeline validation failed:', error);
+            // Revert the change
+            window.timelineManager.activities[currentKey] = currentData;
+            const timeline = window.timelineManager.activeTimeline;
+            const lastBlock = timeline.querySelector(`.activity-block[data-id="${lastActivity.id}"]`);
+            if (lastBlock) {
+                lastBlock.classList.add('invalid');
+                setTimeout(() => lastBlock.classList.remove('invalid'), 400);
+            }
+            return;
+        }
+        
+        if (DEBUG_MODE) {
+            console.log('Removing activity:', lastActivity);
+        }
+
+        const timeline = window.timelineManager.activeTimeline;
+        const blocks = timeline.querySelectorAll('.activity-block');
+        
+        if (DEBUG_MODE) {
+            blocks.forEach(block => {
+                console.log('Block id:', block.dataset.id, 'Last activity id:', lastActivity.id);
+            });
+        }
+        blocks.forEach(block => {
+            if (block.dataset.id === lastActivity.id) {
+                if (DEBUG_MODE) {
+                    console.log('Removing block with id:', lastActivity.id);
+                }
+                block.remove();
+            }
+        });
+
+        updateButtonStates();
+        
+        if (DEBUG_MODE) {
+            console.log('Final timelineData:', window.timelineManager.activities);
+        }
+    }
+};
+
+let buttonsInitialized = false;
 function initButtons() {
+    if (buttonsInitialized) return;
+    buttonsInitialized = true;
+    
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     const navSubmitBtn = document.getElementById('navSubmitBtn');
 
@@ -574,59 +651,8 @@ function initButtons() {
     });
 
 
-    document.getElementById('undoBtn').addEventListener('click', () => {
-        const currentKey = getCurrentTimelineKey();
-        const currentData = getCurrentTimelineData();
-        if (currentData.length > 0) {
-            if (DEBUG_MODE) {
-                console.log('Before undo - timelineData:', window.timelineManager.activities);
-            }
-
-            const lastActivity = currentData.pop();
-            // Update timeline manager activities and validate
-            window.timelineManager.activities[currentKey] = currentData;
-            try {
-                window.timelineManager.metadata[currentKey].validate();
-            } catch (error) {
-                console.error('Timeline validation failed:', error);
-                // Revert the change
-                window.timelineManager.activities[currentKey] = [...currentData, lastActivity];
-                const lastBlock = timeline.querySelector(`.activity-block[data-id="${lastActivity.id}"]`);
-                if (lastBlock) {
-                    lastBlock.classList.add('invalid');
-                    setTimeout(() => lastBlock.classList.remove('invalid'), 400);
-                }
-                return;
-            }
-            
-            if (DEBUG_MODE) {
-                console.log('Removing activity:', lastActivity);
-            }
-
-            const timeline = window.timelineManager.activeTimeline;
-            const blocks = timeline.querySelectorAll('.activity-block');
-            
-            if (DEBUG_MODE) {
-                blocks.forEach(block => {
-                    console.log('Block id:', block.dataset.id, 'Last activity id:', lastActivity.id);
-                });
-            }
-            blocks.forEach(block => {
-                if (block.dataset.id === lastActivity.id) {
-                    if (DEBUG_MODE) {
-                        console.log('Removing block with id:', lastActivity.id);
-                    }
-                    block.remove();
-                }
-            });
-
-            updateButtonStates();
-            
-            if (DEBUG_MODE) {
-                console.log('Final timelineData:', window.timelineManager.activities);
-            }
-        }
-    });
+    // Add click handler for Undo button using debounced function
+    document.getElementById('undoBtn').addEventListener('click', handleUndoButtonAction);
 
     // Add click handler for Next button
     const nextBtn = document.getElementById('nextBtn');
