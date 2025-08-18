@@ -1,0 +1,110 @@
+127.0.0.1 - - [03/Jul/2025 21:37:41] "GET /js/constants.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:37:41] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:37:41] "GET /index.html/ws HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/timeline_marker.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /env-loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/timeline.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/attributeTracker.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:05] "GET /js/autoscroll.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /js/constants.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /js/ui.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /js/timeline_container.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /js/globals.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /settings/activities.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /favicon/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:40:06] "GET /locales/en.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /env-loader.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/timeline_marker.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/i18n.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/timeline.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/autoscroll.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/attributeTracker.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/globals.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/timeline_container.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:25] "GET /js/ui.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:26] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:26] "GET /settings/activities.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:26] "GET /locales/en.json HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:43:26] "GET /favicon/favicon.ico HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:45:11] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:45:11] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:45:11] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:45:11] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:45:12] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:45:25] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:45:25] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:45:25] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:45:25] "GET /js/script.js?v=1.1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:45:26] "GET /js/script.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:46:19] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:46:19] "GET /js/ui.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:46:19] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:47:41] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:47:41] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /env-loader.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/timeline_marker.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/timeline.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/utils.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/autoscroll.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/attributeTracker.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/constants.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/globals.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/timeline_container.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /settings/activities.json HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:49:13] "GET /locales/en.json HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:50:57] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:50:57] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:52:09] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:52:09] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:52:09] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:52:09] "GET /js/script.js?v=1.1 HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:52:09] "GET /js/constants.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:52:09] "GET /js/ui.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:52:10] "GET /js/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:53:28] "GET /settings/activities.json HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:56:56] "GET /pages/thank-you.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Jul/2025 21:56:56] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:56:56] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:56:56] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:56:56] "GET /i18n.js HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:58:00] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:58:00] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:58:14] "GET /index.html?pid=9285659418453538&instructions=completed HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /env-loader.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/utils.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/timeline_marker.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/timeline.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/i18n.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/autoscroll.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/attributeTracker.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/script.js?v=1.1 HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/ui.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/globals.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/timeline_container.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:15] "GET /js/script.js HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:16] "GET /favicon/favicon.ico HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:58:16] "GET /locales/en.json HTTP/1.1" 304 -
+127.0.0.1 - - [03/Jul/2025 21:59:35] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:59:35] code 404, message File not found
+127.0.0.1 - - [03/Jul/2025 21:59:35] "GET /i18n.js HTTP/1.1" 404 -
+127.0.0.1 - - [03/Jul/2025 21:59:35] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -

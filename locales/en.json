@@ -1,0 +1,82 @@
+{
+  "instructions": {
+    "title": "Instructions",
+    "mainInstruction": "Think about the activities you did <span class=\"emphasis\">yesterday</span>. Then, fill in the full timeline with the activities you did.",
+    "step1": {
+      "title": "Select and Place an Activity",
+      "horizontal": "Choose an activity from the menu at the bottom of the screen, then place it on the timeline.",
+      "vertical": "Tap the (+) button in the bottom right corner to open the activity menu, then select an activity and tap where you want to place it on the timeline."
+    },
+    "step2": {
+      "title": "Adjust Activity Duration",
+      "horizontal": "Click and drag the edges horizontally to set the duration.",
+      "vertical": "Drag the edges vertically to set the duration."
+    },
+    "step3": {
+      "title": "Submit Your Diary",
+      "description": "Once you've recorded all your activities for the day, click the Submit button to complete your diary.",
+      "submitHelp": "Click to submit your completed diary"
+    },
+    "helpfulTools": "Helpful tools",
+    "undoHelp": "Did you make a mistake? Reverse your last action",
+    "cleanRowHelp": "Want to start over? Clean the row",
+    "customActivityHelp": "Activity not listed? Add a custom activity"
+  },
+  "buttons": {
+    "submit": "Submit",
+    "start": "Start",
+    "undo": "Undo",
+    "cleanRow": "Clean Row",
+    "next": "Next",
+    "back": "Back",
+    "backToInstructions": "Back to Instructions",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "modals": {
+    "customActivity": {
+      "title": "Enter Custom Activity",
+      "placeholder": "Enter your activity (max 30 chars)"
+    },
+    "addActivity": {
+      "title": "Add Activity"
+    },
+    "childItems": {
+      "title": "Select an option",
+      "titleFor": "Select an option for \"{activityName}\""
+    },
+    "confirmSubmit": {
+      "title": "Are you sure?",
+      "message": "You will not be able to change your responses."
+    },
+    "loading": {
+      "title": "Submitting your diary...",
+      "message": "Please wait while we save your responses."
+    }
+  },
+  "messages": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "saved": "Saved successfully",
+    "error": "An error occurred",
+    "noActivities": "No activities found",
+    "fillRequired": "Please fill in all required activities",
+    "submitSuccess": "Diary submitted successfully",
+    "submitError": "Error submitting diary",
+    "timelineMissing": "There is information missing from this timeline. Would you like to add anything?"
+  },
+  "activities": {
+    "otherNotListed": "Other not listed (enter)"
+  },
+  "thankYou": {
+    "title": "Thank You - O-ELIDDI",
+    "heading": "Thank You!",
+    "subtitle": "Your submission has been completed successfully.",
+    "message": "Thank you for participating in our <span class=\"app-name\">O-ELIDDI</span> study. Your responses have been recorded and will contribute to valuable research."
+  }
+}

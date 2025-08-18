@@ -1,0 +1,83 @@
+{
+  "instructions": {
+    "title": "Instrucciones",
+    "mainInstruction": "Piensa en las actividades que hiciste <span class=\"emphasis\">ayer</span>. Luego, completa la línea de tiempo con las actividades que realizaste.",
+    "step1": {
+      "title": "Seleccionar y Colocar una Actividad",
+      "horizontal": "Elige una actividad del menú en la parte inferior de la pantalla, luego colócala en la línea de tiempo.",
+      "vertical": "Toca el botón (+) en la esquina inferior derecha para abrir el menú de actividades, luego selecciona una actividad y toca donde quieres colocarla en la línea de tiempo."
+    },
+    "step2": {
+      "title": "Ajustar la Duración de la Actividad",
+      "horizontal": "Haz clic y arrastra los bordes horizontalmente para establecer la duración.",
+      "vertical": "Arrastra los bordes verticalmente para establecer la duración."
+    },
+    "step3": {
+      "title": "Enviar tu Diario",
+      "description": "Una vez que hayas registrado todas tus actividades del día, haz clic en el botón Enviar para completar tu diario.",
+      "submitHelp": "Haz clic para enviar tu diario completado"
+    },
+    "helpfulTools": "Herramientas útiles",
+    "undoHelp": "¿Cometiste un error? Revierte tu última acción",
+    "cleanRowHelp": "¿Quieres empezar de nuevo? Limpia la fila",
+    "customActivityHelp": "¿Actividad no listada? Añade una actividad personalizada",
+    "customActivityName": "Otra no listada (ingresar)"
+  },
+  "buttons": {
+    "submit": "Enviar",
+    "start": "Comenzar",
+    "undo": "Deshacer",
+    "cleanRow": "Limpiar Fila",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "backToInstructions": "Volver a Instrucciones",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "modals": {
+    "customActivity": {
+      "title": "Ingresa Actividad Personalizada",
+      "placeholder": "Ingresa tu actividad (máx. 30 caracteres)"
+    },
+    "addActivity": {
+      "title": "Agregar Actividad"
+    },
+    "childItems": {
+      "title": "Selecciona una opción",
+      "titleFor": "Selecciona una opción para \"{activityName}\""
+    },
+    "confirmSubmit": {
+      "title": "¿Estás seguro?",
+      "message": "No podrás cambiar tus respuestas."
+    },
+    "loading": {
+      "title": "Enviando tu diario...",
+      "message": "Por favor espera mientras guardamos tus respuestas."
+    }
+  },
+  "messages": {
+    "loading": "Cargando...",
+    "saving": "Guardando...",
+    "saved": "Guardado exitosamente",
+    "error": "Ocurrió un error",
+    "noActivities": "No se encontraron actividades",
+    "fillRequired": "Por favor completa todas las actividades requeridas",
+    "submitSuccess": "Diario enviado exitosamente",
+    "submitError": "Error al enviar el diario",
+    "timelineMissing": "Falta información en esta línea de tiempo. ¿Te gustaría añadir algo?"
+  },
+  "activities": {
+    "otherNotListed": "Otro no listado (ingresar)"
+  },
+  "thankYou": {
+    "title": "Gracias - O-ELIDDI",
+    "heading": "¡Gracias!",
+    "subtitle": "Tu envío se ha completado exitosamente.",
+    "message": "Gracias por participar en nuestro estudio <span class=\"app-name\">O-ELIDDI</span>. Tus respuestas han sido registradas y contribuirán a una investigación valiosa."
+  }
+}

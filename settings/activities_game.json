@@ -1,0 +1,80 @@
+{
+    "general": {
+      "app_name": "O-ELIDDI",
+      "version": "1.0.0",
+      "author": "John Doe",
+      "instructions": true,
+      "primary_redirect_url": "thank-you.html",
+      "fallbackToCSV": true
+    },
+    "timeline": {
+      "primary": {
+        "name": "Yesterday's Activities",
+        "description": "Please fill in the full timeline with the activities you did yesterday.",
+        "mode": "single-choice",
+        "min_coverage": "1400",
+        "categories": [
+          {
+            "name": "Activities",
+            "activities": [
+              {
+                "name": "Sleep",
+                "examples": "(moment you fall asleep to when you wake up)",
+                "color": "#9393FF"
+              },
+              {
+                "name": "Video Gaming",
+                "examples": "",
+                "color": "#93FFC6"
+              },
+              {
+                "name": "Other Digital Media Use",
+                "examples": "(incl. TV, Internet, Social Media, Smartphone, etc.)",
+                "color": "#93C6FF"
+              },
+              {
+                "name": "Personal Care",
+                "examples": "(incl. Eating, Washing, Resting, Religious Activities, etc.)",
+                "color": "#FF93C6"
+              },
+              {
+                "name": "Household and Family Care",
+                "examples": "(incl. Domestic Work, Shopping, DIY, etc.)",
+                "color": "#FFC693"
+              },
+              {
+                "name": "Work and Employment",
+                "examples": "",
+                "color": "#C6FF93"
+              },
+              {
+                "name": "Education",
+                "examples": "",
+                "color": "#93FF93"
+              },
+              {
+                "name": "Exercise and Sports",
+                "examples": "",
+                "color": "#FF9393"
+              },
+              {
+                "name": "Offline Leisure & Social Life",
+                "examples": "(incl. Social and Cultural Activities, Hobbies, Recreation, etc.)",
+                "color": "#C693FF"
+              },
+              {
+                "name": "Travel and Transportation",
+                "examples": "",
+                "color": "#FFC6C6"
+              },
+              {
+                "name": "Other not listed (enter)",
+                "examples": "",
+                "color": "#C6C6FF"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  } 

@@ -1,0 +1,2063 @@
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #475569;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --border-color: #e2e8f0;
+    --success-color: #059669;
+    --danger-color: #dc2626;
+}
+
+html {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    touch-action: pan-y pinch-zoom;
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    -webkit-overflow-scrolling: auto;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    touch-action: pan-y pinch-zoom;
+}
+
+.header-section {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1000;
+    padding: clamp(8px, 2vw, 16px) clamp(6px, 2vw, 12px);
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-canvas {
+    position: relative;
+    margin: 20px 0;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+}
+
+/* Mobile layout */
+@media (max-width: 1439.98px) {
+    .timeline-canvas {
+        flex-direction: row;
+        overflow: hidden;
+        padding: 0 2px;
+        width: 100%;
+        height: calc(100vh - var(--header-height, 80px) - var(--footer-height, 80px));
+        overscroll-behavior: none;
+        touch-action: pan-x pinch-zoom;
+        -webkit-overflow-scrolling: auto;
+    }
+
+    .timelines-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 30px;
+        padding: 0;
+        overflow-x: auto;
+        overflow-y: auto; /* Allow vertical scrolling for timeline content */
+        width: 100%;
+        justify-content: flex-start;
+        align-items: flex-start;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        height: calc(100vh - var(--header-height, 80px) - var(--footer-height, 80px));
+        overscroll-behavior: none;
+        overscroll-behavior-x: none;
+        touch-action: pan-x pan-y pinch-zoom;
+    }
+
+    /* When past-initialized-timelines-wrapper is empty, center the last-initialized-timeline-wrapper */
+    .timelines-wrapper:has(.past-initialized-timelines-wrapper:empty) {
+        justify-content: center;
+    }
+
+    .past-initialized-timelines-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        margin-right: 0;
+        overflow-x: visible;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: auto; /* Allow width to be determined by content */
+        height: 2500px; /* Match timeline content height for mobile */
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Empty past timelines wrapper should have no width */
+    .past-initialized-timelines-wrapper:empty {
+        width: 0;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        display: none;
+    }
+
+    .last-initialized-timeline-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        margin: 0;
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px; /* Fixed width for mobile */
+        height: 2500px; /* Match timeline content height for mobile */
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    
+    /* When both wrappers have timelines, adjust their spacing */
+    .timelines-wrapper:not(:has(.past-initialized-timelines-wrapper:empty)) .last-initialized-timeline-wrapper {
+        margin-left: 0; /* Reset to 0 instead of -5px */
+    }
+
+    /* Ensure timeline containers don't shrink in the scroll container */
+    .past-initialized-timelines-wrapper .timeline-container {
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px;
+        margin: 0;
+        height: 100%;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Reset desktop styles in mobile view */
+    .past-initialized-timelines-wrapper {
+        flex-direction: row !important;
+        width: auto !important;
+        margin-bottom: 0 !important;
+    }
+
+    .gradient-bar {
+        display: none !important;
+    }
+
+    .timeline-container {
+        min-width: 180px;
+        max-width: 180px;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        position: relative;
+        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .timeline-container[data-active="false"] {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .gradient-bar {
+        display: none !important;
+    }
+}
+
+/* Base styles (outside media query) */
+.past-initialized-timelines-wrapper {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    /* Initialize with timeline-count=0 */
+    --timeline-count: 0;
+}
+
+.timeline-header {
+    text-align: center;
+    margin: clamp(4px, 1.5vw, 8px) 0;
+}
+
+.timeline-title {
+    margin: 4px 0;
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: var(--text-color);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.timeline-description {
+    color: var(--secondary-color);
+    font-size: clamp(14px, 1.8vw, 16px);
+    margin: 0;
+    font-style: italic;
+}
+
+/* Base timeline styles */
+.timeline-container {
+    position: relative;
+    background: #f5f5f5;
+    margin: 2px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: visible;
+    padding: 2px;
+}
+
+.timeline-container .title {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    padding: 6px 6px 0 6px;
+    font-weight: bold;
+}
+
+.hour-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+    z-index: 2;
+}
+
+/* Desktop horizontal layout */
+@media (min-width: 1440px) {
+    .timeline-container {
+        width: 100%;
+        height: 96px;
+    }
+    
+    /* Improve text wrapping for desktop view */
+    .activity-block-text-narrow.wide.resized {
+        white-space: normal !important; /* Override any inline styles */
+        overflow: visible !important;
+        text-overflow: clip !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.6em 0.3em;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        -webkit-hyphens: auto !important;
+        hyphens: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+    }
+}
+
+/* Mobile vertical layout */
+@media (max-width: 1439.98px) {
+    .timeline {
+        height: 2500px; /* Set large height for timeline content to be scrollable */
+    }
+
+    /* Structure timeline containers to use flexbox for proper title positioning */
+    .past-initialized-timelines-wrapper .timeline-container,
+    .last-initialized-timeline-wrapper .timeline-container {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding-top: 0; /* Remove padding since we're using flexbox */
+    }
+    
+    /* Additional timeline container styles for past timelines */
+    .past-initialized-timelines-wrapper .timeline-container {
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px;
+        height: 100%;
+        overflow-y: visible;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        top: 2px; /* Align with last-initialized-timeline-wrapper */
+    }
+    
+    /* Align last initialized timeline with past timelines */
+    .last-initialized-timeline-wrapper .timeline-container {
+        flex: 0 0 auto;
+        min-width: 180px;
+        width: 180px;
+        margin: 0;
+        height: 100%;
+        overflow-y: visible;
+        overscroll-behavior: none;
+        overscroll-behavior-y: none;
+        touch-action: pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+        padding-top: 2px; /* Small padding for last initialized timeline */
+    }
+    
+    /* Position timeline titles properly in mobile layout */
+    .timeline-container .title {
+        position: relative;
+        top: 0;
+        margin-bottom: 5px;
+        flex-shrink: 0;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        padding: 6px 6px 0 6px;
+        font-weight: bold;
+    }
+    
+    .timeline-container[data-active="false"] {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .gradient-bar {
+        display: none !important;
+    }
+}
+
+.timeline {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.timeline[data-active="false"] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.timeline[data-active="false"] .time-label {
+    display: none !important;
+}
+
+.markers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-sizing: border-box;
+    left: 0;
+    top: 0;
+}
+
+
+/* Desktop horizontal markers */
+@media (min-width: 1440px) {
+    .timeline .hour-marker {
+        position: absolute;
+        height: 100%;
+        border-left: 1px solid #999;
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        align-items: flex-end;
+        bottom: 0;
+    }
+
+    .timeline .minute-marker {
+        position: absolute;
+        height: 25%;
+        bottom: 0;
+        border-left: 1px solid #ddd;
+        width: 1px;
+        margin-left: -1px;
+    }
+
+    .timeline .minute-marker-30 {
+        position: absolute;
+        bottom: 0;
+        border-left: 1px solid #ccc;
+        width: 0;
+        margin-left: -1px;
+    }
+}
+
+/* Mobile vertical markers */
+@media (max-width: 1439.98px) {
+    .timeline .hour-marker {
+        position: absolute;
+        width: 100%;
+        border-top: 1px solid #999;
+        font-size: 12px;
+        color: #999;
+    }
+
+    .timeline .hour-marker .hour-label {
+        position: absolute;
+        top: -6px; /* Align with the marker line */
+        left: -40px;
+        text-align: right;
+        width: 35px;
+        background: white;
+        padding: 2px 4px;
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Special handling for first and last hour labels */
+    .timeline .hour-marker:first-child .hour-label {
+        top: 0;
+    }
+    
+    .timeline .hour-marker:last-child .hour-label {
+        top: -12px;
+    }
+
+    .timeline .minute-marker {
+        position: absolute;
+        width: 30%;
+        right: 0;
+        border-top: 1px solid #ddd;
+        opacity: 0.5;
+    }
+
+    .timeline .minute-marker-30 {
+        position: absolute;
+        width: 50%;
+        right: 0;
+        border-top: 1px solid #ccc;
+        height: 0; /* Ensure consistent height */
+        opacity: 0.8;
+    }
+}
+
+/* Staggered positioning for markers */
+.minute-marker-30:nth-of-type(odd) {
+    top: 10%;
+}
+
+.minute-marker-30:nth-of-type(even) {
+    top: 50%;
+}
+
+.hour-label {
+    position: absolute;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+    background: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+/* Desktop horizontal layout */
+@media (min-width: 1440px) {
+    .timeline-container {
+        padding-top: 2px;  /* Reduced space for hour labels */
+    }
+    
+    .hour-label {
+        top: 5px;  /* Position above timeline */
+        transform: translateX(-50%);
+    }
+}
+
+/* Mobile vertical layout */
+@media (max-width: 1439.98px) {
+    .hour-label {
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        width: 35px;
+    }
+}
+
+.activities-container {
+    margin: 0 20px;
+    display: none; /* Hide by default */
+    width: calc(100% - 40px); /* Account for margins */
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+@media (min-width: 1440px) {
+    .activities-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 20px;
+        align-items: start;
+        visibility: visible;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: 98vw;
+        max-width: 98vw;
+        padding: 0 1vw;
+    }
+
+    .activity-category {
+        flex: 1;
+        min-width: 0;
+        max-width: 300px;
+    }
+}
+
+.activities-accordion {
+    display: none; /* Hide by default */
+}
+
+/* Only show activities-accordion when inside modal */
+#modalActivitiesContainer .activities-accordion {
+    display: block;
+}
+
+/* Hide main activities container in mobile/tablet view */
+@media (max-width: 1439.98px) {
+    #activitiesContainer {
+        display: none;
+    }
+    
+    .activity-category {
+        margin-bottom: 0;
+        padding: 0;
+        border: none;
+    }
+    
+    .activities-accordion .activity-category {
+        padding: 0;
+        margin-bottom: 0;
+    }
+    
+    .activity-category h3 {
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin: 0 0 0 0;
+        cursor: pointer;
+        border-radius: 4px;
+        position: relative;
+    }
+
+    .activity-category h3::after {
+        content: '▼';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.3s ease;
+        font-size: 16px;
+        color: #666;
+    }
+
+    .activity-category.active h3::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+    
+    .activity-category .activity-buttons {
+        display: none;
+        padding: 10px;
+    }
+    
+    .activity-category.active .activity-buttons {
+        display: block;
+    }
+}
+
+.activity-category {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow-y: auto;
+}
+
+.activity-category h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.activity-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 8px 12px 8px 24px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    background-color: #f5f5f5;
+    color: #000;
+    position: relative;
+    text-align: left;
+}
+
+.activity-button.checkbox-style {
+    padding-left: 45px;
+}
+
+
+.activity-button .checkmark {
+    position: absolute;
+    left: 12px;
+    height: 18px;
+    width: 18px;
+    background-color: transparent;
+    border: 2px solid var(--color);
+    border-radius: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.activity-button.selected .checkmark {
+    background-color: var(--color);
+    border-color: var(--color);
+}
+
+/* Hide checkmark when not in multiple-choice mode */
+#activitiesContainer:not([data-mode="multiple-choice"]) .checkmark {
+    display: none !important;
+}
+
+/* Show checkmark when in multiple-choice mode */
+#activitiesContainer[data-mode="multiple-choice"] .checkmark {
+    display: block !important;
+}
+
+.activity-button.selected .checkmark:after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.activity-text {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.activity-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.activity-examples {
+    font-size: 0.85em;
+    color: #666;
+    font-weight: 300;
+}
+
+.activity-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background-color: var(--color);
+    border-radius: 4px 0 0 4px;
+}
+
+.activity-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.activity-button.selected {
+    opacity: 0.7;
+    transform: scale(0.98);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.time-label {
+    position: absolute;
+    font-size: 11px;
+    color: #fff;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 2px 4px;
+    border-radius: 4px;
+    z-index: 20;
+}
+
+/* Desktop styles */
+@media (min-width: 1440px) {
+    .time-label {
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 1439.98px) {
+    .time-label {
+        right: -50px; /* Space from the block */
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: normal;
+        text-align: center;
+        width: 36px; /* Mobile time label width */
+        height: auto; /* Allow height to adjust */
+        min-height: 30px;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+        z-index: 100; /* Ensure visibility */
+        padding: 4px 6px; /* More padding */
+        font-size: 12px; /* Slightly larger font */
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .activity-text {
+        gap: 1px;
+    }
+    
+    .activity-examples {
+        font-size: 0.8em;
+    }
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: clamp(8px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 500;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease, transform 0.2s ease;
+    min-width: 120px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.btn i {
+    font-size: clamp(14px, 1.8vw, 16px);
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.clean-row-btn {
+    background-color: var(--danger-color);
+}
+
+.clean-row-btn:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
+.undo-btn {
+    background-color: var(--secondary-color);
+}
+
+.undo-btn:hover:not(:disabled) {
+    background-color: #334155;
+}
+
+.save-btn {
+    background-color: var(--success-color);
+}
+
+.save-btn:hover:not(:disabled) {
+    background-color: #047857;
+}
+
+.activity-block {
+    position: absolute;
+    padding: 2px 4px;
+    color: black;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: outline 0.3s ease-out;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+}
+
+.activity-block.resizing {
+    opacity: 0.8;
+}
+
+.activity-block.invalid {
+    outline: 2px solid #dc3545;
+    animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.resize-handle {
+    position: absolute;
+    z-index: 10;
+}
+
+/* Desktop resize handle */
+@media (min-width: 1440px) {
+    .activity-block {
+        cursor: default; /* Reset default cursor */
+    }
+
+    /* Left edge resize handle */
+    .activity-block::before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 0;
+        width: 10px;
+        height: 100%;
+        cursor: ew-resize;
+        z-index: 15; /* Ensure handle is above other elements */
+    }
+
+    /* Right edge resize handle */
+    .activity-block::after {
+        content: '';
+        position: absolute;
+        right: -5px;
+        top: 0;
+        width: 10px;
+        height: 100%;
+        cursor: ew-resize;
+        z-index: 15; /* Ensure handle is above other elements */
+    }
+
+    /* Center area */
+    .activity-block > * {
+        pointer-events: none; /* Allow events to pass through to resize handles */
+    }
+}
+
+/* Mobile resize handle */
+@media (max-width: 1439.98px) {
+    .activity-block {
+        cursor: ns-resize;
+    }
+}
+
+.activity-block-text-narrow {
+    width: 90%;
+    padding: 2px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 12px;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.activity-block-text-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 100%;
+    padding: 0px !important;
+    font-size: 11px !important;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/*Initial state - ellipsis */
+.activity-block-text-narrow.wide:not(.resized) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* After resize - wrap text */
+.activity-block-text-narrow.wide.resized {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.6em 0.3em;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    -webkit-hyphens: auto !important;
+    hyphens: auto !important;
+    max-height: none !important;
+    min-height: auto !important;
+    white-space: normal !important; /* Ensure text wraps */
+    overflow: visible !important; /* Override hidden */
+    text-overflow: clip !important; /* Disable ellipsis */
+}
+
+/* Style for activity blocks displaying parent name for a child selection */
+.activity-block[data-parent-name] .activity-block-text-narrow::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1439.98px) {
+    .activity-block[data-parent-name] .activity-block-text-narrow::after {
+        bottom: 2px;
+        right: 2px;
+    }
+}
+
+.gradient-bar {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to right, #fde725, #5ec962, #21918c, #3b528b, #440154);
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+/* Mobile vertical gradient bar */
+@media (max-width: 1439.98px) {
+    .gradient-bar[data-layout="vertical"] {
+        display: none;
+    }
+
+    .timeline-container {
+        position: relative;
+        z-index: 2;
+        padding-left: 2px; /* Space for hour labels and gradient bar */
+    }
+
+    .hour-marker .hour-label {
+        z-index: 3;
+        left: -55px; /* Adjusted to account for padding */
+    }
+}
+
+/* Navigation buttons */
+.back-btn {
+    background-color: var(--secondary-color);
+}
+
+.back-btn:hover:not(:disabled) {
+    background-color: #334155;
+}
+
+.next-btn {
+    background-color: var(--primary-color);
+}
+
+.next-btn:hover:not(:disabled) {
+    background-color: #1d4ed8;
+}
+
+/* When next button shows Submit text, use success color */
+.next-btn:has(i.fa-check) {
+    background-color: var(--success-color);
+}
+
+.next-btn:has(i.fa-check):hover:not(:disabled) {
+    background-color: #047857;
+}
+
+/* Floating add button for mobile */
+.floating-add-button {
+    display: none; /* Hidden by default */
+}
+
+@media (max-width: 1439.98px) {
+    .floating-add-button {
+        display: flex;
+        position: fixed;
+        bottom: max(80px, calc(var(--footer-height, 80px) + 20px));
+        width: 60px;
+        height: 60px;
+        max-width: 65px;
+        max-height: 65px;
+        border-radius: 50%;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999;
+        transition: transform 0.2s, background-color 0.2s;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+        will-change: transform;
+        transform: none !important;
+        right: 20px;
+    }
+
+    /* Only allow hover effect */
+    .floating-add-button:hover {
+        transform: scale(1.1) !important;
+        background-color: #0056b3;
+    }
+
+    /* Set a minimum space between the button and footer */
+    #instructionsFooter {
+        position: relative;
+        z-index: 1000;
+    }
+
+    /* Update the footer height on load and resize */
+    :root {
+        --footer-height: 80px;
+    }
+}
+
+/* Mobile adjustments for smaller screens */
+@media (max-width: 480px) {
+    .floating-add-button {
+        width: 50px;
+        height: 50px;
+        max-width: 55px;
+        max-height: 55px;
+        font-size: 20px;
+        bottom: max(70px, calc(var(--footer-height, 70px) + 15px));
+    }
+}
+
+/* Modal styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+}
+
+/* When modal is shown, apply flex display */
+.modal-overlay[style*="display: block"] {
+    display: flex !important;
+}
+
+.modal {
+    position: relative;
+    background-color: white;
+    padding: clamp(15px, 4vw, 30px);
+    border-radius: clamp(6px, 2vw, 12px);
+    width: clamp(280px, 90vw, 500px);
+    max-height: clamp(200px, 80vh, 600px);
+    overflow-y: auto;
+    z-index: 1002;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    color: #666;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-content {
+    padding: clamp(10px, 3vw, 25px);
+    text-align: center;
+}
+
+.modal-content h3 {
+    font-size: clamp(18px, 4vw, 24px);
+    margin-bottom: clamp(10px, 3vw, 20px);
+    color: #333;
+}
+
+.modal-content p {
+    font-size: clamp(14px, 3.5vw, 16px);
+    margin-bottom: clamp(15px, 4vw, 25px);
+    color: #666;
+    line-height: 1.4;
+}
+
+.modal .button-container {
+    display: flex;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 16px);
+    margin-top: clamp(15px, 4vw, 25px);
+    flex-wrap: wrap;
+}
+
+.modal .button-container .btn {
+    min-width: clamp(100px, 25vw, 150px);
+    padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
+    font-size: clamp(14px, 3.5vw, 16px);
+    border-radius: 4px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+/* Cancel button specific styles */
+.modal .button-container .btn.btn-secondary {
+    background-color: #2d3338;  /* Darker grey for better contrast */
+    color: #ffffff;
+}
+
+.modal .button-container .btn.btn-secondary:hover {
+    background-color: #1a1e21;  /* Even darker on hover */
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 480px) {
+    .modal {
+        width: 90%;
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .modal-content {
+        padding: 10px;
+    }
+
+    .modal .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal .button-container .btn {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .modal {
+        width: 80%;
+        max-width: 600px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .modal {
+        max-height: 90vh;
+        padding: 15px;
+    }
+
+    .modal-content {
+        padding: 10px;
+    }
+
+    .modal-content h3 {
+        margin-bottom: 10px;
+    }
+
+    .modal-content p {
+        margin-bottom: 15px;
+    }
+
+    .modal .button-container {
+        margin-top: 15px;
+    }
+}
+
+/* High-DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .modal {
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* Debug overlay disabled */
+.debugOverlay {
+    display: none;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* Controls and button container styles */
+.button-container,
+.controls {
+    display: flex;
+    gap: clamp(4px, 1vw, 10px);
+    justify-content: center;
+    padding: clamp(5px, 2vw, 10px);
+    margin: 5px 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 6px);
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 2vw, 14px);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    white-space: nowrap;
+    min-height: clamp(32px, 5vh, 40px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn i {
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+@media (max-width: 1440px) {
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .controls {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: white;
+        z-index: 1001;
+        margin: 5px 0 !important; /* Force 5px margins with !important */
+        flex-wrap: wrap;
+        order: 1;
+    }
+    
+    .timeline-title {
+        order: 2;
+        margin-top: 20px;
+    }
+    
+    .timeline-container {
+        order: 3;
+        margin-top: 20px;
+        clear: both;
+    }
+
+    .activities-container {
+        order: 4;
+        margin-top: 20px;
+    }
+
+    #instructionsFooter {
+        order: 5;
+        margin-top: 20px;
+    }
+
+    .button-container {
+        width: 100%;
+        background: white;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+}
+@keyframes flipInX {
+    0% {
+        transform: perspective(800px) rotateX(90deg);
+        opacity: 0;
+    }
+    40% {
+        transform: perspective(800px) rotateX(-20deg);
+    }
+    70% {
+        transform: perspective(800px) rotateX(10deg);
+    }
+    100% {
+        transform: perspective(800px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.timeline-header {
+    transform-style: preserve-3d;
+    perspective: 800px;
+    transform-origin: center top;
+    position: relative;
+    z-index: 1;
+}
+
+.flip-animation {
+    animation: flipInX 0.8s ease-in-out;
+    backface-visibility: visible !important;
+    transform-origin: center top;
+    display: block;
+}
+
+/* Further mobile adjustments for header section */
+@media (max-width: 1439.98px) {
+    .header-section {
+        padding: 6px 8px; /* Further reduce padding for better scalability */
+    }
+
+    .header-section h1, 
+    .header-section h2, 
+    .header-section h3, 
+    .header-section p {
+        font-size: 0.9rem; /* Smaller font sizes to prevent excessive growth */
+        line-height: 1.1;
+    }
+
+    .header-section .timeline-title {
+        margin: 0;
+        font-size: 1rem; /* Adjust font size as needed */
+        /* Additional styles if necessary */
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .header-section {
+        padding: clamp(4px, 1vw, 8px);
+    }
+
+    .controls {
+        margin: 2px 0;
+        gap: clamp(2px, 1vw, 4px);
+    }
+
+    .btn {
+        padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
+        font-size: clamp(11px, 3.2vw, 13px);
+        min-height: clamp(28px, 4vh, 32px);
+    }
+
+    .btn i {
+        font-size: clamp(12px, 3.2vw, 14px);
+    }
+
+    .timeline-title {
+        font-size: clamp(14px, 4vw, 16px);
+        margin: 2px 0;
+    }
+
+    .timeline-description {
+        font-size: clamp(12px, 3vw, 14px);
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .header-section {
+        padding: 2px;
+    }
+
+    .controls {
+        gap: 2px;
+        padding: 4px;
+    }
+
+    .btn {
+        padding: 4px 8px;
+        font-size: clamp(10px, 3vw, 12px);
+        min-height: 26px;
+    }
+
+    .btn i {
+        font-size: clamp(11px, 3vw, 13px);
+    }
+
+    .timeline-title {
+        font-size: clamp(13px, 4.5vw, 15px);
+        margin: 2px 0;
+    }
+
+    .timeline-description {
+        font-size: clamp(11px, 3.2vw, 13px);
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .header-section {
+        padding: 4px;
+    }
+
+    .controls {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .btn {
+        padding: 4px 10px;
+        min-height: 30px;
+    }
+
+    .timeline-title {
+        margin: 4px 0;
+    }
+}
+
+/* Floating add button adjustments */
+@media (max-width: 1439.98px) {
+    .floating-add-button {
+        width: clamp(50px, 15vw, 60px);
+        height: clamp(50px, 15vw, 60px);
+        max-width: clamp(50px, 15vw, 65px);
+        max-height: clamp(50px, 15vw, 65px);
+        font-size: clamp(20px, 6vw, 24px);
+        position: fixed;
+        bottom: max(80px, calc(var(--footer-height, 80px) + 20px)); /* Adjust based on footer height */
+        right: clamp(10px, 3vw, 20px);
+    }
+
+    /* Set a minimum space between the button and footer */
+    #instructionsFooter {
+        position: relative;
+        z-index: 1000; /* Ensure footer stays above other content */
+    }
+
+    /* Update the footer height on load and resize */
+    :root {
+        --footer-height: 80px; /* Default height */
+    }
+}
+
+/* Additional adjustment for smaller screens */
+@media (max-width: 480px) {
+    .floating-add-button {
+        width: clamp(45px, 12vw, 50px);
+        height: clamp(45px, 12vw, 50px);
+        max-width: clamp(45px, 12vw, 50px);
+        max-height: clamp(45px, 12vw, 50px);
+        font-size: clamp(18px, 5vw, 20px);
+        bottom: max(70px, calc(var(--footer-height, 70px) + 15px));
+    }
+}
+
+/* Responsive styling for modal text input */
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: clamp(14px, 2vw, 18px);
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Navigation button style from instructions */
+.navigation-btn {
+    font-size: clamp(14px, 1.8vw, 16px);
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2vw, 20px);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    min-width: clamp(100px, 20vw, 120px);
+    background-color: transparent;
+    border: 2px solid var(--primary-color, #2563eb);
+    color: var(--primary-color, #2563eb);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.navigation-btn i {
+    font-size: clamp(12px, 1.5vw, 14px);
+}
+
+.navigation-btn:hover {
+    background-color: var(--primary-color, #2563eb);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .navigation-btn {
+        font-size: 13px;
+        padding: 8px 16px;
+        min-width: auto;
+        gap: 6px;
+    }
+    
+    .navigation-btn i {
+        font-size: 12px;
+    }
+}
+
+/* Hide title for last-initialized-timeline-wrapper in desktop layout */
+.last-initialized-timeline-wrapper .timeline-container .title {
+    display: none;
+}
+
+/* Show title for last-initialized-timeline-wrapper in mobile layout */
+@media (max-width: 1439.98px) {
+    .last-initialized-timeline-wrapper .timeline-container .title {
+        display: block;
+    }
+    
+    /* Add padding to account for visible title positioned at top: -25px */
+    .last-initialized-timeline-wrapper .timeline-container {
+        padding-top: 2px;
+    }
+}
+
+/* Submit button styles */
+.nav-submit-btn {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background-color: #1d4ed8;
+}
+
+/* When nav submit button shows Submit text, use success color */
+.nav-submit-btn.submit-mode {
+    background-color: var(--success-color);
+}
+
+.nav-submit-btn.submit-mode:hover:not(:disabled) {
+    background-color: #047857;
+}
+
+.nav-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.nav-submit-btn i {
+    font-size: 16px;
+}
+
+/* Mobile adjustments for the footer */
+@media (max-width: 480px) {
+    #instructionsFooter {
+        padding: 15px !important;
+    }
+
+    .nav-submit-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .nav-submit-btn i {
+        font-size: 14px;
+    }
+}
+
+/* PID Modal specific styles - add after existing modal styles */
+.pid-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(15px, 3vw, 20px);
+}
+
+.pid-modal .modal-content h3 {
+    color: var(--text-color);
+    font-size: clamp(18px, 4vw, 24px);
+    margin: 0;
+    font-weight: 600;
+}
+
+.pid-modal .modal-content p {
+    color: var(--secondary-color);
+    font-size: clamp(14px, 3.5vw, 16px);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.pid-modal .modal-content input[type="text"] {
+    width: 100%;
+    padding: clamp(8px, 2vw, 12px);
+    font-size: clamp(14px, 3.5vw, 16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.pid-modal .modal-content input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.pid-modal .modal-content input[type="text"].error {
+    border-color: var(--danger-color);
+    background-color: #fef2f2;
+}
+
+.pid-modal .button-container {
+    margin-top: clamp(20px, 4vw, 30px);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .pid-modal .modal-content {
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .pid-modal .modal-content input[type="text"] {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .pid-modal .button-container {
+        margin-top: 15px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .pid-modal .modal-content {
+        gap: 10px;
+    }
+
+    .pid-modal .modal-content h3 {
+        font-size: 18px;
+    }
+
+    .pid-modal .modal-content p {
+        font-size: 14px;
+    }
+
+    .pid-modal .button-container {
+        margin-top: 12px;
+    }
+}
+
+/* Activity button with child items */
+.activity-button.has-child-items {
+    position: relative;
+    padding-right: 30px; /* Extra space for the dropdown icon */
+}
+
+.activity-button.has-child-items::after {
+    content: '\25BC'; /* Downward-pointing triangle */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+}
+
+.activity-button.has-child-items:hover::after {
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Child Items Modal Styles */
+#childItemsModal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    touch-action: none;
+}
+
+#childItemsModal .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#childItemsModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#childItemsModal .modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+#childItemsModal .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#childItemsModal .close:hover,
+#childItemsModal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#childItemsModal .child-item-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#childItemsModal .child-item-button {
+    padding: 12px 20px 12px 24px;  /* Added left padding for the indicator */
+    text-align: left;
+    background-color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;  /* Added for absolute positioning of the indicator */
+}
+
+#childItemsModal .child-item-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background-color: var(--color);
+    border-radius: 6px 0 0 6px;
+}
+
+#childItemsModal .child-item-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f0f0f0;
+}
+
+/* Mobile styles for child items modal */
+@media (max-width: 480px) {
+    #childItemsModal .modal-content {
+        width: 90%;
+        margin: 30% auto;
+        padding: 15px;
+    }
+    
+    #childItemsModal .child-item-button {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+}
+
+/* Landscape mode styles for child items modal */
+@media (orientation: landscape) and (max-height: 600px) {
+    #childItemsModal .modal-content {
+        margin: 5% auto;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}
+
+/* Loading Modal Styles */
+.loading-modal {
+    text-align: center;
+}
+
+.loading-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(15px, 4vw, 25px);
+    padding: clamp(25px, 6vw, 40px);
+}
+
+.loading-modal h3 {
+    margin: 0;
+    font-size: clamp(18px, 4vw, 24px);
+    color: #333;
+    font-weight: 600;
+}
+
+.loading-modal p {
+    margin: 0;
+    font-size: clamp(14px, 3.5vw, 16px);
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Loading Spinner Animation */
+.loading-spinner {
+    width: clamp(40px, 8vw, 60px);
+    height: clamp(40px, 8vw, 60px);
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobile adjustments for loading modal */
+@media (max-width: 480px) {
+    .loading-modal .modal-content {
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 2px;
+    }
+}
+
+/* Landscape adjustments for loading modal */
+@media (orientation: landscape) and (max-height: 600px) {
+    .loading-modal .modal-content {
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .loading-modal h3 {
+        font-size: 18px;
+    }
+
+    .loading-modal p {
+        font-size: 14px;
+    }
+}
+
+/* Base styling for vertical text in activity blocks */
+.activity-block-text-vertical-mobile {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: unset !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+}
+
+/* Style for the inner span element that will have the vertical text */
+.activity-block-text-vertical-mobile span {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    height: 90%;
+    max-height: 95%;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: 500;
+    overflow: hidden;
+    padding: 5px 0;
+}
+
+/* Adjust font size based on block length */
+.activity-block[data-length="180"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="190"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="200"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="210"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length="220"] .activity-block-text-vertical-mobile span {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+/* For even longer blocks, reduce font size and letter spacing */
+.activity-block[data-length^="3"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="4"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="5"] .activity-block-text-vertical-mobile span {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+}
+
+/* For very long blocks, further adjust sizing */
+.activity-block[data-length^="6"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="7"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="8"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="9"] .activity-block-text-vertical-mobile span {
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+/* For blocks approaching full day length */
+.activity-block[data-length^="10"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="11"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="12"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="13"] .activity-block-text-vertical-mobile span,
+.activity-block[data-length^="14"] .activity-block-text-vertical-mobile span {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+/* Allow clicks on disabled Next/Submit buttons for toast messages */
+#nextBtn:disabled,
+#navSubmitBtn:disabled {
+    pointer-events: auto !important;
+    cursor: not-allowed;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #323232;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 10000;
+    max-width: 90%;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toast.warning {
+    background: #f59e0b;
+}
+
+.toast.error {
+    background: #dc2626;
+}
+
+.toast.success {
+    background: #059669;
+}
+
+.toast.info {
+    background: #3b82f6;
+}
+
+/* Mobile adjustments for toast */
+@media (max-width: 768px) {
+    .toast {
+        bottom: 80px; /* Higher up to avoid floating button */
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+}
+

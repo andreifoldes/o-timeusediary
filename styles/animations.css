@@ -1,0 +1,31 @@
+@keyframes flipInX {
+    0% {
+        transform: perspective(800px) rotateX(90deg);
+        opacity: 0;
+    }
+    40% {
+        transform: perspective(800px) rotateX(-20deg);
+    }
+    70% {
+        transform: perspective(800px) rotateX(10deg);
+    }
+    100% {
+        transform: perspective(800px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.timeline-header {
+    transform-style: preserve-3d;
+    perspective: 800px;
+    transform-origin: center top;
+    position: relative;
+    z-index: 1;
+}
+
+.flip-animation {
+    animation: flipInX 0.8s ease-in-out;
+    backface-visibility: visible !important;
+    transform-origin: center top;
+    display: block;
+}

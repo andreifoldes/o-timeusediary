@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Instructions | Time Use Diary</title>
+    <link rel="stylesheet" href="instructions.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- Load i18n (internationalization) module -->
+    <script src="../js/i18n.js" type="module"></script>
+</head>
+<body>
+    <div class="content">
+        <h1 data-i18n="instructions.title">Instructions</h1>
+        <p class="main-instruction" data-i18n-html="instructions.mainInstruction">Think about the activities you did <span class="emphasis">yesterday</span>. Then, fill in the full timeline with the activities you did.</p>
+
+        <div class="instruction-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h2 data-i18n="instructions.step1.title">Select and Place an Activity</h2>
+                <div class="layout-specific horizontal-layout">
+                    <p data-i18n="instructions.step1.horizontal">Choose an activity from the menu at the bottom of the screen, then place it on the timeline.</p>
+                    <div class="gif-container loading" data-src="../assets/select_horizontal.gif">
+                        <img src="../assets/select_horizontal.gif" alt="Selecting an activity from the bottom menu" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    </div>
+                </div>
+                <div class="layout-specific vertical-layout">
+                    <p data-i18n="instructions.step1.vertical">Tap the (+) button in the bottom right corner to open the activity menu, then select an activity and tap where you want to place it on the timeline.</p>
+                    <div class="gif-container loading" data-src="../assets/select_vertical_new.gif">
+                        <img src="../assets/select_vertical_new.gif" alt="Selecting an activity in vertical layout" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instruction-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h2 data-i18n="instructions.step2.title">Adjust Activity Duration</h2>
+                <div class="layout-specific horizontal-layout">
+                    <p data-i18n="instructions.step2.horizontal">Click and drag the edges horizontally to set the duration.</p>
+                    <div class="gif-container loading" data-src="../assets/adjust_horizontal.gif">
+                        <img src="../assets/adjust_horizontal.gif" alt="Placing and adjusting activity duration horizontally" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    </div>
+                </div>
+                <div class="layout-specific vertical-layout">
+                    <p data-i18n="instructions.step2.vertical">Drag the edges vertically to set the duration.</p>
+                    <div class="gif-container loading" data-src="../assets/adjust_vertical_new.gif">
+                        <img src="../assets/adjust_vertical_new.gif" alt="Placing and adjusting activity duration vertically" loading="lazy" onload="this.parentElement.classList.remove('loading')" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instruction-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h2 data-i18n="instructions.step3.title">Submit Your Diary</h2>
+                <p data-i18n="instructions.step3.description">Once you've recorded all your activities for the day, click the Submit button to complete your diary.</p>
+                <div class="feature-item">
+                    <button class="btn save-btn" data-i18n-aria-label="instructions.step3.submitHelp">
+                        <i class="fas fa-check" aria-hidden="true"></i>
+                        <span data-i18n="buttons.submit">Submit</span>
+                    </button>
+                    <p data-i18n="instructions.step3.submitHelp">Click to submit your completed diary</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="helpful-tools">
+            <h2 data-i18n="instructions.helpfulTools">Helpful tools</h2>
+            <div class="controls features-grid">
+                <div class="feature-item">
+                    <button class="btn undo-btn" data-is-active="false" disabled data-i18n-aria-label="instructions.undoHelp">
+                        <i class="fas fa-undo" aria-hidden="true"></i>
+                        <span data-i18n="buttons.undo">Undo</span>
+                    </button>
+                    <p data-i18n="instructions.undoHelp">Did you make a mistake? Reverse your last action</p>
+                </div>
+
+                <div class="feature-item">
+                    <button class="btn clean-row-btn" data-is-active="false" disabled data-i18n-aria-label="instructions.cleanRowHelp">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        <span data-i18n="buttons.cleanRow">Clean Row</span>
+                    </button>
+                    <p data-i18n="instructions.cleanRowHelp">Want to start over? Clean the row</p>
+                </div>
+
+                <div class="feature-item">
+                    <button class="activity-button" style="--color: #C6C6FF;" data-i18n-aria-label="instructions.customActivityHelp">
+                        <span class="activity-text">
+                            <span class="activity-name" data-i18n="instructions.customActivityName">Other not listed (enter)</span>
+                        </span>
+                    </button>
+                    <p data-i18n="instructions.customActivityHelp">Activity not listed? Add a custom activity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navigation">
+        <button id="continueBtn" data-i18n-aria-label="buttons.start">
+            <span data-i18n="buttons.start">Start</span>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+    </nav>
+    <script type="module" src="instructions.js"></script>
+</body>
+</html>
