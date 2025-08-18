@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy App to GitHub Pages
 
 on:
   push:
@@ -6,19 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,14 +24,45 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+      - name: Deploy to gh-pages branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          # Save the app files
+          mkdir -p /tmp/app-deploy
+          rsync -av --exclude='.git' --exclude='node_modules' --exclude='docs/' --exclude='mkdocs.yml' --exclude='requirements-docs.txt' --exclude='.github' . /tmp/app-deploy/
+          
+          # Fetch and checkout gh-pages branch
+          git fetch origin gh-pages:refs/remotes/origin/gh-pages || true
+          
+          # Check if gh-pages exists
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout gh-pages
+            # Preserve docs directory if it exists
+            if [ -d "docs" ]; then
+              cp -r docs /tmp/docs-backup
+            fi
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . || true
+          fi
+          
+          # Clean up current directory (keep .git and docs)
+          find . -maxdepth 1 ! -name '.git' ! -name 'docs' ! -name '.' -exec rm -rf {} \;
+          
+          # Copy app files to root
+          cp -r /tmp/app-deploy/* .
+          
+          # Restore docs if they existed
+          if [ -d "/tmp/docs-backup" ]; then
+            rm -rf docs
+            cp -r /tmp/docs-backup docs
+          fi
+          
+          # Add and commit changes
+          git add .
+          git commit -m "Deploy application to GitHub Pages" || echo "No changes to commit"
+          
+          # Push to gh-pages branch
+          git push origin gh-pages

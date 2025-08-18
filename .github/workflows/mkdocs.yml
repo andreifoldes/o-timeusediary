@@ -65,15 +65,16 @@ jobs:
             git rm -rf . || true
           fi
           
-          # Clean up current directory (keep .git)
-          find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} \;
+          # Clean up docs directory only
+          rm -rf docs
+          mkdir -p docs
           
-          # Copy built docs to root directory
-          cp -r /tmp/docs-build/* .
+          # Copy built docs to docs subdirectory
+          cp -r /tmp/docs-build/* docs/
           
           # Add and commit changes
-          git add .
-          git commit -m "Deploy MkDocs documentation" || echo "No changes to commit"
+          git add docs
+          git commit -m "Deploy MkDocs documentation to /docs subdirectory" || echo "No changes to commit"
           
           # Push to gh-pages branch
           git push origin gh-pages
