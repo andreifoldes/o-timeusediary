@@ -127,6 +127,8 @@ Verify that data flows correctly from your study to OSF:
 
 ## Data Management on OSF
 
+> **🔌 Alternative Backend Integration:** While OSF provides excellent research data management, the application's `sendData()` function can be easily redirected to send the tabular CSV data to any relational database (PostgreSQL, MySQL, etc.) or custom backend. Simply modify the `sendData()` function in `js/utils.js` to POST the structured data to your preferred endpoint instead of DataPipe. The data is already formatted as clean, normalized tabular records ready for database insertion.
+
 ### File Organization
 
 DataPipe automatically organizes your files in the OSF project:

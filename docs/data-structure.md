@@ -26,6 +26,8 @@ Automatically uploads data to OSF via JSPsych DataPipe service. This is the defa
 - **Authentication:** Via experimentID in activities.json
 - **Redirect:** Automatic redirect to thank you page after success
 
+> **🔌 Database Integration:** The `sendData()` function can be easily modified to send data directly to a relational database instead of OSF. The timeline data is already structured as clean, normalized tabular records perfect for PostgreSQL, MySQL, or other database systems. Simply update the endpoint and data handling in `js/utils.js:sendData()`.
+
 ### Method 2: Local CSV Download
 
 Downloads CSV file directly to participant's computer. Used as fallback or when DataPipe is unavailable.
