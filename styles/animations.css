@@ -15,17 +15,37 @@
     }
 }
 
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .timeline-header {
     transform-style: preserve-3d;
     perspective: 800px;
-    transform-origin: center top;
+    transform-origin: center center;
     position: relative;
     z-index: 1;
 }
 
+/* Remove the flip animation from container - only animate children */
 .flip-animation {
-    animation: flipInX 0.8s ease-in-out;
-    backface-visibility: visible !important;
-    transform-origin: center top;
-    display: block;
+    /* No animation on the container itself */
+}
+
+/* Individual element animations */
+.flip-animation .timeline-title,
+.flip-animation .timeline-description {
+    animation: fadeSlideIn 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.flip-animation .timeline-description {
+    animation-delay: 0.15s;
 }

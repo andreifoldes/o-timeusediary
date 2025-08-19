@@ -35,7 +35,7 @@ body {
     top: 0;
     background: white;
     z-index: 1000;
-    padding: clamp(8px, 2vw, 16px) clamp(6px, 2vw, 12px);
+    padding: 0 2px;
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -93,6 +93,7 @@ body {
         flex-direction: row;
         gap: 0;
         margin-right: 0;
+        margin-bottom: 20px !important;
         overflow-x: visible;
         overflow-y: visible; /* Allow scroll to pass through to parent */
         flex: 0 0 auto;
@@ -150,7 +151,7 @@ body {
     .past-initialized-timelines-wrapper {
         flex-direction: row !important;
         width: auto !important;
-        margin-bottom: 0 !important;
+        margin-bottom: 20px !important;
     }
 
     .gradient-bar {
@@ -187,7 +188,7 @@ body {
     display: flex;
     flex-direction: column-reverse;
     gap: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -253,7 +254,24 @@ body {
 @media (min-width: 1440px) {
     .timeline-container {
         width: 100%;
-        height: 96px;
+        height: 80px;
+    }
+    
+    /* Horizontal layout for timeline header - title and description side by side */
+    .timeline-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 12px;
+        margin: clamp(4px, 1vw, 6px) 0;
+    }
+    
+    .timeline-title {
+        margin: 0;
+    }
+    
+    .timeline-description {
+        margin: 0;
     }
     
     /* Improve text wrapping for desktop view */
@@ -484,6 +502,26 @@ body {
     .hour-label {
         top: 5px;  /* Position above timeline */
         transform: translateX(-50%);
+    }
+    
+    /* Conditional styling for inactive timelines */
+    .timeline-container[data-active="false"] {
+        height: 60px; /* 20px shorter than default 80px */
+    }
+    
+    .timeline-container[data-active="false"] .hour-label,
+    .timeline-container[data-active="false"] .hour-labels {
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+    
+    /* Activities within inactive timelines */
+    .timeline-container[data-active="false"] .activity-block {
+        height: 100% !important;
+        top: 0 !important;
     }
 }
 
@@ -1365,19 +1403,39 @@ body {
     }
 }
 
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .timeline-header {
     transform-style: preserve-3d;
     perspective: 800px;
-    transform-origin: center top;
+    transform-origin: center center;
     position: relative;
     z-index: 1;
 }
 
+/* Remove the flip animation from container - only animate children */
 .flip-animation {
-    animation: flipInX 0.8s ease-in-out;
-    backface-visibility: visible !important;
-    transform-origin: center top;
-    display: block;
+    /* No animation on the container itself */
+}
+
+/* Individual element animations */
+.flip-animation .timeline-title,
+.flip-animation .timeline-description {
+    animation: fadeSlideIn 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.flip-animation .timeline-description {
+    animation-delay: 0.15s;
 }
 
 /* Further mobile adjustments for header section */
