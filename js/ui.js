@@ -500,6 +500,7 @@ const handleNextButtonAction = () => {
     } else {
         // For other timelines, proceed to next timeline
         addNextTimeline();
+        window.selectedActivity = null;
     }
 };
 
