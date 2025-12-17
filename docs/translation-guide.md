@@ -1,6 +1,6 @@
 # Translation Guide
 
-Step-by-step instructions for adding new language translations to O-ELIDDI
+Step-by-step instructions for adding new language translations to O-TUD
 
 [← Back to Documentation Index](index.md)
 
@@ -16,7 +16,7 @@ Step-by-step instructions for adding new language translations to O-ELIDDI
 
 ## Overview
 
-The O-ELIDDI application uses a comprehensive internationalization (i18n) system that supports multiple languages with easy extensibility. This guide provides step-by-step instructions for adding new language translations.
+The O-TUD application uses a comprehensive internationalization (i18n) system that supports multiple languages with easy extensibility. This guide provides step-by-step instructions for adding new language translations.
 
 ### Currently Supported Languages
 

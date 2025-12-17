@@ -6,7 +6,7 @@ Mobile and Desktop Interface Design
 
 ## Overview
 
-O-ELIDDI features fully responsive layouts that adapt to different screen sizes and device types. The application automatically detects the user's device and optimizes the interface for the best user experience.
+O-TUD features fully responsive layouts that adapt to different screen sizes and device types. The application automatically detects the user's device and optimizes the interface for the best user experience.
 
 ### Key Responsive Features
 
@@ -107,4 +107,4 @@ The responsive design is implemented using:
 
 ---
 
-*O-ELIDDI Responsive Layouts Documentation - Designed for optimal user experience across all devices*
+*O-TUD Responsive Layouts Documentation - Designed for optimal user experience across all devices*

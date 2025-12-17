@@ -6,7 +6,7 @@ Configuring participant links and study parameters
 
 ## Overview
 
-O-ELIDDI automatically captures URL parameters and incorporates them into the study data. This allows you to pass participant identifiers, study conditions, and other metadata through the URL without requiring participants to manually enter this information.
+O-TUD automatically captures URL parameters and incorporates them into the study data. This allows you to pass participant identifiers, study conditions, and other metadata through the URL without requiring participants to manually enter this information.
 
 > **Key Feature:** All URL parameters are automatically captured and included in the exported data, making it easy to link diary data back to your participant management system.
 

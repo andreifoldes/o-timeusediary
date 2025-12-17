@@ -40,7 +40,7 @@ The `general` section contains study-wide settings:
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `experimentID` | String | **Required** | JSPsych DataPipe experiment ID for data collection |
-| `app_name` | String | Optional | Display name for the application (e.g., "O-ELIDDI") |
+| `app_name` | String | Optional | Display name for the application (e.g., "O-TUD") |
 | `version` | String | Optional | Version number for tracking |
 | `author` | String | Optional | Study author or researcher name |
 | `language` | String | Optional | Language code (e.g., "en", "es", "fr") |

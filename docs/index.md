@@ -1,4 +1,4 @@
-# O-ELIDDI Documentation
+# O-TUD Documentation
 
 Open-source Electronic Timeline-based Interactive Daily Diary  
 A web-based research tool for collecting and visualizing daily activities
@@ -15,7 +15,7 @@ A web-based research tool for collecting and visualizing daily activities
 
 ## Quick Start
 
-O-ELIDDI is a client-side web application designed for time-use research studies. It provides an interactive timeline interface where participants can log their daily activities across multiple dimensions (primary activities, location, social context, device usage, and enjoyment ratings).
+O-TUD is a client-side web application designed for time-use research studies. It provides an interactive timeline interface where participants can log their daily activities across multiple dimensions (primary activities, location, social context, device usage, and enjoyment ratings).
 
 ### Key Features
 
@@ -36,7 +36,7 @@ The application is built with vanilla JavaScript (ES6+ modules) and designed for
 
 ## Research Applications
 
-O-ELIDDI is particularly suitable for:
+O-TUD is particularly suitable for:
 
 - Time-use studies and activity pattern research
 - Daily diary studies in psychology and sociology
@@ -56,4 +56,4 @@ Requires modern browser features:
 
 ---
 
-O-ELIDDI is open-source software designed for research purposes. See individual documentation pages for detailed setup instructions.
+O-TUD is open-source software designed for research purposes. See individual documentation pages for detailed setup instructions.

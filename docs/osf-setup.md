@@ -6,7 +6,7 @@ Setting up data collection with JSPsych DataPipe and Open Science Framework
 
 ## Overview
 
-The Open Science Framework (OSF) provides a robust, free platform for research data management. Combined with JSPsych DataPipe, it offers secure, automated data collection for O-ELIDDI studies with built-in research best practices.
+The Open Science Framework (OSF) provides a robust, free platform for research data management. Combined with JSPsych DataPipe, it offers secure, automated data collection for O-TUD studies with built-in research best practices.
 
 ### Key Benefits
 
@@ -19,7 +19,7 @@ The Open Science Framework (OSF) provides a robust, free platform for research d
 Before you begin, ensure you have:
 
 - [ ] An OSF account (free at osf.io)
-- [ ] A deployed O-ELIDDI study (see GitHub Pages Deployment guide)
+- [ ] A deployed O-TUD study (see GitHub Pages Deployment guide)
 - [ ] Basic understanding of your study's data collection needs
 - [ ] Institutional ethics approval (if required)
 
@@ -66,27 +66,38 @@ Set up automated data collection through DataPipe:
 
 ### 4. Create DataPipe Experiment
 
-Configure DataPipe for your O-ELIDDI study:
+Configure DataPipe for your O-TUD study:
 
 1. In DataPipe dashboard, click **"Create Experiment"**
-2. Enter experiment details:
-   - **Name:** Match your OSF project name
-   - **Description:** Brief description of data being collected
-   - **OSF Project:** Select the project you created in Step 2
-3. Configure data settings:
-   - **Data format:** CSV (default, recommended for O-ELIDDI)
-   - **File naming:** Use default pattern
-   - **Storage location:** Confirm correct OSF project
-4. Click **"Create Experiment"**
-5. **Important:** Copy the generated **Experiment ID** - you'll need this for O-ELIDDI configuration
+2. On the first page, enter experiment details:
+   - **Name:** Match your OSF project name for easy identification
+   - **Description:** Brief description of data being collected (e.g., "Daily activity timeline data from O-TUD study")
+   - **OSF Project:** Select the project you created in Step 2 from the dropdown menu
+3. Click **"Next"** to proceed to data settings
+4. Configure data settings on the second page:
+   - **Data format:** CSV (default, recommended for O-TUD)
+   - **File naming:** Use default pattern (automatic timestamps)
+   - **Storage location:** Confirm correct OSF project is selected
+5. Click **"Next"** to proceed to the final page
+6. **CRITICAL:** On the final page, configure these two essential settings:
+   - **Status - Enable data collection?** Toggle to **On**
+     - This must be enabled for your study to collect data successfully
+     - If left off, participants will receive errors when submitting their timelines
+   - **Data Validation - Enable data validation?** Toggle to **Off**
+     - This must be disabled for O-TUD data to be accepted
+     - If left on, DataPipe will reject O-TUD's data format and submissions will fail
+7. Click **"Create Experiment"** to finalize setup
+8. **Important:** Copy the generated **Experiment ID** - you'll need this for O-TUD configuration
 
 > **Experiment ID Example:** Your ID will look something like `eR8ENvJPgQth` - save this securely as it's required for data collection.
 
-### 5. Configure O-ELIDDI
+> **Common Mistake:** Many users forget to configure the final page settings correctly. Ensure both: (1) "Enable data collection?" is toggled **On**, and (2) "Enable data validation?" is toggled **Off**. Missing either setting will cause all participant data submissions to fail. Double-check both toggles before deploying your study.
+
+### 5. Configure O-TUD
 
 Connect your study to DataPipe by updating the configuration:
 
-1. Open your O-ELIDDI repository (locally or on GitHub)
+1. Open your O-TUD repository (locally or on GitHub)
 2. Edit `settings/activities.json`
 3. Update the `experimentID` field in the `general` section:
 
@@ -112,7 +123,7 @@ Connect your study to DataPipe by updating the configuration:
 
 Verify that data flows correctly from your study to OSF:
 
-1. Deploy your updated O-ELIDDI configuration
+1. Deploy your updated O-TUD configuration
 2. Complete a test timeline on your deployed study
 3. Submit the data and note any error messages
 4. Check your OSF project for the uploaded data file
@@ -193,12 +204,12 @@ Before collecting data, ensure:
 
 ### Data Anonymization
 
-O-ELIDDI can collect anonymous data by design:
+O-TUD can collect anonymous data by design:
 
 - **No personal information:** Timeline data contains no inherently identifying information
 - **Participant IDs:** Use anonymous codes rather than names or email addresses
 - **URL parameters:** Avoid including sensitive information in participant links
-- **IP addresses:** Not collected by O-ELIDDI or stored in timeline data
+- **IP addresses:** Not collected by O-TUD or stored in timeline data
 
 ## Collaboration and Team Management
 

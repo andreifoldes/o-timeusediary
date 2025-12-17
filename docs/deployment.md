@@ -1,12 +1,12 @@
 # GitHub Pages Deployment
 
-Complete guide to deploying O-ELIDDI on GitHub Pages
+Complete guide to deploying O-TUD on GitHub Pages
 
 [← Back to Documentation Home](index.md)
 
 ## Overview
 
-GitHub Pages provides free static website hosting, making it ideal for deploying O-ELIDDI studies. This guide covers forking the repository, configuring your study, and setting up automatic deployment.
+GitHub Pages provides free static website hosting, making it ideal for deploying O-TUD studies. This guide covers forking the repository, configuring your study, and setting up automatic deployment.
 
 ### Benefits of GitHub Pages
 
@@ -29,9 +29,9 @@ Before you begin, ensure you have:
 
 ### 1. Fork the Repository
 
-Create your own copy of the O-ELIDDI repository:
+Create your own copy of the O-TUD repository:
 
-1. Visit the original O-ELIDDI repository on GitHub
+1. Visit the original O-TUD repository on GitHub
 2. Click the **"Fork"** button in the top-right corner
 3. Choose your GitHub account as the destination
 4. Optionally rename the repository (e.g., "my-timeuse-study")
@@ -121,6 +121,14 @@ Configure GitHub to serve your repository as a website:
 4. Under **Source**, select **"Deploy from a branch"**
 5. Select **main** branch and **/ (root)** folder
 6. Click **Save**
+
+> **Optional:** To display your GitHub Pages link prominently on your repository homepage:
+> 1. Go to your repository's main page
+> 2. Click the settings icon (⚙️) next to **About**
+> 3. Check **"Use your GitHub Pages website"**
+> 4. Click **Save changes**
+>
+> This will show your live Time Use Diary URL in the repository's About section for easy access.
 
 ### 7. Access Your Study
 
@@ -293,7 +301,7 @@ For more detailed analytics, consider integrating:
 ### Data Protection
 
 - **No sensitive data in repository:** Never commit participant data or API keys
-- **Use environment variables:** For any sensitive configuration (though O-ELIDDI uses public DataPipe IDs)
+- **Use environment variables:** For any sensitive configuration (though O-TUD uses public DataPipe IDs)
 - **Review commit history:** Ensure no accidentally committed sensitive information
 
 ### Participant Privacy
@@ -312,7 +320,7 @@ For more detailed analytics, consider integrating:
 
 ### Mobile Optimization
 
-O-ELIDDI is mobile-responsive by default, but consider:
+O-TUD is mobile-responsive by default, but consider:
 
 - Testing on various device sizes
 - Optimizing activity names for small screens

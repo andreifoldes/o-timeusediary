@@ -1,12 +1,12 @@
 # Data Structure & Export
 
-Understanding O-ELIDDI's data collection and export formats
+Understanding O-TUD's data collection and export formats
 
 [← Back to Documentation Home](index.md)
 
 ## Overview
 
-O-ELIDDI collects timeline data across multiple dimensions and exports it in a structured CSV format. The application supports two export methods: automatic upload to OSF via JSPsych DataPipe (recommended) or local CSV download as a fallback.
+O-TUD collects timeline data across multiple dimensions and exports it in a structured CSV format. The application supports two export methods: automatic upload to OSF via JSPsych DataPipe (recommended) or local CSV download as a fallback.
 
 ### Key Features
 
@@ -82,7 +82,7 @@ Each row in the exported CSV represents one time interval with activity informat
 
 ## Time Format and Structure
 
-O-ELIDDI uses a 24-hour timeline starting at 4:00 AM to accommodate typical sleep patterns and ensure each "day" captures a complete sleep cycle.
+O-TUD uses a 24-hour timeline starting at 4:00 AM to accommodate typical sleep patterns and ensure each "day" captures a complete sleep cycle.
 
 ### Time Representation
 
@@ -104,7 +104,7 @@ Activities are recorded in configurable time intervals (default: 10 minutes). Ea
 
 ## Multi-Timeline Data
 
-O-ELIDDI supports multiple concurrent timelines, each representing a different dimension of activity tracking:
+O-TUD supports multiple concurrent timelines, each representing a different dimension of activity tracking:
 
 ### Example Timeline Types
 
