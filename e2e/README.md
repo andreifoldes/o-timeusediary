@@ -155,7 +155,7 @@ The tests are configured via `playwright.config.js` in the root directory. Key s
 
 To test against production:
 ```bash
-TEST_URL=https://andreifoldes.github.io/timediary npm run test:e2e
+TEST_URL=https://andreifoldes.github.io/o-timeusediary npm run test:e2e
 ```
 
 ## Debugging
