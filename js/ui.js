@@ -1,6 +1,6 @@
-import { 
-    getCurrentTimelineData, 
-    getCurrentTimelineKey, 
+import {
+    getCurrentTimelineData,
+    getCurrentTimelineKey,
     sendData,
     formatTimeHHMM,
     timeToMinutes,
@@ -12,6 +12,7 @@ import {
 import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, goToPreviousTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
+import { triggerSave, onSubmitSuccess } from './autosave.js';
 
 // Toast notification system
 function showToast(message, type = 'info', duration = 3000) {
@@ -280,11 +281,21 @@ function createModal() {
         confirmationModal.style.cssText = 'display: none !important';
     });
 
-    confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
+    confirmationModal.querySelector('#confirmOk').addEventListener('click', async () => {
         confirmationModal.style.cssText = 'display: none !important';
         showLoadingModal();
-        sendData();
         document.getElementById('nextBtn').disabled = true;
+
+        try {
+            const result = await sendData();
+            if (result && result.success) {
+                // Clear autosave draft after successful submission
+                await onSubmitSuccess();
+            }
+        } catch (error) {
+            console.error('[submit] Error during submission:', error);
+            // Don't clear autosave on error - user can retry
+        }
     });
 
     // Create loading modal
@@ -642,8 +653,11 @@ function initButtons() {
                 alert('Timeline validation error: ' + error.message);
                 return;
             }
-                
+
             updateButtonStates();
+
+            // Trigger autosave after clearing activities
+            triggerSave();
 
             if (DEBUG_MODE) {
                 console.log('Timeline data after clean:', window.timelineManager.activities);

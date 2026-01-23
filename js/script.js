@@ -40,6 +40,7 @@ import {
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
+import { initAutosave, triggerSave } from './autosave.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -1900,10 +1901,13 @@ function initTimelineInteraction(timeline) {
                     window.autoScrollModule.disable();
                 }
                 updateButtonStates();
+
+                // Trigger autosave after resize
+                triggerSave();
             }
         }
     });
-    
+
     // Add click and touch handling with debounce
     let lastClickTime = 0;
     const CLICK_DELAY = 300; // milliseconds
@@ -2239,6 +2243,9 @@ function initTimelineInteraction(timeline) {
 
         updateButtonStates();
 
+        // Trigger autosave after activity placement
+        triggerSave();
+
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     };
@@ -2364,8 +2371,18 @@ async function init() {
             throw new Error('Timelines wrapper not found');
         }
 
-        // Check for state restoration from breakpoint resize
-        const wasRestored = restoreStateFromResize();
+        // Check for state restoration from breakpoint resize (sessionStorage - short-term)
+        const wasRestoredFromResize = restoreStateFromResize();
+
+        // Check for autosave restoration from IndexedDB (long-term persistence)
+        let wasRestoredFromAutosave = false;
+        if (!wasRestoredFromResize) {
+            const autosaveResult = await initAutosave();
+            wasRestoredFromAutosave = (autosaveResult === 'restored');
+            console.log('[init] Autosave result:', autosaveResult);
+        }
+
+        const wasRestored = wasRestoredFromResize || wasRestoredFromAutosave;
 
         if (wasRestored) {
             // State was restored - rebuild all timelines up to the restored position
@@ -2381,6 +2398,11 @@ async function init() {
             // Normal initialization - start fresh
             window.timelineManager.currentIndex = -1;
             await addNextTimeline();
+        }
+
+        // Initialize autosave if we restored from resize (autosave was already initialized otherwise)
+        if (wasRestoredFromResize) {
+            await initAutosave();
         }
         
         // Update gradient bar layout
