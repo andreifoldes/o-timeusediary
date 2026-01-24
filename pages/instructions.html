@@ -17,7 +17,9 @@
     <script src="../js/i18n.js" type="module"></script>
 </head>
 <body>
-    <div class="content">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <main id="main-content" role="main" class="content">
         <h1 data-i18n="instructions.title">Instructions</h1>
         <p class="main-instruction" data-i18n-html="instructions.mainInstruction">Think about the activities you did <span class="emphasis">yesterday</span>. Then, fill in the full timeline with the activities you did.</p>
 
@@ -103,9 +105,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <nav class="navigation">
+    <nav role="navigation" aria-label="Page navigation" class="navigation">
         <button id="continueBtn" data-i18n-aria-label="buttons.start">
             <span data-i18n="buttons.start">Start</span>
             <i class="fas fa-chevron-right" aria-hidden="true"></i>

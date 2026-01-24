@@ -41,6 +41,7 @@ import {
 import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
+import { initAnnouncer, announceActivityPlaced, announceActivityResized, announceActivityRemoved } from './announcer.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -1904,6 +1905,11 @@ function initTimelineInteraction(timeline) {
 
                 // Trigger autosave after resize
                 triggerSave();
+
+                // Announce resize for screen readers
+                const target = event.target;
+                const activityName = target.querySelector('div[class^="activity-block-text"]')?.textContent?.trim() || 'Activity';
+                announceActivityResized(activityName, target.dataset.start, target.dataset.end);
             }
         }
     });
@@ -2246,6 +2252,13 @@ function initTimelineInteraction(timeline) {
         // Trigger autosave after activity placement
         triggerSave();
 
+        // Announce activity placement for screen readers
+        announceActivityPlaced(
+            activityData.activity,
+            currentBlock.dataset.start,
+            currentBlock.dataset.end
+        );
+
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     };
@@ -2299,6 +2312,9 @@ async function init() {
     // Guard against duplicate initialization (can happen with live-reload)
     if (window._otudInitCalled) return;
     window._otudInitCalled = true;
+
+    // Initialize accessibility announcer early
+    initAnnouncer();
 
     try {
         // Reinitialize timelineManager with an empty study object
