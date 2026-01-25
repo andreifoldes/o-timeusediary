@@ -1,6 +1,6 @@
-import { 
-    getCurrentTimelineData, 
-    getCurrentTimelineKey, 
+import {
+    getCurrentTimelineData,
+    getCurrentTimelineKey,
     sendData,
     formatTimeHHMM,
     timeToMinutes,
@@ -12,6 +12,29 @@ import {
 import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, goToPreviousTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
+import { triggerSave, onSubmitSuccess } from './autosave.js';
+
+/**
+ * Checks if the user prefers reduced motion
+ * @returns {boolean} True if user has enabled reduced motion preference
+ */
+export function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Make prefersReducedMotion globally available
+window.prefersReducedMotion = prefersReducedMotion;
+
+/**
+ * Gets the appropriate scroll behavior based on user preference
+ * @returns {'auto' | 'smooth'} Scroll behavior value
+ */
+export function getScrollBehavior() {
+    return prefersReducedMotion() ? 'auto' : 'smooth';
+}
+
+// Make getScrollBehavior globally available
+window.getScrollBehavior = getScrollBehavior;
 
 // Toast notification system
 function showToast(message, type = 'info', duration = 3000) {
@@ -280,11 +303,21 @@ function createModal() {
         confirmationModal.style.cssText = 'display: none !important';
     });
 
-    confirmationModal.querySelector('#confirmOk').addEventListener('click', () => {
+    confirmationModal.querySelector('#confirmOk').addEventListener('click', async () => {
         confirmationModal.style.cssText = 'display: none !important';
         showLoadingModal();
-        sendData();
         document.getElementById('nextBtn').disabled = true;
+
+        try {
+            const result = await sendData();
+            if (result && result.success) {
+                // Clear autosave draft after successful submission
+                await onSubmitSuccess();
+            }
+        } catch (error) {
+            console.error('[submit] Error during submission:', error);
+            // Don't clear autosave on error - user can retry
+        }
     });
 
     // Create loading modal
@@ -642,8 +675,11 @@ function initButtons() {
                 alert('Timeline validation error: ' + error.message);
                 return;
             }
-                
+
             updateButtonStates();
+
+            // Trigger autosave after clearing activities
+            triggerSave();
 
             if (DEBUG_MODE) {
                 console.log('Timeline data after clean:', window.timelineManager.activities);
@@ -815,7 +851,7 @@ function scrollToActiveTimeline() {
                     // Scroll to make timeline fully visible
                     timelinesWrapper.scrollTo({
                         left: activeTimeline.offsetLeft,
-                        behavior: 'smooth'
+                        behavior: getScrollBehavior()
                     });
                 }
             }
@@ -828,7 +864,7 @@ function scrollToActiveTimeline() {
         
         window.scrollTo({
             top: scrollTarget,
-            behavior: 'smooth'
+            behavior: getScrollBehavior()
         });
     }
 }
@@ -904,12 +940,12 @@ function hideLoadingModal() {
 }
 
 // Initialize UI components
-export { 
+export {
     showToast,
-    createModal, 
-    createFloatingAddButton, 
-    updateFloatingButtonPosition, 
-    updateButtonStates, 
+    createModal,
+    createFloatingAddButton,
+    updateFloatingButtonPosition,
+    updateButtonStates,
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,
