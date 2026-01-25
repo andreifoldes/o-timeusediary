@@ -2525,3 +2525,964 @@ body {
     }
 }
 
+/* ==========================================================================
+   Comprehensive Reduced Motion Support
+   For users with vestibular disorders or motion sensitivity
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    /* Disable all animations and transitions by default */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Re-enable opacity transitions (safe for vestibular disorders) */
+    .activity-button,
+    .activity-block,
+    .toast,
+    .modal,
+    .modal-overlay,
+    .save-indicator,
+    .validation-gap-link {
+        transition: opacity 0.15s ease !important;
+    }
+
+    /* Replace animated focus indicators with static high-contrast ones */
+    :focus {
+        outline: 3px solid #000 !important;
+        outline-offset: 2px !important;
+    }
+
+    :focus:not(:focus-visible) {
+        outline: none !important;
+    }
+
+    :focus-visible {
+        outline: 3px solid #2563eb !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Disable smooth scrolling globally */
+    html,
+    body {
+        scroll-behavior: auto !important;
+    }
+
+    /* Disable shake animation for invalid blocks - use color only */
+    .activity-block.invalid {
+        animation: none !important;
+        outline: 3px solid #dc2626 !important;
+        outline-offset: -3px !important;
+    }
+
+    /* Disable flip animation for timeline header */
+    .flip-animation,
+    .flip-animation .timeline-title,
+    .flip-animation .timeline-description {
+        animation: none !important;
+    }
+
+    /* Disable loading spinner rotation - use pulsing opacity instead */
+    .loading-spinner,
+    .save-spinner {
+        animation: none !important;
+    }
+
+    .loading-spinner::after {
+        content: '...';
+        animation: none !important;
+    }
+
+    /* Disable toast slide animation */
+    .toast {
+        transform: translateX(-50%) translateY(0) !important;
+    }
+
+    .toast.show {
+        opacity: 1 !important;
+        transform: translateX(-50%) translateY(0) !important;
+    }
+
+    /* Disable modal transform animations */
+    .modal-overlay .modal {
+        transform: none !important;
+    }
+
+    /* Disable hover transform effects */
+    .activity-button:hover,
+    .btn:hover,
+    .child-item-button:hover,
+    .validation-gap-link:hover {
+        transform: none !important;
+    }
+
+    /* Disable accordion arrow rotation - use text indicator instead */
+    .activity-category h3::after {
+        transition: none !important;
+    }
+
+    /* Static drop target indicator instead of pulsing */
+    .drop-target,
+    .timeline-gap {
+        animation: none !important;
+        outline: 3px dashed currentColor !important;
+    }
+
+    /* Disable resize handle scaling */
+    .resize-handle:hover::before {
+        transform: translateY(-50%) !important;
+    }
+}
+
+/* ==========================================================================
+   High Contrast Mode Support
+   For users with low vision
+   ========================================================================== */
+
+@media (prefers-contrast: more) {
+    /* Increase border widths */
+    .activity-block,
+    .timeline,
+    .modal,
+    .btn,
+    input,
+    select,
+    textarea {
+        border-width: 2px !important;
+    }
+
+    /* Ensure text has maximum contrast */
+    body {
+        color: #000 !important;
+        background: #fff !important;
+    }
+
+    /* High contrast focus indicators */
+    :focus,
+    :focus-visible {
+        outline: 4px solid #000 !important;
+        outline-offset: 2px !important;
+    }
+
+    /* High contrast buttons */
+    .btn,
+    .activity-button,
+    button {
+        border: 2px solid #000 !important;
+    }
+
+    /* High contrast activity blocks */
+    .activity-block {
+        border: 2px solid #000 !important;
+    }
+
+    /* High contrast timeline markers */
+    .time-marker,
+    .timeline-marker {
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* High contrast form elements */
+    input,
+    select,
+    textarea {
+        border: 2px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    /* High contrast links */
+    a {
+        text-decoration: underline !important;
+        text-decoration-thickness: 2px !important;
+    }
+
+    /* High contrast disabled states */
+    [disabled],
+    .disabled {
+        opacity: 0.6 !important;
+        border-style: dashed !important;
+    }
+
+    /* High contrast error states */
+    .error,
+    .invalid,
+    [aria-invalid="true"] {
+        border-color: #000 !important;
+        outline: 3px solid #000 !important;
+    }
+
+    /* High contrast success states */
+    .success,
+    .valid {
+        border-color: #000 !important;
+    }
+
+    /* Ensure icons are visible */
+    svg,
+    .icon {
+        stroke-width: 2px !important;
+    }
+}
+
+/* Dark mode + High contrast */
+@media (prefers-color-scheme: dark) and (prefers-contrast: more) {
+    body {
+        color: #fff !important;
+        background: #000 !important;
+    }
+
+    :focus,
+    :focus-visible {
+        outline-color: #fff !important;
+    }
+
+    .btn,
+    .activity-button,
+    button,
+    .activity-block,
+    input,
+    select,
+    textarea {
+        border-color: #fff !important;
+    }
+
+    a {
+        color: #fff !important;
+    }
+}
+
+/* ==========================================================================
+   Enhanced Increased Contrast Preference (macOS, iOS)
+   For users who enable "Increase Contrast" in system accessibility settings
+   ========================================================================== */
+
+@media (prefers-contrast: more) {
+    :root {
+        --border-width: 2px;
+        --focus-outline-width: 3px;
+    }
+
+    body {
+        font-weight: 500; /* Slightly bolder text for improved readability */
+    }
+
+    /* Activity items need stronger visual distinction */
+    .activity-item,
+    .activity-button {
+        border: var(--border-width) solid #000;
+        font-weight: 600;
+    }
+
+    /* Timeline slots need visible boundaries */
+    .timeline-slot,
+    .timeline .hour-marker {
+        border: 1px solid #333;
+    }
+
+    /* Ensure activity category colors have sufficient contrast */
+    /* Add a dark border to all colored activities */
+    .activity-item[data-category],
+    .activity-button[data-category],
+    .activity-block {
+        border: 2px solid #000;
+    }
+
+    /* Activity blocks need high contrast borders */
+    .activity-block {
+        border-color: #000 !important;
+        box-shadow: 0 0 0 1px #000;
+    }
+
+    /* Floating add button */
+    .floating-add-button {
+        border: 2px solid #000;
+    }
+
+    /* Modal boundaries */
+    .modal,
+    .modal-content {
+        border: 2px solid #000;
+    }
+
+    /* Toast notifications */
+    .toast {
+        border: 2px solid #000;
+    }
+}
+
+/* ==========================================================================
+   Windows High Contrast / Forced Colors Mode
+   For users who enable Windows High Contrast themes
+   Uses system color keywords to respect user's chosen color scheme
+   ========================================================================== */
+
+@media (forced-colors: active) {
+    /* Use system colors for activity items */
+    .activity-item,
+    .activity-button {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+        forced-color-adjust: none;
+    }
+
+    /* Selected and focused states use system highlight colors */
+    .activity-item.selected,
+    .activity-item:focus,
+    .activity-button.selected,
+    .activity-button:focus {
+        background: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
+    }
+
+    /* Activity blocks on timeline */
+    .activity-block {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+        forced-color-adjust: none;
+    }
+
+    .activity-block:focus {
+        outline: 3px solid Highlight;
+        outline-offset: 2px;
+    }
+
+    /* Timeline slots */
+    .timeline-slot,
+    .timeline {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    .timeline-slot.filled {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    /* Drop target indicator for drag-and-drop */
+    .timeline-slot.drop-target,
+    .drop-target {
+        border: 3px dashed Highlight;
+    }
+
+    /* Preserve category distinction with patterns instead of colors */
+    /* Sleep category - diagonal stripes */
+    .activity-item[data-category="sleep"],
+    .activity-button[data-category="sleep"],
+    .activity-block[data-category="sleep"] {
+        background: repeating-linear-gradient(
+            45deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    /* Work category - horizontal stripes */
+    .activity-item[data-category="work"],
+    .activity-button[data-category="work"],
+    .activity-block[data-category="work"] {
+        background: repeating-linear-gradient(
+            0deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    /* Leisure category - vertical stripes */
+    .activity-item[data-category="leisure"],
+    .activity-button[data-category="leisure"],
+    .activity-block[data-category="leisure"] {
+        background: repeating-linear-gradient(
+            90deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    /* Personal care category - dots pattern */
+    .activity-item[data-category="personal-care"],
+    .activity-button[data-category="personal-care"],
+    .activity-block[data-category="personal-care"] {
+        background: radial-gradient(
+            circle,
+            CanvasText 1px,
+            Canvas 1px
+        );
+        background-size: 8px 8px;
+    }
+
+    /* Progress bar */
+    .progress-fill,
+    .progress-bar-fill {
+        background: Highlight;
+        forced-color-adjust: none;
+    }
+
+    .progress-bar,
+    .progress-container {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    /* Buttons use system button colors */
+    button,
+    .btn {
+        border: 2px solid ButtonText;
+        background: ButtonFace;
+        color: ButtonText;
+        forced-color-adjust: none;
+    }
+
+    button:hover,
+    button:focus,
+    .btn:hover,
+    .btn:focus {
+        background: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
+    }
+
+    button:disabled,
+    .btn:disabled {
+        opacity: 0.5;
+        border-style: dashed;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal {
+        background: Canvas;
+        border: 3px solid CanvasText;
+    }
+
+    .modal-close {
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    /* Form inputs */
+    input,
+    select,
+    textarea {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: 3px solid Highlight;
+        outline-offset: 1px;
+    }
+
+    /* Links */
+    a {
+        color: LinkText;
+        text-decoration: underline;
+    }
+
+    a:visited {
+        color: VisitedText;
+    }
+
+    a:focus {
+        outline: 2px solid Highlight;
+    }
+
+    /* Toast notifications */
+    .toast {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    .toast.warning,
+    .toast.error {
+        border-color: CanvasText;
+        border-width: 3px;
+    }
+
+    /* Floating add button */
+    .floating-add-button {
+        background: ButtonFace;
+        color: ButtonText;
+        border: 2px solid ButtonText;
+    }
+
+    .floating-add-button:hover,
+    .floating-add-button:focus {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    /* Timeline markers and labels */
+    .hour-marker,
+    .minute-marker,
+    .hour-label {
+        border-color: CanvasText;
+        color: CanvasText;
+    }
+
+    /* Save indicator */
+    .save-indicator {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    .save-indicator.saved {
+        border-color: CanvasText;
+    }
+
+    /* Recovery modal */
+    .recovery-modal {
+        background: Canvas;
+        border: 3px solid CanvasText;
+    }
+
+    .recovery-modal-icon {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    .recovery-modal h2,
+    .recovery-modal p {
+        color: CanvasText;
+    }
+
+    /* Loading spinner - simplified for forced colors */
+    .loading-spinner {
+        border: 3px solid CanvasText;
+        border-top-color: Highlight;
+    }
+
+    /* Checkbox/checkmark styling */
+    .activity-button .checkmark {
+        border-color: CanvasText;
+        background: Canvas;
+    }
+
+    .activity-button.selected .checkmark {
+        background: Highlight;
+        border-color: HighlightText;
+    }
+
+    /* Color indicator bars on activity buttons */
+    .activity-button::before {
+        background-color: CanvasText;
+    }
+
+    .activity-button.selected::before {
+        background-color: HighlightText;
+    }
+}
+
+/* ==========================================================================
+   Preferences Panel - In-app accessibility settings control
+   ========================================================================== */
+
+/* Trigger button - positioned top-right */
+.preferences-trigger-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1050;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid #2563eb;
+    border-radius: 8px;
+    background: #fff;
+    color: #2563eb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.preferences-trigger-btn:hover {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transform: scale(1.05);
+}
+
+.preferences-trigger-btn:focus {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+    background: #2563eb;
+    color: #fff;
+}
+
+.preferences-trigger-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Panel container */
+#preferences-panel {
+    position: fixed;
+    top: 60px;
+    right: 12px;
+    z-index: 1051;
+    width: 280px;
+    max-width: calc(100vw - 24px);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+#preferences-panel[hidden] {
+    display: none;
+}
+
+/* Panel header */
+.preferences-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preferences-panel-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.preferences-close-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--secondary-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.preferences-close-btn:hover {
+    background: #f1f5f9;
+}
+
+.preferences-close-btn:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 1px;
+}
+
+/* Panel content */
+.preferences-panel-content {
+    padding: 12px 16px;
+}
+
+/* Individual preference item */
+.preference-item {
+    padding: 12px 0;
+}
+
+.preference-item:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preference-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.preference-toggle input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.preference-toggle label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    flex: 1;
+}
+
+.preference-description {
+    margin: 6px 0 0 32px;
+    font-size: 12px;
+    color: var(--secondary-color);
+    line-height: 1.4;
+}
+
+/* Note at bottom */
+.preferences-note {
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 11px;
+    color: var(--secondary-color);
+    background: #f8fafc;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .preferences-trigger-btn {
+        top: 8px;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .preferences-trigger-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    #preferences-panel {
+        top: 52px;
+        right: 8px;
+        width: calc(100vw - 16px);
+        max-width: 320px;
+    }
+}
+
+/* ==========================================================================
+   Class-based Accessibility Overrides
+   These mirror the media queries but can be controlled via JavaScript
+   Priority: Class selector > Media query (due to specificity/order)
+   ========================================================================== */
+
+/* Reduce Motion - Class-based alternative to @media (prefers-reduced-motion) */
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
+/* Re-enable safe opacity transitions */
+html.reduce-motion .activity-button,
+html.reduce-motion .activity-block,
+html.reduce-motion .toast,
+html.reduce-motion .modal,
+html.reduce-motion .modal-overlay,
+html.reduce-motion .save-indicator {
+    transition: opacity 0.15s ease !important;
+}
+
+html.reduce-motion :focus-visible {
+    outline: 3px solid var(--primary-color) !important;
+    outline-offset: 2px !important;
+}
+
+html.reduce-motion .activity-block.invalid {
+    animation: none !important;
+    outline: 3px solid #dc2626 !important;
+}
+
+html.reduce-motion .flip-animation,
+html.reduce-motion .flip-animation .timeline-title,
+html.reduce-motion .flip-animation .timeline-description {
+    animation: none !important;
+}
+
+html.reduce-motion .loading-spinner,
+html.reduce-motion .save-spinner {
+    animation: none !important;
+}
+
+html.reduce-motion .toast {
+    transform: translateX(-50%) translateY(0) !important;
+}
+
+html.reduce-motion .toast.show {
+    opacity: 1 !important;
+}
+
+html.reduce-motion .modal-overlay .modal {
+    transform: none !important;
+}
+
+html.reduce-motion .activity-button:hover,
+html.reduce-motion .btn:hover,
+html.reduce-motion .child-item-button:hover {
+    transform: none !important;
+}
+
+/* High Contrast - Class-based alternative to @media (prefers-contrast: more) */
+html.high-contrast {
+    --border-width: 2px;
+    --focus-outline-width: 3px;
+}
+
+html.high-contrast body {
+    font-weight: 500;
+}
+
+html.high-contrast .activity-item,
+html.high-contrast .activity-button {
+    border: 2px solid #000;
+    font-weight: 600;
+}
+
+html.high-contrast .timeline-slot,
+html.high-contrast .timeline .hour-marker {
+    border: 1px solid #333;
+}
+
+html.high-contrast .activity-block {
+    border: 2px solid #000 !important;
+    box-shadow: 0 0 0 1px #000;
+}
+
+html.high-contrast .floating-add-button {
+    border: 2px solid #000;
+}
+
+html.high-contrast .modal,
+html.high-contrast .modal-content {
+    border: 2px solid #000;
+}
+
+html.high-contrast .toast {
+    border: 2px solid #000;
+}
+
+html.high-contrast :focus,
+html.high-contrast :focus-visible {
+    outline: 4px solid #000 !important;
+    outline-offset: 2px !important;
+}
+
+html.high-contrast .btn,
+html.high-contrast button {
+    border: 2px solid #000 !important;
+}
+
+html.high-contrast .recovery-modal {
+    border: 3px solid #000;
+}
+
+html.high-contrast .recovery-modal .btn {
+    border: 2px solid currentColor;
+}
+
+html.high-contrast .recovery-modal .btn:focus {
+    outline-width: 4px;
+}
+
+/* Preferences panel in high contrast */
+html.high-contrast #preferences-panel {
+    border: 2px solid #000;
+}
+
+html.high-contrast .preferences-trigger-btn {
+    border: 2px solid #000;
+}
+
+html.high-contrast .preference-toggle input[type="checkbox"] {
+    outline: 2px solid #000;
+}
+
+/* Dark mode support for preferences panel */
+@media (prefers-color-scheme: dark) {
+    .preferences-trigger-btn {
+        background: #1e293b;
+        color: #60a5fa;
+        border-color: #60a5fa;
+        box-shadow: 0 2px 8px rgba(96, 165, 250, 0.25);
+    }
+
+    .preferences-trigger-btn:hover {
+        background: #3b82f6;
+        color: #fff;
+        border-color: #3b82f6;
+    }
+
+    #preferences-panel {
+        background: #1e293b;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .preferences-panel-header {
+        border-color: #334155;
+    }
+
+    .preferences-panel-header h2 {
+        color: #f1f5f9;
+    }
+
+    .preferences-close-btn {
+        color: #94a3b8;
+    }
+
+    .preferences-close-btn:hover {
+        background: #334155;
+    }
+
+    .preference-toggle label {
+        color: #f1f5f9;
+    }
+
+    .preference-description {
+        color: #94a3b8;
+    }
+
+    .preference-item {
+        border-color: #334155;
+    }
+
+    .preferences-note {
+        background: #0f172a;
+        color: #64748b;
+        border-color: #334155;
+    }
+}
+
+/* High contrast + dark mode for preferences panel */
+html.high-contrast #preferences-panel,
+@media (prefers-contrast: more) {
+    #preferences-panel {
+        border: 2px solid currentColor;
+    }
+
+    .preferences-trigger-btn {
+        border: 2px solid currentColor;
+    }
+}
+

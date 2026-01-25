@@ -14,6 +14,28 @@ import { addNextTimeline, goToPreviousTimeline, renderActivities } from './scrip
 import { DEBUG_MODE } from './constants.js';
 import { triggerSave, onSubmitSuccess } from './autosave.js';
 
+/**
+ * Checks if the user prefers reduced motion
+ * @returns {boolean} True if user has enabled reduced motion preference
+ */
+export function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Make prefersReducedMotion globally available
+window.prefersReducedMotion = prefersReducedMotion;
+
+/**
+ * Gets the appropriate scroll behavior based on user preference
+ * @returns {'auto' | 'smooth'} Scroll behavior value
+ */
+export function getScrollBehavior() {
+    return prefersReducedMotion() ? 'auto' : 'smooth';
+}
+
+// Make getScrollBehavior globally available
+window.getScrollBehavior = getScrollBehavior;
+
 // Toast notification system
 function showToast(message, type = 'info', duration = 3000) {
     // Remove any existing toasts
@@ -829,7 +851,7 @@ function scrollToActiveTimeline() {
                     // Scroll to make timeline fully visible
                     timelinesWrapper.scrollTo({
                         left: activeTimeline.offsetLeft,
-                        behavior: 'smooth'
+                        behavior: getScrollBehavior()
                     });
                 }
             }
@@ -842,7 +864,7 @@ function scrollToActiveTimeline() {
         
         window.scrollTo({
             top: scrollTarget,
-            behavior: 'smooth'
+            behavior: getScrollBehavior()
         });
     }
 }
@@ -918,12 +940,12 @@ function hideLoadingModal() {
 }
 
 // Initialize UI components
-export { 
+export {
     showToast,
-    createModal, 
-    createFloatingAddButton, 
-    updateFloatingButtonPosition, 
-    updateButtonStates, 
+    createModal,
+    createFloatingAddButton,
+    updateFloatingButtonPosition,
+    updateButtonStates,
     initButtons,
     updateDebugOverlay,
     hideDebugOverlay,

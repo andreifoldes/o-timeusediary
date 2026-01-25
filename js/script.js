@@ -28,7 +28,8 @@ import {
     handleResize,
     preventPullToRefresh,
     updateHeaderHeight,
-    updateFooterHeight
+    updateFooterHeight,
+    getScrollBehavior
 } from './ui.js';
 import { 
     DEBUG_MODE,
@@ -297,7 +298,7 @@ async function restoreNextTimeline(nextTimelineIndex, nextTimelineKey) {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 
@@ -470,7 +471,7 @@ async function addNextTimeline() {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 
@@ -661,7 +662,7 @@ async function goToPreviousTimeline() {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 

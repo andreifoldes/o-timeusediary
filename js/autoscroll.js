@@ -2,6 +2,14 @@
 
 import { getIsMobile } from './globals.js';
 
+/**
+ * Checks if the user prefers reduced motion
+ * @returns {boolean} True if user has enabled reduced motion preference
+ */
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 // Module to handle auto-scrolling during both top and bottom edge resizing of activity blocks in vertical layout.
 const autoScrollModule = (() => {
   // Configuration options
@@ -18,7 +26,8 @@ const autoScrollModule = (() => {
 
   // Function to perform the actual scrolling
   function performScroll() {
-    if (!isEnabled || !getIsMobile() || !lastPointerY) return;
+    // Disable auto-scroll for users who prefer reduced motion
+    if (!isEnabled || !getIsMobile() || !lastPointerY || prefersReducedMotion()) return;
 
     // Check if an activity block is currently being resized
     const resizingElement = document.querySelector('.activity-block.resizing');
