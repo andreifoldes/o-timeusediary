@@ -39,6 +39,9 @@ import {
     TIMELINE_HOURS
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
+import { deserializeTimelineState } from './state-serializer.js';
+import { initAutosave, triggerSave } from './autosave.js';
+import { initAnnouncer, announceActivityPlaced, announceActivityResized, announceActivityRemoved } from './announcer.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -74,6 +77,143 @@ import {
     createTimeLabel,
     updateTimeLabel
 } from './utils.js';
+
+/**
+ * Restores state saved before a breakpoint-triggered reload
+ * @returns {boolean} True if state was restored
+ */
+function restoreStateFromResize() {
+    const backup = sessionStorage.getItem('otud-resize-state');
+    if (!backup) return false;
+
+    try {
+        const { state, timestamp } = JSON.parse(backup);
+
+        // Only restore if recent (within 5 seconds)
+        if (Date.now() - timestamp > 5000) {
+            sessionStorage.removeItem('otud-resize-state');
+            return false;
+        }
+
+        // state is already an object (not a JSON string), restore directly
+        if (!state || typeof state !== 'object') {
+            sessionStorage.removeItem('otud-resize-state');
+            return false;
+        }
+
+        // Restore directly to timelineManager
+        if (state.activities) {
+            window.timelineManager.activities = state.activities;
+        }
+        if (typeof state.currentIndex === 'number') {
+            window.timelineManager.currentIndex = state.currentIndex;
+        }
+        if (Array.isArray(state.keys)) {
+            window.timelineManager.keys = state.keys;
+        }
+        window.selectedActivity = state.selectedActivity || null;
+
+        // Always clear backup after attempt
+        sessionStorage.removeItem('otud-resize-state');
+        return true;
+
+    } catch (e) {
+        console.warn('[resize] Failed to restore state:', e);
+        sessionStorage.removeItem('otud-resize-state');
+        return false;
+    }
+}
+
+/**
+ * Rebuilds activity blocks on the active timeline from restored data
+ * @param {string} timelineKey - The timeline key to rebuild
+ */
+function rebuildActivityBlocks(timelineKey) {
+    const activities = window.timelineManager.activities[timelineKey];
+    if (!activities || activities.length === 0) return;
+
+    const timeline = window.timelineManager.activeTimeline;
+    if (!timeline) return;
+
+    const activitiesContainer = timeline.querySelector('.activities') || (() => {
+        const container = document.createElement('div');
+        container.className = 'activities';
+        timeline.appendChild(container);
+        return container;
+    })();
+
+    const isMobile = getIsMobile();
+
+    activities.forEach(activityData => {
+        const block = document.createElement('div');
+        block.className = 'activity-block';
+        block.dataset.id = activityData.id;
+        block.dataset.timelineKey = timelineKey;
+        block.dataset.category = activityData.category || '';
+        block.dataset.mode = activityData.count > 1 ? 'multiple-choice' : 'single-choice';
+        block.dataset.count = activityData.count || 1;
+
+        // Parse times to get minutes for positioning
+        const startDate = new Date(activityData.startTime);
+        const endDate = new Date(activityData.endTime);
+        const startMinutes = startDate.getHours() * 60 + startDate.getMinutes();
+        const endMinutes = endDate.getHours() * 60 + endDate.getMinutes();
+        const length = activityData.blockLength || (endMinutes - startMinutes);
+
+        block.dataset.start = formatTimeHHMM(startMinutes, false);
+        block.dataset.end = formatTimeHHMM(endMinutes, true);
+        block.dataset.length = length;
+        block.dataset.startMinutes = startMinutes;
+        block.dataset.endMinutes = endMinutes;
+
+        if (activityData.parentName) {
+            block.dataset.parentName = activityData.parentName;
+        }
+
+        // Set color
+        block.style.backgroundColor = activityData.color || '#808080';
+
+        // Create text element
+        const textDiv = document.createElement('div');
+        const displayText = activityData.parentName || activityData.activity;
+        textDiv.textContent = displayText;
+        textDiv.style.maxWidth = '90%';
+        textDiv.style.overflow = 'hidden';
+        textDiv.style.textOverflow = 'ellipsis';
+        textDiv.style.whiteSpace = 'nowrap';
+        textDiv.className = isMobile
+            ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+            : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
+        block.appendChild(textDiv);
+
+        // Position the block
+        const startPercent = minutesToPercentage(startMinutes);
+        const blockSizePercent = (length / 1440) * 100;
+
+        if (isMobile) {
+            block.style.height = `${blockSizePercent}%`;
+            block.style.top = `${startPercent}%`;
+            block.style.width = '75%';
+            block.style.left = '25%';
+        } else {
+            block.style.width = `${blockSizePercent}%`;
+            block.style.left = `${startPercent}%`;
+            block.style.height = '75%';
+            block.style.top = '25%';
+        }
+
+        // Add tooltip
+        if (activityData.parentName) {
+            block.setAttribute('title', `${activityData.parentName}: ${activityData.activity}`);
+        }
+
+        activitiesContainer.appendChild(block);
+
+        // Create time label
+        const timeLabel = createTimeLabel(block);
+        updateTimeLabel(timeLabel, block.dataset.start, block.dataset.end, block);
+    });
+}
 
 // NEW: Helper functions to format timeline times based on our 04:00 (240 minutes) rule
 function formatTimelineStart(minutes) {
@@ -639,7 +779,7 @@ function createChildItemsModal() {
     const title = document.createElement('h3');
     title.id = 'childItemsModalTitle';
     title.setAttribute('data-i18n', 'modals.childItems.title');
-    title.textContent = window.i18n ? window.i18n.t('modals.childItems.title') : 'Select an option';
+    title.textContent = window.i18n?.isReady() ? window.i18n.t('modals.childItems.title') : 'Select an option';
     
     modalHeader.appendChild(title);
     modalHeader.appendChild(closeButton);
@@ -1162,58 +1302,76 @@ function renderActivities(categories, container = document.getElementById('activ
     }
 }
 
+/**
+ * Updates the layout of a timeline based on current viewport width.
+ * This function applies the correct styles for mobile (vertical) or desktop (horizontal) layouts.
+ * @param {HTMLElement} timeline - The timeline element to update
+ */
+function updateTimelineLayout(timeline) {
+    const isMobileLayout = window.innerWidth < 768;
+    timeline.setAttribute('data-layout', isMobileLayout ? 'vertical' : 'horizontal');
+
+    // Update dimensions based on layout
+    if (isMobileLayout) {
+        const minHeight = '2500px';
+        timeline.style.height = minHeight;
+        timeline.style.width = '';
+        if (timeline.parentElement) {
+            timeline.parentElement.style.height = minHeight;
+            timeline.parentElement.style.width = '180px';
+        }
+
+        // Update hour label container for mobile
+        const hourLabelsContainer = timeline.querySelector('.hour-labels');
+        if (hourLabelsContainer) {
+            hourLabelsContainer.style.height = '100%';
+            hourLabelsContainer.style.width = 'auto';
+        }
+    } else {
+        timeline.style.height = '';
+        timeline.style.width = '100%';
+        if (timeline.parentElement) {
+            timeline.parentElement.style.height = '';
+            timeline.parentElement.style.width = '100%';
+        }
+
+        // Update hour label container for desktop
+        const hourLabelsContainer = timeline.querySelector('.hour-labels');
+        if (hourLabelsContainer) {
+            hourLabelsContainer.style.width = '100%';
+            hourLabelsContainer.style.height = 'auto';
+        }
+    }
+
+    // Update all markers and their labels if they exist
+    if (timeline.markers && timeline.markers.length > 0) {
+        timeline.markers.forEach(marker => marker.update(isMobileLayout));
+    }
+}
+
 function initTimeline(timeline) {
     timeline.setAttribute('data-active', 'true');
-    timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
 
     // Remove existing markers
     if (timeline.containerInstance && timeline.containerInstance.hourLabelsContainer) {
         timeline.containerInstance.hourLabelsContainer.innerHTML = '';
     }
-    
-    // Create and initialize timeline container
+
+    // Create and initialize timeline container - always check current viewport
+    const isMobileLayout = window.innerWidth < 768;
     const timelineContainer = new TimelineContainer(timeline);
-    timelineContainer.initialize(getIsMobile()).createMarkers(getIsMobile());
-    
+    timelineContainer.initialize(isMobileLayout).createMarkers(isMobileLayout);
+
     // Store the container instance and markers on the timeline element for later access
     timeline.containerInstance = timelineContainer;
     timeline.markers = timelineContainer.markers || [];
 
+    // Apply initial layout
+    updateTimelineLayout(timeline);
+
     // Add window resize handler to update marker positions
     window.addEventListener('resize', () => {
-        const newIsMobile = window.innerWidth < 1440;
-        timeline.setAttribute('data-layout', newIsMobile ? 'vertical' : 'horizontal');
-        
-        // Update dimensions on layout change
-        if (newIsMobile) {
-            const minHeight = '2500px';
-            timeline.style.height = minHeight;
-            timeline.style.width = '';
-            timeline.parentElement.style.height = minHeight;
-            
-            // Update hour label container for mobile
-            const hourLabelsContainer = timeline.querySelector('.hour-labels');
-            if (hourLabelsContainer) {
-                hourLabelsContainer.style.height = '100%';
-                hourLabelsContainer.style.width = 'auto';
-            }
-        } else {
-            timeline.style.height = '';
-            timeline.style.width = '100%';
-            timeline.parentElement.style.height = '';
-            
-            // Update hour label container for desktop
-            const hourLabelsContainer = timeline.querySelector('.hour-labels');
-            if (hourLabelsContainer) {
-                hourLabelsContainer.style.width = '100%';
-                hourLabelsContainer.style.height = 'auto';
-            }
-        }
-        
-        // Update all markers and their labels if they exist
-        if (timeline.markers && timeline.markers.length > 0) {
-            timeline.markers.forEach(marker => marker.update(newIsMobile));
-        }
+        updateTimelineLayout(timeline);
     });
 
     if (DEBUG_MODE) {
@@ -1762,10 +1920,18 @@ function initTimelineInteraction(timeline) {
                     window.autoScrollModule.disable();
                 }
                 updateButtonStates();
+
+                // Trigger autosave after resize
+                triggerSave();
+
+                // Announce resize for screen readers
+                const target = event.target;
+                const activityName = target.querySelector('div[class^="activity-block-text"]')?.textContent?.trim() || 'Activity';
+                announceActivityResized(activityName, target.dataset.start, target.dataset.end);
             }
         }
     });
-    
+
     // Add click and touch handling with debounce
     let lastClickTime = 0;
     const CLICK_DELAY = 300; // milliseconds
@@ -2101,6 +2267,16 @@ function initTimelineInteraction(timeline) {
 
         updateButtonStates();
 
+        // Trigger autosave after activity placement
+        triggerSave();
+
+        // Announce activity placement for screen readers
+        announceActivityPlaced(
+            activityData.activity,
+            currentBlock.dataset.start,
+            currentBlock.dataset.end
+        );
+
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     };
@@ -2151,6 +2327,13 @@ function initTimelineInteraction(timeline) {
 }
 
 async function init() {
+    // Guard against duplicate initialization (can happen with live-reload)
+    if (window._otudInitCalled) return;
+    window._otudInitCalled = true;
+
+    // Initialize accessibility announcer early
+    initAnnouncer();
+
     try {
         // Reinitialize timelineManager with an empty study object
         window.timelineManager = {
@@ -2222,9 +2405,39 @@ async function init() {
             throw new Error('Timelines wrapper not found');
         }
 
-        // Initialize first timeline using addNextTimeline
-        window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
-        await addNextTimeline();
+        // Check for state restoration from breakpoint resize (sessionStorage - short-term)
+        const wasRestoredFromResize = restoreStateFromResize();
+
+        // Check for autosave restoration from IndexedDB (long-term persistence)
+        let wasRestoredFromAutosave = false;
+        if (!wasRestoredFromResize) {
+            const autosaveResult = await initAutosave();
+            wasRestoredFromAutosave = (autosaveResult === 'restored');
+            console.log('[init] Autosave result:', autosaveResult);
+        }
+
+        const wasRestored = wasRestoredFromResize || wasRestoredFromAutosave;
+
+        if (wasRestored) {
+            // State was restored - rebuild all timelines up to the restored position
+            const targetIndex = window.timelineManager.currentIndex;
+            window.timelineManager.currentIndex = -1;
+
+            for (let i = 0; i <= targetIndex; i++) {
+                const timelineKey = window.timelineManager.keys[i];
+                await addNextTimeline();
+                rebuildActivityBlocks(timelineKey);
+            }
+        } else {
+            // Normal initialization - start fresh
+            window.timelineManager.currentIndex = -1;
+            await addNextTimeline();
+        }
+
+        // Initialize autosave if we restored from resize (autosave was already initialized otherwise)
+        if (wasRestoredFromResize) {
+            await initAutosave();
+        }
         
         // Update gradient bar layout
         updateGradientBarLayout();
@@ -2271,12 +2484,25 @@ async function init() {
         // Initialize debug overlay
         initDebugOverlay();
 
+        // Force layout update after initialization to ensure correct desktop/mobile layout
+        // Use requestAnimationFrame to ensure the browser has finished layout calculations
+        requestAnimationFrame(() => {
+            // Update all initialized timelines
+            document.querySelectorAll('.timeline').forEach(timeline => {
+                if (timeline.markers) {
+                    updateTimelineLayout(timeline);
+                }
+            });
+            // Update gradient bar
+            updateGradientBarLayout();
+        });
+
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);
         }
     } catch (error) {
         console.error('Failed to initialize application:', error);
-        document.getElementById('activitiesContainer').innerHTML = 
+        document.getElementById('activitiesContainer').innerHTML =
             '<p style="color: red;">Error loading activities. Please refresh the page to try again. Error: ' + error.message + '</p>';
     }
 }

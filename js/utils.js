@@ -18,7 +18,7 @@ window.getCurrentTimelineData = getCurrentTimelineData;
 // UI Functions
 function createTimeLabel(block, showImmediately = false) {
     // Check if we're in vertical mode by looking at window width
-    const isVerticalMode = window.innerWidth <= 1440;
+    const isVerticalMode = window.innerWidth < 768;
     
     if (isVerticalMode) {
         // Create activity text container
@@ -89,7 +89,7 @@ function updateTimeLabel(label, startTime, endTime) {
     label.textContent = `${formattedStartTime.replace('(+1)', '')} - ${formattedEndTime.replace('(+1)', '')}`;
     
     // Position label based on layout
-    if (window.innerWidth <= 1440) {
+    if (window.innerWidth < 768) {
         label.style.display = 'block';
     } else {
         label.style.bottom = '-20px';
@@ -505,7 +505,7 @@ export async function sendDataToDataPipe() {
     // --- Prepare Participant Data ---
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const layoutHorizontal = viewportWidth >= 1440;
+    const layoutHorizontal = viewportWidth >= 768;
 
     // Get browser info if available
     let browserInfo = { name: 'unknown', version: 'unknown' };
@@ -774,7 +774,7 @@ export function toggleDebugOverlay(show = true) {
             if (!activeTimeline || !debugOverlay) return;
 
             const rect = activeTimeline.getBoundingClientRect();
-            const isMobile = window.innerWidth <= 1440;
+            const isMobile = window.innerWidth < 768;
             
             // Calculate relative position
             let relativePos;
