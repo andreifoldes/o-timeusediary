@@ -778,7 +778,7 @@ function createChildItemsModal() {
     const title = document.createElement('h3');
     title.id = 'childItemsModalTitle';
     title.setAttribute('data-i18n', 'modals.childItems.title');
-    title.textContent = window.i18n ? window.i18n.t('modals.childItems.title') : 'Select an option';
+    title.textContent = window.i18n?.isReady() ? window.i18n.t('modals.childItems.title') : 'Select an option';
     
     modalHeader.appendChild(title);
     modalHeader.appendChild(closeButton);
