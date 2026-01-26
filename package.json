@@ -1,9 +1,13 @@
 {
   "name": "timeuse_tool",
   "version": "1.0.0",
-  "description": "",
+  "description": "O-TUD - Online Time Use Diary for academic research",
   "scripts": {
     "start": "live-server --port=8080 --no-browser",
+    "dev": "vite --port=8080",
+    "build": "vite build",
+    "preview": "vite preview --port=8080",
+    "serve:prod": "node server.js",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -15,7 +19,9 @@
     "@axe-core/playwright": "^4.10.1",
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "terser": "^5.46.0",
+    "vite": "^5.4.21"
   },
   "dependencies": {
     "dotenv": "^16.4.7"
