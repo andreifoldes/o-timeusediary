@@ -779,7 +779,7 @@ function createChildItemsModal() {
     const title = document.createElement('h3');
     title.id = 'childItemsModalTitle';
     title.setAttribute('data-i18n', 'modals.childItems.title');
-    title.textContent = window.i18n ? window.i18n.t('modals.childItems.title') : 'Select an option';
+    title.textContent = window.i18n?.isReady() ? window.i18n.t('modals.childItems.title') : 'Select an option';
     
     modalHeader.appendChild(title);
     modalHeader.appendChild(closeButton);
@@ -1302,58 +1302,76 @@ function renderActivities(categories, container = document.getElementById('activ
     }
 }
 
+/**
+ * Updates the layout of a timeline based on current viewport width.
+ * This function applies the correct styles for mobile (vertical) or desktop (horizontal) layouts.
+ * @param {HTMLElement} timeline - The timeline element to update
+ */
+function updateTimelineLayout(timeline) {
+    const isMobileLayout = window.innerWidth < 768;
+    timeline.setAttribute('data-layout', isMobileLayout ? 'vertical' : 'horizontal');
+
+    // Update dimensions based on layout
+    if (isMobileLayout) {
+        const minHeight = '2500px';
+        timeline.style.height = minHeight;
+        timeline.style.width = '';
+        if (timeline.parentElement) {
+            timeline.parentElement.style.height = minHeight;
+            timeline.parentElement.style.width = '180px';
+        }
+
+        // Update hour label container for mobile
+        const hourLabelsContainer = timeline.querySelector('.hour-labels');
+        if (hourLabelsContainer) {
+            hourLabelsContainer.style.height = '100%';
+            hourLabelsContainer.style.width = 'auto';
+        }
+    } else {
+        timeline.style.height = '';
+        timeline.style.width = '100%';
+        if (timeline.parentElement) {
+            timeline.parentElement.style.height = '';
+            timeline.parentElement.style.width = '100%';
+        }
+
+        // Update hour label container for desktop
+        const hourLabelsContainer = timeline.querySelector('.hour-labels');
+        if (hourLabelsContainer) {
+            hourLabelsContainer.style.width = '100%';
+            hourLabelsContainer.style.height = 'auto';
+        }
+    }
+
+    // Update all markers and their labels if they exist
+    if (timeline.markers && timeline.markers.length > 0) {
+        timeline.markers.forEach(marker => marker.update(isMobileLayout));
+    }
+}
+
 function initTimeline(timeline) {
     timeline.setAttribute('data-active', 'true');
-    timeline.setAttribute('data-layout', getIsMobile() ? 'vertical' : 'horizontal');
 
     // Remove existing markers
     if (timeline.containerInstance && timeline.containerInstance.hourLabelsContainer) {
         timeline.containerInstance.hourLabelsContainer.innerHTML = '';
     }
-    
-    // Create and initialize timeline container
+
+    // Create and initialize timeline container - always check current viewport
+    const isMobileLayout = window.innerWidth < 768;
     const timelineContainer = new TimelineContainer(timeline);
-    timelineContainer.initialize(getIsMobile()).createMarkers(getIsMobile());
-    
+    timelineContainer.initialize(isMobileLayout).createMarkers(isMobileLayout);
+
     // Store the container instance and markers on the timeline element for later access
     timeline.containerInstance = timelineContainer;
     timeline.markers = timelineContainer.markers || [];
 
+    // Apply initial layout
+    updateTimelineLayout(timeline);
+
     // Add window resize handler to update marker positions
     window.addEventListener('resize', () => {
-        const newIsMobile = window.innerWidth < 1440;
-        timeline.setAttribute('data-layout', newIsMobile ? 'vertical' : 'horizontal');
-        
-        // Update dimensions on layout change
-        if (newIsMobile) {
-            const minHeight = '2500px';
-            timeline.style.height = minHeight;
-            timeline.style.width = '';
-            timeline.parentElement.style.height = minHeight;
-            
-            // Update hour label container for mobile
-            const hourLabelsContainer = timeline.querySelector('.hour-labels');
-            if (hourLabelsContainer) {
-                hourLabelsContainer.style.height = '100%';
-                hourLabelsContainer.style.width = 'auto';
-            }
-        } else {
-            timeline.style.height = '';
-            timeline.style.width = '100%';
-            timeline.parentElement.style.height = '';
-            
-            // Update hour label container for desktop
-            const hourLabelsContainer = timeline.querySelector('.hour-labels');
-            if (hourLabelsContainer) {
-                hourLabelsContainer.style.width = '100%';
-                hourLabelsContainer.style.height = 'auto';
-            }
-        }
-        
-        // Update all markers and their labels if they exist
-        if (timeline.markers && timeline.markers.length > 0) {
-            timeline.markers.forEach(marker => marker.update(newIsMobile));
-        }
+        updateTimelineLayout(timeline);
     });
 
     if (DEBUG_MODE) {
@@ -2466,12 +2484,25 @@ async function init() {
         // Initialize debug overlay
         initDebugOverlay();
 
+        // Force layout update after initialization to ensure correct desktop/mobile layout
+        // Use requestAnimationFrame to ensure the browser has finished layout calculations
+        requestAnimationFrame(() => {
+            // Update all initialized timelines
+            document.querySelectorAll('.timeline').forEach(timeline => {
+                if (timeline.markers) {
+                    updateTimelineLayout(timeline);
+                }
+            });
+            // Update gradient bar
+            updateGradientBarLayout();
+        });
+
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);
         }
     } catch (error) {
         console.error('Failed to initialize application:', error);
-        document.getElementById('activitiesContainer').innerHTML = 
+        document.getElementById('activitiesContainer').innerHTML =
             '<p style="color: red;">Error loading activities. Please refresh the page to try again. Error: ' + error.message + '</p>';
     }
 }

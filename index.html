@@ -43,9 +43,8 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></noscript>
 
-    <!-- Main stylesheet - loaded async after critical CSS -->
-    <link rel="preload" href="styles/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles/styles.css"></noscript>
+    <!-- Main stylesheet - loaded synchronously to ensure correct layout on init -->
+    <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
     <a href="#main-timeline" class="skip-link">Skip to timeline</a>
