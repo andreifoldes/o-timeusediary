@@ -39,6 +39,8 @@ import {
     TIMELINE_HOURS
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
+import { deserializeTimelineState } from './state-serializer.js';
+import { initAutosave, triggerSave } from './autosave.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -108,7 +110,7 @@ function restoreStateFromResize() {
         if (Array.isArray(state.keys)) {
             window.timelineManager.keys = state.keys;
         }
-        window.selectedActivity = null;
+        window.selectedActivity = state.selectedActivity || null;
 
         // Always clear backup after attempt
         sessionStorage.removeItem('otud-resize-state');
@@ -182,7 +184,6 @@ function rebuildActivityBlocks(timelineKey) {
     })();
 
     const isMobile = getIsMobile();
-
     activities.forEach(activityData => {
         const minutes = getActivityMinutes(activityData);
         if (!minutes) {
@@ -192,8 +193,9 @@ function rebuildActivityBlocks(timelineKey) {
 
         const { startMinutes, endMinutes } = minutes;
         const length = activityData.blockLength || (endMinutes - startMinutes);
-        const selectionCount = (Array.isArray(activityData.selections) && activityData.selections.length > 0)
-            ? activityData.selections.length
+        const selections = Array.isArray(activityData.selections) ? activityData.selections : null;
+        const selectionCount = selections && selections.length > 0
+            ? selections.length
             : (activityData.count || 1);
 
         const block = document.createElement('div');
@@ -216,8 +218,8 @@ function rebuildActivityBlocks(timelineKey) {
 
         // Create text element
         const textDiv = document.createElement('div');
-        if (Array.isArray(activityData.selections) && activityData.selections.length > 0) {
-            textDiv.innerHTML = activityData.selections.map(selection => selection.name).join('<br>');
+        if (selections && selections.length > 0) {
+            textDiv.innerHTML = selections.map(selection => selection.name).join('<br>');
         } else {
             const displayText = activityData.parentName || activityData.activity;
             textDiv.textContent = displayText;
@@ -231,8 +233,8 @@ function rebuildActivityBlocks(timelineKey) {
             : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
         block.appendChild(textDiv);
 
-        if (Array.isArray(activityData.selections) && activityData.selections.length > 0) {
-            const colors = activityData.selections.map(selection => selection.color).filter(Boolean);
+        if (selections && selections.length > 0) {
+            const colors = selections.map(selection => selection.color).filter(Boolean);
             if (colors.length > 0) {
                 const percentage = 100 / colors.length;
                 const stops = colors.map((color, index) =>
@@ -1966,10 +1968,13 @@ function initTimelineInteraction(timeline) {
                     window.autoScrollModule.disable();
                 }
                 updateButtonStates();
+
+                // Trigger autosave after resize
+                triggerSave();
             }
         }
     });
-    
+
     // Add click and touch handling with debounce
     let lastClickTime = 0;
     const CLICK_DELAY = 300; // milliseconds
@@ -2273,7 +2278,6 @@ function initTimelineInteraction(timeline) {
                 color: selection.color
             }));
         }
-
         // Add parent and selected attributes
         if (currentBlock.dataset.parentName) {
             activityData.parentName = currentBlock.dataset.parentName;
@@ -2304,7 +2308,7 @@ function initTimelineInteraction(timeline) {
             currentBlock.remove();
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = window.selectedActivity.color;
+            block.style.backgroundColor = selectedActivitySnapshot?.color || '#808080';
             block.style.width = currentBlock.style.width;
             block.style.height = currentBlock.style.height;
             block.style.top = currentBlock.style.top;
@@ -2315,6 +2319,9 @@ function initTimelineInteraction(timeline) {
         }
 
         updateButtonStates();
+
+        // Trigger autosave after activity placement
+        triggerSave();
 
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
@@ -2441,8 +2448,18 @@ async function init() {
             throw new Error('Timelines wrapper not found');
         }
 
-        // Check for state restoration from breakpoint resize
-        const wasRestored = restoreStateFromResize();
+        // Check for state restoration from breakpoint resize (sessionStorage - short-term)
+        const wasRestoredFromResize = restoreStateFromResize();
+
+        // Check for autosave restoration from IndexedDB (long-term persistence)
+        let wasRestoredFromAutosave = false;
+        if (!wasRestoredFromResize) {
+            const autosaveResult = await initAutosave();
+            wasRestoredFromAutosave = (autosaveResult === 'restored');
+            console.log('[init] Autosave result:', autosaveResult);
+        }
+
+        const wasRestored = wasRestoredFromResize || wasRestoredFromAutosave;
 
         if (wasRestored) {
             // State was restored - rebuild all timelines up to the restored position
@@ -2458,6 +2475,11 @@ async function init() {
             // Normal initialization - start fresh
             window.timelineManager.currentIndex = -1;
             await addNextTimeline();
+        }
+
+        // Initialize autosave if we restored from resize (autosave was already initialized otherwise)
+        if (wasRestoredFromResize) {
+            await initAutosave();
         }
         
         // Update gradient bar layout

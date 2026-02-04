@@ -15,7 +15,8 @@ export function serializeTimelineState() {
         version: STATE_VERSION,
         activities,
         currentIndex: window.timelineManager?.currentIndex ?? 0,
-        keys: window.timelineManager?.keys || []
+        keys: window.timelineManager?.keys || [],
+        selectedActivity: window.selectedActivity || null
     };
     return JSON.stringify(state);
 }
@@ -53,7 +54,7 @@ export function deserializeTimelineState(jsonString) {
     window.timelineManager.activities = state.activities;
     window.timelineManager.currentIndex = state.currentIndex;
     window.timelineManager.keys = state.keys;
-    window.selectedActivity = null;
+    window.selectedActivity = state.selectedActivity ?? null;
 
     console.log('[state-serializer] State restored successfully');
     return true;
@@ -69,6 +70,8 @@ function isValidState(state) {
     if (typeof state.activities !== 'object' || state.activities === null) return false;
     if (typeof state.currentIndex !== 'number') return false;
     if (!Array.isArray(state.keys)) return false;
+    // selectedActivity can be undefined, null, or object - all valid
+    if (state.selectedActivity !== undefined && state.selectedActivity !== null && typeof state.selectedActivity !== 'object') return false;
     return true;
 }
 
