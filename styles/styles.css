@@ -2141,3 +2141,138 @@ body {
     }
 }
 
+/* ===== Activity Search ===== */
+
+.activity-search-wrapper {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.activity-search-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.activity-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color, #2563eb);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Recent Activities Panel */
+.recent-activities-panel {
+    margin-top: 12px;
+}
+
+.recent-heading {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin: 0 0 8px 0;
+}
+
+.recent-activities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.recent-activity-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #f9fafb;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    line-height: 1.3;
+    transition: background-color 0.15s ease;
+}
+
+.recent-activity-btn:hover {
+    background: #e5e7eb;
+}
+
+.recent-activity-btn:focus {
+    outline: 2px solid var(--primary-color, #2563eb);
+    outline-offset: 2px;
+}
+
+.activity-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.recent-activity-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.no-recent {
+    color: #9ca3af;
+    font-size: 13px;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+    .activity-search-input {
+        border: 2px solid #000;
+    }
+
+    .recent-activity-btn {
+        border: 2px solid #000;
+    }
+}
+
+/* Mobile adjustments for search */
+@media (max-width: 480px) {
+    .activity-search-wrapper {
+        padding: 10px;
+    }
+
+    .activity-search-input {
+        padding: 8px 10px;
+        font-size: 16px; /* Keep 16px to prevent iOS zoom */
+    }
+
+    .recent-activity-btn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .recent-activity-name {
+        max-width: 90px;
+    }
+}
+

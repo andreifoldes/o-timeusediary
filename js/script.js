@@ -39,9 +39,22 @@ import {
     TIMELINE_HOURS
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
+import { initActivitySearch, recordActivitySelection } from './activity-search.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
-window.selectedActivity = null;
+// Uses a setter to automatically record selections for recent activity history
+let _selectedActivity = null;
+Object.defineProperty(window, 'selectedActivity', {
+    get() { return _selectedActivity; },
+    set(value) {
+        _selectedActivity = value;
+        if (value && value.name) {
+            recordActivitySelection(value);
+        }
+    },
+    configurable: true,
+    enumerable: true
+});
 
 // Single timeline management object
 window.timelineManager = {
@@ -1160,6 +1173,9 @@ function renderActivities(categories, container = document.getElementById('activ
             container.appendChild(categoryDiv);
         });
     }
+
+    // Initialize search UI after activities are rendered
+    initActivitySearch(container, categories);
 }
 
 function initTimeline(timeline) {
