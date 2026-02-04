@@ -75,6 +75,208 @@ import {
     updateTimeLabel
 } from './utils.js';
 
+/**
+ * Restores state saved before a breakpoint-triggered reload
+ * @returns {boolean} True if state was restored
+ */
+function restoreStateFromResize() {
+    const backup = sessionStorage.getItem('otud-resize-state');
+    if (!backup) return false;
+
+    try {
+        const { state, timestamp } = JSON.parse(backup);
+
+        // Only restore if recent (within 5 seconds)
+        if (Date.now() - timestamp > 5000) {
+            sessionStorage.removeItem('otud-resize-state');
+            return false;
+        }
+
+        // state is already an object (not a JSON string), restore directly
+        if (!state || typeof state !== 'object') {
+            sessionStorage.removeItem('otud-resize-state');
+            return false;
+        }
+
+        // Restore directly to timelineManager
+        if (state.activities) {
+            window.timelineManager.activities = state.activities;
+        }
+        if (typeof state.currentIndex === 'number') {
+            window.timelineManager.currentIndex = state.currentIndex;
+        }
+        if (Array.isArray(state.keys)) {
+            window.timelineManager.keys = state.keys;
+        }
+        window.selectedActivity = null;
+
+        // Always clear backup after attempt
+        sessionStorage.removeItem('otud-resize-state');
+        return true;
+
+    } catch (e) {
+        console.warn('[resize] Failed to restore state:', e);
+        sessionStorage.removeItem('otud-resize-state');
+        return false;
+    }
+}
+
+function getTodayKey() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function parseTimestampMinutes(timestamp) {
+    if (typeof timestamp !== 'string') return null;
+    const [datePart, timePart] = timestamp.split(' ');
+    if (!datePart || !timePart) return null;
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hour, minute] = timePart.split(':').map(Number);
+    if ([year, month, day, hour, minute].some(Number.isNaN)) return null;
+    const dateKey = `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    return { dateKey, minutes: (hour * 60) + minute };
+}
+
+function getActivityMinutes(activityData) {
+    if (typeof activityData?.startMinutes === 'number' && typeof activityData?.endMinutes === 'number') {
+        return { startMinutes: activityData.startMinutes, endMinutes: activityData.endMinutes };
+    }
+
+    const startParsed = parseTimestampMinutes(activityData?.startTime);
+    const endParsed = parseTimestampMinutes(activityData?.endTime);
+    if (!startParsed || !endParsed) return null;
+
+    const todayKey = getTodayKey();
+    let startMinutes = startParsed.minutes;
+    let endMinutes = endParsed.minutes;
+
+    if (startParsed.dateKey === todayKey) {
+        startMinutes += 1440;
+    }
+    if (endParsed.dateKey === todayKey) {
+        endMinutes += 1440;
+    }
+
+    return { startMinutes, endMinutes };
+}
+
+/**
+ * Rebuilds activity blocks on the active timeline from restored data
+ * @param {string} timelineKey - The timeline key to rebuild
+ */
+function rebuildActivityBlocks(timelineKey) {
+    const activities = window.timelineManager.activities[timelineKey];
+    if (!activities || activities.length === 0) return;
+
+    const timeline = window.timelineManager.activeTimeline;
+    if (!timeline) return;
+
+    const activitiesContainer = timeline.querySelector('.activities') || (() => {
+        const container = document.createElement('div');
+        container.className = 'activities';
+        timeline.appendChild(container);
+        return container;
+    })();
+
+    const isMobile = getIsMobile();
+
+    activities.forEach(activityData => {
+        const minutes = getActivityMinutes(activityData);
+        if (!minutes) {
+            console.warn('[resize] Missing minutes for activity, skipping rebuild:', activityData);
+            return;
+        }
+
+        const { startMinutes, endMinutes } = minutes;
+        const length = activityData.blockLength || (endMinutes - startMinutes);
+        const selectionCount = (Array.isArray(activityData.selections) && activityData.selections.length > 0)
+            ? activityData.selections.length
+            : (activityData.count || 1);
+
+        const block = document.createElement('div');
+        block.className = 'activity-block';
+        block.dataset.id = activityData.id;
+        block.dataset.timelineKey = timelineKey;
+        block.dataset.category = activityData.category || '';
+        block.dataset.mode = selectionCount > 1 ? 'multiple-choice' : 'single-choice';
+        block.dataset.count = selectionCount;
+
+        block.dataset.start = formatTimeHHMM(startMinutes, false);
+        block.dataset.end = formatTimeHHMM(endMinutes, true);
+        block.dataset.length = length;
+        block.dataset.startMinutes = startMinutes;
+        block.dataset.endMinutes = endMinutes;
+
+        if (activityData.parentName) {
+            block.dataset.parentName = activityData.parentName;
+        }
+
+        // Create text element
+        const textDiv = document.createElement('div');
+        if (Array.isArray(activityData.selections) && activityData.selections.length > 0) {
+            textDiv.innerHTML = activityData.selections.map(selection => selection.name).join('<br>');
+        } else {
+            const displayText = activityData.parentName || activityData.activity;
+            textDiv.textContent = displayText;
+        }
+        textDiv.style.maxWidth = '90%';
+        textDiv.style.overflow = 'hidden';
+        textDiv.style.textOverflow = 'ellipsis';
+        textDiv.style.whiteSpace = 'nowrap';
+        textDiv.className = isMobile
+            ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
+            : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
+        block.appendChild(textDiv);
+
+        if (Array.isArray(activityData.selections) && activityData.selections.length > 0) {
+            const colors = activityData.selections.map(selection => selection.color).filter(Boolean);
+            if (colors.length > 0) {
+                const percentage = 100 / colors.length;
+                const stops = colors.map((color, index) =>
+                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
+                ).join(', ');
+                block.style.background = isMobile
+                    ? `linear-gradient(to right, ${stops})`
+                    : `linear-gradient(to bottom, ${stops})`;
+            } else {
+                block.style.backgroundColor = activityData.color || '#808080';
+            }
+        } else {
+            block.style.backgroundColor = activityData.color || '#808080';
+        }
+
+        // Position the block
+        const startPercent = minutesToPercentage(startMinutes);
+        const blockSizePercent = (length / 1440) * 100;
+
+        if (isMobile) {
+            block.style.height = `${blockSizePercent}%`;
+            block.style.top = `${startPercent}%`;
+            block.style.width = '75%';
+            block.style.left = '25%';
+        } else {
+            block.style.width = `${blockSizePercent}%`;
+            block.style.left = `${startPercent}%`;
+            block.style.height = '75%';
+            block.style.top = '25%';
+        }
+
+        // Add tooltip
+        if (activityData.parentName) {
+            block.setAttribute('title', `${activityData.parentName}: ${activityData.activity}`);
+        }
+
+        activitiesContainer.appendChild(block);
+
+        // Create time label
+        const timeLabel = createTimeLabel(block);
+        updateTimeLabel(timeLabel, block.dataset.start, block.dataset.end, block);
+    });
+}
+
 // NEW: Helper functions to format timeline times based on our 04:00 (240 minutes) rule
 function formatTimelineStart(minutes) {
     // Normalize to current day (0-1440)
@@ -1710,6 +1912,8 @@ function initTimelineInteraction(timeline) {
                         currentData[activityIndex].startTime = times.startTime;
                         currentData[activityIndex].endTime = times.endTime;
                         currentData[activityIndex].blockLength = parseInt(target.dataset.length);
+                        currentData[activityIndex].startMinutes = startMinutes;
+                        currentData[activityIndex].endMinutes = endMinutes;
 
                         // Update original values incrementally
                         target.dataset.originalStart = newStartTime;
@@ -2032,6 +2236,8 @@ function initTimelineInteraction(timeline) {
         updateTimeLabel(timeLabel, formattedStartTime, formattedEndTime, currentBlock);
         timeLabel.style.display = 'block'; // Ensure the new label is visible
 
+        const selectedActivitySnapshot = window.selectedActivity;
+
         // Deselect the activity button after successful placement
         document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('selected'));
         console.log('[ACTIVITY] Clearing window.selectedActivity after successful placement');
@@ -2055,9 +2261,18 @@ function initTimelineInteraction(timeline) {
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: window.selectedActivity?.color || '#808080',
-            count: parseInt(currentBlock.dataset.count) || 1
+            color: selectedActivitySnapshot?.color || '#808080',
+            count: parseInt(currentBlock.dataset.count) || 1,
+            startMinutes,
+            endMinutes
         };
+
+        if (Array.isArray(selectedActivitySnapshot?.selections)) {
+            activityData.selections = selectedActivitySnapshot.selections.map(selection => ({
+                name: selection.name,
+                color: selection.color
+            }));
+        }
 
         // Add parent and selected attributes
         if (currentBlock.dataset.parentName) {
@@ -2151,6 +2366,10 @@ function initTimelineInteraction(timeline) {
 }
 
 async function init() {
+    // Guard against duplicate initialization (can happen with live-reload)
+    if (window._otudInitCalled) return;
+    window._otudInitCalled = true;
+
     try {
         // Reinitialize timelineManager with an empty study object
         window.timelineManager = {
@@ -2222,9 +2441,24 @@ async function init() {
             throw new Error('Timelines wrapper not found');
         }
 
-        // Initialize first timeline using addNextTimeline
-        window.timelineManager.currentIndex = -1; // Start at -1 so first addNextTimeline() sets to 0
-        await addNextTimeline();
+        // Check for state restoration from breakpoint resize
+        const wasRestored = restoreStateFromResize();
+
+        if (wasRestored) {
+            // State was restored - rebuild all timelines up to the restored position
+            const targetIndex = window.timelineManager.currentIndex;
+            window.timelineManager.currentIndex = -1;
+
+            for (let i = 0; i <= targetIndex; i++) {
+                const timelineKey = window.timelineManager.keys[i];
+                await addNextTimeline();
+                rebuildActivityBlocks(timelineKey);
+            }
+        } else {
+            // Normal initialization - start fresh
+            window.timelineManager.currentIndex = -1;
+            await addNextTimeline();
+        }
         
         // Update gradient bar layout
         updateGradientBarLayout();
