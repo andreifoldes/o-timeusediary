@@ -104,7 +104,7 @@ export function showSaved() {
 
   resetTimeout = setTimeout(() => {
     indicatorElement.className = 'save-indicator visible idle';
-  }, 2000);
+  }, 1000);
 }
 
 /**

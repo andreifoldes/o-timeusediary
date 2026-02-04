@@ -2457,7 +2457,7 @@ body {
 }
 
 .save-indicator.spinning .save-spinner {
-    animation: save-spin 0.5s linear infinite;
+    animation: save-spin 1s linear infinite;
 }
 
 @keyframes save-spin {
