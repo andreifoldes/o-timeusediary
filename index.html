@@ -20,8 +20,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="css/keyboard-navigation.css">
 </head>
 <body>
+    <!-- Skip link for keyboard users -->
+    <a href="#timeline-canvas" class="skip-to-timeline">Skip to Timeline</a>
+
     <div class="header-section">
         <div class="controls" style="padding-top: 4px; padding-left: 4px; padding-bottom: 4px; padding-right: 4px;">
 
@@ -57,7 +61,7 @@
         </div>
     </div>
 
-    <div class="timeline-canvas">
+    <div class="timeline-canvas" id="timeline-canvas">
         <div class="timelines-wrapper">
             <div class="past-initialized-timelines-wrapper"></div>
             <div class="last-initialized-timeline-wrapper"></div>

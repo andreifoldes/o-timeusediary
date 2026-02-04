@@ -39,6 +39,7 @@ import {
     TIMELINE_HOURS
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
+import { initKeyboardNavigation, destroyKeyboardNavigation, setupActivitySelectionListener } from './keyboard-navigation.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -2148,6 +2149,126 @@ function initTimelineInteraction(timeline) {
             }
         }
     });
+
+    // Initialize keyboard navigation for WCAG 2.5.7 compliance
+    initKeyboardNavigation(targetTimeline);
+
+    // Listen for keyboard-based activity placement
+    targetTimeline.addEventListener('keyboardActivityPlace', handleKeyboardActivityPlace);
+}
+
+/**
+ * Handle activity placement from keyboard navigation
+ * @param {CustomEvent} event
+ */
+function handleKeyboardActivityPlace(event) {
+    const { startMinutes, endMinutes, activity, timeline } = event.detail;
+
+    if (!activity || !timeline) {
+        console.warn('Keyboard activity placement: missing activity or timeline');
+        return;
+    }
+
+    // Prevent default handling (keyboard-navigation.js will handle fallback)
+    event.preventDefault();
+
+    const isMobile = getIsMobile();
+    const layout = timeline.dataset.layout || (isMobile ? 'vertical' : 'horizontal');
+    const isVertical = layout === 'vertical';
+
+    // Calculate position percentages (based on 4 AM start)
+    const totalMinutes = TIMELINE_HOURS * 60; // 1440
+    const startOffset = startMinutes - (TIMELINE_START_HOUR * 60); // Offset from 4 AM
+    const startPercent = (startOffset / totalMinutes) * 100;
+    const sizePercent = ((endMinutes - startMinutes) / totalMinutes) * 100;
+
+    // Format times for display
+    const formatTime = (minutes) => {
+        const h = Math.floor((minutes % 1440) / 60);
+        const m = minutes % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    };
+
+    const startTime = formatTime(startMinutes);
+    const endTime = formatTime(endMinutes);
+
+    // Create activity block
+    const block = document.createElement('div');
+    block.className = 'activity-block';
+    const blockId = `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    block.dataset.id = blockId;
+    block.dataset.start = startTime;
+    block.dataset.end = endTime;
+    block.dataset.startMinutes = startMinutes;
+    block.dataset.endMinutes = endMinutes;
+    block.dataset.length = endMinutes - startMinutes;
+    block.dataset.category = activity.category || '';
+    block.dataset.timelineKey = getCurrentTimelineKey();
+    block.dataset.mode = activity.selections ? 'multiple-choice' : 'single-choice';
+    block.style.backgroundColor = activity.color || '#4A90D9';
+
+    // Position based on layout
+    if (isVertical) {
+        block.style.top = `${startPercent}%`;
+        block.style.height = `${sizePercent}%`;
+        block.style.left = '25%';
+        block.style.width = '75%';
+    } else {
+        block.style.left = `${startPercent}%`;
+        block.style.width = `${sizePercent}%`;
+        block.style.top = '25%';
+        block.style.height = '75%';
+    }
+
+    // Get activity name
+    const activityName = activity.selections
+        ? activity.selections.map(s => s.name).join(', ')
+        : activity.name;
+
+    // Add content with appropriate class based on layout
+    const textClass = isVertical ? 'activity-block-text-narrow' : 'activity-block-text-wide';
+    block.innerHTML = `
+        <div class="${textClass}">${activityName}</div>
+        <div class="time-label">${startTime} - ${endTime}</div>
+    `;
+
+    // Make block accessible
+    block.setAttribute('tabindex', '0');
+    block.setAttribute('role', 'button');
+    block.setAttribute('aria-label', `${activityName}, ${startTime} to ${endTime}. Press Delete to remove.`);
+
+    // Add to DOM
+    const activitiesContainer = timeline.querySelector('.activities');
+    if (activitiesContainer) {
+        activitiesContainer.appendChild(block);
+    }
+
+    // Add to timeline data
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    const activityData = {
+        id: blockId,
+        activity: activityName,
+        category: activity.category,
+        startTime: `${dateStr} ${startTime}`,
+        endTime: `${dateStr} ${endTime}`,
+        blockLength: endMinutes - startMinutes,
+        color: activity.color,
+        count: 1,
+        parentName: activity.parentName || activityName,
+        selected: activity.selected || activityName
+    };
+
+    getCurrentTimelineData().push(activityData);
+
+    // Clear selected activity
+    window.selectedActivity = null;
+
+    // Update UI
+    updateButtonStates();
+
+    console.log(`[Keyboard Navigation] Placed activity: ${activityName} at ${startTime}-${endTime}`);
 }
 
 async function init() {
@@ -2270,6 +2391,9 @@ async function init() {
 
         // Initialize debug overlay
         initDebugOverlay();
+
+        // Set up keyboard navigation activity selection listener
+        setupActivitySelectionListener();
 
         if (DEBUG_MODE) {
             console.log('Initialized timeline structure:', window.timelineManager);
