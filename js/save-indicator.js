@@ -4,7 +4,7 @@
  */
 
 let indicatorElement = null;
-let hideTimeout = null;
+let resetTimeout = null;
 
 /**
  * Initialize the save indicator element
@@ -14,7 +14,7 @@ export function initSaveIndicator() {
   if (indicatorElement) return;
 
   indicatorElement = document.createElement('div');
-  indicatorElement.className = 'save-indicator';
+  indicatorElement.className = 'save-indicator visible idle';
   indicatorElement.id = 'save-indicator';
 
   // Accessibility attributes
@@ -28,7 +28,21 @@ export function initSaveIndicator() {
     <span class="save-indicator-text"></span>
   `;
 
-  document.body.appendChild(indicatorElement);
+  const iconEl = indicatorElement.querySelector('.save-indicator-icon');
+  const textEl = indicatorElement.querySelector('.save-indicator-text');
+  if (iconEl) {
+    iconEl.innerHTML = `
+      <svg class="save-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"/>
+      </svg>
+    `;
+  }
+  if (textEl) {
+    textEl.textContent = 'Autosave active';
+  }
+
+  const header = document.querySelector('.header-section');
+  (header || document.body).appendChild(indicatorElement);
 }
 
 /**
@@ -54,7 +68,7 @@ function getIconElement() {
  */
 export function showSaving() {
   if (!indicatorElement) initSaveIndicator();
-  clearTimeout(hideTimeout);
+  clearTimeout(resetTimeout);
 
   const textEl = getTextElement();
   const iconEl = getIconElement();
@@ -66,7 +80,7 @@ export function showSaving() {
     </svg>
   `;
 
-  indicatorElement.className = 'save-indicator visible saving';
+  indicatorElement.className = 'save-indicator visible saving spinning';
 }
 
 /**
@@ -74,22 +88,22 @@ export function showSaving() {
  */
 export function showSaved() {
   if (!indicatorElement) initSaveIndicator();
-  clearTimeout(hideTimeout);
+  clearTimeout(resetTimeout);
 
   const textEl = getTextElement();
   const iconEl = getIconElement();
 
   textEl.textContent = 'Saved';
   iconEl.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <polyline points="20 6 9 17 4 12"/>
+    <svg class="save-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"/>
     </svg>
   `;
 
-  indicatorElement.className = 'save-indicator visible saved';
+  indicatorElement.className = 'save-indicator visible saved spinning';
 
-  hideTimeout = setTimeout(() => {
-    indicatorElement.className = 'save-indicator';
+  resetTimeout = setTimeout(() => {
+    indicatorElement.className = 'save-indicator visible idle';
   }, 2000);
 }
 
@@ -99,23 +113,22 @@ export function showSaved() {
  */
 export function showSaveError(message = 'Save failed') {
   if (!indicatorElement) initSaveIndicator();
-  clearTimeout(hideTimeout);
+  clearTimeout(resetTimeout);
 
   const textEl = getTextElement();
   const iconEl = getIconElement();
 
   textEl.textContent = message;
   iconEl.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <line x1="18" y1="6" x2="6" y2="18"/>
-      <line x1="6" y1="6" x2="18" y2="18"/>
+    <svg class="save-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32"/>
     </svg>
   `;
 
   indicatorElement.className = 'save-indicator visible error';
 
-  hideTimeout = setTimeout(() => {
-    indicatorElement.className = 'save-indicator';
+  resetTimeout = setTimeout(() => {
+    indicatorElement.className = 'save-indicator visible idle';
   }, 4000);
 }
 
@@ -124,8 +137,8 @@ export function showSaveError(message = 'Save failed') {
  */
 export function hideIndicator() {
   if (!indicatorElement) return;
-  clearTimeout(hideTimeout);
-  indicatorElement.className = 'save-indicator';
+  clearTimeout(resetTimeout);
+  indicatorElement.className = 'save-indicator visible idle';
 }
 
 /**

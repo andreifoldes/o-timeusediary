@@ -123,6 +123,48 @@ function restoreStateFromResize() {
     }
 }
 
+function getTodayKey() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function parseTimestampMinutes(timestamp) {
+    if (typeof timestamp !== 'string') return null;
+    const [datePart, timePart] = timestamp.split(' ');
+    if (!datePart || !timePart) return null;
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hour, minute] = timePart.split(':').map(Number);
+    if ([year, month, day, hour, minute].some(Number.isNaN)) return null;
+    const dateKey = `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    return { dateKey, minutes: (hour * 60) + minute };
+}
+
+function getActivityMinutes(activityData) {
+    if (typeof activityData?.startMinutes === 'number' && typeof activityData?.endMinutes === 'number') {
+        return { startMinutes: activityData.startMinutes, endMinutes: activityData.endMinutes };
+    }
+
+    const startParsed = parseTimestampMinutes(activityData?.startTime);
+    const endParsed = parseTimestampMinutes(activityData?.endTime);
+    if (!startParsed || !endParsed) return null;
+
+    const todayKey = getTodayKey();
+    let startMinutes = startParsed.minutes;
+    let endMinutes = endParsed.minutes;
+
+    if (startParsed.dateKey === todayKey) {
+        startMinutes += 1440;
+    }
+    if (endParsed.dateKey === todayKey) {
+        endMinutes += 1440;
+    }
+
+    return { startMinutes, endMinutes };
+}
+
 /**
  * Rebuilds activity blocks on the active timeline from restored data
  * @param {string} timelineKey - The timeline key to rebuild
@@ -144,20 +186,26 @@ function rebuildActivityBlocks(timelineKey) {
     const isMobile = getIsMobile();
 
     activities.forEach(activityData => {
+        const minutes = getActivityMinutes(activityData);
+        if (!minutes) {
+            console.warn('[resize] Missing minutes for activity, skipping rebuild:', activityData);
+            return;
+        }
+
+        const { startMinutes, endMinutes } = minutes;
+        const length = activityData.blockLength || (endMinutes - startMinutes);
+        const selections = Array.isArray(activityData.selections) ? activityData.selections : null;
+        const selectionCount = selections && selections.length > 0
+            ? selections.length
+            : (activityData.count || 1);
+
         const block = document.createElement('div');
         block.className = 'activity-block';
         block.dataset.id = activityData.id;
         block.dataset.timelineKey = timelineKey;
         block.dataset.category = activityData.category || '';
-        block.dataset.mode = activityData.count > 1 ? 'multiple-choice' : 'single-choice';
-        block.dataset.count = activityData.count || 1;
-
-        // Parse times to get minutes for positioning
-        const startDate = new Date(activityData.startTime);
-        const endDate = new Date(activityData.endTime);
-        const startMinutes = startDate.getHours() * 60 + startDate.getMinutes();
-        const endMinutes = endDate.getHours() * 60 + endDate.getMinutes();
-        const length = activityData.blockLength || (endMinutes - startMinutes);
+        block.dataset.mode = selectionCount > 1 ? 'multiple-choice' : 'single-choice';
+        block.dataset.count = selectionCount;
 
         block.dataset.start = formatTimeHHMM(startMinutes, false);
         block.dataset.end = formatTimeHHMM(endMinutes, true);
@@ -169,13 +217,14 @@ function rebuildActivityBlocks(timelineKey) {
             block.dataset.parentName = activityData.parentName;
         }
 
-        // Set color
-        block.style.backgroundColor = activityData.color || '#808080';
-
         // Create text element
         const textDiv = document.createElement('div');
-        const displayText = activityData.parentName || activityData.activity;
-        textDiv.textContent = displayText;
+        if (selections && selections.length > 0) {
+            textDiv.innerHTML = selections.map(selection => selection.name).join('<br>');
+        } else {
+            const displayText = activityData.parentName || activityData.activity;
+            textDiv.textContent = displayText;
+        }
         textDiv.style.maxWidth = '90%';
         textDiv.style.overflow = 'hidden';
         textDiv.style.textOverflow = 'ellipsis';
@@ -184,6 +233,23 @@ function rebuildActivityBlocks(timelineKey) {
             ? (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-narrow')
             : (length >= 60 ? 'activity-block-text-narrow wide resized' : 'activity-block-text-vertical');
         block.appendChild(textDiv);
+
+        if (selections && selections.length > 0) {
+            const colors = selections.map(selection => selection.color).filter(Boolean);
+            if (colors.length > 0) {
+                const percentage = 100 / colors.length;
+                const stops = colors.map((color, index) =>
+                    `${color} ${index * percentage}%, ${color} ${(index + 1) * percentage}%`
+                ).join(', ');
+                block.style.background = isMobile
+                    ? `linear-gradient(to right, ${stops})`
+                    : `linear-gradient(to bottom, ${stops})`;
+            } else {
+                block.style.backgroundColor = activityData.color || '#808080';
+            }
+        } else {
+            block.style.backgroundColor = activityData.color || '#808080';
+        }
 
         // Position the block
         const startPercent = minutesToPercentage(startMinutes);
@@ -2174,6 +2240,8 @@ function initTimelineInteraction(timeline) {
         updateTimeLabel(timeLabel, formattedStartTime, formattedEndTime, currentBlock);
         timeLabel.style.display = 'block'; // Ensure the new label is visible
 
+        const selectedActivitySnapshot = window.selectedActivity;
+
         // Deselect the activity button after successful placement
         document.querySelectorAll('.activity-button').forEach(btn => btn.classList.remove('selected'));
         console.log('[ACTIVITY] Clearing window.selectedActivity after successful placement');
@@ -2197,9 +2265,16 @@ function initTimelineInteraction(timeline) {
             startTime: times.startTime,
             endTime: times.endTime,
             blockLength: parseInt(currentBlock.dataset.length),
-            color: window.selectedActivity?.color || '#808080',
+            color: selectedActivitySnapshot?.color || '#808080',
             count: parseInt(currentBlock.dataset.count) || 1
         };
+
+        if (Array.isArray(selectedActivitySnapshot?.selections)) {
+            activityData.selections = selectedActivitySnapshot.selections.map(selection => ({
+                name: selection.name,
+                color: selection.color
+            }));
+        }
 
         // Add parent and selected attributes
         if (currentBlock.dataset.parentName) {
@@ -2231,7 +2306,7 @@ function initTimelineInteraction(timeline) {
             currentBlock.remove();
             const block = document.createElement('div');
             block.className = 'activity-block invalid';
-            block.style.backgroundColor = window.selectedActivity.color;
+            block.style.backgroundColor = selectedActivitySnapshot?.color || '#808080';
             block.style.width = currentBlock.style.width;
             block.style.height = currentBlock.style.height;
             block.style.top = currentBlock.style.top;

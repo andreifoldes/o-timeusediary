@@ -2397,46 +2397,57 @@ body {
    ========================================================================== */
 
 .save-indicator {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    border-radius: 6px;
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 999px;
     font-size: 13px;
     font-weight: 500;
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: 1;
+    transform: none;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
     pointer-events: none;
-    z-index: 9998;
+    z-index: 2;
     background: #333;
     color: #fff;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    justify-content: center;
+    gap: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 .save-indicator.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
 }
 
 .save-indicator-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
 }
 
 .save-indicator-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
 }
 
 .save-indicator-text {
-    line-height: 1;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* Saving state - gray with spinner */
@@ -2444,8 +2455,8 @@ body {
     background: #6b7280;
 }
 
-.save-indicator.saving .save-spinner {
-    animation: save-spin 1s linear infinite;
+.save-indicator.spinning .save-spinner {
+    animation: save-spin 0.5s linear infinite;
 }
 
 @keyframes save-spin {
@@ -2474,7 +2485,7 @@ body {
         transition: opacity 0.2s ease;
     }
 
-    .save-indicator.saving .save-spinner {
+    .save-indicator.spinning .save-spinner {
         animation: none;
     }
 }
@@ -2489,32 +2500,30 @@ body {
 /* Mobile positioning - move to top to avoid floating button */
 @media (max-width: 1439.98px) {
     .save-indicator {
-        bottom: auto;
-        top: 60px;
-        right: 12px;
-        font-size: 12px;
-        padding: 6px 12px;
+        bottom: 6px;
+        right: 8px;
+        width: 16px;
+        height: 16px;
     }
 }
 
 /* Extra small screens */
 @media (max-width: 480px) {
     .save-indicator {
-        top: 50px;
-        right: 8px;
-        font-size: 11px;
-        padding: 5px 10px;
-        gap: 6px;
+        bottom: 6px;
+        right: 6px;
+        width: 14px;
+        height: 14px;
     }
 
     .save-indicator-icon {
-        width: 14px;
-        height: 14px;
+        width: 8px;
+        height: 8px;
     }
 
     .save-indicator-icon svg {
-        width: 14px;
-        height: 14px;
+        width: 8px;
+        height: 8px;
     }
 }
 
@@ -2524,4 +2533,3 @@ body {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
 }
-

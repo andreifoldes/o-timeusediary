@@ -6,7 +6,7 @@
 import { initStorage, saveDraft, loadDraft, hasDraft, clearDraft, getParticipantId } from './storage.js';
 import { serializeTimelineState, deserializeTimelineState } from './state-serializer.js';
 import { showRecoveryModal } from './recovery-modal.js';
-import { showSaving, showSaved, showSaveError } from './save-indicator.js';
+import { initSaveIndicator, showSaving, showSaved, showSaveError } from './save-indicator.js';
 
 let saveInterval = null;
 let participantId = null;
@@ -30,6 +30,8 @@ export async function initAutosave() {
 
   participantId = getParticipantId();
   console.log('[autosave] Initialized for participant:', participantId);
+
+  initSaveIndicator();
 
   // Check for existing draft
   const draftInfo = await hasDraft(participantId);
