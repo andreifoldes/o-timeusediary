@@ -1051,6 +1051,7 @@ body {
     background: linear-gradient(to right, #fde725, #5ec962, #21918c, #3b528b, #440154);
     margin: 10px 0;
     border-radius: 4px;
+    display: none;
 }
 
 /* Mobile vertical gradient bar */
@@ -2140,4 +2141,3 @@ body {
         font-size: 13px;
     }
 }
-
