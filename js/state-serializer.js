@@ -3,19 +3,19 @@
  * Preserves participant data across responsive breakpoint reloads
  */
 
-const STATE_VERSION = 1;
+const STATE_VERSION = 2;
 
 /**
  * Serializes the current timeline state for storage
  * @returns {string} JSON string of serializable state
  */
 export function serializeTimelineState() {
+    const activities = cloneActivitiesWithMinutes(window.timelineManager?.activities || {});
     const state = {
         version: STATE_VERSION,
-        activities: window.timelineManager?.activities || {},
+        activities,
         currentIndex: window.timelineManager?.currentIndex ?? 0,
-        keys: window.timelineManager?.keys || [],
-        selectedActivity: window.selectedActivity || null
+        keys: window.timelineManager?.keys || []
     };
     return JSON.stringify(state);
 }
@@ -53,7 +53,7 @@ export function deserializeTimelineState(jsonString) {
     window.timelineManager.activities = state.activities;
     window.timelineManager.currentIndex = state.currentIndex;
     window.timelineManager.keys = state.keys;
-    window.selectedActivity = state.selectedActivity;
+    window.selectedActivity = null;
 
     console.log('[state-serializer] State restored successfully');
     return true;
@@ -69,7 +69,36 @@ function isValidState(state) {
     if (typeof state.activities !== 'object' || state.activities === null) return false;
     if (typeof state.currentIndex !== 'number') return false;
     if (!Array.isArray(state.keys)) return false;
-    // selectedActivity can be null or object - both valid
-    if (state.selectedActivity !== null && typeof state.selectedActivity !== 'object') return false;
     return true;
+}
+
+function cloneActivitiesWithMinutes(activities) {
+    if (!activities || typeof activities !== 'object') return {};
+
+    const minutesById = new Map();
+    if (typeof document !== 'undefined') {
+        document.querySelectorAll('.activity-block').forEach((block) => {
+            const id = block.dataset.id;
+            if (!id) return;
+            const startMinutes = parseInt(block.dataset.startMinutes, 10);
+            const endMinutes = parseInt(block.dataset.endMinutes, 10);
+            if (!Number.isNaN(startMinutes) && !Number.isNaN(endMinutes)) {
+                minutesById.set(id, { startMinutes, endMinutes });
+            }
+        });
+    }
+
+    const cloned = {};
+    for (const [timelineKey, list] of Object.entries(activities)) {
+        if (!Array.isArray(list)) {
+            cloned[timelineKey] = list;
+            continue;
+        }
+        cloned[timelineKey] = list.map((activity) => {
+            const minutes = activity?.id ? minutesById.get(activity.id) : null;
+            if (!minutes) return activity;
+            return { ...activity, ...minutes };
+        });
+    }
+    return cloned;
 }
