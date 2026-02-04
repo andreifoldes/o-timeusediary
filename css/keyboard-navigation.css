@@ -1,0 +1,677 @@
+/**
+ * Keyboard Navigation Styles for O-TUD Timeline
+ * WCAG 2.5.7 compliant visual indicators with full ARIA support
+ */
+
+/* ============================================
+   Screen Reader Only - Visually Hidden
+   ============================================ */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================
+   Skip Link for Keyboard Users
+   ============================================ */
+.skip-to-timeline {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    background: #1e40af;
+    color: white;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    font-weight: 600;
+    font-size: 14px;
+    z-index: 10000;
+    transition: top 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.skip-to-timeline:focus {
+    top: 0;
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Keyboard Navigation Overlay
+   ============================================ */
+.keyboard-nav-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.keyboard-nav-row {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+}
+
+/* Vertical layout adjustment */
+.timeline[data-layout="vertical"] .keyboard-nav-row {
+    flex-direction: column;
+}
+
+/* ============================================
+   Timeline Slot Styles
+   ============================================ */
+.keyboard-nav-slot,
+.timeline-slot {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Keyboard navigation focus on slot */
+.timeline-slot:focus {
+    outline: 3px solid #2563eb;
+    outline-offset: -3px;
+    z-index: 10;
+}
+
+/* Selected state (in selection range) */
+.timeline-slot[aria-selected="true"],
+.timeline-slot.in-selection {
+    background-color: rgba(37, 99, 235, 0.2);
+    border: 2px solid #2563eb;
+}
+
+/* Selection start marker */
+.timeline-slot.selection-start {
+    border-left: 4px solid #2563eb;
+}
+
+/* Selection end marker */
+.timeline-slot.selection-end {
+    border-right: 4px solid #2563eb;
+}
+
+/* Vertical layout adjustments for selection markers */
+.timeline[data-layout="vertical"] .timeline-slot.selection-start {
+    border-left: none;
+    border-top: 4px solid #2563eb;
+}
+
+.timeline[data-layout="vertical"] .timeline-slot.selection-end {
+    border-right: none;
+    border-bottom: 4px solid #2563eb;
+}
+
+/* Current time indicator */
+.timeline-slot[aria-current="time"] {
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+/* ============================================
+   Focus Indicator - High Contrast
+   ============================================ */
+.keyboard-focus-indicator {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+    z-index: 15;
+
+    /* High contrast focus ring - 3px solid with white gap */
+    box-shadow:
+        inset 0 0 0 3px #2563eb,
+        inset 0 0 0 5px #ffffff,
+        inset 0 0 0 7px #2563eb;
+
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 2px;
+}
+
+.keyboard-focus-indicator.visible {
+    opacity: 1;
+}
+
+/* Selection mode - orange appearance with animation */
+.keyboard-focus-indicator.selecting {
+    box-shadow:
+        inset 0 0 0 3px #ea580c,
+        inset 0 0 0 5px #ffffff,
+        inset 0 0 0 7px #ea580c;
+    background: rgba(234, 88, 12, 0.15);
+    animation: pulse-select 1s ease-in-out infinite;
+}
+
+@keyframes pulse-select {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* ============================================
+   Selection Range Highlight
+   ============================================ */
+.keyboard-selection-range {
+    position: absolute;
+    pointer-events: none;
+    z-index: 12;
+
+    /* Distinct striped selection appearance */
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(37, 99, 235, 0.2),
+        rgba(37, 99, 235, 0.2) 4px,
+        rgba(37, 99, 235, 0.35) 4px,
+        rgba(37, 99, 235, 0.35) 8px
+    );
+
+    border: 2px solid #2563eb;
+    border-radius: 3px;
+
+    /* Animation for active selection */
+    animation: selection-stripe 0.5s linear infinite;
+}
+
+@keyframes selection-stripe {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 11.31px 0; /* sqrt(8^2 + 8^2) for 45deg stripe */
+    }
+}
+
+/* ============================================
+   Visual Feedback Toast
+   ============================================ */
+.keyboard-nav-feedback {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+}
+
+.keyboard-nav-feedback.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.keyboard-nav-feedback.info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.keyboard-nav-feedback.warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.keyboard-nav-feedback.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.keyboard-nav-feedback.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+/* ============================================
+   Timeline Focus States
+   ============================================ */
+.timeline:focus {
+    outline: none; /* We use custom focus indicator instead */
+}
+
+.timeline:focus-visible {
+    outline: none;
+}
+
+/* Show focus mode indicator on timeline container when focused */
+.timeline:focus::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 3px solid #2563eb;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 5;
+    animation: focus-ring-pulse 2s ease-in-out infinite;
+}
+
+@keyframes focus-ring-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* ============================================
+   Activity Block Keyboard Focus
+   ============================================ */
+.activity-block:focus {
+    outline: none;
+    box-shadow:
+        0 0 0 3px #2563eb,
+        0 0 0 5px #ffffff,
+        0 0 0 7px #2563eb !important;
+    z-index: 100 !important;
+}
+
+.activity-block:focus-visible {
+    outline: none;
+}
+
+/* ============================================
+   Keyboard Instructions Panel
+   ============================================ */
+.keyboard-instructions-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    max-width: 320px;
+    z-index: 1000;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+/* Toggle button */
+.keyboard-instructions-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    text-align: left;
+    transition: background-color 0.15s ease;
+}
+
+.keyboard-instructions-toggle:hover {
+    background: #f1f5f9;
+}
+
+.keyboard-instructions-toggle:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+}
+
+.toggle-icon {
+    font-size: 16px;
+}
+
+.toggle-text {
+    flex: 1;
+}
+
+.toggle-chevron {
+    transition: transform 0.2s ease;
+    font-size: 10px;
+}
+
+.keyboard-instructions-panel.expanded .toggle-chevron {
+    transform: rotate(180deg);
+}
+
+/* Shortcuts list */
+.keyboard-shortcuts-list {
+    padding: 16px;
+    border-top: 1px solid #e2e8f0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.keyboard-shortcuts-list h4 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.keyboard-shortcuts-list h4:not(:first-child) {
+    margin-top: 16px;
+}
+
+.keyboard-shortcuts-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.keyboard-shortcuts-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    color: #475569;
+}
+
+.keyboard-shortcuts-list li span {
+    flex: 1;
+    text-align: right;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.keyboard-shortcuts-list kbd {
+    display: inline-block;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    color: #334155;
+    margin-right: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.keyboard-shortcuts-list .tips {
+    margin-top: 8px;
+}
+
+.keyboard-shortcuts-list .tips li {
+    display: block;
+    padding: 4px 0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.keyboard-shortcuts-list .tips li::before {
+    content: '•';
+    margin-right: 8px;
+    color: #2563eb;
+}
+
+/* Hint animation when timeline is focused */
+.keyboard-instructions-panel.hint-visible {
+    animation: hint-pulse 0.5s ease-in-out 2;
+}
+
+@keyframes hint-pulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    }
+}
+
+/* ============================================
+   High Contrast Mode (Windows)
+   ============================================ */
+@media (forced-colors: active) {
+    .timeline-slot:focus {
+        outline: 3px solid Highlight;
+        outline-offset: -3px;
+    }
+
+    .timeline-slot[aria-selected="true"],
+    .timeline-slot.in-selection {
+        background-color: Highlight;
+        color: HighlightText;
+        forced-color-adjust: none;
+    }
+
+    .keyboard-focus-indicator.visible {
+        box-shadow: none;
+        border: 3px solid Highlight;
+        background: transparent;
+    }
+
+    .keyboard-focus-indicator.selecting {
+        border-color: LinkText;
+    }
+
+    .keyboard-selection-range {
+        border: 3px solid Highlight;
+        background: transparent;
+    }
+
+    .activity-block:focus {
+        box-shadow: none !important;
+        outline: 3px solid Highlight !important;
+    }
+
+    .skip-to-timeline:focus {
+        outline: 3px solid Highlight;
+    }
+
+    .keyboard-nav-feedback {
+        border: 2px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+    }
+}
+
+/* ============================================
+   Prefers Contrast: High
+   ============================================ */
+@media (prefers-contrast: high) {
+    .keyboard-focus-indicator.visible {
+        box-shadow:
+            inset 0 0 0 4px #000000,
+            inset 0 0 0 6px #ffffff,
+            inset 0 0 0 8px #000000;
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    .keyboard-focus-indicator.selecting {
+        box-shadow:
+            inset 0 0 0 4px #cc0000,
+            inset 0 0 0 6px #ffffff,
+            inset 0 0 0 8px #cc0000;
+        background: rgba(204, 0, 0, 0.2);
+    }
+
+    .keyboard-selection-range {
+        border: 3px solid #000000;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .activity-block:focus {
+        box-shadow:
+            0 0 0 4px #000000,
+            0 0 0 6px #ffffff,
+            0 0 0 8px #000000 !important;
+    }
+
+    .timeline-slot:focus {
+        outline: 4px solid #000000;
+        outline-offset: -4px;
+    }
+
+    .timeline-slot[aria-selected="true"] {
+        background-color: rgba(0, 0, 0, 0.3);
+        border: 3px solid #000000;
+    }
+}
+
+/* ============================================
+   Reduced Motion Support
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .keyboard-focus-indicator,
+    .keyboard-focus-indicator.selecting,
+    .keyboard-selection-range,
+    .keyboard-nav-feedback,
+    .keyboard-instructions-panel,
+    .toggle-chevron,
+    .timeline-slot {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .keyboard-focus-indicator.selecting {
+        transform: none;
+    }
+
+    .timeline:focus::before {
+        animation: none;
+    }
+
+    @keyframes selection-stripe {
+        0%, 100% {
+            background-position: 0 0;
+        }
+    }
+}
+
+/* ============================================
+   Mobile Layout Adjustments (Vertical)
+   ============================================ */
+@media (max-width: 1440px) {
+    .keyboard-focus-indicator {
+        min-height: 17.36px; /* Minimum 10-minute slot height on mobile */
+    }
+
+    .keyboard-selection-range {
+        min-height: 17.36px;
+    }
+
+    .keyboard-nav-feedback {
+        bottom: 80px;
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+
+    .keyboard-instructions-panel {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .keyboard-shortcuts-list {
+        max-height: 300px;
+    }
+}
+
+/* ============================================
+   Print Styles - Hide Navigation UI
+   ============================================ */
+@media print {
+    .keyboard-nav-overlay,
+    .keyboard-instructions-panel,
+    .keyboard-nav-feedback,
+    .skip-to-timeline,
+    #keyboard-nav-announcer,
+    #timeline-keyboard-instructions {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   Dark Mode Support (if app supports it)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    .keyboard-instructions-panel {
+        background: #1e293b;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .keyboard-instructions-toggle {
+        background: #334155;
+        color: #e2e8f0;
+    }
+
+    .keyboard-instructions-toggle:hover {
+        background: #475569;
+    }
+
+    .keyboard-shortcuts-list {
+        border-top-color: #475569;
+    }
+
+    .keyboard-shortcuts-list h4 {
+        color: #94a3b8;
+    }
+
+    .keyboard-shortcuts-list li {
+        color: #cbd5e1;
+    }
+
+    .keyboard-shortcuts-list li span {
+        color: #94a3b8;
+    }
+
+    .keyboard-shortcuts-list kbd {
+        background: #475569;
+        border-color: #64748b;
+        color: #e2e8f0;
+    }
+
+    .keyboard-nav-feedback.info {
+        background: #1e3a5f;
+        color: #93c5fd;
+        border-color: #2563eb;
+    }
+
+    .keyboard-nav-feedback.warning {
+        background: #451a03;
+        color: #fcd34d;
+        border-color: #d97706;
+    }
+
+    .keyboard-nav-feedback.error {
+        background: #450a0a;
+        color: #fca5a5;
+        border-color: #dc2626;
+    }
+
+    .keyboard-nav-feedback.success {
+        background: #052e16;
+        color: #86efac;
+        border-color: #16a34a;
+    }
+}
