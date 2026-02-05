@@ -88,6 +88,7 @@ const autoScrollModule = (() => {
       mouseMoveListener = onPointerMove;
       document.addEventListener('mousemove', mouseMoveListener, { passive: true });
       document.addEventListener('touchmove', mouseMoveListener, { passive: true });
+      document.addEventListener('pointermove', mouseMoveListener, { passive: true });
     }
     
     // Start the scroll interval if not already running
@@ -103,6 +104,7 @@ const autoScrollModule = (() => {
     if (mouseMoveListener) {
       document.removeEventListener('mousemove', mouseMoveListener);
       document.removeEventListener('touchmove', mouseMoveListener);
+      document.removeEventListener('pointermove', mouseMoveListener);
       mouseMoveListener = null;
     }
     
