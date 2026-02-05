@@ -1,7 +1,7 @@
 /* autoscroll.js */
 
 import { getIsMobile } from './globals.js';
-import { prefersReducedMotion } from './accessibility.js';
+import { prefersReducedMotion, getAutoscrollSpeed } from './accessibility.js';
 
 // Module to handle auto-scrolling during both top and bottom edge resizing of activity blocks in vertical layout.
 const autoScrollModule = (() => {
@@ -9,7 +9,6 @@ const autoScrollModule = (() => {
   let isEnabled = true; // Auto-scroll feature is enabled by default
   const config = {
     threshold: 100,    // Threshold in pixels from top/bottom of viewport
-    scrollSpeed: 32,   // Pixels to scroll per tick
     interval: 16       // How often to check for scrolling (16ms ≈ 60fps)
   };
 
@@ -97,16 +96,18 @@ const autoScrollModule = (() => {
     }
 
     // Scroll Down Condition:
+    const scrollSpeed = getAutoscrollSpeed();
+
     if (distanceToBottom < config.threshold &&
         scrollTop < maxScrollTop &&
-        (isWindow ? (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit : true)) {
+        (isWindow ? (scrollTop + scrollSpeed + viewportHeight) < footerLimit : true)) {
       if (isWindow) {
         window.scrollBy({
-          top: config.scrollSpeed,
+          top: scrollSpeed,
           behavior: 'auto'
         });
       } else {
-        scrollContainer.scrollTop = Math.min(maxScrollTop, scrollTop + config.scrollSpeed);
+        scrollContainer.scrollTop = Math.min(maxScrollTop, scrollTop + scrollSpeed);
       }
     }
     // Scroll Up Condition:
@@ -114,11 +115,11 @@ const autoScrollModule = (() => {
         scrollTop > (isWindow ? headerHeight : 0)) {
       if (isWindow) {
         window.scrollBy({
-          top: -config.scrollSpeed,
+          top: -scrollSpeed,
           behavior: 'auto'
         });
       } else {
-        scrollContainer.scrollTop = Math.max(0, scrollTop - config.scrollSpeed);
+        scrollContainer.scrollTop = Math.max(0, scrollTop - scrollSpeed);
       }
     }
   }
