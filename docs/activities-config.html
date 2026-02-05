@@ -1413,6 +1413,38 @@
 </tr>
 </tbody>
 </table>
+<p><strong>Accessibility Settings</strong>
+Use the optional <code>general.accessibility</code> object to enable or disable OS-level accessibility support per study. All fields default to <code>true</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>accessibility.enableReducedMotion</code></td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Honor <code>prefers-reduced-motion</code> and disable animations/smooth scrolling</td>
+</tr>
+<tr>
+<td><code>accessibility.enableHighContrast</code></td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Honor <code>prefers-contrast: more</code> (macOS/iOS high contrast)</td>
+</tr>
+<tr>
+<td><code>accessibility.enableForcedColors</code></td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Honor <code>forced-colors: active</code> (Windows High Contrast)</td>
+</tr>
+</tbody>
+</table>
 <h3 id="example-general-configuration">Example General Configuration<a class="headerlink" href="#example-general-configuration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;general&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;experimentID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;YOUR_DATAPIPE_EXPERIMENT_ID&quot;</span><span class="p">,</span>
@@ -1422,7 +1454,12 @@
 <span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;instructions&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;primary_redirect_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pages/thank-you.html&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;fallbackToCSV&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">&quot;fallbackToCSV&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;accessibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;enableReducedMotion&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;enableHighContrast&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;enableForcedColors&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="timeline-configuration">Timeline Configuration<a class="headerlink" href="#timeline-configuration" title="Permanent link">&para;</a></h2>
