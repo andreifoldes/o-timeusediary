@@ -1,6 +1,6 @@
 import { getIsMobile, updateIsMobile } from '../js/globals.js';
 import i18n from '../js/i18n.js';
-import { applyAccessibilityConfig } from '../js/accessibility.js';
+import { applyAccessibilityConfig, initAccessibilityDemoShortcut } from '../js/accessibility.js';
 
 // Add the missing updateLayout function
 function updateLayout() {
@@ -23,6 +23,7 @@ function updateLayout() {
             const data = await response.json();
             const language = data.general?.language || 'en';
             applyAccessibilityConfig(data.general?.accessibility);
+            initAccessibilityDemoShortcut();
             console.log('Loading language:', language);
             await i18n.init(language);
             i18n.applyTranslations();
@@ -30,6 +31,7 @@ function updateLayout() {
         } else {
             console.warn('Could not load activities.json, defaulting to English');
             applyAccessibilityConfig();
+            initAccessibilityDemoShortcut();
             await i18n.init('en');
             i18n.applyTranslations();
         }
@@ -37,6 +39,7 @@ function updateLayout() {
         console.error('Error initializing i18n:', error);
         // Fallback to English if there's any error
         applyAccessibilityConfig();
+        initAccessibilityDemoShortcut();
         await i18n.init('en');
         i18n.applyTranslations();
     }
