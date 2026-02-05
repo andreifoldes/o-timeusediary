@@ -2520,7 +2520,7 @@ body {
 }
 
 .save-indicator.spinning .save-spinner {
-    animation: save-spin 1s linear infinite;
+    animation: save-spin 0.5s linear infinite;
 }
 
 @keyframes save-spin {
@@ -2595,5 +2595,252 @@ body {
 @media (prefers-color-scheme: dark) {
     .save-indicator {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ==========================================================================
+   Global Accessibility Preferences (Configurable)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    html:not(.a11y-reduced-motion-disabled) {
+        scroll-behavior: auto;
+    }
+
+    html:not(.a11y-reduced-motion-disabled) *,
+    html:not(.a11y-reduced-motion-disabled) *::before,
+    html:not(.a11y-reduced-motion-disabled) *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    html:not(.a11y-reduced-motion-disabled) .activity-block.invalid {
+        animation: none !important;
+    }
+
+    html:not(.a11y-reduced-motion-disabled) .loading-spinner,
+    html:not(.a11y-reduced-motion-disabled) .save-spinner {
+        animation: none !important;
+    }
+}
+
+@media (prefers-contrast: more) {
+    html:not(.a11y-high-contrast-disabled) body {
+        font-weight: 500;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .activity-item,
+    html:not(.a11y-high-contrast-disabled) .activity-button {
+        border: 2px solid #000;
+        font-weight: 600;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .timeline-slot,
+    html:not(.a11y-high-contrast-disabled) .timeline .hour-marker {
+        border: 1px solid #333;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .activity-block {
+        border: 2px solid #000 !important;
+        box-shadow: 0 0 0 1px #000;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .floating-add-button {
+        border: 2px solid #000;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .modal,
+    html:not(.a11y-high-contrast-disabled) .modal-content {
+        border: 2px solid #000;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .toast {
+        border: 2px solid #000;
+    }
+
+    html:not(.a11y-high-contrast-disabled) :focus,
+    html:not(.a11y-high-contrast-disabled) :focus-visible {
+        outline: 4px solid #000 !important;
+        outline-offset: 2px !important;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .btn,
+    html:not(.a11y-high-contrast-disabled) button {
+        border: 2px solid #000 !important;
+    }
+}
+
+@media (forced-colors: active) {
+    html:not(.a11y-forced-colors-disabled) .activity-item,
+    html:not(.a11y-forced-colors-disabled) .activity-button {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+        forced-color-adjust: none;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-item.selected,
+    html:not(.a11y-forced-colors-disabled) .activity-item:focus,
+    html:not(.a11y-forced-colors-disabled) .activity-button.selected,
+    html:not(.a11y-forced-colors-disabled) .activity-button:focus {
+        background: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-block {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+        forced-color-adjust: none;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-block:focus {
+        outline: 3px solid Highlight;
+        outline-offset: 2px;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .timeline-slot,
+    html:not(.a11y-forced-colors-disabled) .timeline {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .timeline-slot.filled {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .timeline-slot.drop-target,
+    html:not(.a11y-forced-colors-disabled) .drop-target {
+        border: 3px dashed Highlight;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"sleep\"],
+    html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"sleep\"],
+    html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"sleep\"] {
+        background: repeating-linear-gradient(
+            45deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"work\"],
+    html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"work\"],
+    html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"work\"] {
+        background: repeating-linear-gradient(
+            0deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"leisure\"],
+    html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"leisure\"],
+    html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"leisure\"] {
+        background: repeating-linear-gradient(
+            90deg,
+            Canvas,
+            Canvas 4px,
+            CanvasText 4px,
+            CanvasText 5px
+        );
+    }
+
+    html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"personal-care\"],
+    html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"personal-care\"],
+    html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"personal-care\"] {
+        background: radial-gradient(
+            circle,
+            CanvasText 1px,
+            Canvas 1px
+        );
+        background-size: 8px 8px;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .progress-fill,
+    html:not(.a11y-forced-colors-disabled) .progress-bar-fill {
+        background: Highlight;
+        forced-color-adjust: none;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .progress-bar,
+    html:not(.a11y-forced-colors-disabled) .progress-container {
+        background: Canvas;
+        border: 2px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) button,
+    html:not(.a11y-forced-colors-disabled) .btn {
+        border: 2px solid ButtonText;
+        background: ButtonFace;
+        color: ButtonText;
+        forced-color-adjust: none;
+    }
+
+    html:not(.a11y-forced-colors-disabled) button:hover,
+    html:not(.a11y-forced-colors-disabled) button:focus,
+    html:not(.a11y-forced-colors-disabled) .btn:hover,
+    html:not(.a11y-forced-colors-disabled) .btn:focus {
+        background: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) button:disabled,
+    html:not(.a11y-forced-colors-disabled) .btn:disabled {
+        opacity: 0.5;
+        border-style: dashed;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .modal-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    html:not(.a11y-forced-colors-disabled) .modal {
+        background: Canvas;
+        border: 3px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .modal-close {
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .modal-close:hover,
+    html:not(.a11y-forced-colors-disabled) .modal-close:focus {
+        background: Highlight;
+        color: HighlightText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) input,
+    html:not(.a11y-forced-colors-disabled) select,
+    html:not(.a11y-forced-colors-disabled) textarea {
+        background: Canvas;
+        color: CanvasText;
+        border: 2px solid CanvasText;
+    }
+
+    html:not(.a11y-forced-colors-disabled) input:focus,
+    html:not(.a11y-forced-colors-disabled) select:focus,
+    html:not(.a11y-forced-colors-disabled) textarea:focus {
+        outline: 3px solid Highlight;
+        outline-offset: 1px;
+    }
+
+    html:not(.a11y-forced-colors-disabled) a {
+        color: LinkText;
+        text-decoration: underline;
+    }
+
+    html:not(.a11y-forced-colors-disabled) a:visited {
+        color: VisitedText;
     }
 }

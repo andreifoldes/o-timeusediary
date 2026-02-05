@@ -1,6 +1,7 @@
 /* autoscroll.js */
 
 import { getIsMobile } from './globals.js';
+import { prefersReducedMotion } from './accessibility.js';
 
 // Module to handle auto-scrolling during both top and bottom edge resizing of activity blocks in vertical layout.
 const autoScrollModule = (() => {
@@ -18,7 +19,7 @@ const autoScrollModule = (() => {
 
   // Function to perform the actual scrolling
   function performScroll() {
-    if (!isEnabled || !getIsMobile() || !lastPointerY) return;
+    if (!isEnabled || !getIsMobile() || !lastPointerY || prefersReducedMotion()) return;
 
     // Check if an activity block is currently being resized
     const resizingElement = document.querySelector('.activity-block.resizing');

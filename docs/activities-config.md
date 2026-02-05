@@ -48,6 +48,15 @@ The `general` section contains study-wide settings:
 | `primary_redirect_url` | String | **Required** | URL to redirect to after successful data submission |
 | `fallbackToCSV` | Boolean | Optional | Whether to download CSV if DataPipe fails |
 
+**Accessibility Settings**
+Use the optional `general.accessibility` object to enable or disable OS-level accessibility support per study. All fields default to `true`.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `accessibility.enableReducedMotion` | Boolean | Optional | Honor `prefers-reduced-motion` and disable animations/smooth scrolling |
+| `accessibility.enableHighContrast` | Boolean | Optional | Honor `prefers-contrast: more` (macOS/iOS high contrast) |
+| `accessibility.enableForcedColors` | Boolean | Optional | Honor `forced-colors: active` (Windows High Contrast) |
+
 ### Example General Configuration
 
 ```json
@@ -59,7 +68,12 @@ The `general` section contains study-wide settings:
   "language": "en",
   "instructions": true,
   "primary_redirect_url": "pages/thank-you.html",
-  "fallbackToCSV": true
+  "fallbackToCSV": true,
+  "accessibility": {
+    "enableReducedMotion": true,
+    "enableHighContrast": true,
+    "enableForcedColors": true
+  }
 }
 ```
 

@@ -5,7 +5,12 @@
       "author": "John Doe",
       "instructions": true,
       "primary_redirect_url": "thank-you.html",
-      "fallbackToCSV": true
+      "fallbackToCSV": true,
+      "accessibility": {
+        "enableReducedMotion": true,
+        "enableHighContrast": true,
+        "enableForcedColors": true
+      }
     },
     "timeline": {
       "primary": {

@@ -20,6 +20,7 @@ import {
     announceUndo,
     announceSubmissionStatus
 } from './announcer.js';
+import { getScrollBehavior } from './accessibility.js';
 
 // Toast notification system
 function showToast(message, type = 'info', duration = 3000) {
@@ -856,7 +857,7 @@ function scrollToActiveTimeline() {
                     // Scroll to make timeline fully visible
                     timelinesWrapper.scrollTo({
                         left: activeTimeline.offsetLeft,
-                        behavior: 'smooth'
+                        behavior: getScrollBehavior()
                     });
                 }
             }
@@ -869,7 +870,7 @@ function scrollToActiveTimeline() {
         
         window.scrollTo({
             top: scrollTarget,
-            behavior: 'smooth'
+            behavior: getScrollBehavior()
         });
     }
 }
