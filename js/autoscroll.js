@@ -19,7 +19,7 @@ const autoScrollModule = (() => {
 
   // Function to perform the actual scrolling
   function performScroll() {
-    if (!isEnabled || !getIsMobile() || !lastPointerY || prefersReducedMotion()) return;
+    if (!isEnabled || !getIsMobile() || lastPointerY === null || prefersReducedMotion()) return;
 
     // Check if an activity block is currently being resized
     const resizingElement = document.querySelector('.activity-block.resizing');
@@ -68,10 +68,6 @@ const autoScrollModule = (() => {
   function onPointerMove(e) {
     if (!isEnabled || !getIsMobile()) return;
 
-    // Check if an activity block is currently being resized
-    const resizingElement = document.querySelector('.activity-block.resizing');
-    if (!resizingElement) return;
-
     // Update pointer position
     if (e.touches && e.touches.length > 0) {
       lastPointerY = e.touches[0].clientY;
@@ -82,13 +78,15 @@ const autoScrollModule = (() => {
     }
   }
 
+  const MOVE_LISTENER_OPTIONS = { passive: true, capture: true };
+
   // Enable the auto-scroll functionality
   function enable() {
     if (!mouseMoveListener) {
       mouseMoveListener = onPointerMove;
-      document.addEventListener('mousemove', mouseMoveListener, { passive: true });
-      document.addEventListener('touchmove', mouseMoveListener, { passive: true });
-      document.addEventListener('pointermove', mouseMoveListener, { passive: true });
+      document.addEventListener('mousemove', mouseMoveListener, MOVE_LISTENER_OPTIONS);
+      document.addEventListener('touchmove', mouseMoveListener, MOVE_LISTENER_OPTIONS);
+      document.addEventListener('pointermove', mouseMoveListener, MOVE_LISTENER_OPTIONS);
     }
     
     // Start the scroll interval if not already running
@@ -102,9 +100,9 @@ const autoScrollModule = (() => {
   // Disable the auto-scroll functionality
   function disable() {
     if (mouseMoveListener) {
-      document.removeEventListener('mousemove', mouseMoveListener);
-      document.removeEventListener('touchmove', mouseMoveListener);
-      document.removeEventListener('pointermove', mouseMoveListener);
+      document.removeEventListener('mousemove', mouseMoveListener, { capture: true });
+      document.removeEventListener('touchmove', mouseMoveListener, { capture: true });
+      document.removeEventListener('pointermove', mouseMoveListener, { capture: true });
       mouseMoveListener = null;
     }
     
