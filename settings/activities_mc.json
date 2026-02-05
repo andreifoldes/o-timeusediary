@@ -2,7 +2,12 @@
   "general": {
   "app_name": "O-TUD",
   "version": "1.0.0",
-  "author": "John Doe"
+  "author": "John Doe",
+  "accessibility": {
+    "enableReducedMotion": true,
+    "enableHighContrast": true,
+    "enableForcedColors": true
+  }
   },
   "timeline": {
     "primary": {

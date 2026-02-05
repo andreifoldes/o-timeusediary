@@ -42,6 +42,7 @@ import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
 import { initAnnouncer, announceActivityPlaced, announceActivityResized } from './announcer.js';
+import { applyAccessibilityConfig, getScrollBehavior } from './accessibility.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -363,7 +364,7 @@ async function restoreNextTimeline(nextTimelineIndex, nextTimelineKey) {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 
@@ -536,7 +537,7 @@ async function addNextTimeline() {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 
@@ -727,7 +728,7 @@ async function goToPreviousTimeline() {
         if (getIsMobile()) {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth'
+                behavior: getScrollBehavior()
             });
         }
 
@@ -2422,6 +2423,7 @@ async function init() {
 
         // Save global configuration
         window.timelineManager.general = data.general;
+        applyAccessibilityConfig(data.general?.accessibility);
 
         // Initialize i18n (internationalization) system
         const language = data.general.language || 'en';
