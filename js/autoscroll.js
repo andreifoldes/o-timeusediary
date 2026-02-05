@@ -17,6 +17,45 @@ const autoScrollModule = (() => {
   let scrollInterval = null;
   let lastPointerY = null;
 
+  function updatePointerFromEvent(e) {
+    if (!e) return;
+    if (e.touches && e.touches.length > 0) {
+      lastPointerY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+      lastPointerY = e.changedTouches[0].clientY;
+    } else if (typeof e.clientY === 'number') {
+      lastPointerY = e.clientY;
+    } else if (e.client && typeof e.client.y === 'number') {
+      lastPointerY = e.client.y;
+    } else if (typeof e.pageY === 'number') {
+      lastPointerY = e.pageY - (window.pageYOffset || document.documentElement.scrollTop || 0);
+    } else if (e.page && typeof e.page.y === 'number') {
+      lastPointerY = e.page.y - (window.pageYOffset || document.documentElement.scrollTop || 0);
+    } else if (typeof e.y === 'number') {
+      lastPointerY = e.y;
+    }
+  }
+
+  function getScrollContainer(resizingElement) {
+    if (!getIsMobile()) return window;
+
+    if (resizingElement) {
+      let current = resizingElement.parentElement;
+      while (current && current !== document.body) {
+        const styles = window.getComputedStyle(current);
+        const overflowY = styles.overflowY;
+        if ((overflowY === 'auto' || overflowY === 'scroll') &&
+            current.scrollHeight > current.clientHeight) {
+          return current;
+        }
+        current = current.parentElement;
+      }
+    }
+
+    const wrapper = document.querySelector('.timelines-wrapper');
+    return wrapper || window;
+  }
+
   // Function to perform the actual scrolling
   function performScroll() {
     if (!isEnabled || !getIsMobile() || lastPointerY === null || prefersReducedMotion()) return;
@@ -25,14 +64,25 @@ const autoScrollModule = (() => {
     const resizingElement = document.querySelector('.activity-block.resizing');
     if (!resizingElement) return;
 
-    // Get viewport height and calculate distances
-    const viewportHeight = window.innerHeight;
-    const distanceToBottom = viewportHeight - lastPointerY;
-    const distanceToTop = lastPointerY;
+    const scrollContainer = getScrollContainer(resizingElement);
+    const isWindow = scrollContainer === window;
+
+    // Get viewport height and calculate distances relative to scroll container
+    const containerRect = isWindow
+      ? { top: 0, bottom: window.innerHeight }
+      : scrollContainer.getBoundingClientRect();
+    const viewportHeight = isWindow ? window.innerHeight : scrollContainer.clientHeight;
+    const distanceToBottom = containerRect.bottom - lastPointerY;
+    const distanceToTop = lastPointerY - containerRect.top;
 
     // Get scroll info
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = isWindow
+      ? (window.pageYOffset || document.documentElement.scrollTop)
+      : scrollContainer.scrollTop;
+    const scrollHeight = isWindow
+      ? document.documentElement.scrollHeight
+      : scrollContainer.scrollHeight;
+    const maxScrollTop = Math.max(0, scrollHeight - viewportHeight);
 
     // Get the header height to prevent scrolling above it
     const headerSection = document.querySelector('.header-section');
@@ -47,20 +97,29 @@ const autoScrollModule = (() => {
     }
 
     // Scroll Down Condition:
-    if (distanceToBottom < config.threshold && 
-        scrollTop < scrollHeight - viewportHeight && 
-        (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit) {
-      window.scrollBy({
-        top: config.scrollSpeed,
-        behavior: 'auto'
-      });
+    if (distanceToBottom < config.threshold &&
+        scrollTop < maxScrollTop &&
+        (isWindow ? (scrollTop + config.scrollSpeed + viewportHeight) < footerLimit : true)) {
+      if (isWindow) {
+        window.scrollBy({
+          top: config.scrollSpeed,
+          behavior: 'auto'
+        });
+      } else {
+        scrollContainer.scrollTop = Math.min(maxScrollTop, scrollTop + config.scrollSpeed);
+      }
     }
     // Scroll Up Condition:
-    else if (distanceToTop < config.threshold && scrollTop > headerHeight) {
-      window.scrollBy({
-        top: -config.scrollSpeed,
-        behavior: 'auto'
-      });
+    else if (distanceToTop < config.threshold &&
+        scrollTop > (isWindow ? headerHeight : 0)) {
+      if (isWindow) {
+        window.scrollBy({
+          top: -config.scrollSpeed,
+          behavior: 'auto'
+        });
+      } else {
+        scrollContainer.scrollTop = Math.max(0, scrollTop - config.scrollSpeed);
+      }
     }
   }
 
@@ -68,14 +127,7 @@ const autoScrollModule = (() => {
   function onPointerMove(e) {
     if (!isEnabled || !getIsMobile()) return;
 
-    // Update pointer position
-    if (e.touches && e.touches.length > 0) {
-      lastPointerY = e.touches[0].clientY;
-    } else if (e.changedTouches && e.changedTouches.length > 0) {
-      lastPointerY = e.changedTouches[0].clientY;
-    } else {
-      lastPointerY = e.clientY;
-    }
+    updatePointerFromEvent(e);
   }
 
   const MOVE_LISTENER_OPTIONS = { passive: true, capture: true };
@@ -122,7 +174,8 @@ const autoScrollModule = (() => {
   return {
     enable,
     disable,
-    config
+    config,
+    setPointerFromEvent: updatePointerFromEvent
   };
 })();
 

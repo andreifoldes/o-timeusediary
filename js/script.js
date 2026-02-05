@@ -1537,6 +1537,9 @@ function initTimelineInteraction(timeline) {
                 const timeLabel = target.querySelector('.time-label');
                 
                 target.classList.add('resizing');
+                if (window.autoScrollModule?.setPointerFromEvent) {
+                    window.autoScrollModule.setPointerFromEvent(event);
+                }
                 
                 if (getIsMobile()) {
                     // Mobile: Handle vertical resizing
