@@ -6,7 +6,8 @@
 const DEFAULT_ACCESSIBILITY = {
     enableReducedMotion: true,
     enableHighContrast: true,
-    enableForcedColors: true
+    enableForcedColors: true,
+    autoscrollSpeed: 32
 };
 
 function normalizeAccessibilityConfig(config) {
@@ -17,7 +18,10 @@ function normalizeAccessibilityConfig(config) {
     return {
         enableReducedMotion: config.enableReducedMotion !== false,
         enableHighContrast: config.enableHighContrast !== false,
-        enableForcedColors: config.enableForcedColors !== false
+        enableForcedColors: config.enableForcedColors !== false,
+        autoscrollSpeed: Number.isFinite(config.autoscrollSpeed) && config.autoscrollSpeed > 0
+            ? config.autoscrollSpeed
+            : DEFAULT_ACCESSIBILITY.autoscrollSpeed
     };
 }
 
@@ -98,4 +102,13 @@ export function prefersForcedColors() {
 
 export function getScrollBehavior() {
     return prefersReducedMotion() ? 'auto' : 'smooth';
+}
+
+export function getAutoscrollSpeed() {
+    const config = getAccessibilityConfig();
+    const speed = Number(config.autoscrollSpeed);
+    if (!Number.isFinite(speed) || speed <= 0) {
+        return DEFAULT_ACCESSIBILITY.autoscrollSpeed;
+    }
+    return speed;
 }

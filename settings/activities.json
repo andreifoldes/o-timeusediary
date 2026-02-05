@@ -11,7 +11,8 @@
     "accessibility": {
       "enableReducedMotion": false,
       "enableHighContrast": false,
-      "enableForcedColors": false
+      "enableForcedColors": false,
+      "autoscrollSpeed": 32
     }
   }, 
   "timeline": {
