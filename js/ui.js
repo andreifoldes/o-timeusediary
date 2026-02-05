@@ -13,27 +13,41 @@ import { getIsMobile, updateIsMobile } from './globals.js';
 import { addNextTimeline, goToPreviousTimeline, renderActivities } from './script.js';
 import { DEBUG_MODE } from './constants.js';
 import { triggerSave, onSubmitSuccess } from './autosave.js';
+import {
+    announce,
+    announceError,
+    announceRowCleared,
+    announceUndo,
+    announceSubmissionStatus
+} from './announcer.js';
 
 // Toast notification system
 function showToast(message, type = 'info', duration = 3000) {
     // Remove any existing toasts
     const existingToasts = document.querySelectorAll('.toast');
     existingToasts.forEach(toast => toast.remove());
-    
+
     // Create new toast
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
     document.body.appendChild(toast);
-    
+
     // Trigger show animation
     setTimeout(() => toast.classList.add('show'), 10);
-    
+
     // Remove after duration
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, duration);
+
+    // Announce for screen readers (warning and error messages are urgent)
+    if (type === 'warning' || type === 'error') {
+        announceError(message);
+    } else {
+        announce(message);
+    }
 }
 
 // Make showToast globally available for debugging and accessibility
@@ -286,14 +300,21 @@ function createModal() {
         showLoadingModal();
         document.getElementById('nextBtn').disabled = true;
 
+        // Announce submission started for screen readers
+        announceSubmissionStatus('submitting');
+
         try {
             const result = await sendData();
             if (result && result.success) {
                 // Clear autosave draft after successful submission
                 await onSubmitSuccess();
+                // Announce success for screen readers
+                announceSubmissionStatus('success');
             }
         } catch (error) {
             console.error('[submit] Error during submission:', error);
+            // Announce error for screen readers
+            announceSubmissionStatus('error');
             // Don't clear autosave on error - user can retry
         }
     });
@@ -588,7 +609,10 @@ const handleUndoButtonAction = () => {
         });
 
         updateButtonStates();
-        
+
+        // Announce for screen readers
+        announceUndo(lastActivity.activity ? `${lastActivity.activity} removed` : null);
+
         if (DEBUG_MODE) {
             console.log('Final timelineData:', window.timelineManager.activities);
         }
@@ -658,6 +682,9 @@ function initButtons() {
 
             // Trigger autosave after clearing activities
             triggerSave();
+
+            // Announce for screen readers
+            announceRowCleared();
 
             if (DEBUG_MODE) {
                 console.log('Timeline data after clean:', window.timelineManager.activities);

@@ -40,6 +40,37 @@
     --font-weight-bold: 700;
 }
 
+/* ==========================================================================
+   Skip Link - Accessibility Navigation
+   ========================================================================== */
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--text-color);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 10001;
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    font-size: 14px;
+    border-radius: 0 0 var(--radius-sm) 0;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skip-link {
+        transition: none;
+    }
+}
+
 html {
     height: 100%;
     scroll-behavior: smooth;

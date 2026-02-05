@@ -22,52 +22,56 @@
     <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <div class="header-section">
-        <div class="controls" style="padding-top: 4px; padding-left: 4px; padding-bottom: 4px; padding-right: 4px;">
+    <a href="#main-timeline" class="skip-link">Skip to timeline</a>
+
+    <header role="banner" class="header-section">
+        <nav role="navigation" aria-label="Timeline controls" class="controls" style="padding-top: 4px; padding-left: 4px; padding-bottom: 4px; padding-right: 4px;">
 
         <button class="btn back-btn" id="backBtn" data-is-active="false" disabled>
-            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
             <span data-i18n="buttons.back">Back</span>
         </button>
 
         <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
             <span data-i18n="buttons.cleanRow">Clean Row</span>
         </button>
 
         <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
-            <i class="fas fa-undo"></i>
+            <i class="fas fa-undo" aria-hidden="true"></i>
             <span data-i18n="buttons.undo">Undo</span>
         </button>
 
         <button class="btn next-btn" id="nextBtn" data-is-active="false" disabled>
-            <i class="fas fa-arrow-right"></i>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
             <span data-i18n="buttons.next">Next</span>
         </button>
 
         <button class="btn save-btn" id="saveBtn" data-is-active="true" style="display: none;">
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             <span data-i18n="buttons.submit">Submit</span>
         </button>
-        </div>
+        </nav>
 
         <div class="timeline-header">
             <h1 class="timeline-title">Primary Activity</h1>
             <p class="timeline-description"></p>
         </div>
-    </div>
+    </header>
 
-    <div class="timeline-canvas">
-        <div class="timelines-wrapper">
-            <div class="past-initialized-timelines-wrapper"></div>
-            <div class="last-initialized-timeline-wrapper"></div>
+    <main id="main-timeline" role="main">
+        <div class="timeline-canvas">
+            <div class="timelines-wrapper">
+                <div class="past-initialized-timelines-wrapper"></div>
+                <div class="last-initialized-timeline-wrapper"></div>
+            </div>
+            <div class="gradient-bar"></div>
         </div>
-        <div class="gradient-bar"></div>
-    </div>
+    </main>
 
-    <div class="activities-container" id="activitiesContainer">
+    <aside role="complementary" aria-label="Activity selection" class="activities-container" id="activitiesContainer">
         <div class="activities-accordion"></div>
-    </div>
+    </aside>
     
     <!-- Debug overlay element -->
     <div id="debugOverlay" class="debugOverlay"></div>
@@ -108,17 +112,17 @@
     <!-- Attribute Tracker Script -->
     <script src="js/attributeTracker.js"></script>
 
-    <div id="instructionsFooter" style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+    <footer id="instructionsFooter" style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
+        <nav role="navigation" aria-label="Page navigation" style="display: flex; justify-content: space-between; align-items: center;">
             <button onclick="window.location.href='./pages/instructions.html'" class="navigation-btn">
-                <i class="fas fa-chevron-left"></i>
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 <span data-i18n="buttons.backToInstructions">Back to Instructions</span>
             </button>
             <button id="navSubmitBtn" class="nav-submit-btn">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" aria-hidden="true"></i>
                 <span data-i18n="buttons.submit">Submit</span>
             </button>
-        </div>
-    </div>
+        </nav>
+    </footer>
 </body>
 </html>
