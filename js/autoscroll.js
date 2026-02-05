@@ -9,7 +9,7 @@ const autoScrollModule = (() => {
   let isEnabled = true; // Auto-scroll feature is enabled by default
   const config = {
     threshold: 100,    // Threshold in pixels from top/bottom of viewport
-    scrollSpeed: 8,    // Pixels to scroll per tick
+    scrollSpeed: 16,   // Pixels to scroll per tick
     interval: 16       // How often to check for scrolling (16ms ≈ 60fps)
   };
 
