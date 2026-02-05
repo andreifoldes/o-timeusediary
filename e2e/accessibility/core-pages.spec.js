@@ -33,6 +33,12 @@ const KNOWN_VIOLATIONS = {
   metaViewport: 'meta-viewport',
 };
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__OTUD_TEST__ = true;
+  });
+});
+
 /**
  * Create an AxeBuilder with known violations excluded
  * This allows tests to pass while tracking technical debt
@@ -79,19 +85,26 @@ test.describe('Accessibility - Core Pages', () => {
     });
 
     test('should have no accessibility violations with activity modal open', async ({ page }) => {
+      // Force mobile viewport so the activity modal can be opened via the floating button
+      await page.setViewportSize({ width: 375, height: 667 });
       await page.goto('/');
 
       // Wait for page to fully load
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(2000);
 
-      // The activities container visibility depends on viewport
-      // On desktop (horizontal layout), it's visible inline
-      // On mobile (vertical layout), it may be in a modal
+      const floatingButton = page.locator('.floating-add-button');
+      await expect(floatingButton).toBeVisible();
+      await floatingButton.click();
 
-      const results = await makeAxeBuilderWithExclusions(page).analyze();
+      const activitiesModal = page.locator('#activitiesModal');
+      await expect(activitiesModal).toBeVisible();
 
-      console.log('\n=== Main Timeline (with activities visible) Accessibility Report ===');
+      const results = await makeAxeBuilderWithExclusions(page)
+        .include('#activitiesModal')
+        .analyze();
+
+      console.log('\n=== Activity Modal Accessibility Report ===');
       console.log(`Summary: ${getViolationSummary(results.violations)}`);
       if (results.violations.length > 0) {
         console.log(formatViolationReport(results.violations));

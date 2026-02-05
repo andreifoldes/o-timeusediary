@@ -41,7 +41,7 @@ import {
 import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
-import { initAnnouncer, announceActivityPlaced, announceActivityResized, announceActivityRemoved } from './announcer.js';
+import { initAnnouncer, announceActivityPlaced, announceActivityResized } from './announcer.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -2354,7 +2354,9 @@ async function init() {
         i18n.applyTranslations();
 
         // Handle instructions or redirection if needed.
-        if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestMode = window.__OTUD_TEST__ === true;
+        if (data.general?.instructions && !urlParams.has('instructions') && !isTestMode) {
             if (!window.location.pathname.includes('/instructions/')) {
                 const currentParams = new URLSearchParams(window.location.search);
                 const redirectUrl = new URL('pages/instructions.html', window.location.href);
