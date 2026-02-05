@@ -16,7 +16,7 @@ A web-based tool for collecting and visualizing daily activities in a timeline f
     - **Desktop Layout:** Features a full-width timeline with horizontal controls, optimized for precise mouse interactions and detailed data entry
     - **Mobile Layout:** Compact vertical layout with touch-friendly controls, optimized for finger navigation and thumb interaction
 *   **Data Export Functionality:**  Export your collected data in common formats like CSV and JSON. This allows for easy integration with other analysis tools and research workflows.
-*   **Accessibility Preferences:**  Researchers can enable or disable OS-level reduced motion, high contrast, and forced colors support per study via `general.accessibility` in `settings/activities.json` (see the documentation for details).
+*   **Accessibility Preferences:**  Researchers can enable or disable OS-level reduced motion, high contrast, and forced colors support per study via `general.accessibility` in `settings/activities.json` (see the documentation for details). Demo shortcut: `Ctrl+Alt+A` (Windows/Linux) or `Cmd+Option+A` (macOS) enables all accessibility support.
 
 ## Screenshots
 

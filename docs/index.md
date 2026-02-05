@@ -26,6 +26,7 @@ O-TUD is a client-side web application designed for time-use research studies. I
 - Data export to OSF via JSPsych DataPipe or local CSV download
 - Configurable activity sets and timeline parameters
 - OS-level accessibility support (reduced motion, high contrast, forced colors) configurable per study in `activities.json` - see [Activities Configuration](activities-config.md)
+- Demo shortcut: `Ctrl+Alt+A` (Windows/Linux) or `Cmd+Option+A` (macOS) enables all accessibility support when it is disabled in the config
 
 ## Architecture Overview
 

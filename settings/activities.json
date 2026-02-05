@@ -9,9 +9,9 @@
     "primary_redirect_url": "pages/thank-you.html",
     "fallbackToCSV": true,
     "accessibility": {
-      "enableReducedMotion": true,
-      "enableHighContrast": true,
-      "enableForcedColors": true
+      "enableReducedMotion": false,
+      "enableHighContrast": false,
+      "enableForcedColors": false
     }
   }, 
   "timeline": {

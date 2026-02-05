@@ -42,6 +42,42 @@ export function applyAccessibilityConfig(configOverride = null) {
     return config;
 }
 
+function isEditableTarget(target) {
+    if (!target) return false;
+    const tag = target.tagName ? target.tagName.toLowerCase() : '';
+    return tag === 'input' || tag === 'textarea' || target.isContentEditable === true;
+}
+
+export function initAccessibilityDemoShortcut() {
+    if (window.__OTUD_ACCESSIBILITY_SHORTCUT__) return;
+    window.__OTUD_ACCESSIBILITY_SHORTCUT__ = true;
+
+    window.addEventListener('keydown', (event) => {
+        if (event.defaultPrevented || isEditableTarget(event.target)) return;
+
+        const key = (event.key || '').toLowerCase();
+        const modifierOk = event.altKey && (event.ctrlKey || event.metaKey);
+
+        if (key !== 'a' || !modifierOk) return;
+
+        const updated = applyAccessibilityConfig({
+            enableReducedMotion: true,
+            enableHighContrast: true,
+            enableForcedColors: true
+        });
+
+        if (window.timelineManager?.general) {
+            window.timelineManager.general.accessibility = { ...updated };
+        }
+
+        if (typeof window.showToast === 'function') {
+            window.showToast('Accessibility preferences enabled for demo', 'info', 2500);
+        } else {
+            console.info('[a11y] Accessibility preferences enabled for demo shortcut');
+        }
+    });
+}
+
 export function prefersReducedMotion() {
     const config = getAccessibilityConfig();
     if (!config.enableReducedMotion) return false;
