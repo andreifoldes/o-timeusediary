@@ -41,6 +41,7 @@ import {
 import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
+import { initAnnouncer, announceActivityPlaced, announceActivityResized } from './announcer.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -1971,6 +1972,11 @@ function initTimelineInteraction(timeline) {
 
                 // Trigger autosave after resize
                 triggerSave();
+
+                // Announce resize for screen readers
+                const target = event.target;
+                const activityName = target.querySelector('div[class^="activity-block-text"]')?.textContent?.trim() || 'Activity';
+                announceActivityResized(activityName, target.dataset.start, target.dataset.end);
             }
         }
     });
@@ -2323,6 +2329,13 @@ function initTimelineInteraction(timeline) {
         // Trigger autosave after activity placement
         triggerSave();
 
+        // Announce activity placement for screen readers
+        announceActivityPlaced(
+            activityData.activity,
+            currentBlock.dataset.start,
+            currentBlock.dataset.end
+        );
+
         console.log(`[Drag & Resize] Added event listeners for activity block: ${activityData.id}`);
 
     };
@@ -2377,6 +2390,9 @@ async function init() {
     if (window._otudInitCalled) return;
     window._otudInitCalled = true;
 
+    // Initialize accessibility announcer early
+    initAnnouncer();
+
     try {
         // Reinitialize timelineManager with an empty study object
         window.timelineManager = {
@@ -2415,7 +2431,9 @@ async function init() {
         i18n.applyTranslations();
 
         // Handle instructions or redirection if needed.
-        if (data.general?.instructions && !new URLSearchParams(window.location.search).has('instructions')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestMode = window.__OTUD_TEST__ === true;
+        if (data.general?.instructions && !urlParams.has('instructions') && !isTestMode) {
             if (!window.location.pathname.includes('/instructions/')) {
                 const currentParams = new URLSearchParams(window.location.search);
                 const redirectUrl = new URL('pages/instructions.html', window.location.href);

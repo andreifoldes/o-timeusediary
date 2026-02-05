@@ -132,23 +132,53 @@
                 font-size: 28px;
             }
         }
+
+        /* Skip Link - Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--text-color);
+            color: #fff;
+            padding: 8px 16px;
+            z-index: 10001;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 0 0 4px 0;
+            transition: top 0.2s ease;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .skip-link {
+                transition: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="thank-you-container">
-        <div class="success-icon">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <main id="main-content" role="main" class="thank-you-container">
+        <div class="success-icon" aria-hidden="true">
             <i class="fas fa-check"></i>
         </div>
-        
+
         <h1 data-i18n="thankYou.heading">Thank You!</h1>
-        
+
         <p class="subtitle" data-i18n="thankYou.subtitle">Your submission has been completed successfully.</p>
-        
+
         <p class="message" data-i18n-html="thankYou.message">
             Thank you for participating in our <span class="app-name">O-TUD</span> study.
             Your responses have been recorded and will contribute to valuable research.
         </p>
-    </div>
+    </main>
 
     <script src="../i18n.js"></script>
     <script>
