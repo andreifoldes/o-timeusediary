@@ -41,16 +41,14 @@ test.describe('Mobile autoscroll during resize', () => {
     await page.waitForFunction(() => window.autoScrollModule !== undefined);
 
     await page.evaluate(() => {
-      const footer = document.getElementById('instructionsFooter');
-      if (document.documentElement.scrollHeight <= window.innerHeight + 200) {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (wrapper && wrapper.scrollHeight <= wrapper.clientHeight + 200) {
         const spacer = document.createElement('div');
         spacer.style.height = '3000px';
+        spacer.style.width = '1px';
         spacer.setAttribute('data-test-spacer', 'true');
-        if (footer && footer.parentNode) {
-          footer.parentNode.insertBefore(spacer, footer);
-        } else {
-          document.body.appendChild(spacer);
-        }
+        spacer.style.flex = '0 0 auto';
+        wrapper.appendChild(spacer);
       }
 
       const resizeBlock = document.createElement('div');
@@ -68,19 +66,40 @@ test.describe('Mobile autoscroll during resize', () => {
       }
     });
 
-    await page.evaluate(() => window.scrollTo(0, 0));
-    const startScroll = await page.evaluate(() => window.scrollY);
-
-    await page.dispatchEvent('body', 'pointermove', {
-      clientX: 10,
-      clientY: 735,
-      pointerType: 'touch',
-      isPrimary: true
+    await page.waitForFunction(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper && wrapper.scrollHeight > wrapper.clientHeight + 100;
     });
+
+    await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (wrapper) wrapper.scrollTop = 0;
+    });
+
+    const startScroll = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper ? wrapper.scrollTop : 0;
+    });
+
+    const rect = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (!wrapper) return { top: 0, bottom: window.innerHeight };
+      const bounds = wrapper.getBoundingClientRect();
+      return { top: bounds.top, bottom: bounds.bottom };
+    });
+
+    await page.evaluate((y) => {
+      if (window.autoScrollModule?.setPointerFromEvent) {
+        window.autoScrollModule.setPointerFromEvent({ clientY: y });
+      }
+    }, rect.bottom - 1);
 
     await page.waitForTimeout(250);
 
-    const endScroll = await page.evaluate(() => window.scrollY);
+    const endScroll = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper ? wrapper.scrollTop : 0;
+    });
     expect(endScroll).toBeGreaterThan(startScroll);
   });
 
@@ -93,16 +112,14 @@ test.describe('Mobile autoscroll during resize', () => {
     await page.waitForFunction(() => window.autoScrollModule !== undefined);
 
     await page.evaluate(() => {
-      const footer = document.getElementById('instructionsFooter');
-      if (document.documentElement.scrollHeight <= window.innerHeight + 200) {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (wrapper && wrapper.scrollHeight <= wrapper.clientHeight + 200) {
         const spacer = document.createElement('div');
         spacer.style.height = '3000px';
+        spacer.style.width = '1px';
         spacer.setAttribute('data-test-spacer', 'true');
-        if (footer && footer.parentNode) {
-          footer.parentNode.insertBefore(spacer, footer);
-        } else {
-          document.body.appendChild(spacer);
-        }
+        spacer.style.flex = '0 0 auto';
+        wrapper.appendChild(spacer);
       }
 
       const resizeBlock = document.createElement('div');
@@ -120,19 +137,48 @@ test.describe('Mobile autoscroll during resize', () => {
       }
     });
 
-    await page.evaluate(() => window.scrollTo(0, 600));
-    const startScroll = await page.evaluate(() => window.scrollY);
-
-    await page.dispatchEvent('body', 'pointermove', {
-      clientX: 10,
-      clientY: 0,
-      pointerType: 'touch',
-      isPrimary: true
+    await page.waitForFunction(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper && wrapper.scrollHeight > wrapper.clientHeight + 100;
     });
+
+    await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (!wrapper) return;
+      const maxScrollTop = Math.max(0, wrapper.scrollHeight - wrapper.clientHeight);
+      const target = Math.min(maxScrollTop, 300);
+      wrapper.scrollTo({ top: target, behavior: 'auto' });
+    });
+
+    await page.waitForFunction(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper && wrapper.scrollTop > 0;
+    });
+
+    const startScroll = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper ? wrapper.scrollTop : 0;
+    });
+
+    const rect = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      if (!wrapper) return { top: 0, bottom: window.innerHeight };
+      const bounds = wrapper.getBoundingClientRect();
+      return { top: bounds.top, bottom: bounds.bottom };
+    });
+
+    await page.evaluate((y) => {
+      if (window.autoScrollModule?.setPointerFromEvent) {
+        window.autoScrollModule.setPointerFromEvent({ clientY: y });
+      }
+    }, rect.top + 1);
 
     await page.waitForTimeout(250);
 
-    const endScroll = await page.evaluate(() => window.scrollY);
+    const endScroll = await page.evaluate(() => {
+      const wrapper = document.querySelector('.timelines-wrapper');
+      return wrapper ? wrapper.scrollTop : 0;
+    });
     expect(endScroll).toBeLessThan(startScroll);
   });
 });
