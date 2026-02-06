@@ -2460,6 +2460,56 @@ body {
    Save Indicator - Autosave Status Feedback
    ========================================================================== */
 
+.a11y-toggle-button {
+    position: absolute;
+    bottom: 6px;
+    right: 30px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid #64748b;
+    background: #fff;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.a11y-toggle-button i {
+    font-size: 10px;
+    line-height: 1;
+}
+
+.a11y-toggle-button:hover {
+    transform: translateY(-1px);
+}
+
+.a11y-toggle-button:active {
+    transform: translateY(0);
+}
+
+.a11y-toggle-button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.a11y-toggle-button.is-enabled {
+    background: #2563eb;
+    border-color: #1d4ed8;
+    color: #fff;
+}
+
+.a11y-toggle-button.is-disabled {
+    background: #fff;
+    border-color: #64748b;
+    color: #334155;
+}
+
 .save-indicator {
     position: absolute;
     bottom: 6px;
@@ -2544,6 +2594,11 @@ body {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+    .a11y-toggle-button {
+        transition: none;
+        transform: none;
+    }
+
     .save-indicator {
         transform: none;
         transition: opacity 0.2s ease;
@@ -2556,6 +2611,10 @@ body {
 
 /* High contrast support */
 @media (prefers-contrast: more) {
+    .a11y-toggle-button {
+        border: 2px solid #fff;
+    }
+
     .save-indicator {
         border: 2px solid #fff;
     }
@@ -2563,6 +2622,17 @@ body {
 
 /* Mobile positioning - move to top to avoid floating button */
 @media (max-width: 1439.98px) {
+    .a11y-toggle-button {
+        bottom: 6px;
+        right: 28px;
+        width: 16px;
+        height: 16px;
+    }
+
+    .a11y-toggle-button i {
+        font-size: 9px;
+    }
+
     .save-indicator {
         bottom: 6px;
         right: 8px;
@@ -2573,6 +2643,17 @@ body {
 
 /* Extra small screens */
 @media (max-width: 480px) {
+    .a11y-toggle-button {
+        bottom: 6px;
+        right: 24px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .a11y-toggle-button i {
+        font-size: 8px;
+    }
+
     .save-indicator {
         bottom: 6px;
         right: 6px;
@@ -2698,6 +2779,11 @@ body {
     html:not(.a11y-high-contrast-disabled) .btn,
     html:not(.a11y-high-contrast-disabled) button {
         border: 2px solid #000 !important;
+    }
+
+    html:not(.a11y-high-contrast-disabled) .a11y-toggle-button.is-enabled {
+        background: #000;
+        color: #fff;
     }
 }
 
@@ -2827,6 +2913,12 @@ body {
     html:not(.a11y-forced-colors-disabled) .btn:disabled {
         opacity: 0.5;
         border-style: dashed;
+    }
+
+    html:not(.a11y-forced-colors-disabled) .a11y-toggle-button.is-enabled {
+        background: Highlight;
+        color: HighlightText;
+        border-color: HighlightText;
     }
 
     html:not(.a11y-forced-colors-disabled) .modal-overlay {

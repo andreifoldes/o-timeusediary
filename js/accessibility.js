@@ -11,6 +11,7 @@ const DEFAULT_ACCESSIBILITY = {
 };
 
 const A11Y_SHORTCUT_FADE_ID = 'otud-a11y-shortcut-fade';
+const A11Y_HEADER_TOGGLE_ID = 'otud-a11y-toggle';
 const A11Y_SHORTCUT_STORAGE_KEY = 'otud-a11y-shortcut-config';
 const A11Y_SHORTCUT_RELOAD_DELAY_MS = 2200;
 
@@ -81,6 +82,122 @@ function normalizeAccessibilityConfig(config) {
     };
 }
 
+function hasAllCoreAccessibilityFeaturesEnabled(config) {
+    const normalized = normalizeAccessibilityConfig(config);
+    return (
+        normalized.enableReducedMotion &&
+        normalized.enableHighContrast &&
+        normalized.enableForcedColors
+    );
+}
+
+function syncAccessibilityToTimelineManager(config) {
+    if (window.timelineManager?.general) {
+        window.timelineManager.general.accessibility = { ...config };
+    }
+}
+
+function updateAccessibilityToggleButtonState(configOverride = null) {
+    const button = document.getElementById(A11Y_HEADER_TOGGLE_ID);
+    if (!button) return;
+
+    const config = normalizeAccessibilityConfig(configOverride ?? getAccessibilityConfig());
+    const enabled = hasAllCoreAccessibilityFeaturesEnabled(config);
+
+    button.classList.toggle('is-enabled', enabled);
+    button.classList.toggle('is-disabled', !enabled);
+    button.setAttribute('aria-pressed', String(enabled));
+    button.setAttribute(
+        'aria-label',
+        enabled
+            ? 'Accessibility support is enabled. Activate to disable and reload.'
+            : 'Accessibility support is disabled. Activate to enable and reload.'
+    );
+    button.title = enabled
+        ? 'Accessibility on (click to disable)'
+        : 'Accessibility off (click to enable)';
+}
+
+function announceAccessibilityToggle(enableSettings, changed) {
+    let message = '';
+    if (changed) {
+        message = enableSettings
+            ? 'Accessibility preferences enabled. Reloading...'
+            : 'Accessibility preferences disabled. Reloading...';
+    } else {
+        message = enableSettings
+            ? 'Accessibility preferences are already enabled.'
+            : 'Accessibility preferences are already disabled.';
+    }
+
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, 'info', changed ? A11Y_SHORTCUT_RELOAD_DELAY_MS : 2000);
+    } else {
+        console.info('[a11y] %s', message);
+    }
+}
+
+function setAccessibilityEnabled(enableSettings, { shouldReload = true } = {}) {
+    const currentConfig = getAccessibilityConfig();
+    const currentlyEnabled = hasAllCoreAccessibilityFeaturesEnabled(currentConfig);
+
+    if (currentlyEnabled === enableSettings) {
+        updateAccessibilityToggleButtonState(currentConfig);
+        announceAccessibilityToggle(enableSettings, false);
+        return false;
+    }
+
+    const updated = normalizeAccessibilityConfig({
+        ...currentConfig,
+        enableReducedMotion: enableSettings,
+        enableHighContrast: enableSettings,
+        enableForcedColors: enableSettings
+    });
+
+    setStoredShortcutConfig(updated);
+    const applied = applyAccessibilityConfig(updated);
+    syncAccessibilityToTimelineManager(applied);
+    updateAccessibilityToggleButtonState(applied);
+    announceAccessibilityToggle(enableSettings, true);
+
+    if (shouldReload) {
+        if (window.__OTUD_A11Y_SHORTCUT_RELOADING__) return true;
+        triggerA11yShortcutFade();
+        window.__OTUD_A11Y_SHORTCUT_RELOADING__ = true;
+        window.setTimeout(() => {
+            window.location.reload();
+        }, A11Y_SHORTCUT_RELOAD_DELAY_MS);
+    }
+
+    return true;
+}
+
+function ensureAccessibilityToggleButton() {
+    let button = document.getElementById(A11Y_HEADER_TOGGLE_ID);
+    if (button) return button;
+
+    const header = document.querySelector('.header-section');
+    if (!header) return null;
+
+    button = document.createElement('button');
+    button.type = 'button';
+    button.id = A11Y_HEADER_TOGGLE_ID;
+    button.className = 'a11y-toggle-button';
+    button.innerHTML = `
+        <i class="fas fa-universal-access" aria-hidden="true"></i>
+        <span class="sr-only">Toggle accessibility support</span>
+    `;
+
+    button.addEventListener('click', () => {
+        if (window.__OTUD_A11Y_SHORTCUT_RELOADING__) return;
+        const enableSettings = !hasAllCoreAccessibilityFeaturesEnabled(getAccessibilityConfig());
+        setAccessibilityEnabled(enableSettings);
+    });
+
+    header.appendChild(button);
+    return button;
+}
+
 export function getAccessibilityConfig() {
     if (window.__OTUD_ACCESSIBILITY__) {
         return window.__OTUD_ACCESSIBILITY__;
@@ -107,6 +224,7 @@ export function applyAccessibilityConfig(configOverride = null) {
     root.classList.toggle('a11y-high-contrast-disabled', !config.enableHighContrast);
     root.classList.toggle('a11y-forced-colors-disabled', !config.enableForcedColors);
 
+    updateAccessibilityToggleButtonState(config);
     return config;
 }
 
@@ -132,36 +250,17 @@ export function initAccessibilityDemoShortcut() {
         event.preventDefault();
 
         const enableSettings = !event.shiftKey;
-        const updated = normalizeAccessibilityConfig({
-            ...getAccessibilityConfig(),
-            enableReducedMotion: enableSettings,
-            enableHighContrast: enableSettings,
-            enableForcedColors: enableSettings
-        });
-        setStoredShortcutConfig(updated);
-        applyAccessibilityConfig(updated);
-
-        triggerA11yShortcutFade();
-
-        if (window.timelineManager?.general) {
-            window.timelineManager.general.accessibility = { ...updated };
-        }
-
-        const message = enableSettings
-            ? 'Accessibility preferences enabled. Reloading...'
-            : 'Accessibility preferences disabled. Reloading...';
-
-        if (typeof window.showToast === 'function') {
-            window.showToast(message, 'info', A11Y_SHORTCUT_RELOAD_DELAY_MS);
-        } else {
-            console.info('[a11y] %s', message);
-        }
-
-        window.__OTUD_A11Y_SHORTCUT_RELOADING__ = true;
-        window.setTimeout(() => {
-            window.location.reload();
-        }, A11Y_SHORTCUT_RELOAD_DELAY_MS);
+        setAccessibilityEnabled(enableSettings);
     });
+}
+
+export function initAccessibilityToggleButton() {
+    if (window.__OTUD_A11Y_TOGGLE_BUTTON__) return;
+    window.__OTUD_A11Y_TOGGLE_BUTTON__ = true;
+
+    const button = ensureAccessibilityToggleButton();
+    if (!button) return;
+    updateAccessibilityToggleButtonState();
 }
 
 export function prefersReducedMotion() {
