@@ -21,6 +21,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -60,6 +64,7 @@ jobs:
           # Check if gh-pages exists
           if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
             git checkout gh-pages
+            git reset --hard origin/gh-pages
           else
             git checkout --orphan gh-pages
             git rm -rf . || true
