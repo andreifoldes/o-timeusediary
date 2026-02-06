@@ -209,4 +209,36 @@ test.describe('Accessibility settings (config-gated)', () => {
     expect(afterDuration).not.toBeNull();
     expect(afterDuration).toBeGreaterThan(50);
   });
+
+  test('accessibility toggle forces visible mode styling changes', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__OTUD_TEST__ = true;
+      window.__OTUD_DISABLE_A11Y_RELOAD__ = true;
+    });
+    await routeActivities(page, {
+      enableReducedMotion: false,
+      enableHighContrast: false,
+      enableForcedColors: false
+    });
+    await page.goto('/?instructions=completed');
+    await page.waitForFunction(() => window.__OTUD_ACCESSIBILITY__ !== undefined);
+
+    const toggle = page.locator('#otud-a11y-toggle');
+    await expect(toggle).toBeVisible();
+
+    const beforeBorder = await page.evaluate(() => {
+      return window.getComputedStyle(document.getElementById('nextBtn')).borderTopWidth;
+    });
+    expect(beforeBorder).toBe('0px');
+
+    await toggle.click();
+    await page.waitForFunction(() =>
+      document.documentElement.classList.contains('a11y-visible-enabled')
+    );
+
+    const afterBorder = await page.evaluate(() => {
+      return window.getComputedStyle(document.getElementById('nextBtn')).borderTopWidth;
+    });
+    expect(afterBorder).toBe('2px');
+  });
 });

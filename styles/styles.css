@@ -2709,6 +2709,30 @@ body {
    Global Accessibility Preferences (Configurable)
    ========================================================================== */
 
+html.a11y-visible-enabled body {
+    background-color: #eef2f7;
+}
+
+html.a11y-visible-enabled .header-section {
+    box-shadow: 0 0 0 3px #1d4ed8 inset, 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+html.a11y-visible-enabled .btn,
+html.a11y-visible-enabled button {
+    border: 2px solid #1d4ed8;
+}
+
+html.a11y-visible-enabled .timeline-slot,
+html.a11y-visible-enabled .timeline .hour-marker {
+    border-color: #1d4ed8;
+}
+
+html.a11y-visible-enabled :focus,
+html.a11y-visible-enabled :focus-visible {
+    outline: 3px solid #1d4ed8 !important;
+    outline-offset: 2px !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html:not(.a11y-reduced-motion-disabled) {
         scroll-behavior: auto;

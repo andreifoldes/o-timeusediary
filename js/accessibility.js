@@ -240,6 +240,7 @@ export function applyAccessibilityConfig(configOverride = null) {
     root.classList.toggle('a11y-reduced-motion-disabled', !config.enableReducedMotion);
     root.classList.toggle('a11y-high-contrast-disabled', !config.enableHighContrast);
     root.classList.toggle('a11y-forced-colors-disabled', !config.enableForcedColors);
+    root.classList.toggle('a11y-visible-enabled', hasAllCoreAccessibilityFeaturesEnabled(config));
 
     updateAccessibilityToggleButtonState(config);
     return config;
