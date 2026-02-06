@@ -2461,15 +2461,14 @@ body {
    ========================================================================== */
 
 .a11y-toggle-button {
-    position: absolute;
-    bottom: 6px;
-    right: 30px;
-    width: 18px;
-    height: 18px;
+    position: relative;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
     padding: 0;
     border-radius: 999px;
     border: 1px solid #64748b;
-    background: #fff;
+    background: #f8fafc;
     color: #334155;
     display: flex;
     align-items: center;
@@ -2481,7 +2480,7 @@ body {
 }
 
 .a11y-toggle-button i {
-    font-size: 10px;
+    font-size: 14px;
     line-height: 1;
 }
 
@@ -2623,14 +2622,13 @@ body {
 /* Mobile positioning - move to top to avoid floating button */
 @media (max-width: 1439.98px) {
     .a11y-toggle-button {
-        bottom: 6px;
-        right: 28px;
-        width: 16px;
-        height: 16px;
+        width: 28px;
+        min-width: 28px;
+        height: 28px;
     }
 
     .a11y-toggle-button i {
-        font-size: 9px;
+        font-size: 12px;
     }
 
     .save-indicator {
@@ -2644,14 +2642,13 @@ body {
 /* Extra small screens */
 @media (max-width: 480px) {
     .a11y-toggle-button {
-        bottom: 6px;
-        right: 24px;
-        width: 14px;
-        height: 14px;
+        width: 26px;
+        min-width: 26px;
+        height: 26px;
     }
 
     .a11y-toggle-button i {
-        font-size: 8px;
+        font-size: 11px;
     }
 
     .save-indicator {
