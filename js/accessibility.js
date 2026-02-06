@@ -174,11 +174,22 @@ function setAccessibilityEnabled(enableSettings, { shouldReload = true } = {}) {
 
 function ensureAccessibilityToggleButton() {
     let button = document.getElementById(A11Y_HEADER_TOGGLE_ID);
-    if (button) return button;
+    if (button) {
+        if (!button.dataset.a11yToggleBound) {
+            button.addEventListener('click', () => {
+                if (window.__OTUD_A11Y_SHORTCUT_RELOADING__) return;
+                const enableSettings = !hasAllCoreAccessibilityFeaturesEnabled(getAccessibilityConfig());
+                setAccessibilityEnabled(enableSettings);
+            });
+            button.dataset.a11yToggleBound = 'true';
+        }
+        return button;
+    }
 
     const header = document.querySelector('.header-section');
     if (!header) return null;
 
+    const controls = header.querySelector('.controls');
     button = document.createElement('button');
     button.type = 'button';
     button.id = A11Y_HEADER_TOGGLE_ID;
@@ -193,8 +204,9 @@ function ensureAccessibilityToggleButton() {
         const enableSettings = !hasAllCoreAccessibilityFeaturesEnabled(getAccessibilityConfig());
         setAccessibilityEnabled(enableSettings);
     });
+    button.dataset.a11yToggleBound = 'true';
 
-    header.appendChild(button);
+    (controls || header).appendChild(button);
     return button;
 }
 
