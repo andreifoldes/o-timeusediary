@@ -2,7 +2,7 @@
 
 A web-based tool for collecting and visualizing daily activities in a timeline format. Designed for research studies and time-use surveys.
 
-## 🚀 Quick Start
+## Quick Start
 
 - **[Live Demo](https://andreifoldes.github.io/o-timeusediary/index.html)** - Try the application
 - **[Documentation](https://andreifoldes.github.io/o-timeusediary/docs/index.html)** - Complete setup and configuration guides
