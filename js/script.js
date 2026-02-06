@@ -42,7 +42,12 @@ import { checkAndRequestPID } from './utils.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
 import { initAnnouncer, announceActivityPlaced, announceActivityResized } from './announcer.js';
-import { applyAccessibilityConfig, getScrollBehavior, initAccessibilityDemoShortcut } from './accessibility.js';
+import {
+    applyAccessibilityConfig,
+    getScrollBehavior,
+    initAccessibilityDemoShortcut,
+    initAccessibilityToggleButton
+} from './accessibility.js';
 
 // Make window.selectedActivity a global property that persists across DOM changes
 window.selectedActivity = null;
@@ -2428,6 +2433,7 @@ async function init() {
         window.timelineManager.general = data.general;
         applyAccessibilityConfig(data.general?.accessibility);
         initAccessibilityDemoShortcut();
+        initAccessibilityToggleButton();
 
         // Initialize i18n (internationalization) system
         const language = data.general.language || 'en';
