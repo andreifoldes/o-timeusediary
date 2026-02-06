@@ -2599,6 +2599,35 @@ body {
 }
 
 /* ==========================================================================
+   Accessibility Shortcut Fade Overlay
+   ========================================================================== */
+
+.a11y-shortcut-fade {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+.a11y-shortcut-fade.a11y-shortcut-fade-active {
+    animation: a11yShortcutFade 2.2s ease-out forwards;
+}
+
+@keyframes a11yShortcutFade {
+    0% {
+        opacity: 0;
+    }
+    35% {
+        opacity: 0.72;
+    }
+    100% {
+        opacity: 0.72;
+    }
+}
+
+/* ==========================================================================
    Global Accessibility Preferences (Configurable)
    ========================================================================== */
 
