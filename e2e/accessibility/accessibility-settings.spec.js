@@ -68,6 +68,19 @@ async function getAccessibilityState(page) {
   });
 }
 
+async function getTransitionDurationMs(page, selector) {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return null;
+    const value = window.getComputedStyle(el).transitionDuration || '0s';
+    const first = value.split(',')[0].trim();
+    if (first.endsWith('ms')) return parseFloat(first);
+    if (first.endsWith('s')) return parseFloat(first) * 1000;
+    const parsed = Number.parseFloat(first);
+    return Number.isFinite(parsed) ? parsed : null;
+  }, selector);
+}
+
 test.describe('Accessibility settings (config-gated)', () => {
   test('reduced motion enabled honors system preference', async ({ page }) => {
     await routeActivities(page, { enableReducedMotion: true });
@@ -164,5 +177,36 @@ test.describe('Accessibility settings (config-gated)', () => {
     expect(state.classes).toContain('a11y-reduced-motion-disabled');
     expect(state.classes).toContain('a11y-high-contrast-disabled');
     expect(state.classes).toContain('a11y-forced-colors-disabled');
+  });
+
+  test('accessibility toggle meaningfully changes motion UX under reduced motion preference', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__OTUD_TEST__ = true;
+      window.__OTUD_DISABLE_A11Y_RELOAD__ = true;
+    });
+    await routeActivities(page, {
+      enableReducedMotion: true,
+      enableHighContrast: true,
+      enableForcedColors: true
+    });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/?instructions=completed');
+    await page.waitForFunction(() => window.__OTUD_ACCESSIBILITY__ !== undefined);
+
+    const toggle = page.locator('#otud-a11y-toggle');
+    await expect(toggle).toBeVisible();
+
+    const beforeDuration = await getTransitionDurationMs(page, '#nextBtn');
+    expect(beforeDuration).not.toBeNull();
+    expect(beforeDuration).toBeLessThan(5);
+
+    await toggle.click();
+    await page.waitForFunction(() =>
+      document.documentElement.classList.contains('a11y-reduced-motion-disabled')
+    );
+
+    const afterDuration = await getTransitionDurationMs(page, '#nextBtn');
+    expect(afterDuration).not.toBeNull();
+    expect(afterDuration).toBeGreaterThan(50);
   });
 });
