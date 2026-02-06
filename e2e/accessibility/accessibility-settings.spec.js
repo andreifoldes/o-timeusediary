@@ -136,4 +136,33 @@ test.describe('Accessibility settings (config-gated)', () => {
     expect(state.forcedColors).toBe(false);
     expect(state.classes).toContain('a11y-forced-colors-disabled');
   });
+
+  test('accessibility toggle button updates state without reload in test mode', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__OTUD_TEST__ = true;
+      window.__OTUD_DISABLE_A11Y_RELOAD__ = true;
+    });
+    await routeActivities(page, {
+      enableReducedMotion: true,
+      enableHighContrast: true,
+      enableForcedColors: true
+    });
+    await page.goto('/?instructions=completed');
+    await page.waitForFunction(() => window.__OTUD_ACCESSIBILITY__ !== undefined);
+
+    const toggle = page.locator('#otud-a11y-toggle');
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+
+    const state = await getAccessibilityState(page);
+    expect(state.reducedMotion).toBe(false);
+    expect(state.highContrast).toBe(false);
+    expect(state.forcedColors).toBe(false);
+    expect(state.classes).toContain('a11y-reduced-motion-disabled');
+    expect(state.classes).toContain('a11y-high-contrast-disabled');
+    expect(state.classes).toContain('a11y-forced-colors-disabled');
+  });
 });

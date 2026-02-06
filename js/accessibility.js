@@ -160,7 +160,13 @@ function setAccessibilityEnabled(enableSettings, { shouldReload = true } = {}) {
     updateAccessibilityToggleButtonState(applied);
     announceAccessibilityToggle(enableSettings, true);
 
-    if (shouldReload) {
+    const skipReloadForTests = Boolean(
+        shouldReload &&
+        window.__OTUD_TEST__ === true &&
+        window.__OTUD_DISABLE_A11Y_RELOAD__ === true
+    );
+
+    if (shouldReload && !skipReloadForTests) {
         if (window.__OTUD_A11Y_SHORTCUT_RELOADING__) return true;
         triggerA11yShortcutFade();
         window.__OTUD_A11Y_SHORTCUT_RELOADING__ = true;
@@ -189,7 +195,6 @@ function ensureAccessibilityToggleButton() {
     const header = document.querySelector('.header-section');
     if (!header) return null;
 
-    const controls = header.querySelector('.controls');
     button = document.createElement('button');
     button.type = 'button';
     button.id = A11Y_HEADER_TOGGLE_ID;
@@ -206,7 +211,7 @@ function ensureAccessibilityToggleButton() {
     });
     button.dataset.a11yToggleBound = 'true';
 
-    (controls || header).appendChild(button);
+    header.appendChild(button);
     return button;
 }
 
