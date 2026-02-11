@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Loading...</title>
-    
+
+    <!-- Preconnect to external origins for faster resource loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
     <!-- Favicons -->
     <link rel="shortcut icon" href="favicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -15,11 +21,31 @@
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- Critical CSS inline for faster first paint -->
+    <style>
+        /* Critical above-the-fold styles */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { min-height: 100vh; background: #f8fafc; }
+        .header-section { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 8px 16px; position: sticky; top: 0; z-index: 100; }
+        .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+        .timeline-canvas { padding: 16px; }
+        .activities-container { padding: 16px; }
+    </style>
+
+    <!-- Non-blocking Google Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+
+    <!-- Font Awesome - loaded async -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></noscript>
+
+    <!-- Main stylesheet - loaded async after critical CSS -->
+    <link rel="preload" href="styles/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles/styles.css"></noscript>
 </head>
 <body>
     <a href="#main-timeline" class="skip-link">Skip to timeline</a>
@@ -89,41 +115,29 @@
     <!-- Debug overlay element -->
     <div id="debugOverlay" class="debugOverlay"></div>
 
-    <!-- Load environment variables first -->
-    <script src="env-loader.js"></script>
-    
-    <!-- Load i18n (internationalization) module -->
+    <!-- Environment variables - must load first, deferred -->
+    <script src="env-loader.js" defer></script>
+
+    <!-- External dependencies - deferred to not block rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js" defer></script>
+
+    <!-- Application modules - ES modules are deferred by default -->
     <script src="js/i18n.js" type="module"></script>
-    
-    <!-- Load Bowser and other scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="js/timeline_marker.js" type="module"></script>
     <script src="js/timeline.js" type="module"></script>
     <script src="js/utils.js" type="module"></script>
     <script src="js/autoscroll.js" type="module"></script>
-    <script src="js/script.js?v=1.1" type="module"></script>
-    <!-- <script src="tests/timeline_test.js" type="module"></script> -->
+    <script src="js/script.js?v=1.2" type="module"></script>
+
+    <!-- Utility exports -->
     <script type="module">
         import { calculateTimeDifference } from './js/utils.js';
         window.calculateTimeDifference = calculateTimeDifference;
     </script>
-    <!-- <script type="module">
-        import { testTimelineMarkerPositioning } from './tests/timeline_test.js';
-        
-        // Run tests after page load
-        window.addEventListener('load', () => {
-            const testResult = testTimelineMarkerPositioning();
-            if (!testResult.success) {
-                console.error('Timeline marker positioning test failed:', testResult.errors);
-            } else {
-                console.log('Timeline marker positioning test passed');
-            }
-        });
-    </script> -->
-    
-    <!-- Attribute Tracker Script -->
-    <script src="js/attributeTracker.js"></script>
+
+    <!-- Debug utility - deferred -->
+    <script src="js/attributeTracker.js" defer></script>
 
     <footer id="instructionsFooter" style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
         <nav role="navigation" aria-label="Page navigation" style="display: flex; justify-content: space-between; align-items: center;">

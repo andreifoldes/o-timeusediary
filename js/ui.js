@@ -86,21 +86,21 @@ function createDisabledButtonOverlay(buttonId) {
         
         console.log('Disabled button overlay clicked:', buttonId);
         
-        const message = window.i18n ? 
-            window.i18n.t('messages.timelineMissing') : 
+        const message = window.i18n?.isReady() ?
+            window.i18n.t('messages.timelineMissing') :
             'There is information missing from this timeline. Would you like to add anything?';
         showToast(message, 'warning', 4000);
     });
-    
+
     // Add touch handler for mobile
     overlay.addEventListener('touchend', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         console.log('Disabled button overlay touched:', buttonId);
-        
-        const message = window.i18n ? 
-            window.i18n.t('messages.timelineMissing') : 
+
+        const message = window.i18n?.isReady() ?
+            window.i18n.t('messages.timelineMissing') :
             'There is information missing from this timeline. Would you like to add anything?';
         showToast(message, 'warning', 4000);
     });
@@ -466,8 +466,8 @@ function updateButtonStates() {
     const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
     
     // Get text values for buttons
-    const nextText = window.i18n ? window.i18n.t('buttons.next') : 'Next';
-    const submitText = window.i18n ? window.i18n.t('buttons.submit') : 'Submit';
+    const nextText = window.i18n?.isReady() ? window.i18n.t('buttons.next') : 'Next';
+    const submitText = window.i18n?.isReady() ? window.i18n.t('buttons.submit') : 'Submit';
     
     if (nextButton) {
         nextButton.disabled = !meetsMinCoverage;
@@ -639,8 +639,8 @@ function initButtons() {
             // Check if the Next button is disabled
             if (nextBtn && nextBtn.disabled) {
                 // Show toast message when trying to click disabled nav button
-                const message = window.i18n ? 
-                    window.i18n.t('messages.timelineMissing') : 
+                const message = window.i18n?.isReady() ?
+                    window.i18n.t('messages.timelineMissing') :
                     'There is information missing from this timeline. Would you like to add anything?';
                 showToast(message, 'warning', 4000);
                 return;
@@ -709,8 +709,8 @@ function initButtons() {
             e.preventDefault();
             e.stopPropagation();
             // Show toast message when disabled button is clicked
-            const message = window.i18n ? 
-                window.i18n.t('messages.timelineMissing') : 
+            const message = window.i18n?.isReady() ?
+                window.i18n.t('messages.timelineMissing') :
                 'There is information missing from this timeline. Would you like to add anything?';
             showToast(message, 'warning', 4000);
             return;
