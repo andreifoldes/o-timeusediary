@@ -2187,7 +2187,7 @@ function initTimelineInteraction(timeline) {
     // Unified handler function for both click and touch events
     const handleTimelineInteraction = (e) => {
         console.log('[TIMELINE] Event triggered:', e.type, 'window.selectedActivity:', window.selectedActivity);
-        
+
         // Only process clicks on the active timeline
         if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) {
             console.log('[TIMELINE] Event ignored - not active timeline');
@@ -2311,6 +2311,8 @@ function initTimelineInteraction(timeline) {
         currentBlock.role = "button";
         currentBlock.tabIndex = "0";
         currentBlock.popoverTarget = "details-popup"
+        currentBlock.ariaHaspopup = true
+        currentBlock.ariaLabel = "Edit activity block"
         currentBlock.onpointerdown = onActivityBlockPointer
 
         // Store parent name if this is a child activity
@@ -2775,38 +2777,3 @@ init().catch(error => {
 
 // Export addNextTimeline, goToPreviousTimeline and renderActivities for ui.js
 export { addNextTimeline, goToPreviousTimeline, renderActivities };
-
-class ActivityBlock {
-    constructor(activityData, options = {}) {
-        this.data = activityData;
-        this.element = null;
-        this.popover = null;
-    }
-
-    create() {
-        this._buildBlock();
-        this._buildPopover();
-        this._attachEvents();
-        return this;
-    }
-
-    mount(container) {
-        container.appendChild(this.element);
-        this.element.insertAdjacentElement('afterend', this.popover);
-        return this;
-    }
-
-    _buildBlock() { /* ... */ }
-    _buildPopover() { /* ... */ }  // one place
-    _attachEvents() { /* ...  */ }  // openPopUp lives here
-
-    update(startMinutes, endMinutes) {
-        // used by the resize handler
-    }
-
-    destroy() {
-        this.element.remove();
-        this.popover.remove();
-        // Remove from activity data too
-    }
-}
