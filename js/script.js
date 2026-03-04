@@ -2187,10 +2187,7 @@ function initTimelineInteraction(timeline) {
     // Unified handler function for both click and touch events
     const handleTimelineInteraction = (e) => {
         console.log('[TIMELINE] Event triggered:', e.type, 'window.selectedActivity:', window.selectedActivity);
-
-        console.log('[TIMELINE] Event triggered:', e);
-        // looking for activity-block
-
+        
         // Only process clicks on the active timeline
         if (!targetTimeline || targetTimeline !== window.timelineManager.activeTimeline) {
             console.log('[TIMELINE] Event ignored - not active timeline');
