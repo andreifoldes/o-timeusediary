@@ -165,3 +165,10 @@ export function announceUndo(actionDescription = null) {
 export function announceRowCleared() {
   announce('Timeline cleared');
 }
+
+/**
+ * Announce activity block updated
+ */
+export function announceActivityBlockUpdated() {
+  announce('Your activity has been updated');
+}

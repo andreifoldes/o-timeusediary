@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -7,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Loading...</title>
-    
+
     <!-- Favicons -->
     <link rel="shortcut icon" href="favicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -21,47 +22,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles/styles.css">
 </head>
+
 <body>
     <a href="#main-timeline" class="skip-link">Skip to timeline</a>
 
     <header role="banner" class="header-section">
-        <nav role="navigation" aria-label="Timeline controls" class="controls" style="padding-top: 4px; padding-left: 4px; padding-bottom: 4px; padding-right: 4px;">
+        <nav role="navigation" aria-label="Timeline controls" class="controls"
+            style="padding-top: 4px; padding-left: 4px; padding-bottom: 4px; padding-right: 4px;">
 
-        <button class="btn back-btn" id="backBtn" data-is-active="false" disabled>
-            <i class="fas fa-arrow-left" aria-hidden="true"></i>
-            <span data-i18n="buttons.back">Back</span>
-        </button>
+            <button class="btn back-btn" id="backBtn" data-is-active="false" disabled>
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                <span data-i18n="buttons.back">Back</span>
+            </button>
 
-        <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
-            <i class="fas fa-trash-alt" aria-hidden="true"></i>
-            <span data-i18n="buttons.cleanRow">Clean Row</span>
-        </button>
+            <button class="btn clean-row-btn" id="cleanRowBtn" data-is-active="false" disabled>
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                <span data-i18n="buttons.cleanRow">Clean Row</span>
+            </button>
 
-        <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
-            <i class="fas fa-undo" aria-hidden="true"></i>
-            <span data-i18n="buttons.undo">Undo</span>
-        </button>
+            <button class="btn undo-btn" id="undoBtn" data-is-active="false" disabled>
+                <i class="fas fa-undo" aria-hidden="true"></i>
+                <span data-i18n="buttons.undo">Undo</span>
+            </button>
 
-        <button class="btn next-btn" id="nextBtn" data-is-active="false" disabled>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            <span data-i18n="buttons.next">Next</span>
-        </button>
+            <button class="btn next-btn" id="nextBtn" data-is-active="false" disabled>
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                <span data-i18n="buttons.next">Next</span>
+            </button>
 
-        <button class="btn save-btn" id="saveBtn" data-is-active="true" style="display: none;">
-            <i class="fas fa-check" aria-hidden="true"></i>
-            <span data-i18n="buttons.submit">Submit</span>
-        </button>
+            <button class="btn save-btn" id="saveBtn" data-is-active="true" style="display: none;">
+                <i class="fas fa-check" aria-hidden="true"></i>
+                <span data-i18n="buttons.submit">Submit</span>
+            </button>
 
         </nav>
 
-        <button
-            class="a11y-toggle-button"
-            id="otud-a11y-toggle"
-            type="button"
-            aria-pressed="false"
+        <button class="a11y-toggle-button" id="otud-a11y-toggle" type="button" aria-pressed="false"
             aria-label="Accessibility support is disabled. Activate to enable and reload."
-            title="Accessibility off (click to enable)"
-        >
+            title="Accessibility off (click to enable)">
             <i class="fas fa-universal-access" aria-hidden="true"></i>
             <span class="sr-only">Toggle accessibility support</span>
         </button>
@@ -85,16 +83,38 @@
     <aside role="complementary" aria-label="Activity selection" class="activities-container" id="activitiesContainer">
         <div class="activities-accordion"></div>
     </aside>
-    
+
+    <template id="popover-skeleton">
+        <div class="popover" popover style="position:absolute;margin:0">
+            <header>
+                <h3 class="popover-title"></h3>
+                <div class="btn-container">
+                    <i class="fas fa-trash-alt erase-btn" aria-label="Erase this activity" tabindex="0" role="button" ></i>
+                    <button class="close-btn" aria-label="Close this popover">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+            <form>
+                <input type="time" name="startTime" aria-label="Start time" class="popover-start"> to
+                <input type="time" name="endTime" aria-label="End time" class="popover-end">
+                <button class="btn" type="submit">Save</button>
+            </form>
+        </div>
+    </template>
+
     <!-- Debug overlay element -->
     <div id="debugOverlay" class="debugOverlay"></div>
 
     <!-- Load environment variables first -->
     <script src="env-loader.js"></script>
-    
+
     <!-- Load i18n (internationalization) module -->
     <script src="js/i18n.js" type="module"></script>
-    
+
     <!-- Load Bowser and other scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -121,12 +141,14 @@
             }
         });
     </script> -->
-    
+
     <!-- Attribute Tracker Script -->
     <script src="js/attributeTracker.js"></script>
 
-    <footer id="instructionsFooter" style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
-        <nav role="navigation" aria-label="Page navigation" style="display: flex; justify-content: space-between; align-items: center;">
+    <footer id="instructionsFooter"
+        style="padding: 20px; background: white; border-top: 1px solid #ddd; text-align: left; margin-top: 20px;">
+        <nav role="navigation" aria-label="Page navigation"
+            style="display: flex; justify-content: space-between; align-items: center;">
             <button onclick="window.location.href='./pages/instructions.html'" class="navigation-btn">
                 <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 <span data-i18n="buttons.backToInstructions">Back to Instructions</span>
@@ -138,4 +160,5 @@
         </nav>
     </footer>
 </body>
+
 </html>

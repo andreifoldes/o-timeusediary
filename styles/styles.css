@@ -41,6 +41,8 @@
     }
 }
 
+
+/* This doesn't seem to make sense */
 /* ==========================================================================
    Screen Reader Only - Visually Hidden but Accessible
    Used for ARIA live regions and other screen reader content
@@ -132,7 +134,8 @@ body {
         gap: 30px;
         padding: 0;
         overflow-x: auto;
-        overflow-y: auto; /* Allow vertical scrolling for timeline content */
+        overflow-y: auto;
+        /* Allow vertical scrolling for timeline content */
         width: 100%;
         justify-content: flex-start;
         align-items: flex-start;
@@ -158,11 +161,14 @@ body {
         margin-right: 0;
         margin-bottom: 20px !important;
         overflow-x: visible;
-        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overflow-y: visible;
+        /* Allow scroll to pass through to parent */
         flex: 0 0 auto;
         min-width: 180px;
-        width: auto; /* Allow width to be determined by content */
-        height: 2500px; /* Match timeline content height for mobile */
+        width: auto;
+        /* Allow width to be determined by content */
+        height: 2500px;
+        /* Match timeline content height for mobile */
         align-items: flex-start;
         justify-content: flex-start;
         position: relative;
@@ -185,15 +191,18 @@ body {
         margin: 0;
         flex: 0 0 auto;
         min-width: 180px;
-        width: 180px; /* Fixed width for mobile */
-        height: 2500px; /* Match timeline content height for mobile */
+        width: 180px;
+        /* Fixed width for mobile */
+        height: 2500px;
+        /* Match timeline content height for mobile */
         align-items: flex-start;
         justify-content: flex-start;
     }
-    
+
     /* When both wrappers have timelines, adjust their spacing */
     .timelines-wrapper:not(:has(.past-initialized-timelines-wrapper:empty)) .last-initialized-timeline-wrapper {
-        margin-left: 0; /* Reset to 0 instead of -5px */
+        margin-left: 0;
+        /* Reset to 0 instead of -5px */
     }
 
     /* Ensure timeline containers don't shrink in the scroll container */
@@ -203,7 +212,8 @@ body {
         width: 180px;
         margin: 0;
         height: 100%;
-        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overflow-y: visible;
+        /* Allow scroll to pass through to parent */
         overscroll-behavior: none;
         overscroll-behavior-y: none;
         touch-action: pan-y pinch-zoom;
@@ -229,13 +239,14 @@ body {
         padding: 0;
         transition: transform 0.3s ease-out, opacity 0.3s ease-out;
         position: relative;
-        overflow-y: visible; /* Allow scroll to pass through to parent */
+        overflow-y: visible;
+        /* Allow scroll to pass through to parent */
         overscroll-behavior: none;
         overscroll-behavior-y: none;
         touch-action: pan-y pinch-zoom;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .timeline-container[data-active="false"] {
         opacity: 0.6;
         pointer-events: none;
@@ -319,7 +330,7 @@ body {
         width: 100%;
         height: 80px;
     }
-    
+
     /* Horizontal layout for timeline header - title and description side by side */
     .timeline-header {
         display: flex;
@@ -328,18 +339,19 @@ body {
         gap: 12px;
         margin: clamp(4px, 1vw, 6px) 0;
     }
-    
+
     .timeline-title {
         margin: 0;
     }
-    
+
     .timeline-description {
         margin: 0;
     }
-    
+
     /* Improve text wrapping for desktop view */
     .activity-block-text-narrow.wide.resized {
-        white-space: normal !important; /* Override any inline styles */
+        white-space: normal !important;
+        /* Override any inline styles */
         overflow: visible !important;
         text-overflow: clip !important;
         display: flex;
@@ -361,7 +373,8 @@ body {
 /* Mobile vertical layout */
 @media (max-width: 1439.98px) {
     .timeline {
-        height: 2500px; /* Set large height for timeline content to be scrollable */
+        height: 2500px;
+        /* Set large height for timeline content to be scrollable */
     }
 
     /* Structure timeline containers to use flexbox for proper title positioning */
@@ -370,9 +383,10 @@ body {
         display: flex;
         flex-direction: column;
         margin: 0;
-        padding-top: 0; /* Remove padding since we're using flexbox */
+        padding-top: 0;
+        /* Remove padding since we're using flexbox */
     }
-    
+
     /* Additional timeline container styles for past timelines */
     .past-initialized-timelines-wrapper .timeline-container {
         flex: 0 0 auto;
@@ -385,9 +399,10 @@ body {
         touch-action: pan-y pinch-zoom;
         -webkit-overflow-scrolling: touch;
         position: relative;
-        top: 2px; /* Align with last-initialized-timeline-wrapper */
+        top: 2px;
+        /* Align with last-initialized-timeline-wrapper */
     }
-    
+
     /* Align last initialized timeline with past timelines */
     .last-initialized-timeline-wrapper .timeline-container {
         flex: 0 0 auto;
@@ -400,9 +415,10 @@ body {
         overscroll-behavior-y: none;
         touch-action: pan-y pinch-zoom;
         -webkit-overflow-scrolling: touch;
-        padding-top: 2px; /* Small padding for last initialized timeline */
+        padding-top: 2px;
+        /* Small padding for last initialized timeline */
     }
-    
+
     /* Position timeline titles properly in mobile layout */
     .timeline-container .title {
         position: relative;
@@ -415,7 +431,7 @@ body {
         padding: 6px 6px 0 6px;
         font-weight: bold;
     }
-    
+
     .timeline-container[data-active="false"] {
         opacity: 0.6;
         pointer-events: none;
@@ -498,21 +514,22 @@ body {
 
     .timeline .hour-marker .hour-label {
         position: absolute;
-        top: -6px; /* Align with the marker line */
+        top: -6px;
+        /* Align with the marker line */
         left: -40px;
         text-align: right;
         width: 35px;
         background: white;
         padding: 2px 4px;
         border-radius: 2px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     /* Special handling for first and last hour labels */
     .timeline .hour-marker:first-child .hour-label {
         top: 0;
     }
-    
+
     .timeline .hour-marker:last-child .hour-label {
         top: -12px;
     }
@@ -530,7 +547,8 @@ body {
         width: 50%;
         right: 0;
         border-top: 1px solid #ccc;
-        height: 0; /* Ensure consistent height */
+        height: 0;
+        /* Ensure consistent height */
         opacity: 0.8;
     }
 }
@@ -559,19 +577,22 @@ body {
 /* Desktop horizontal layout */
 @media (min-width: 1440px) {
     .timeline-container {
-        padding-top: 2px;  /* Reduced space for hour labels */
+        padding-top: 2px;
+        /* Reduced space for hour labels */
     }
-    
+
     .hour-label {
-        top: 5px;  /* Position above timeline */
+        top: 5px;
+        /* Position above timeline */
         transform: translateX(-50%);
     }
-    
+
     /* Conditional styling for inactive timelines */
     .timeline-container[data-active="false"] {
-        height: 60px; /* 20px shorter than default 80px */
+        height: 60px;
+        /* 20px shorter than default 80px */
     }
-    
+
     .timeline-container[data-active="false"] .hour-label,
     .timeline-container[data-active="false"] .hour-labels {
         visibility: hidden;
@@ -580,7 +601,7 @@ body {
         padding: 0;
         margin: 0;
     }
-    
+
     /* Activities within inactive timelines */
     .timeline-container[data-active="false"] .activity-block {
         height: 100% !important;
@@ -596,14 +617,15 @@ body {
         text-align: right;
         width: 35px;
     }
-    
+
     /* Conditional styling for inactive timelines in mobile */
     .timeline-container[data-active="false"] {
-        width: 150px; /* 30px narrower than default 180px */
+        width: 150px;
+        /* 30px narrower than default 180px */
         min-width: 150px;
         max-width: 150px;
     }
-    
+
     .timeline-container[data-active="false"] .hour-label,
     .timeline-container[data-active="false"] .hour-labels {
         visibility: hidden;
@@ -612,7 +634,7 @@ body {
         padding: 0;
         margin: 0;
     }
-    
+
     /* Activities within inactive timelines in mobile */
     .timeline-container[data-active="false"] .activity-block {
         width: 100% !important;
@@ -622,8 +644,10 @@ body {
 
 .activities-container {
     margin: 0 20px;
-    display: none; /* Hide by default */
-    width: calc(100% - 40px); /* Account for margins */
+    display: none;
+    /* Hide by default */
+    width: calc(100% - 40px);
+    /* Account for margins */
     box-sizing: border-box;
     max-width: 100%;
     overflow-x: hidden;
@@ -652,7 +676,8 @@ body {
 }
 
 .activities-accordion {
-    display: none; /* Hide by default */
+    display: none;
+    /* Hide by default */
 }
 
 /* Only show activities-accordion when inside modal */
@@ -665,18 +690,18 @@ body {
     #activitiesContainer {
         display: none;
     }
-    
+
     .activity-category {
         margin-bottom: 0;
         padding: 0;
         border: none;
     }
-    
+
     .activities-accordion .activity-category {
         padding: 0;
         margin-bottom: 0;
     }
-    
+
     .activity-category h3 {
         background-color: #f0f0f0;
         padding: 10px;
@@ -700,12 +725,12 @@ body {
     .activity-category.active h3::after {
         transform: translateY(-50%) rotate(180deg);
     }
-    
+
     .activity-category .activity-buttons {
         display: none;
         padding: 10px;
     }
-    
+
     .activity-category.active .activity-buttons {
         display: block;
     }
@@ -716,7 +741,7 @@ body {
     padding: 15px;
     border-radius: 8px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
 }
 
@@ -829,7 +854,7 @@ body {
 .activity-button.selected {
     opacity: 0.7;
     transform: scale(0.98);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .time-label {
@@ -856,13 +881,16 @@ body {
 /* Mobile styles */
 @media (max-width: 1439.98px) {
     .time-label {
-        right: -50px; /* Space from the block */
+        right: -50px;
+        /* Space from the block */
         top: 50%;
         transform: translateY(-50%);
         white-space: normal;
         text-align: center;
-        width: 36px; /* Mobile time label width */
-        height: auto; /* Allow height to adjust */
+        width: 36px;
+        /* Mobile time label width */
+        height: auto;
+        /* Allow height to adjust */
         min-height: 30px;
         word-wrap: break-word;
         word-break: break-word;
@@ -870,18 +898,22 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(0, 0, 0, 0.8); /* Darker background */
-        z-index: 100; /* Ensure visibility */
-        padding: 4px 6px; /* More padding */
-        font-size: 12px; /* Slightly larger font */
+        background-color: rgba(0, 0, 0, 0.8);
+        /* Darker background */
+        z-index: 100;
+        /* Ensure visibility */
+        padding: 4px 6px;
+        /* More padding */
+        font-size: 12px;
+        /* Slightly larger font */
         border-radius: 4px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     .activity-text {
         gap: 1px;
     }
-    
+
     .activity-examples {
         font-size: 0.8em;
     }
@@ -976,11 +1008,25 @@ body {
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 .resize-handle {
@@ -988,10 +1034,99 @@ body {
     z-index: 10;
 }
 
+.popover {
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    padding: 1rem;
+    min-width: 260px;
+
+    &>header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    & h3 {
+        color: #333;
+        font-size: 1rem;
+        margin: 0.5rem 0;
+        max-width: 200px;
+    }
+
+    & input {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-size: 1rem;
+        padding: 7px 12px;
+        border: solid 1px #ccc;
+        border-radius: 4px;
+    }
+
+    &>form {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &>form>.btn {
+        background-color: var(--primary-color);
+        display: inline-block;
+        min-width: fit-content;
+        padding: 0 12px;
+        margin-left: 0.5rem;
+    }
+
+    & button,
+    & i {
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+
+        &:hover {
+            transform: translateY(-3px);
+        }
+    }
+
+    & .erase-btn {
+        background-color: var(--danger-color);
+        border-radius: 100%;
+        padding: 0.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        margin: 0 0.1rem;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+
+    & .close-btn {
+        border: none;
+        background-color: var(--secondary-color);
+        border-radius: 100%;
+        padding: 0.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: 0 0.1rem;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+
+    & .btn-container {
+        display: flex;
+    }
+}
+
 /* Desktop resize handle */
 @media (min-width: 1440px) {
     .activity-block {
-        cursor: default; /* Reset default cursor */
+        cursor: default;
+        /* Reset default cursor */
     }
 
     /* Left edge resize handle */
@@ -1003,7 +1138,8 @@ body {
         width: 10px;
         height: 100%;
         cursor: ew-resize;
-        z-index: 15; /* Ensure handle is above other elements */
+        z-index: 15;
+        /* Ensure handle is above other elements */
     }
 
     /* Right edge resize handle */
@@ -1015,12 +1151,14 @@ body {
         width: 10px;
         height: 100%;
         cursor: ew-resize;
-        z-index: 15; /* Ensure handle is above other elements */
+        z-index: 15;
+        /* Ensure handle is above other elements */
     }
 
     /* Center area */
-    .activity-block > * {
-        pointer-events: none; /* Allow events to pass through to resize handles */
+    .activity-block>* {
+        pointer-events: none;
+        /* Allow events to pass through to resize handles */
     }
 }
 
@@ -1082,9 +1220,12 @@ body {
     hyphens: auto !important;
     max-height: none !important;
     min-height: auto !important;
-    white-space: normal !important; /* Ensure text wraps */
-    overflow: visible !important; /* Override hidden */
-    text-overflow: clip !important; /* Disable ellipsis */
+    white-space: normal !important;
+    /* Ensure text wraps */
+    overflow: visible !important;
+    /* Override hidden */
+    text-overflow: clip !important;
+    /* Disable ellipsis */
 }
 
 /* Style for activity blocks displaying parent name for a child selection */
@@ -1126,12 +1267,14 @@ body {
     .timeline-container {
         position: relative;
         z-index: 2;
-        padding-left: 2px; /* Space for hour labels and gradient bar */
+        padding-left: 2px;
+        /* Space for hour labels and gradient bar */
     }
 
     .hour-marker .hour-label {
         z-index: 3;
-        left: -55px; /* Adjusted to account for padding */
+        left: -55px;
+        /* Adjusted to account for padding */
     }
 }
 
@@ -1163,7 +1306,8 @@ body {
 
 /* Floating add button for mobile */
 .floating-add-button {
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
 }
 
 @media (max-width: 1439.98px) {
@@ -1179,7 +1323,7 @@ body {
         background-color: #007bff;
         color: white;
         border: none;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         font-size: 24px;
         cursor: pointer;
         z-index: 999;
@@ -1309,12 +1453,14 @@ body {
 
 /* Cancel button specific styles */
 .modal .button-container .btn.btn-secondary {
-    background-color: #2d3338;  /* Darker grey for better contrast */
+    background-color: #2d3338;
+    /* Darker grey for better contrast */
     color: #ffffff;
 }
 
 .modal .button-container .btn.btn-secondary:hover {
-    background-color: #1a1e21;  /* Even darker on hover */
+    background-color: #1a1e21;
+    /* Even darker on hover */
 }
 
 /* Mobile specific adjustments */
@@ -1373,7 +1519,8 @@ body {
 }
 
 /* High-DPI screens */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
     .modal {
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
     }
@@ -1419,7 +1566,7 @@ body {
     transition: transform 0.2s, background-color 0.2s;
     white-space: nowrap;
     min-height: clamp(32px, 5vh, 40px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn i {
@@ -1438,16 +1585,17 @@ body {
         width: 100%;
         background: white;
         z-index: 1001;
-        margin: 5px 0 !important; /* Force 5px margins with !important */
+        margin: 5px 0 !important;
+        /* Force 5px margins with !important */
         flex-wrap: wrap;
         order: 1;
     }
-    
+
     .timeline-title {
         order: 2;
         margin-top: 20px;
     }
-    
+
     .timeline-container {
         order: 3;
         margin-top: 20px;
@@ -1468,21 +1616,25 @@ body {
         width: 100%;
         background: white;
         z-index: 1000;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
     }
 }
+
 @keyframes flipInX {
     0% {
         transform: perspective(800px) rotateX(90deg);
         opacity: 0;
     }
+
     40% {
         transform: perspective(800px) rotateX(-20deg);
     }
+
     70% {
         transform: perspective(800px) rotateX(10deg);
     }
+
     100% {
         transform: perspective(800px) rotateX(0deg);
         opacity: 1;
@@ -1494,6 +1646,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -1527,20 +1680,23 @@ body {
 /* Further mobile adjustments for header section */
 @media (max-width: 1439.98px) {
     .header-section {
-        padding: 6px 8px; /* Further reduce padding for better scalability */
+        padding: 6px 8px;
+        /* Further reduce padding for better scalability */
     }
 
-    .header-section h1, 
-    .header-section h2, 
-    .header-section h3, 
+    .header-section h1,
+    .header-section h2,
+    .header-section h3,
     .header-section p {
-        font-size: 0.9rem; /* Smaller font sizes to prevent excessive growth */
+        font-size: 0.9rem;
+        /* Smaller font sizes to prevent excessive growth */
         line-height: 1.1;
     }
 
     .header-section .timeline-title {
         margin: 0;
-        font-size: 1rem; /* Adjust font size as needed */
+        font-size: 1rem;
+        /* Adjust font size as needed */
         /* Additional styles if necessary */
     }
 }
@@ -1637,19 +1793,22 @@ body {
         max-height: clamp(50px, 15vw, 65px);
         font-size: clamp(20px, 6vw, 24px);
         position: fixed;
-        bottom: max(80px, calc(var(--footer-height, 80px) + 20px)); /* Adjust based on footer height */
+        bottom: max(80px, calc(var(--footer-height, 80px) + 20px));
+        /* Adjust based on footer height */
         right: clamp(10px, 3vw, 20px);
     }
 
     /* Set a minimum space between the button and footer */
     #instructionsFooter {
         position: relative;
-        z-index: 1000; /* Ensure footer stays above other content */
+        z-index: 1000;
+        /* Ensure footer stays above other content */
     }
 
     /* Update the footer height on load and resize */
     :root {
-        --footer-height: 80px; /* Default height */
+        --footer-height: 80px;
+        /* Default height */
     }
 }
 
@@ -1710,7 +1869,7 @@ body {
         min-width: auto;
         gap: 6px;
     }
-    
+
     .navigation-btn i {
         font-size: 12px;
     }
@@ -1726,7 +1885,7 @@ body {
     .last-initialized-timeline-wrapper .timeline-container .title {
         display: block;
     }
-    
+
     /* Add padding to account for visible title positioned at top: -25px */
     .last-initialized-timeline-wrapper .timeline-container {
         padding-top: 2px;
@@ -1874,11 +2033,13 @@ body {
 /* Activity button with child items */
 .activity-button.has-child-items {
     position: relative;
-    padding-right: 30px; /* Extra space for the dropdown icon */
+    padding-right: 30px;
+    /* Extra space for the dropdown icon */
 }
 
 .activity-button.has-child-items::after {
-    content: '\25BC'; /* Downward-pointing triangle */
+    content: '\25BC';
+    /* Downward-pointing triangle */
     position: absolute;
     right: 10px;
     top: 50%;
@@ -1955,7 +2116,8 @@ body {
 }
 
 #childItemsModal .child-item-button {
-    padding: 12px 20px 12px 24px;  /* Added left padding for the indicator */
+    padding: 12px 20px 12px 24px;
+    /* Added left padding for the indicator */
     text-align: left;
     background-color: white;
     border: none;
@@ -1964,7 +2126,8 @@ body {
     font-size: 16px;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: relative;  /* Added for absolute positioning of the indicator */
+    position: relative;
+    /* Added for absolute positioning of the indicator */
 }
 
 #childItemsModal .child-item-button::before {
@@ -1991,7 +2154,7 @@ body {
         margin: 30% auto;
         padding: 15px;
     }
-    
+
     #childItemsModal .child-item-button {
         padding: 14px 16px;
         font-size: 16px;
@@ -2045,8 +2208,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Mobile adjustments for loading modal */
@@ -2199,12 +2367,13 @@ body {
 /* Mobile adjustments for toast */
 @media (max-width: 768px) {
     .toast {
-        bottom: 80px; /* Higher up to avoid floating button */
+        bottom: 80px;
+        /* Higher up to avoid floating button */
         padding: 12px 20px;
         font-size: 13px;
     }
 }
- 
+
 /* ==========================================================================
    Recovery Modal - Autosave Draft Restoration
    WCAG 2.1 AA Compliant
@@ -2313,7 +2482,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px; /* Touch target size for accessibility */
+    min-height: 48px;
+    /* Touch target size for accessibility */
 }
 
 .recovery-modal .btn:focus {
@@ -2373,6 +2543,7 @@ body {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
     .recovery-modal-overlay,
     .recovery-modal,
     .recovery-modal .btn {
@@ -2578,6 +2749,7 @@ body {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -2697,9 +2869,11 @@ body {
     0% {
         opacity: 0;
     }
+
     35% {
         opacity: 0.72;
     }
+
     100% {
         opacity: 0.72;
     }
@@ -2809,6 +2983,7 @@ html.a11y-visible-enabled :focus-visible {
 }
 
 @media (forced-colors: active) {
+
     html:not(.a11y-forced-colors-disabled) .activity-item,
     html:not(.a11y-forced-colors-disabled) .activity-button {
         background: Canvas;
@@ -2857,47 +3032,39 @@ html.a11y-visible-enabled :focus-visible {
     html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"sleep\"],
     html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"sleep\"],
     html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"sleep\"] {
-        background: repeating-linear-gradient(
-            45deg,
-            Canvas,
-            Canvas 4px,
-            CanvasText 4px,
-            CanvasText 5px
-        );
+        background: repeating-linear-gradient(45deg,
+                Canvas,
+                Canvas 4px,
+                CanvasText 4px,
+                CanvasText 5px);
     }
 
     html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"work\"],
     html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"work\"],
     html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"work\"] {
-        background: repeating-linear-gradient(
-            0deg,
-            Canvas,
-            Canvas 4px,
-            CanvasText 4px,
-            CanvasText 5px
-        );
+        background: repeating-linear-gradient(0deg,
+                Canvas,
+                Canvas 4px,
+                CanvasText 4px,
+                CanvasText 5px);
     }
 
     html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"leisure\"],
     html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"leisure\"],
     html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"leisure\"] {
-        background: repeating-linear-gradient(
-            90deg,
-            Canvas,
-            Canvas 4px,
-            CanvasText 4px,
-            CanvasText 5px
-        );
+        background: repeating-linear-gradient(90deg,
+                Canvas,
+                Canvas 4px,
+                CanvasText 4px,
+                CanvasText 5px);
     }
 
     html:not(.a11y-forced-colors-disabled) .activity-item[data-category=\"personal-care\"],
     html:not(.a11y-forced-colors-disabled) .activity-button[data-category=\"personal-care\"],
     html:not(.a11y-forced-colors-disabled) .activity-block[data-category=\"personal-care\"] {
-        background: radial-gradient(
-            circle,
-            CanvasText 1px,
-            Canvas 1px
-        );
+        background: radial-gradient(circle,
+                CanvasText 1px,
+                Canvas 1px);
         background-size: 8px 8px;
     }
 
