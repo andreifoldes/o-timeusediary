@@ -448,7 +448,7 @@ function applySingleActivityShortcut(currentTimeline) {
 
     if (getIsMobile() && allActivities.length === 1) {
         const only = allActivities[0];
-        floatingButton.style.display = 'none';
+        floatingButton.classList.add('hidden-single-activity');
         const category = categories.find(cat => (cat.activities || []).includes(only));
         const categoryName = category ? category.name : '';
         if (!window.selectedActivity || window.selectedActivity.name !== only.name) {
@@ -459,7 +459,7 @@ function applySingleActivityShortcut(currentTimeline) {
             };
         }
     } else {
-        floatingButton.style.display = '';
+        floatingButton.classList.remove('hidden-single-activity');
     }
 }
 

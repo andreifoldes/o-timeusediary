@@ -18,7 +18,7 @@
   "timeline": {
     "primary": {
       "name": "Sleep",
-      "description": "Log every period you slept yesterday, including short naps.",
+      "description": "Tap or click the timeline to log every period you slept yesterday, including short naps.",
       "mode": "single-choice",
       "min_coverage": "0",
       "categories": [

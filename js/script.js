@@ -1993,6 +1993,10 @@ function initTimelineInteraction(timeline) {
     // Add click and touch handling with debounce
     let lastClickTime = 0;
     const CLICK_DELAY = 300; // milliseconds
+    // Lockout after an interact.js drag/resize ends. The release event from a
+    // drag/resize that ends outside the block target bubbles to the timeline
+    // and would otherwise spawn a phantom new block at the release position.
+    const INTERACTION_LOCKOUT = 350; // milliseconds
 
     // Unified handler function for both click and touch events
     const handleTimelineInteraction = (e) => {
@@ -2010,11 +2014,38 @@ function initTimelineInteraction(timeline) {
             console.log('[TIMELINE] Event ignored - within click delay');
             return;
         }
+        // Suppress phantom placements right after a drag/resize release.
+        if (currentTime - (window._otudLastInteractEnd || 0) < INTERACTION_LOCKOUT) {
+            console.log('[TIMELINE] Event ignored - within interaction lockout');
+            return;
+        }
         lastClickTime = currentTime;
 
-        if (!window.selectedActivity || e.target.closest('.activity-block')) {
-            console.log('[TIMELINE] Event ignored - no window.selectedActivity or clicked on activity block');
+        if (e.target.closest('.activity-block')) {
+            console.log('[TIMELINE] Event ignored - clicked on activity block');
             return;
+        }
+
+        // If the current timeline has exactly one activity, auto-select it so
+        // the participant doesn't have to open the picker just to confirm
+        // their only choice.
+        if (!window.selectedActivity) {
+            const currentKeyForAutoSelect = getCurrentTimelineKey();
+            const meta = currentKeyForAutoSelect ? window.timelineManager.metadata[currentKeyForAutoSelect] : null;
+            const allActs = meta ? (meta.categories || []).flatMap(c => c.activities || []) : [];
+            if (allActs.length === 1) {
+                const only = allActs[0];
+                const cat = (meta.categories || []).find(c => (c.activities || []).includes(only));
+                window.selectedActivity = {
+                    name: only.name,
+                    color: only.color,
+                    category: cat ? cat.name : ''
+                };
+                console.log('[TIMELINE] Auto-selected the lone activity:', window.selectedActivity);
+            } else {
+                console.log('[TIMELINE] Event ignored - no window.selectedActivity');
+                return;
+            }
         }
         
         const currentKey = getCurrentTimelineKey();
@@ -2361,6 +2392,15 @@ function initTimelineInteraction(timeline) {
         }, { passive: false });
     }
 
+    // Mark the moment any drag/resize on a block ends so the timeline
+    // ignores the immediate following release that bubbles up outside the block.
+    interact('.activity-block').on('dragend', function() {
+        window._otudLastInteractEnd = Date.now();
+    });
+    interact('.activity-block').on('resizeend', function() {
+        window._otudLastInteractEnd = Date.now();
+    });
+
     // Update existing blocks to include parent/selected attributes if they don't have them
     interact('.activity-block').on('resizeend', function(event) {
         const target = event.target;
@@ -2515,10 +2555,22 @@ async function init() {
         // Update gradient bar layout
         updateGradientBarLayout();
         
-        // Create and show floating add button for mobile
+        // Create and show floating add button for mobile.
+        // When the current timeline has only one activity, hide it up front so it
+        // doesn't briefly flash before applySingleActivityShortcut hides it later.
         createFloatingAddButton();
         if (getIsMobile()) {
-            document.querySelector('.floating-add-button').style.display = 'flex';
+            const floatingBtn = document.querySelector('.floating-add-button');
+            const currentKeyForBtn = getCurrentTimelineKey();
+            const currentMetaForBtn = currentKeyForBtn ? window.timelineManager.metadata[currentKeyForBtn] : null;
+            const totalActivities = currentMetaForBtn
+                ? (currentMetaForBtn.categories || []).flatMap(c => c.activities || []).length
+                : 0;
+            if (totalActivities === 1) {
+                floatingBtn.classList.add('hidden-single-activity');
+            } else {
+                floatingBtn.style.display = 'flex';
+            }
             updateFloatingButtonPosition();
         }
         

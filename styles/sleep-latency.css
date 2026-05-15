@@ -28,7 +28,12 @@
 body.sleep-latency-active .header-section,
 body.sleep-latency-active #main-timeline,
 body.sleep-latency-active #activitiesContainer,
-body.sleep-latency-active #instructionsFooter {
+body.sleep-latency-active #instructionsFooter,
+body.sleep-latency-active .floating-add-button {
+    display: none !important;
+}
+
+.floating-add-button.hidden-single-activity {
     display: none !important;
 }
 
