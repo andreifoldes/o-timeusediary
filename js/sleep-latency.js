@@ -54,10 +54,10 @@ function notifyChange() {
 
 export function initSleepLatencyWidget({ onChange } = {}) {
     if (initialized) return;
-    widgetEl = document.getElementById('sleepLatencyWidget');
+    widgetEl = document.getElementById('sleepLatencyStep');
     inputEl = document.getElementById('sleepLatencyInput');
     errorEl = document.getElementById('sleepLatencyError');
-    if (!widgetEl || !inputEl || !errorEl) return;
+    if (!inputEl || !errorEl) return;
 
     onChangeCallback = typeof onChange === 'function' ? onChange : null;
 
