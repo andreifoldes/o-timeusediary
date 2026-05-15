@@ -435,6 +435,34 @@ function updateFloatingButtonPosition() {
     }
 }
 
+// On mobile, when the current timeline exposes only a single activity
+// across all its categories, the floating + button + selector modal is
+// unnecessary friction: hide the button and auto-select the lone option
+// so the participant can tap the timeline directly.
+function applySingleActivityShortcut(currentTimeline) {
+    const floatingButton = document.querySelector('.floating-add-button');
+    if (!floatingButton || !currentTimeline) return;
+
+    const categories = currentTimeline.categories || [];
+    const allActivities = categories.flatMap(cat => cat.activities || []);
+
+    if (getIsMobile() && allActivities.length === 1) {
+        const only = allActivities[0];
+        floatingButton.style.display = 'none';
+        const category = categories.find(cat => (cat.activities || []).includes(only));
+        const categoryName = category ? category.name : '';
+        if (!window.selectedActivity || window.selectedActivity.name !== only.name) {
+            window.selectedActivity = {
+                name: only.name,
+                color: only.color,
+                category: categoryName
+            };
+        }
+    } else {
+        floatingButton.style.display = '';
+    }
+}
+
 function updateButtonStates() {
     const undoButton = document.getElementById('undoBtn');
     const cleanRowButton = document.getElementById('cleanRowBtn');
@@ -468,6 +496,8 @@ function updateButtonStates() {
 
     // Check if we're on the last timeline
     const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
+
+    applySingleActivityShortcut(currentTimeline);
     
     // Get text values for buttons
     const nextText = window.i18n ? window.i18n.t('buttons.next') : 'Next';
