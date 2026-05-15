@@ -599,10 +599,39 @@ export async function sendDataToDataPipe() {
     return { success: true };
   } catch (error) {
     console.error('Error sending data to DataPipe:', error);
-    
+
     // Hide loading modal on error
     hideLoadingModal();
-    
+
+    // If the study opted into a local CSV fallback (e.g. demos with an
+    // unregistered experimentID, or offline runs), download the data and
+    // still progress to the thank-you redirect so participants aren't stuck.
+    const fallbackToCSV = window.timelineManager?.general?.fallbackToCSV === true;
+    if (fallbackToCSV) {
+      try {
+        const dataFrame = createTimelineDataFrame();
+        const csv = convertArrayToCSV(dataFrame);
+        const ts = new Date().toISOString().replace(/[:.]/g, '-');
+        downloadCSV(csv, `timeline_fallback_${ts}.csv`);
+      } catch (csvErr) {
+        console.error('CSV fallback also failed:', csvErr);
+      }
+
+      const redirectUrl = window.timelineManager?.general?.primary_redirect_url;
+      if (redirectUrl) {
+        if (!redirectUrl.startsWith('http')) {
+          window.location.href = redirectUrl;
+        } else {
+          const currentParams = new URLSearchParams(window.location.search);
+          const separator = redirectUrl.includes('?') ? '&' : '?';
+          const finalRedirectUrl = redirectUrl +
+            (currentParams.toString() ? separator + currentParams.toString() : '');
+          window.location.href = finalRedirectUrl;
+        }
+      }
+      return { success: true, fallback: 'csv', error: error.message };
+    }
+
     return { success: false, error: error.message };
   }
 }

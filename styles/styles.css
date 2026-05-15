@@ -191,9 +191,14 @@ body {
         justify-content: flex-start;
     }
     
-    /* When both wrappers have timelines, adjust their spacing */
+    /* Center the active + past timelines as a group when both are present.
+       Auto margins on the inner edges share leftover horizontal space
+       equally and collapse to 0 when content overflows the viewport. */
+    .timelines-wrapper:not(:has(.past-initialized-timelines-wrapper:empty)) .past-initialized-timelines-wrapper {
+        margin-right: auto;
+    }
     .timelines-wrapper:not(:has(.past-initialized-timelines-wrapper:empty)) .last-initialized-timeline-wrapper {
-        margin-left: 0; /* Reset to 0 instead of -5px */
+        margin-left: auto;
     }
 
     /* Ensure timeline containers don't shrink in the scroll container */

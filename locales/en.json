@@ -83,7 +83,7 @@
   "thankYou": {
     "title": "Thank You - O-TUD",
     "heading": "Thank You!",
-    "subtitle": "Your submission has been completed successfully.",
-    "message": "Thank you for participating in our <span class=\"app-name\">O-TUD</span> study. Your responses have been recorded and will contribute to valuable research."
+    "subtitle": "Your sleep diary has been submitted successfully.",
+    "message": "Thank you for participating in our <span class=\"app-name\">O-TUD Sleep Demo</span>. Your responses have been recorded. You can now close this window."
   }
 }
