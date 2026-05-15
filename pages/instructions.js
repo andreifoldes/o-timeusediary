@@ -7,11 +7,13 @@ function updateLayout() {
     const isMobile = getIsMobile();
     document.body.classList.toggle('mobile-layout', isMobile);
     document.body.classList.toggle('desktop-layout', !isMobile);
-    
-    // Update orientation classes
-    const isHorizontal = window.innerWidth > window.innerHeight;
-    document.body.classList.toggle('is-horizontal', isHorizontal);
-    document.body.classList.toggle('is-vertical', !isHorizontal);
+
+    // Match the main page's horizontal/vertical decision so the GIFs shown
+    // on the instructions page reflect what participants will actually see
+    // after clicking Start. The main page uses getIsMobile() (window width
+    // < 1440), not viewport aspect ratio.
+    document.body.classList.toggle('is-horizontal', !isMobile);
+    document.body.classList.toggle('is-vertical', isMobile);
 }
 
 // Initialize i18n when the module loads
@@ -77,14 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = '100%';
     }
 
-    // Handle orientation changes
+    // Handle orientation changes — same rule as updateLayout() above so the
+    // displayed GIFs match the main page's layout.
     let orientationTimeout;
     function updateLayoutClass() {
         clearTimeout(orientationTimeout);
         orientationTimeout = setTimeout(() => {
-            const isHorizontal = window.innerWidth > window.innerHeight;
-            document.body.classList.toggle('is-horizontal', isHorizontal);
-            document.body.classList.toggle('is-vertical', !isHorizontal);
+            updateIsMobile();
+            const isMobile = getIsMobile();
+            document.body.classList.toggle('is-horizontal', !isMobile);
+            document.body.classList.toggle('is-vertical', isMobile);
         }, 100);
     }
 
