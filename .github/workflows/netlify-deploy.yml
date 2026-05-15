@@ -1,0 +1,56 @@
+name: Deploy sleep-demo to Netlify
+
+on:
+  push:
+    branches: [ sleep-demo ]
+  workflow_dispatch:
+
+concurrency:
+  group: netlify-sleep-demo
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Stage publish directory
+        run: |
+          mkdir -p _site
+          rsync -av \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='docs' \
+            --exclude='mkdocs.yml' \
+            --exclude='requirements-docs.txt' \
+            --exclude='.github' \
+            --exclude='e2e' \
+            --exclude='tests' \
+            --exclude='playwright.config.js' \
+            --exclude='server.log' \
+            --exclude='_site' \
+            ./ _site/
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: ./_site
+          production-deploy: true
+          deploy-message: "Deploy ${{ github.sha }} from ${{ github.ref_name }}"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 5
