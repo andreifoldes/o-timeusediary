@@ -1,26 +1,33 @@
 {
   "instructions": {
     "title": "Instructions",
-    "mainInstruction": "Think about the activities you did <span class=\"emphasis\">yesterday</span>. Then, fill in the full timeline with the activities you did.",
+    "mainInstruction": "Think about when you slept <span class=\"emphasis\">yesterday</span> — including any naps. Then, mark each sleep period on the timeline and rate its quality.",
     "step1": {
-      "title": "Select and Place an Activity",
-      "horizontal": "Choose an activity from the menu at the bottom of the screen, then place it on the timeline.",
-      "vertical": "Tap the (+) button in the bottom right corner to open the activity menu, then select an activity and tap where you want to place it on the timeline."
+      "title": "Log Every Sleep Period",
+      "horizontal": "Select <strong>Sleep</strong> from the menu at the bottom, then place it on the Sleep timeline for every period you slept. This includes short daytime naps — anything where you fell asleep counts. Time you leave blank is treated as awake.",
+      "vertical": "Tap the (+) button in the bottom right to open the menu, select <strong>Sleep</strong>, then tap the Sleep timeline for every period you slept. Include short daytime naps. Time you leave blank is treated as awake."
     },
     "step2": {
-      "title": "Adjust Activity Duration",
-      "horizontal": "Click and drag the edges horizontally to set the duration.",
-      "vertical": "Drag the edges vertically to set the duration."
+      "title": "Rate Each Sleep Block's Quality",
+      "horizontal": "On the Sleep quality timeline, place a rating (Poor → Great) over each sleep block. Drag the edges to make the rating cover the full block.",
+      "vertical": "On the Sleep quality timeline, place a rating (Poor → Great) over each sleep block. Drag the edges to cover the full block."
     },
     "step3": {
-      "title": "Submit Your Diary",
-      "description": "Once you've recorded all your activities for the day, click the Submit button to complete your diary.",
-      "submitHelp": "Click to submit your completed diary"
+      "title": "Submit Your Sleep Diary",
+      "description": "Once every sleep block has both a duration and a quality rating, tap Submit.",
+      "submitHelp": "Click to submit your completed sleep diary"
     },
     "helpfulTools": "Helpful tools",
     "undoHelp": "Did you make a mistake? Reverse your last action",
     "cleanRowHelp": "Want to start over? Clean the row",
     "customActivityHelp": "Activity not listed? Add a custom activity"
+  },
+  "sleepLatency": {
+    "question": "How long did it take you to fall asleep last night?",
+    "subtitle": "Enter your best estimate in minutes.",
+    "unit": "min",
+    "errorRequired": "Please enter your sleep latency in minutes.",
+    "errorRange": "Enter a value between 0 and 300 minutes."
   },
   "buttons": {
     "submit": "Submit",

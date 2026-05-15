@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/sleep-latency.css">
 </head>
 <body>
     <a href="#main-timeline" class="skip-link">Skip to timeline</a>
@@ -80,7 +81,47 @@
             </div>
             <div class="gradient-bar"></div>
         </div>
+
     </main>
+
+    <section id="sleepLatencyStep" class="sleep-latency-step-screen" aria-labelledby="sleepLatencyLabel" hidden>
+        <div class="sleep-latency-widget" role="group" aria-labelledby="sleepLatencyLabel">
+            <label id="sleepLatencyLabel" class="sleep-latency-label" for="sleepLatencyInput" data-i18n="sleepLatency.question">
+                How long did it take you to fall asleep last night?
+            </label>
+            <p class="sleep-latency-subtitle" data-i18n="sleepLatency.subtitle">
+                Enter your best estimate in minutes.
+            </p>
+            <div class="sleep-latency-control">
+                <button type="button" class="sleep-latency-step" id="sleepLatencyDecrement" aria-label="Decrease by 5 minutes">−</button>
+                <input
+                    type="number"
+                    id="sleepLatencyInput"
+                    class="sleep-latency-input"
+                    inputmode="numeric"
+                    min="0"
+                    max="300"
+                    step="1"
+                    placeholder="0"
+                    aria-describedby="sleepLatencyError"
+                />
+                <span class="sleep-latency-unit" data-i18n="sleepLatency.unit">min</span>
+                <button type="button" class="sleep-latency-step" id="sleepLatencyIncrement" aria-label="Increase by 5 minutes">+</button>
+            </div>
+            <p id="sleepLatencyError" class="sleep-latency-error" role="alert" hidden></p>
+        </div>
+
+        <nav class="sleep-latency-nav" role="navigation" aria-label="Sleep latency page navigation">
+            <button type="button" id="sleepLatencyBackBtn" class="btn navigation-btn">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                <span data-i18n="buttons.back">Back</span>
+            </button>
+            <button type="button" id="sleepLatencySubmitBtn" class="btn save-btn submit-mode">
+                <i class="fas fa-check" aria-hidden="true"></i>
+                <span data-i18n="buttons.submit">Submit</span>
+            </button>
+        </nav>
+    </section>
 
     <aside role="complementary" aria-label="Activity selection" class="activities-container" id="activitiesContainer">
         <div class="activities-accordion"></div>

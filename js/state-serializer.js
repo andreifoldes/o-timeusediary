@@ -3,6 +3,8 @@
  * Preserves participant data across responsive breakpoint reloads
  */
 
+import { setSleepLatencyValue } from './sleep-latency.js';
+
 const STATE_VERSION = 2;
 
 /**
@@ -16,7 +18,8 @@ export function serializeTimelineState() {
         activities,
         currentIndex: window.timelineManager?.currentIndex ?? 0,
         keys: window.timelineManager?.keys || [],
-        selectedActivity: window.selectedActivity || null
+        selectedActivity: window.selectedActivity || null,
+        sleepLatencyMinutes: window.timelineManager?.sleepLatencyMinutes ?? null
     };
     return JSON.stringify(state);
 }
@@ -55,6 +58,10 @@ export function deserializeTimelineState(jsonString) {
     window.timelineManager.currentIndex = state.currentIndex;
     window.timelineManager.keys = state.keys;
     window.selectedActivity = state.selectedActivity ?? null;
+    if (typeof state.sleepLatencyMinutes === 'number') {
+        window.timelineManager.sleepLatencyMinutes = state.sleepLatencyMinutes;
+        setSleepLatencyValue(state.sleepLatencyMinutes);
+    }
 
     console.log('[state-serializer] State restored successfully');
     return true;

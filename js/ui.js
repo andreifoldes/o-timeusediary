@@ -14,6 +14,10 @@ import { addNextTimeline, goToPreviousTimeline, renderActivities } from './scrip
 import { DEBUG_MODE } from './constants.js';
 import { triggerSave, onSubmitSuccess } from './autosave.js';
 import {
+    initSleepLatencyWidget,
+    validateSleepLatency
+} from './sleep-latency.js';
+import {
     announce,
     announceError,
     announceRowCleared,
@@ -471,36 +475,18 @@ function updateButtonStates() {
     
     if (nextButton) {
         nextButton.disabled = !meetsMinCoverage;
-        
-        if (isLastTimeline) {
-            // On last timeline, show Submit
-            nextButton.innerHTML = `<i class="fas fa-check"></i> ${submitText}`;
-        } else {
-            // For other timelines, show Next
-            nextButton.innerHTML = `${nextText} <i class="fas fa-arrow-right"></i>`;
-        }
+        // Always show Next — final submission happens on the Sleep Latency step.
+        nextButton.innerHTML = `${nextText} <i class="fas fa-arrow-right"></i>`;
     }
-    
+
     // Update navSubmitBtn to mirror nextButton exactly
     if (navSubmitBtn) {
         navSubmitBtn.disabled = !meetsMinCoverage;
-        
-        // Find the span element inside navSubmitBtn
         const navSubmitSpan = navSubmitBtn.querySelector('span');
-        
-        if (isLastTimeline) {
-            // On last timeline, show Submit with green color
-            if (navSubmitSpan) {
-                navSubmitSpan.textContent = submitText;
-            }
-            navSubmitBtn.classList.add('submit-mode');
-        } else {
-            // For other timelines, show Next with blue color
-            if (navSubmitSpan) {
-                navSubmitSpan.textContent = nextText;
-            }
-            navSubmitBtn.classList.remove('submit-mode');
+        if (navSubmitSpan) {
+            navSubmitSpan.textContent = nextText;
         }
+        navSubmitBtn.classList.remove('submit-mode');
     }
 }
 
@@ -528,14 +514,32 @@ const handleNextButtonAction = () => {
     const isLastTimeline = window.timelineManager.currentIndex === window.timelineManager.keys.length - 1;
     
     if (isLastTimeline) {
-        // On last timeline, show confirmation modal
-        document.getElementById('confirmationModal').style.display = 'block';
+        // Move to the Sleep Onset Latency step screen instead of submitting directly.
+        enterSleepLatencyStep();
     } else {
         // For other timelines, proceed to next timeline
         addNextTimeline();
         window.selectedActivity = null;
     }
 };
+
+function enterSleepLatencyStep() {
+    const stepEl = document.getElementById('sleepLatencyStep');
+    if (!stepEl) return;
+    document.body.classList.add('sleep-latency-active');
+    stepEl.hidden = false;
+    const input = document.getElementById('sleepLatencyInput');
+    if (input) {
+        setTimeout(() => input.focus(), 0);
+    }
+}
+
+function exitSleepLatencyStep() {
+    const stepEl = document.getElementById('sleepLatencyStep');
+    if (!stepEl) return;
+    document.body.classList.remove('sleep-latency-active');
+    stepEl.hidden = true;
+}
 
 // Shared function to handle Back button logic with debounce
 const handleBackButtonAction = () => {
@@ -624,7 +628,35 @@ let buttonsInitialized = false;
 function initButtons() {
     if (buttonsInitialized) return;
     buttonsInitialized = true;
-    
+
+    initSleepLatencyWidget({
+        onChange: (value) => {
+            if (window.timelineManager) {
+                window.timelineManager.sleepLatencyMinutes = value;
+            }
+            triggerSave();
+        }
+    });
+
+    const sleepLatencyBackBtn = document.getElementById('sleepLatencyBackBtn');
+    if (sleepLatencyBackBtn) {
+        sleepLatencyBackBtn.addEventListener('click', () => {
+            exitSleepLatencyStep();
+        });
+    }
+
+    const sleepLatencySubmitBtn = document.getElementById('sleepLatencySubmitBtn');
+    if (sleepLatencySubmitBtn) {
+        sleepLatencySubmitBtn.addEventListener('click', () => {
+            const validation = validateSleepLatency();
+            if (!validation.valid) return;
+            if (window.timelineManager) {
+                window.timelineManager.sleepLatencyMinutes = validation.value;
+            }
+            document.getElementById('confirmationModal').style.display = 'block';
+        });
+    }
+
     const cleanRowBtn = document.getElementById('cleanRowBtn');
     const navSubmitBtn = document.getElementById('navSubmitBtn');
 

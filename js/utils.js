@@ -522,6 +522,10 @@ export async function sendDataToDataPipe() {
       ? (studyData.survey || studyData.SURVEY) 
       : (studyData.SESSION_ID || null);
 
+    const sleepLatencyMinutes = (window.timelineManager && typeof window.timelineManager.sleepLatencyMinutes === 'number')
+      ? window.timelineManager.sleepLatencyMinutes
+      : null;
+
     // Combine timeline and participant data
     const combinedData = timelineData.map(row => ({
       timelineKey: row.timelineKey,
@@ -539,7 +543,8 @@ export async function sendDataToDataPipe() {
       instructions: studyData.instructions === 'completed',
       PROLIFIC_PID: studyData.PROLIFIC_PID || null,
       STUDY_ID: studyData.STUDY_ID || null,
-      SESSION_ID: session_id
+      SESSION_ID: session_id,
+      sleep_latency_min: sleepLatencyMinutes
     }));
 
     // Convert to CSV format
