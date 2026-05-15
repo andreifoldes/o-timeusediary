@@ -434,19 +434,23 @@ export function isOverlapping(elem1, elem2) {
 export function createTimelineDataFrame() {
     // Initialize array to hold all timeline data
     const dataFrame = [];
-    
+
     // Get all timeline keys
     const timelineKeys = window.timelineManager.keys;
-    
+
     // Get study parameters if they exist
-    const studyParams = (window.timelineManager.study && Object.keys(window.timelineManager.study).length > 0) 
-        ? window.timelineManager.study 
+    const studyParams = (window.timelineManager.study && Object.keys(window.timelineManager.study).length > 0)
+        ? window.timelineManager.study
         : {};
-    
+
+    const sleepLatencyMinutes = (typeof window.timelineManager?.sleepLatencyMinutes === 'number')
+        ? window.timelineManager.sleepLatencyMinutes
+        : null;
+
     // Iterate through each timeline
     timelineKeys.forEach(timelineKey => {
         const activities = window.timelineManager.activities[timelineKey] || [];
-        
+
         // Add each activity to the dataframe with its timeline key
         activities.forEach(activity => {
             const row = {
@@ -456,16 +460,18 @@ export function createTimelineDataFrame() {
                 startTime: activity.startTime,
                 endTime: activity.endTime
             };
-            
+
             // Only add study params if they exist
             if(Object.keys(studyParams).length > 0) {
                 Object.assign(row, studyParams);
             }
-            
+
+            row.sleep_latency_min = sleepLatencyMinutes;
+
             dataFrame.push(row);
         });
     });
-    
+
     return dataFrame;
 }
 
