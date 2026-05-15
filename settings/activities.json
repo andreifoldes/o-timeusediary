@@ -48,29 +48,29 @@
           "name": "Quality",
           "activities": [
             {
-              "name": "Poor",
+              "name": "Very poor",
               "code": 201,
-              "label": "poor",
-              "short": "poor",
-              "vshort": "p",
+              "label": "very poor",
+              "short": "v.poor",
+              "vshort": "vp",
               "color": "#d9534f",
               "childItems": []
             },
             {
-              "name": "Fair",
+              "name": "Poor",
               "code": 202,
-              "label": "fair",
-              "short": "fair",
-              "vshort": "f",
+              "label": "poor",
+              "short": "poor",
+              "vshort": "p",
               "color": "#f0ad4e",
               "childItems": []
             },
             {
-              "name": "OK",
+              "name": "Fair",
               "code": 203,
-              "label": "ok",
-              "short": "ok",
-              "vshort": "ok",
+              "label": "fair",
+              "short": "fair",
+              "vshort": "f",
               "color": "#f7e463",
               "childItems": []
             },
@@ -84,11 +84,11 @@
               "childItems": []
             },
             {
-              "name": "Great",
+              "name": "Very good",
               "code": 205,
-              "label": "great",
-              "short": "great",
-              "vshort": "gt",
+              "label": "very good",
+              "short": "v.good",
+              "vshort": "vg",
               "color": "#3fa34d",
               "childItems": []
             }

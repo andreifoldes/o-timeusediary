@@ -9,8 +9,8 @@
     },
     "step2": {
       "title": "Rate Each Sleep Block's Quality",
-      "horizontal": "On the Sleep quality timeline, place a rating (Poor → Great) over each sleep block. Drag the edges to make the rating cover the full block.",
-      "vertical": "On the Sleep quality timeline, place a rating (Poor → Great) over each sleep block. Drag the edges to cover the full block."
+      "horizontal": "On the Sleep quality timeline, place a rating (Very poor → Very good) over each sleep block. Drag the edges to make the rating cover the full block.",
+      "vertical": "On the Sleep quality timeline, place a rating (Very poor → Very good) over each sleep block. Drag the edges to cover the full block."
     },
     "step3": {
       "title": "Submit Your Sleep Diary",
