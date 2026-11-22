@@ -234,9 +234,14 @@ test.describe('reference day, Europe/London', () => {
     await openDiary(page, 'instructions=completed&pid=D8');
     await placeBlock(page, at(8));
     await page.clock.setSystemTime(new Date('2026-11-21T04:00:30Z'));
+    // The reload comes from a debounced resize handler, so wait for the new page's
+    // load event: waitForLoadState('load') is already satisfied by the old page.
+    const reloaded = page.waitForEvent('load');
     await page.setViewportSize({ width: 1200, height: 900 });   // crosses 1,440 px: reloads
-    await page.waitForLoadState('load');
+    await reloaded;
     await waitForDiary(page);
+    expect(await page.evaluate(() => window.getIsMobile())).toBe(true);
+    // The clock rule would now give 2026-11-20; the backup keeps the diary's day.
     expect(await diaryDate(page)).toBe('2026-11-19');
     expect(stamps(await episodes(page))).toEqual([['2026-11-19 08:00', '2026-11-19 08:10']]);
   });
