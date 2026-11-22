@@ -22,6 +22,27 @@ async function savedState(page, pid) {
   return JSON.parse((await readDraft(page, pid)).state);
 }
 
+const SLEEPING = { category: 'Personal', activity: 'Sleeping', color: '#a2b4ee', blockLength: 10, count: 1 };
+
+/** Writes a draft for `pid` whose primary timeline holds `primary`; `state` adds version, diaryDate. */
+async function writePrimaryDraft(page, pid, { primary, ...state }, savedAt) {
+  const keys = await page.evaluate(() => window.timelineManager.keys);
+  const activities = Object.fromEntries(keys.map((key) => [key, []]));
+  activities.primary = primary;
+  await writeDraft(page, pid, { activities, currentIndex: 0, keys, selectedActivity: null, ...state }, savedAt);
+}
+
+/**
+ * Crosses the 1,440 px breakpoint, which reloads the page from its sessionStorage
+ * backup; the reloaded page offers the draft again, and this restores it.
+ */
+async function restoreAgainAfterBreakpointReload(page) {
+  const restored = page.waitForEvent('console', (message) => message.text().includes('[autosave] Draft restored'));
+  await page.setViewportSize({ width: 1200, height: 900 });   // crosses 1,440 px: reloads
+  await page.click('#recovery-restore');
+  await restored;
+}
+
 test.describe('reference day, Europe/London', () => {
   test.use({ timezoneId: 'Europe/London' });
 
@@ -193,6 +214,48 @@ test.describe('reference day, Europe/London', () => {
     await page.setViewportSize({ width: 1200, height: 900 });   // crosses 1,440 px: reloads
     await page.waitForLoadState('load');
     await waitForDiary(page);
+    expect(await diaryDate(page)).toBe('2026-11-19');
+    expect(stamps(await episodes(page))).toEqual([['2026-11-19 08:00', '2026-11-19 08:10']]);
+  });
+
+  test('a draft restored again after a breakpoint reload is restamped', async ({ page }) => {
+    await startClockAt(page, '2026-12-03T10:00:00Z');
+    await openDiary(page, 'instructions=completed&pid=D12-setup');
+    // Saved at 15:00 on 1 December by the previous version, with the month roll-over.
+    await writePrimaryDraft(page, 'D12', { version: 2, primary: [
+      { ...SLEEPING, id: 'v2a', startTime: '2026-11-30 08:00', endTime: '2026-11-30 08:10', startMinutes: 480, endMinutes: 490 },
+      { ...SLEEPING, id: 'v2b', startTime: '2026-11-30 23:50', endTime: '2026-11-01 00:00', startMinutes: 1430, endMinutes: 1440 },
+      { ...SLEEPING, id: 'v2c', startTime: '2026-11-01 01:30', endTime: '2026-11-01 01:40' },
+    ] }, Date.parse('2026-12-01T15:00:00Z'));
+    await page.goto('/index.html?instructions=completed&pid=D12');
+    await page.click('#recovery-restore');
+    await waitForDiary(page);
+    await expect(page.locator('.timeline[data-active="true"] .activity-block')).toHaveCount(3);
+    // Nothing has been saved since, so the reloaded page offers the old draft again.
+    expect(JSON.parse((await readDraft(page, 'D12')).state).version).toBe(2);
+    await restoreAgainAfterBreakpointReload(page);
+    expect(await diaryDate(page)).toBe('2026-11-30');
+    expect(stamps(await episodes(page))).toEqual([
+      ['2026-11-30 08:00', '2026-11-30 08:10'],
+      ['2026-11-30 23:50', '2026-12-01 00:00'],
+      ['2026-12-01 01:30', '2026-12-01 01:40'],
+    ]);
+  });
+
+  test('DIARY_DATE still wins when the draft is restored again after a breakpoint reload', async ({ page }) => {
+    await startClockAt(page, '2026-11-20T10:00:00Z');
+    await openDiary(page, 'instructions=completed&pid=D13-setup');
+    await writePrimaryDraft(page, 'D13', { version: 3, diaryDate: '2026-11-18', primary: [
+      { ...SLEEPING, id: 'v3a', startTime: '2026-11-18 08:00', endTime: '2026-11-18 08:10', startMinutes: 480, endMinutes: 490 },
+    ] }, Date.parse('2026-11-20T09:00:00Z'));
+    await page.goto('/index.html?instructions=completed&pid=D13&DIARY_DATE=2026-11-19');
+    await page.click('#recovery-restore');
+    await waitForDiary(page);
+    await expect(page.locator('.timeline[data-active="true"] .activity-block')).toHaveCount(1);
+    expect(await diaryDate(page)).toBe('2026-11-19');
+    // Nothing has been saved since, so the reloaded page offers the draft dated 2026-11-18.
+    expect(JSON.parse((await readDraft(page, 'D13')).state).diaryDate).toBe('2026-11-18');
+    await restoreAgainAfterBreakpointReload(page);
     expect(await diaryDate(page)).toBe('2026-11-19');
     expect(stamps(await episodes(page))).toEqual([['2026-11-19 08:00', '2026-11-19 08:10']]);
   });

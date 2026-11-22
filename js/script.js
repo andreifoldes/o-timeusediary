@@ -2471,15 +2471,18 @@ async function init() {
         // module runs twice (index.html loads script.js?v=1.1 and ui.js imports
         // ./script.js), and the second copy's module-level window.timelineManager
         // replaces the one this init() filled, so study stays empty until submit.
-        const referenceDay = resolveReferenceDay({
-            param: new URLSearchParams(window.location.search).get('DIARY_DATE'),
-            stored: window.timelineManager.diaryDate,
-            now: new Date()
-        });
-        if (referenceDay.warning) {
-            console.warn('[dates]', referenceDay.warning);
-        }
-        window.timelineManager.diaryDate = referenceDay.date;
+        const fixReferenceDay = () => {
+            const referenceDay = resolveReferenceDay({
+                param: new URLSearchParams(window.location.search).get('DIARY_DATE'),
+                stored: window.timelineManager.diaryDate,
+                now: new Date()
+            });
+            if (referenceDay.warning) {
+                console.warn('[dates]', referenceDay.warning);
+            }
+            window.timelineManager.diaryDate = referenceDay.date;
+        };
+        fixReferenceDay();
         if (wasRestored) {
             restampActivities();
         }
@@ -2502,7 +2505,14 @@ async function init() {
 
         // Initialize autosave if we restored from resize (autosave was already initialized otherwise)
         if (wasRestoredFromResize) {
-            await initAutosave();
+            // The reloaded page offers the draft again if one exists. Restoring it
+            // replaces the episodes taken from the backup with the draft's, whose
+            // stamps and stored date are as they were saved: fix the reference day
+            // again (DIARY_DATE still wins) and restamp them, as after the first restore.
+            if (await initAutosave() === 'restored') {
+                fixReferenceDay();
+                restampActivities();
+            }
         }
         
         // Update gradient bar layout
