@@ -1,3 +1,5 @@
+import { activityInterval, findOverlap } from './intervals.js';
+
 export class Timeline {
     constructor(key, metadata = {}) {
         this.key = key;
@@ -37,55 +39,25 @@ export class Timeline {
         return false;
     }
 
+    /**
+     * Throws if two episodes of this timeline overlap. Episodes are compared by
+     * their minutes on the timeline (js/intervals.js), not by parsing their stamps
+     * with new Date(): that moved times in the hour skipped when the clocks go
+     * forward (02:30 became 03:30 in New York on 8 March 2026) and raised false
+     * overlaps on that day.
+     */
     validate() {
-        // console.log('Starting timeline validation');
-        // Get activities from timelineManager using this timeline's key
         const activities = window.timelineManager.activities[this.key] || [];
-        // console.log('Current activities:', activities);
 
-        // Check for overlaps in activities
-        const sortedActivities = [...activities].sort((a, b) => {
-            const aStart = new Date(a.startTime);
-            const bStart = new Date(b.startTime);
-            // console.log('Comparing start times:', {
-            //     activity1: a.activity,
-            //     time1: a.startTime,
-            //     activity2: b.activity,
-            //     time2: b.startTime
-            // });
-            return aStart - bStart;
-        });
-
-        // console.log('Sorted activities:', sortedActivities);
-
-        for (let i = 0; i < sortedActivities.length - 1; i++) {
-            const current = sortedActivities[i];
-            const next = sortedActivities[i + 1];
-            
-            const currentEnd = new Date(current.endTime);
-            const nextStart = new Date(next.startTime);
-            
-            // console.log('Checking overlap:', {
-            //     currentActivity: current.activity,
-            //     currentStart: current.startTime,
-            //     currentEnd: current.endTime,
-            //     nextActivity: next.activity,
-            //     nextStart: next.startTime,
-            //     nextEnd: next.endTime,
-            //     isOverlapping: currentEnd > nextStart
-            // });
-            
-            if (currentEnd > nextStart) {
-                // console.error('Overlap detected:', {
-                //     current: current,
-                //     next: next,
-                //     currentEndTime: currentEnd,
-                //     nextStartTime: nextStart
-                // });
-                throw new Error(`Timeline validation failed: Overlap detected between activities "${current.activity}" and "${next.activity}"`);
+        for (const activity of activities) {
+            const interval = activityInterval(activity);
+            if (!interval) continue;
+            const others = activities.filter(a => a !== activity);
+            const other = findOverlap(others, interval.start, interval.end);
+            if (other) {
+                throw new Error(`Timeline validation failed: Overlap detected between activities "${activity.activity}" and "${other.activity}"`);
             }
         }
-        // console.log('Timeline validation successful');
         return true;
     }
 }
