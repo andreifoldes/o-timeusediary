@@ -60,6 +60,7 @@ export function deserializeTimelineState(jsonString) {
     window.timelineManager.keys = state.keys;
     window.selectedActivity = state.selectedActivity ?? null;
     // A version 2 state has no reference day: autosave.js dates it from its last save
+    // and its stamps
     if (isValidIsoDate(state.diaryDate)) {
         window.timelineManager.diaryDate = state.diaryDate;
     }

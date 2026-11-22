@@ -206,6 +206,29 @@ test.describe('reference day, Europe/London', () => {
     expect(restored.map((e) => [e.startMinutes, e.endMinutes])).toEqual([[480, 490], [1430, 1440], [1530, 1540]]);
   });
 
+  test('a draft saved by the previous version keeps the date of its episodes before midnight', async ({ page }) => {
+    await startClockAt(page, '2026-11-21T10:00:00Z');
+    await openDiary(page, 'instructions=completed&pid=D11-setup');
+    // Filled in at 21:00 on 20 November by the previous version, which dated the
+    // episodes before midnight with the device's "yesterday", 19 November. The page
+    // stayed open and saved every 30 seconds until 09:00 the next morning.
+    await writePrimaryDraft(page, 'D11', { version: 2, primary: [
+      { ...SLEEPING, id: 'v2d', startTime: '2026-11-19 08:00', endTime: '2026-11-19 08:10', startMinutes: 480, endMinutes: 490 },
+      { ...SLEEPING, id: 'v2e', startTime: '2026-11-19 23:00', endTime: '2026-11-19 23:10', startMinutes: 1380, endMinutes: 1390 },
+      { ...SLEEPING, id: 'v2f', startTime: '2026-11-20 01:30', endTime: '2026-11-20 01:40', startMinutes: 1530, endMinutes: 1540 },
+    ] }, Date.parse('2026-11-21T09:00:00Z'));
+    await page.goto('/index.html?instructions=completed&pid=D11');
+    await page.click('#recovery-restore');
+    await waitForDiary(page);
+    await expect(page.locator('.timeline[data-active="true"] .activity-block')).toHaveCount(3);
+    expect(await diaryDate(page)).toBe('2026-11-19');   // its last save alone would give 2026-11-20
+    expect(stamps(await episodes(page))).toEqual([
+      ['2026-11-19 08:00', '2026-11-19 08:10'],
+      ['2026-11-19 23:00', '2026-11-19 23:10'],
+      ['2026-11-20 01:30', '2026-11-20 01:40'],
+    ]);
+  });
+
   test('a breakpoint reload just after 04:00 keeps the reference day', async ({ page }) => {
     await startClockAt(page, '2026-11-21T03:59:30Z');
     await openDiary(page, 'instructions=completed&pid=D8');

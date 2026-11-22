@@ -63,6 +63,36 @@ export function referenceDayFromClock(now = new Date()) {
     return addDays(today, now.getHours() < TIMELINE_START_HOUR ? -2 : -1);
 }
 
+const STAMP = /^(\d{4}-\d{2}-\d{2}) (\d{2}):\d{2}$/;
+
+/**
+ * The reference day of a draft saved by the previous version (state version 2), which
+ * stored none. Its timestamp alone can be a day late: that version saved every 30
+ * seconds while the page was open, so a page left open overnight was last saved after
+ * the next 04:00. But that version dated each episode starting between 04:00 and
+ * midnight with the device's calendar "yesterday" at the moment it was placed or
+ * resized, a date that neither the month roll-over nor a clock change moved (unlike
+ * the dates of episodes starting after midnight, which are not used). The earliest of
+ * those dates and of the clock rule applied to the timestamp is taken. A diary filled
+ * in between 00:00 and 03:59, or one with no episode before midnight, still comes out a
+ * day late if its page was left open past 04:00: nothing in the draft tells it apart.
+ * Returns null if neither can be read.
+ */
+export function referenceDayOfVersion2Draft(activities, savedAt) {
+    const days = Number.isFinite(savedAt) ? [referenceDayFromClock(new Date(savedAt))] : [];
+    for (const list of Object.values(activities || {})) {
+        if (!Array.isArray(list)) continue;
+        for (const activity of list) {
+            const match = typeof activity?.startTime === 'string' ? STAMP.exec(activity.startTime) : null;
+            const hour = match ? Number(match[2]) : -1;
+            if (hour >= TIMELINE_START_HOUR && hour <= 23 && isValidIsoDate(match[1])) {
+                days.push(match[1]);
+            }
+        }
+    }
+    return days.length > 0 ? days.sort()[0] : null;
+}
+
 /**
  * Chooses the diary's reference day: a valid DIARY_DATE link parameter, otherwise
  * the date stored with a restored draft, otherwise the clock rule.

@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    isValidIsoDate, addDays, referenceDayFromClock, resolveReferenceDay, formatTimestamp
+    isValidIsoDate, addDays, referenceDayFromClock, referenceDayOfVersion2Draft, resolveReferenceDay,
+    formatTimestamp
 } from '../../js/dates.js';
 
 // Node reads process.env.TZ again when it changes, so a test can pin the device zone.
@@ -64,6 +65,40 @@ test('reference day on the spring-forward and autumn-back days uses the wall clo
     assert.equal(refAt('America/New_York', '2026-11-01T09:00:00Z'), '2026-10-31'); // 04:00 EST
     // A zone without daylight saving and a half-hour offset.
     assert.equal(refAt('Asia/Kolkata', '2026-11-20T22:00:00Z'), '2026-11-19'); // 03:30 IST on the 21st
+});
+
+test('a version 2 draft is dated by its last save and its stamps before midnight', () => {
+    const episode = (startTime) => ({ startTime, endTime: startTime });
+    const savedAt = (iso) => Date.parse(iso);
+    inZone('Europe/London', () => {
+        // Filled in at 21:00 on 20 November by the previous version: it dated the episodes
+        // before midnight 19 November (the device's "yesterday") and those after midnight
+        // 20 November.
+        const evening = { primary: [episode('2026-11-19 08:00'), episode('2026-11-19 23:00'),
+            episode('2026-11-20 01:30')] };
+        assert.equal(referenceDayOfVersion2Draft(evening, savedAt('2026-11-20T21:30:00Z')), '2026-11-19');
+        // The page stayed open and kept saving until 09:00 the next morning.
+        assert.equal(referenceDayOfVersion2Draft(evening, savedAt('2026-11-21T09:00:00Z')), '2026-11-19');
+        // Filled in at 01:30 on 21 November: the stamps say 20 November, the last save the 19th.
+        const night = { primary: [episode('2026-11-20 08:00'), episode('2026-11-21 01:00')] };
+        assert.equal(referenceDayOfVersion2Draft(night, savedAt('2026-11-21T01:45:00Z')), '2026-11-19');
+        // Filled in across midnight: blocks placed after midnight got the next day, on
+        // any timeline; the earliest date counts.
+        const across = { primary: [episode('2026-11-19 22:00'), episode('2026-11-20 23:00')],
+            location: [episode('2026-11-20 08:00')] };
+        assert.equal(referenceDayOfVersion2Draft(across, savedAt('2026-11-21T09:00:00Z')), '2026-11-19');
+        // Stamps after midnight are not used: on the 1st of a month they are a month early.
+        const rollover = { primary: [episode('2026-11-01 00:00'), episode('2026-11-01 01:30')] };
+        assert.equal(referenceDayOfVersion2Draft(rollover, savedAt('2026-12-01T15:00:00Z')), '2026-11-30');
+        // No episodes, or none that can be read: the last save alone.
+        assert.equal(referenceDayOfVersion2Draft({ primary: [] }, savedAt('2026-11-21T09:00:00Z')), '2026-11-20');
+        const unreadable = { primary: [episode('08:00'), episode('2026-02-30 08:00'), episode(null), null],
+            location: null };
+        assert.equal(referenceDayOfVersion2Draft(unreadable, savedAt('2026-11-21T09:00:00Z')), '2026-11-20');
+        // No timestamp: the stamps alone, or nothing.
+        assert.equal(referenceDayOfVersion2Draft(evening, undefined), '2026-11-19');
+        assert.equal(referenceDayOfVersion2Draft({}, undefined), null);
+    });
 });
 
 test('resolveReferenceDay: link parameter, then stored draft, then clock', () => {
