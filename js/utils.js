@@ -1,5 +1,7 @@
 import { DEBUG_MODE, MINUTES_PER_DAY } from './constants.js';
 import { hideLoadingModal } from './ui.js';
+import { activityInterval } from './intervals.js';
+import { formatTimestamp, referenceDayFromClock } from './dates.js';
 
 // Timeline state management functions
 export function getCurrentTimelineKey() {
@@ -113,45 +115,49 @@ export function generateUniqueId() {
     return Math.random().toString(36).substr(2, 9);
 }
 
-export function formatTimeDDMMYYYYHHMM(startTime, endTime) {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    
-    // Remove (+1) notation for date processing
-    const startTimeOnly = startTime.replace('(+1)', '').trim();
-    const endTimeOnly = endTime.replace('(+1)', '').trim();
-    
-    const [startHour, startMin] = startTimeOnly.split(':').map(Number);
-    const [endHour, endMin] = endTimeOnly.split(':').map(Number);
-    
-    // Create base dates - everything starts on yesterday by default
-    // since our timeline starts at 4:00 AM yesterday
-    const startDate = new Date(yesterday);
-    const endDate = new Date(yesterday);
-    
-    // If time has (+1) or is between 00:00-03:59, it's next day
-    if (startTime.includes('(+1)') || (startHour >= 0 && startHour < 4)) {
-        startDate.setDate(today.getDate());
+/**
+ * The diary's reference day (YYYY-MM-DD): the date on which the 04:00-to-04:00 day
+ * it describes starts. init() fixes it once per diary; if anything asks earlier, it
+ * is fixed here by the same clock rule, so every episode still shares one date.
+ */
+export function getReferenceDay() {
+    if (!window.timelineManager.diaryDate) {
+        window.timelineManager.diaryDate = referenceDayFromClock(new Date());
     }
-    
-    if (endTime.includes('(+1)') || (endHour >= 0 && endHour < 4)) {
-        endDate.setDate(today.getDate());
-    }
-    
-    // Set hours and minutes
-    startDate.setHours(startHour, startMin, 0);
-    endDate.setHours(endHour, endMin, 0);
-    
-    // Format dates to YYYY-MM-DD HH:MM
-    const formatDate = (d) => {
-        return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-    };
-    
+    return window.timelineManager.diaryDate;
+}
+
+/**
+ * Exported start and end ("YYYY-MM-DD HH:MM") of an episode, built from the
+ * reference day and the episode's timeline minutes (240 = 04:00, 1680 = 04:00 the
+ * next morning). The clock at the moment of placing or resizing is not read.
+ * Replaces formatTimeDDMMYYYYHHMM(startTime, endTime), which dated each episode
+ * from the device clock at that moment.
+ */
+export function formatEpisodeTimes(startMinutes, endMinutes) {
+    const referenceDay = getReferenceDay();
     return {
-        startTime: formatDate(startDate),
-        endTime: formatDate(endDate)
+        startTime: formatTimestamp(referenceDay, startMinutes),
+        endTime: formatTimestamp(referenceDay, endMinutes)
     };
+}
+
+/**
+ * Rebuilds every episode's stamps from its minutes and the reference day. Called
+ * after a draft or a resize backup is restored, so that episodes saved by an older
+ * version, or under another DIARY_DATE, carry the diary's one date.
+ */
+export function restampActivities() {
+    Object.values(window.timelineManager.activities || {}).forEach(list => {
+        if (!Array.isArray(list)) return;
+        list.forEach(activity => {
+            const interval = activityInterval(activity);
+            if (!interval) return;
+            activity.startMinutes = interval.start;
+            activity.endMinutes = interval.end;
+            Object.assign(activity, formatEpisodeTimes(interval.start, interval.end));
+        });
+    });
 }
 
 /**
@@ -539,7 +545,10 @@ export async function sendDataToDataPipe() {
       instructions: studyData.instructions === 'completed',
       PROLIFIC_PID: studyData.PROLIFIC_PID || null,
       STUDY_ID: studyData.STUDY_ID || null,
-      SESSION_ID: session_id
+      SESSION_ID: session_id,
+      // New columns go after the original sixteen, so existing readers keep working.
+      // diaryDate: the date on which the diary's 04:00-to-04:00 day starts.
+      diaryDate: getReferenceDay()
     }));
 
     // Convert to CSV format

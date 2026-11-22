@@ -34,7 +34,10 @@ The application recognizes several categories of URL parameters:
 | `STUDY_ID` | Study identifier for multi-study setups | `STUDY_ID` | `?STUDY_ID=TimeUse2024` |
 | `SESSION_ID` | Session identifier within a study | `SESSION_ID` | `?SESSION_ID=baseline` |
 | `DIARY_WAVE` | Diary wave number (converted to integer) | `diaryWave` | `?DIARY_WAVE=1` |
+| `DIARY_DATE` | The day the diary describes, as `YYYY-MM-DD`: the date on which its 04:00-to-04:00 day starts. Fixed when the diary opens and kept with the draft; an invalid value is ignored (with a console warning) | `diaryDate` | `?DIARY_DATE=2026-11-30` |
 | `survey` or `SURVEY` | Survey identifier (becomes session_id when ppid is used) | `SESSION_ID` | `?survey=follow_up` |
+
+> **Diary date:** Without `DIARY_DATE`, the diary describes the previous day, counted from 04:00 to 04:00, so a diary opened at 01:30 describes the same day as one opened at 23:00 the evening before.
 
 ### Application Control Parameters
 
@@ -101,6 +104,7 @@ All URL parameters are automatically included in the exported data. Key fields i
 | `STUDY_ID` | `STUDY_ID` | Study identifier |
 | `SESSION_ID` | `SESSION_ID`, `survey`, or `SURVEY` | Session/wave identifier |
 | `diaryWave` | `DIARY_WAVE` | Converted to integer |
+| `diaryDate` | `DIARY_DATE`, otherwise the 04:00 rule | The day the diary describes (`YYYY-MM-DD`) |
 | `instructions` | `instructions` | Boolean indicating instruction completion |
 
 ## Best Practices

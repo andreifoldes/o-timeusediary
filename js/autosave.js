@@ -7,6 +7,7 @@ import { initStorage, saveDraft, loadDraft, hasDraft, clearDraft, getParticipant
 import { serializeTimelineState, deserializeTimelineState } from './state-serializer.js';
 import { showRecoveryModal } from './recovery-modal.js';
 import { initSaveIndicator, showSaving, showSaved, showSaveError } from './save-indicator.js';
+import { referenceDayFromClock } from './dates.js';
 
 let saveInterval = null;
 let participantId = null;
@@ -40,6 +41,11 @@ export async function initAutosave() {
     if (result === 'restore') {
       const draft = await loadDraft(participantId);
       if (draft && deserializeTimelineState(draft.state)) {
+        // A draft saved by an older version carries no reference day: take it from
+        // when the draft was last saved rather than from when it was reopened.
+        if (!window.timelineManager.diaryDate && Number.isFinite(draft.timestamp)) {
+          window.timelineManager.diaryDate = referenceDayFromClock(new Date(draft.timestamp));
+        }
         console.log('[autosave] Draft restored');
         startPeriodicSave();
         return 'restored';
