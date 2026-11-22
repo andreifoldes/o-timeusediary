@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.1",
-    "@playwright/test": "^1.53.2",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^24.0.10",
     "live-server": "^1.2.2"
   },
