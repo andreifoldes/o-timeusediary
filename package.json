@@ -2,6 +2,7 @@
   "name": "timeuse_tool",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "start": "live-server --port=8080 --no-browser",
     "test:e2e": "playwright test",
@@ -9,11 +10,12 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:a11y": "playwright test e2e/accessibility/",
-    "playwright:install": "playwright install"
+    "playwright:install": "playwright install",
+    "test:unit": "node --test \"tests/unit/*.test.js\""
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.1",
-    "@playwright/test": "^1.53.2",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^24.0.10",
     "live-server": "^1.2.2"
   },

@@ -3,7 +3,10 @@
  * Preserves participant data across responsive breakpoint reloads
  */
 
-const STATE_VERSION = 2;
+import { isValidIsoDate } from './dates.js';
+
+// Version 3 adds diaryDate, the diary's reference day. Version 2 states are still read.
+const STATE_VERSION = 3;
 
 /**
  * Serializes the current timeline state for storage
@@ -16,7 +19,8 @@ export function serializeTimelineState() {
         activities,
         currentIndex: window.timelineManager?.currentIndex ?? 0,
         keys: window.timelineManager?.keys || [],
-        selectedActivity: window.selectedActivity || null
+        selectedActivity: window.selectedActivity || null,
+        diaryDate: window.timelineManager?.diaryDate || null
     };
     return JSON.stringify(state);
 }
@@ -55,6 +59,11 @@ export function deserializeTimelineState(jsonString) {
     window.timelineManager.currentIndex = state.currentIndex;
     window.timelineManager.keys = state.keys;
     window.selectedActivity = state.selectedActivity ?? null;
+    // A version 2 state has no reference day: autosave.js dates it from its last save
+    // and its stamps
+    if (isValidIsoDate(state.diaryDate)) {
+        window.timelineManager.diaryDate = state.diaryDate;
+    }
 
     console.log('[state-serializer] State restored successfully');
     return true;

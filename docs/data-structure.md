@@ -58,6 +58,7 @@ Each row in the exported CSV represents one time interval with activity informat
 | `category` | String | Activity category from configuration | `Personal` |
 | `startTime` | String | Activity start time in YYYY-MM-DD HH:MM format | `2024-07-01 06:30` |
 | `endTime` | String | Activity end time in YYYY-MM-DD HH:MM format | `2024-07-01 08:00` |
+| `diaryDate` | String | The day the diary describes, in YYYY-MM-DD format: the date on which its 04:00-to-04:00 day starts (the `DIARY_DATE` link parameter; otherwise the date kept with a restored draft; otherwise the 04:00 rule when the diary is opened). It is the 17th column, after the original 16 | `2024-07-01` |
 
 ### Participant Identification
 
@@ -90,6 +91,8 @@ O-TUD uses a 24-hour timeline starting at 4:00 AM to accommodate typical sleep p
 - **Timeline End:** 4:00 AM next day
 - **Format:** YYYY-MM-DD HH:MM (24-hour format)
 - **Next-day notation:** Hours after midnight use next day's date
+- **Dates:** Every date comes from the diary's reference day (`diaryDate`), not from the device clock when a block is placed or resized. Without a `DIARY_DATE` link parameter the reference day is the previous day, counted from 04:00 to 04:00: a diary filled in at 01:30 describes the same day as one filled in at 23:00 the evening before, and a diary filled in across midnight keeps one date. The reference day is kept with the draft, so a diary reopened on a later day keeps its date; a valid `DIARY_DATE` in the link replaces it and re-dates the episodes. A draft saved by a version before `diaryDate` existed is dated from its episodes before midnight and the time it was last saved
+- **Clock changes:** Times are labels of the 10-minute grid, not instants. On the day the clocks go forward a time in the skipped hour (for example 02:30) can appear; on the day they go back the repeated hour appears once
 
 #### Time Examples
 
@@ -120,14 +123,14 @@ Each timeline generates separate rows in the CSV export, allowing for comprehens
 
 Here's a sample of what the exported CSV data looks like:
 
-| timelineKey | activity | category | startTime | endTime | pid | diaryWave | viewportWidth | viewportHeight | layoutHorizontal | browserName | browserVersion | instructions | PROLIFIC_PID | STUDY_ID | SESSION_ID |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| primary | Sleeping | Personal | 2024-07-01 04:00 | 2024-07-01 07:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
-| primary | Washing and Dressing | Personal | 2024-07-01 07:30 | 2024-07-01 08:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
-| primary | Eating Breakfast | Personal | 2024-07-01 08:00 | 2024-07-01 08:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
-| location | Home | Indoor | 2024-07-01 04:00 | 2024-07-01 09:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
-| who | Alone | Solo | 2024-07-01 04:00 | 2024-07-01 08:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
-| who | Spouse/Partner | Family | 2024-07-01 08:00 | 2024-07-01 08:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline |
+| timelineKey | activity | category | startTime | endTime | pid | diaryWave | viewportWidth | viewportHeight | layoutHorizontal | browserName | browserVersion | instructions | PROLIFIC_PID | STUDY_ID | SESSION_ID | diaryDate |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| primary | Sleeping | Personal | 2024-07-01 04:00 | 2024-07-01 07:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
+| primary | Washing and Dressing | Personal | 2024-07-01 07:30 | 2024-07-01 08:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
+| primary | Eating Breakfast | Personal | 2024-07-01 08:00 | 2024-07-01 08:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
+| location | Home | Indoor | 2024-07-01 04:00 | 2024-07-01 09:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
+| who | Alone | Solo | 2024-07-01 04:00 | 2024-07-01 08:00 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
+| who | Spouse/Partner | Family | 2024-07-01 08:00 | 2024-07-01 08:30 | P001 | 1 | 1920 | 1080 | true | Chrome | 126.0.0.0 | true | 5f8c2a1b3d4e | TimeUse2024 | baseline | 2024-07-01 |
 
 > **Note:** This table shows the actual CSV structure with proper column alignment. The real CSV file will have comma-separated values without the visual table formatting.
 

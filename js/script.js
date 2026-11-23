@@ -39,6 +39,8 @@ import {
     TIMELINE_HOURS
 } from './constants.js';
 import { checkAndRequestPID } from './utils.js';
+import { resolveReferenceDay } from './dates.js';
+import { activityInterval } from './intervals.js';
 import { deserializeTimelineState } from './state-serializer.js';
 import { initAutosave, triggerSave } from './autosave.js';
 import { initAnnouncer, announceActivityPlaced, announceActivityResized } from './announcer.js';
@@ -61,14 +63,16 @@ window.timelineManager = {
     keys: [], // Available timeline keys
     currentIndex: 0, // Current timeline index
     study: {}, // Store URL parameters
-    general: {} // Store general configuration
+    general: {}, // Store general configuration
+    diaryDate: null // Reference day (YYYY-MM-DD), fixed once per diary in init()
 };
 
 // Function to calculate timeline coverage in minutes
 window.getTimelineCoverage = getTimelineCoverage;
 
 import { 
-    formatTimeDDMMYYYYHHMM,
+    formatEpisodeTimes,
+    restampActivities,
     formatTimeHHMM,
     timeToMinutes,
     findNearestMarkers,
@@ -117,6 +121,10 @@ function restoreStateFromResize() {
         if (Array.isArray(state.keys)) {
             window.timelineManager.keys = state.keys;
         }
+        // Keep the reference day across the reload, even if 04:00 passes meanwhile
+        if (typeof state.diaryDate === 'string') {
+            window.timelineManager.diaryDate = state.diaryDate;
+        }
         window.selectedActivity = state.selectedActivity || null;
 
         // Always clear backup after attempt
@@ -130,46 +138,12 @@ function restoreStateFromResize() {
     }
 }
 
-function getTodayKey() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-function parseTimestampMinutes(timestamp) {
-    if (typeof timestamp !== 'string') return null;
-    const [datePart, timePart] = timestamp.split(' ');
-    if (!datePart || !timePart) return null;
-    const [year, month, day] = datePart.split('-').map(Number);
-    const [hour, minute] = timePart.split(':').map(Number);
-    if ([year, month, day, hour, minute].some(Number.isNaN)) return null;
-    const dateKey = `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    return { dateKey, minutes: (hour * 60) + minute };
-}
-
+// Timeline minutes of a restored activity. Activities saved without minutes are
+// read from the times of day in their stamps (js/intervals.js), not by comparing
+// their dates with today's, which depended on when the draft was reopened.
 function getActivityMinutes(activityData) {
-    if (typeof activityData?.startMinutes === 'number' && typeof activityData?.endMinutes === 'number') {
-        return { startMinutes: activityData.startMinutes, endMinutes: activityData.endMinutes };
-    }
-
-    const startParsed = parseTimestampMinutes(activityData?.startTime);
-    const endParsed = parseTimestampMinutes(activityData?.endTime);
-    if (!startParsed || !endParsed) return null;
-
-    const todayKey = getTodayKey();
-    let startMinutes = startParsed.minutes;
-    let endMinutes = endParsed.minutes;
-
-    if (startParsed.dateKey === todayKey) {
-        startMinutes += 1440;
-    }
-    if (endParsed.dateKey === todayKey) {
-        endMinutes += 1440;
-    }
-
-    return { startMinutes, endMinutes };
+    const interval = activityInterval(activityData);
+    return interval ? { startMinutes: interval.start, endMinutes: interval.end } : null;
 }
 
 /**
@@ -1917,7 +1891,7 @@ function initTimelineInteraction(timeline) {
                     const activityIndex = currentData.findIndex(activity => activity.id === activityId);
                     
                     if (activityIndex !== -1) {
-                        const times = formatTimeDDMMYYYYHHMM(newStartTime, newEndTime);
+                        const times = formatEpisodeTimes(startMinutes, endMinutes);
                         if (!times.startTime || !times.endTime) {
                             throw new Error('Activity start time and end time must be defined');
                         }
@@ -2263,9 +2237,7 @@ function initTimelineInteraction(timeline) {
         console.log('[ACTIVITY] Clearing window.selectedActivity after successful placement');
         window.selectedActivity = null;
 
-        const startTime = currentBlock.dataset.start;
-        const endTime = currentBlock.dataset.end;
-        const times = formatTimeDDMMYYYYHHMM(startTime, endTime);
+        const times = formatEpisodeTimes(startMinutes, endMinutes);
         if (!times.startTime || !times.endTime) {
             throw new Error('Activity start time and end time must be defined');
         }
@@ -2412,7 +2384,8 @@ async function init() {
             keys: [],
             currentIndex: 0,
             study: {},
-            general: {}
+            general: {},
+            diaryDate: null
         };
 
         // Now sync URL parameters so they are stored in timelineManager.study
@@ -2491,6 +2464,29 @@ async function init() {
 
         const wasRestored = wasRestoredFromResize || wasRestoredFromAutosave;
 
+        // Fix the diary's reference day once (js/dates.js): a valid DIARY_DATE link
+        // parameter, else the date stored with a restored draft, else the 04:00 rule
+        // applied to the clock now. Every episode's stamps are built from it.
+        // DIARY_DATE is read from the address, not from timelineManager.study: this
+        // module runs twice (index.html loads script.js?v=1.1 and ui.js imports
+        // ./script.js), and the second copy's module-level window.timelineManager
+        // replaces the one this init() filled, so study stays empty until submit.
+        const fixReferenceDay = () => {
+            const referenceDay = resolveReferenceDay({
+                param: new URLSearchParams(window.location.search).get('DIARY_DATE'),
+                stored: window.timelineManager.diaryDate,
+                now: new Date()
+            });
+            if (referenceDay.warning) {
+                console.warn('[dates]', referenceDay.warning);
+            }
+            window.timelineManager.diaryDate = referenceDay.date;
+        };
+        fixReferenceDay();
+        if (wasRestored) {
+            restampActivities();
+        }
+
         if (wasRestored) {
             // State was restored - rebuild all timelines up to the restored position
             const targetIndex = window.timelineManager.currentIndex;
@@ -2509,7 +2505,14 @@ async function init() {
 
         // Initialize autosave if we restored from resize (autosave was already initialized otherwise)
         if (wasRestoredFromResize) {
-            await initAutosave();
+            // The reloaded page offers the draft again if one exists. Restoring it
+            // replaces the episodes taken from the backup with the draft's, whose
+            // stamps and stored date are as they were saved: fix the reference day
+            // again (DIARY_DATE still wins) and restamp them, as after the first restore.
+            if (await initAutosave() === 'restored') {
+                fixReferenceDay();
+                restampActivities();
+            }
         }
         
         // Update gradient bar layout
